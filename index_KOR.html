@@ -5,21 +5,67 @@
     <title>Title</title>
 </head>
 <body>
-<form><label for="node_num">샘플 수: </label><input type="number" id="node_num" placeholder="Node number"> people</form>
-<form><label for="speed_init">초기 속도: </label><input type="number" id="speed_init" placeholder="Initial speed of Node"> pixel/tick</form>
-<form><label for="sick_init">초기 환자 수: </label><input type="number" id="sick_init" placeholder="Initial patient number"> people</form>
-<form><label for="sick_min">최소 회복시간: </label><input type="number" id="sick_min" placeholder="Minimum time for recover"> Millisecond </form>
-<form><label for="sick_max">최대 회복시간: </label><input type="number" id="sick_max" placeholder="Maximum time for recover"> Millisecond </form>
-<form><label for="node_radius">샘플 크기: </label><input type="number" id="node_radius" placeholder="Node radius"> pixel</form>
-<form><label for="mask_on">마스크 수: </label><input type="number" id="mask_on" placeholder="Number of people with mask"> people</form>
-<form><label for="unmask_prob">마스크 없을 때 전파 확률: </label><input type="number" id="unmask_prob" placeholder="% of unmasked to spread"> %</form>
-<form><label for="mask_prob">마스크 있을 때 전파 확률: </label><input type="number" id="mask_prob" placeholder="% of masked to spread"> %</form>
+<form>
+    <label for="node_num">샘플 수: </label>
+    <input type="number" id="node_num" value="500"> people
+</form>
+
+<form>
+    <label for="speed_init">초기 속도: </label>
+    <input type="number" id="speed_init" value="3"> pixel/tick
+</form>
+
+<form>
+    <label for="sick_init">초기 환자 수: </label>
+    <input type="number" id="sick_init" value="5"> people
+</form>
+
+<form>
+    <label for="sick_min">회복 시간: </label>
+    <input type="number" id="sick_min" value="3000"> ~
+    <input type="number" id="sick_max" value="14000"> Millisecond
+</form>
+
+<form>
+    <label for="node_radius">샘플 크기: </label>
+    <input type="number" id="node_radius" value="3"> pixel
+</form>
+
+<form>
+    <label for="mask_on">마스크 수: </label>
+    <input type="number" id="mask_on" value="250"> people
+</form>
+
+<form>
+    <label for="unmask_prob">마스크 없을 때 전파 확률: </label>
+    <input type="number" id="unmask_prob" value="50"> %
+</form>
+
+<form>
+    <label for="mask_prob">마스크 있을 때 전파 확률: </label>
+    <input type="number" id="mask_prob" value="10"> %
+</form>
+
+<form>
+    <label for="incubation_min">잠복기: </label>
+    <input type="number" id="incubation_min" value="3000"> ~
+    <input type="number" id="incubation_max" value="14000"> Millisecond
+</form>
+
+<form>
+    <label for="social_distancing">사회적 거리두기(속도 감소): </label>
+    <input type="number" id="social_distancing" value="50"> %
+</form>
+
 <button type="button" id="start" onclick="button_click()">시작</button>
 <button type="button" id="reset" onclick="reset_click()">초기화</button>
 <br>
-<canvas id="canvas" width="600" height="400"></canvas>
+<canvas id="canvas" width="1200" height="900"></canvas>
 <h1 id="text" align="center"></h1>
-<canvas id="graph" width="400" height="100"></canvas>
+<div width="1250" height="500">
+    <canvas id="graph" width="600" height="400"></canvas>
+    <canvas id="speed_mean" width="600" height="400"></canvas>
+</div>
 </body>
 <script src="node_modules/moment/moment.js"></script>
 <script src="node_modules/chart.js/dist/Chart.js"></script>
