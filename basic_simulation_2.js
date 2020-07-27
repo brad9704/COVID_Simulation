@@ -63,18 +63,20 @@ function button_click() {
                 speed: speed_init,
                 type: "healthy",
                 sick_time: 0,
-                recover_time: Math.random() * (sick_max - sick_min) + sick_min,
-                mask: unmask_prob
+                recover_time: (Math.random() + Math.random() + Math.random()) / 3 * (sick_max - sick_min) + sick_min,
+                mask: unmask_prob // https://www.livescience.com/are-face-masks-effective-reducing-coronavirus-spread.html
             });
             if (i < sick_init) {
                 _nodes[i].type = "sick";
                 _nodes[i].sick_time = new Date().getTime();
             }
-            if (i < mask_on) {
+            if (i % (n / mask_on) < 1) {
                 _nodes[i].mask = mask_prob;
             }
         }
-
+        for (let i = 0; i < n; i++) {
+            console.log(_nodes[i].mask);
+        }
         return _nodes;
     };
 
@@ -103,13 +105,15 @@ function button_click() {
                     _node.speed = Math.hypot(dx_1, dy_2);
                     node.angle = Math.acos(dx_2 / node.speed) * Math.sign(dx_1) + conflict_angle;
                     _node.angle = Math.acos(dx_1 / _node.speed) * Math.sign(dx_2) + conflict_angle;
+                    if (node.type === "sick") {
+                        console.log(node.mask);
+                    }
 
-
-                    if (node.type === "healthy" && _node.type === "sick" && (node.mask * _node.mask) > (Math.random() * 10000)) {
+                    if (node.type === "healthy" && _node.type === "sick" && (_node.mask > (Math.random() * 100))) {
                         node.type = "sick";
                         node.sick_time = new Date().getTime();
                     }
-                    if (node.type === "sick" && _node.type === "healthy" && (node.mask * _node.mask) > (Math.random() * 10000)) {
+                    if (node.type === "sick" && _node.type === "healthy" && (node.mask > (Math.random() * 100))) {
                         _node.type = "sick";
                         _node.sick_time = new Date().getTime();
                     }

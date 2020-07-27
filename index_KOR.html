@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form><label for="node_num">샘플 수: </label><input type="number" id="node_num" placeholder="Node number"> people</form>
+<form><label for="speed_init">초기 속도: </label><input type="number" id="speed_init" placeholder="Initial speed of Node"> pixel/tick</form>
+<form><label for="sick_init">초기 환자 수: </label><input type="number" id="sick_init" placeholder="Initial patient number"> people</form>
+<form><label for="sick_min">최소 회복시간: </label><input type="number" id="sick_min" placeholder="Minimum time for recover"> Millisecond </form>
+<form><label for="sick_max">최대 회복시간: </label><input type="number" id="sick_max" placeholder="Maximum time for recover"> Millisecond </form>
+<form><label for="node_radius">샘플 크기: </label><input type="number" id="node_radius" placeholder="Node radius"> pixel</form>
+<form><label for="mask_on">마스크 수: </label><input type="number" id="mask_on" placeholder="Number of people with mask"> people</form>
+<form><label for="unmask_prob">마스크 없을 때 전파 확률: </label><input type="number" id="unmask_prob" placeholder="% of unmasked to spread"> %</form>
+<form><label for="mask_prob">마스크 있을 때 전파 확률: </label><input type="number" id="mask_prob" placeholder="% of masked to spread"> %</form>
+<button type="button" id="start" onclick="button_click()">시작</button>
+<button type="button" id="reset" onclick="reset_click()">초기화</button>
+<br>
+<canvas id="canvas" width="600" height="400"></canvas>
+<h1 id="text" align="center"></h1>
+<canvas id="graph" width="400" height="100"></canvas>
+</body>
+<script src="node_modules/moment/moment.js"></script>
+<script src="node_modules/chart.js/dist/Chart.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="basic_simulation_2.js"></script>
+</html>
