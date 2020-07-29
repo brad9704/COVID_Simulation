@@ -5,7 +5,8 @@ function reset_click() {
     reset = true;
     const text = document.getElementById("text");
 
-    document.getElementsByTagName("canvas").map((e) => e.getContext('2d').clearRect(0,0,e.width, e.height));
+    Array.from(document.getElementsByTagName("canvas")).forEach((e) => {e.getContext('2d').clearRect(0,0,e.width, e.height)});
+//    (document.getElementsByTagName("canvas")).map((e) => e.getContext('2d').clearRect(0,0,e.width, e.height));
     text.innerHTML = "";
 
     setTimeout(function() {
