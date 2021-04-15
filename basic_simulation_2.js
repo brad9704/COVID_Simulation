@@ -1,4 +1,3 @@
-let status = {"healthy":0,"sick":0,"recovered":0, "speed_mean":0};
 let reset = false;
 
 function reset_click() {
@@ -6,7 +5,6 @@ function reset_click() {
     const text = document.getElementById("text");
 
     Array.from(document.getElementsByTagName("canvas")).forEach((e) => {e.getContext('2d').clearRect(0,0,e.width, e.height)});
-//    (document.getElementsByTagName("canvas")).map((e) => e.getContext('2d').clearRect(0,0,e.width, e.height));
     text.innerHTML = "";
 
     setTimeout(function() {
@@ -15,25 +13,50 @@ function reset_click() {
 }
 
 function button_click() {
-    const node_num = parseInt(document.getElementById("node_num").value);
-    const speed_init = parseInt(document.getElementById("speed_init").value);
-    const sick_init = parseInt(document.getElementById("sick_init").value);
-    const sick_max = parseInt(document.getElementById("sick_max").value);
-    const sick_min = parseInt(document.getElementById("sick_min").value);
-    const node_radius = parseInt(document.getElementById("node_radius").value);
-    const mask_on = parseInt(document.getElementById("mask_on").value);
-    const unmask_prob = parseInt(document.getElementById("unmask_prob").value);
-    const mask_prob = parseInt(document.getElementById("mask_prob").value);
-    const incubation_max = parseInt(document.getElementById("incubation_max").value);
-    const incubation_min = parseInt(document.getElementById("incubation_min").value);
-    const social_distancing = parseInt(document.getElementById("social_distancing").value) / 100;
+    const setting = {
+        // Basic setting for nodes
+        node_num: parseInt(document.getElementById("node_num").value),
+        speed_init: parseInt(document.getElementById("speed_init").value),
+
+        sick_init: parseInt(document.getElementById("sick_init").value),
+        sick_max: parseInt(document.getElementById("sick_max").value),
+        sick_min: parseInt(document.getElementById("sick_min").value),
+        node_radius: parseInt(document.getElementById("node_radius").value),
+
+        mask_on: parseInt(document.getElementById("mask_on").value),
+
+        incubation_max: parseInt(document.getElementById("incubation_max").value),
+        incubation_min: parseInt(document.getElementById("incubation_min").value),
+        social_distancing: parseInt(document.getElementById("social_distancing").value) / 100,
+
+        age_factor: {
+            age: ["0-4", "5-17", "18-29", "30-39", "40-49", "50-64", "65-74", "75-84", "85+"],
+            transfer: [0.01957,0.01078,0.08533,0.1343,0.2035,0.3036,0.4108,0.6528,1],
+            population: [0.1,0.1,0.2,0.1,0.1,0.1,0.1,0.1,0.1]
+        },
+
+        mask: {
+            on: parseFloat(document.getElementById("mask_prob").value),
+            off: parseFloat(document.getElementById("unmask_prob").value),
+        }
+    }
+
+    const stage = {
+        S: 1, // Susceptible
+        E: 2, // Exposed, latent period
+        IP: 3, // Preclinical infectious state
+        IC: 4, // Clinical infectious state
+        IS: 5, // Subclinical infectious state
+        R: 6 // Removed state
+    }
+
 
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
     const text = document.getElementById("text");
-    const colors = {"healthy": "green", "sick": "red", "recovered": "blue"};
+    const colors = ["black","green","yellow","orange","red","purple","blue"];
 
-    //styles
+    // Styles
     document.body.style.background = "#FFFFFF";
     canvas.style.background = "#EEEEEE";
     canvas.style.display = "block";
@@ -41,102 +64,108 @@ function button_click() {
 
     canvas.style.marginTop = `${0}px`;
 
+    const sampleCorr = function() {
+        let corr_list = [];
+        _.range(0,canvas.width * setting.node_radius).forEach((i) => {
+            _.range(0, canvas.height * setting.node_radius).forEach((j) => {
+                corr_list.push([i / setting.node_radius, j / setting.node_radius]);
+            })})
+        return _.sample(corr_list, setting.node_num);
+    }
+
+    const sampleAge = function() {
+        let age_list = _.range(0, setting.node_num);
+        const set_Age = function (list, index, acc) {
+            if (index === 9) return list;
+            return set_Age(list.fill(
+                index - 1, acc,
+                acc + setting.age_factor.population[index - 1] * setting.node_num),
+                index + 1, acc);
+        }
+        return _.shuffle(set_Age(age_list, 1, 0));
+    }
+
+
+
+    // Creating Nodes
     const createNode = function (n) {
+
         const _nodes = [];
-        let _mask = [];
-        for (let i = 0; i < mask_on; i++){
-            let temp = Math.floor(Math.random() * n);
-            let test = true;
-            _mask.forEach(m => {
-                if (m === temp) {
-                    test = false;
-                }
-            });
-            if (test) _mask.push(temp);
-            else i--;
-        }
-        if (_mask.length !== mask_on) throw "Mask number mismatch";
+        const corr_list = sampleCorr();
+        const age_list = sampleAge();
 
-
-
+        // Assign each feature
         for (let i = 0; i < n; i++) {
+            let angle = Math.random() * 2 * Math.PI;
             _nodes.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: node_radius,
-                angle: Math.random() * 2 * Math.PI,
-                speed: speed_init,
-                type: "healthy",
-                incubation_for: 0,
-                recover_time: 0,
-                flag: {
-                    HAS_VIRUS: false
-                },
-                mask: unmask_prob // https://www.livescience.com/are-face-masks-effective-reducing-coronavirus-spread.html
+
+                // Coordination value
+                x: corr_list[i][0],
+                y: corr_list[i][1],
+                radius: setting.node_radius,
+                vx: setting.speed_init * Math.cos(angle),
+                vy: setting.speed_init * Math.sin(angle),
+
+
+                // Node Property
+                age: age_list[i],
+                type: stage.S,
+                mask: setting.mask.off,
+
+
+                // Node Method
+                trigger_sick: function () {
+                    if (this.type !== stage.S) return;
+                    this.type = stage.E;
+
+                    setTimeout(() => {
+                        this.type = stage.IC;
+                        setTimeout(() => {
+                            this.type = stage.R;
+                        }, 5000);
+                    }, 5000);
+                }
+
+
             });
 
 
-            if (i < sick_init) {
-                trigger_sick(_nodes[i]);
-            }
-
-
-            if (i % (n / mask_on) < 1) {
-                _nodes[i].mask = mask_prob;
-            }
-
         }
+        let sick = _.sample(_nodes, setting.sick_init);
+        sick.forEach((i) => i.trigger_sick());
+        _.sample(_nodes, setting.mask_on).forEach((i) => i.mask = setting.mask.on);
         return _nodes;
     };
+
 
     const conflict = function (i, j) {
         const node = nodes[i];
         const _node = nodes[j];
+
         let conflict_angle = Math.atan2(node.x - _node.x, node.y - _node.y);
-        /*
-        node.angle = Math.PI / 2 - node.angle + conflict_angle;
-        _node.angle = Math.PI / 2 - _node.angle + conflict_angle;
-        */
-        let dx_1 = node.speed * Math.cos(node.angle - conflict_angle);
-        let dy_1 = node.speed * Math.sin(node.angle - conflict_angle);
-        let dx_2 = _node.speed * Math.cos(_node.angle - conflict_angle);
-        let dy_2 = _node.speed * Math.sin(_node.angle - conflict_angle);
 
-        node.speed = Math.hypot(dx_2, dy_1);
-        _node.speed = Math.hypot(dx_1, dy_2);
-        node.angle = Math.acos(dx_2 / node.speed) * Math.sign(dx_1) + conflict_angle;
-        _node.angle = Math.acos(dx_1 / _node.speed) * Math.sign(dx_2) + conflict_angle;
+        let v1h = node.vx * Math.cos(conflict_angle) + node.vy * Math.sin(conflict_angle);
+        let v1v = node.vx * Math.sin(conflict_angle) - node.vy * Math.cos(conflict_angle);
+        let v2h = _node.vx * Math.cos(conflict_angle) + _node.vy * Math.sin(conflict_angle);
+        let v2v = _node.vx * Math.sin(conflict_angle) - _node.vy * Math.cos(conflict_angle);
 
-        if (node.type === "healthy" && _node.flag.HAS_VIRUS && (_node.mask > (Math.random() * 100))) {
-            trigger_sick(node);
-        }
-        if (node.flag.HAS_VIRUS && _node.type === "healthy" && (node.mask > (Math.random() * 100))) {
-            trigger_sick(_node);
-        }
-        if (node.type === "healthy" && _node.type === "sick") {
-            _node.speed *= social_distancing * 2;
-        }
-        if (node.type === "sick" && _node.type === "healthy") {
-            node.speed *= social_distancing * 2;
+        node.vx = v2h * Math.cos(conflict_angle) + v1v * Math.sin(conflict_angle);
+        node.vy = v2h * Math.sin(conflict_angle) - v1v * Math.cos(conflict_angle);
+        _node.vx = v1h * Math.cos(conflict_angle) + v2v * Math.sin(conflict_angle);
+        _node.vy = v1h * Math.sin(conflict_angle) - v2v * Math.cos(conflict_angle);
+
+        if (node.type === stage.IC || _node.type === stage.IC) {
+            node.trigger_sick();
+            _node.trigger_sick();
         }
     }
 
-    const trigger_sick = function (node) {
-        if (node.flag.HAS_VIRUS) return;
-        node.flag.HAS_VIRUS = true;
-        node.incubation_for = (Math.random() + Math.random() + Math.random()) / 3 * (incubation_max - incubation_min) + incubation_min;
-        node.recover_time = (Math.random() + Math.random() + Math.random()) / 3 * (sick_max - sick_min) + sick_min;
-        setTimeout(() => {
-            node.type = "sick";
-            node.speed *= social_distancing;
-            setTimeout(() => {
-                node.type = "recovered";
-                node.flag.HAS_VIRUS = false;
-                }, node.recover_time);
-        }, node.incubation_for);
-    }
+
 
     const update = function () {
+
+        // Calculating conflict
+
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
 
@@ -145,8 +174,8 @@ function button_click() {
                 const dst = Math.hypot((node.x - _node.x), (node.y - _node.y));
 
                 if (dst < node.radius * 2.5 && (
-                                        ((node.x - _node.x) * (node.speed * Math.cos(node.angle) - _node.speed * Math.cos(_node.angle)) < 0) ||
-                                        ((node.y - _node.y) * (node.speed * Math.sin(node.angle) - _node.speed * Math.sin(_node.angle)) < 0)
+                                        ((node.x - _node.x) * (node.vx - _node.vx) < 0) ||
+                                        ((node.y - _node.y) * (node.vy - _node.vy) < 0)
                 )) {
                     conflict(i, j);
                 }
@@ -154,40 +183,39 @@ function button_click() {
 
 
             if (node.x > canvas.width || node.x < 0) {
-                node.angle = Math.PI - node.angle;
+                node.vx = node.vx * -1;
             }
             if (node.y > canvas.height || node.y < 0) {
-                node.angle = Math.PI * 2 - node.angle;
+                node.vy = node.vy * -1;
             }
-
-            let dx = node.speed * Math.cos(node.angle);
-            let dy = node.speed * Math.sin(node.angle);
-            node.x += dx;
-            node.y += dy;
-
         }
+
+        // Moving nodes
+
+        nodes.forEach((node) => {
+            node.x += node.vx;
+            node.y += node.vy;
+        })
+
     };
 
-    const draw = function () {
-        let count = {"healthy": 0, "sick": 0, "recovered": 0, "speed_sum": 0};
-
-        count = nodes.reduce((a,b) => {
+    const count = function () {
+        return nodes.reduce((a,b) => {
             a[b.type]++
-            a['speed_sum'] += b.speed;
             return a;
-        }, count);
-/*
-        for (let i = 0; i < nodes.length; i++) {
-            count[nodes[i].type]++;
-        }
-*/
-        status["healthy"] = count["healthy"];
-        status["sick"] = count["sick"];
-        status["recovered"] = count["recovered"];
-        status['speed_mean'] = count['speed_sum'] / node_num;
+        }, [0,0,0,0,0,0,0]);
+    }
 
-        text.innerHTML = "healthy: " + count["healthy"] + " / sick: " + count["sick"] + " / recovered: " + count["recovered"];
-        //document.writeln("healthy: " + count["healthy"] + " / sick: " + count["sick"] + " / recovered: " + count["recovered"]);
+    const draw = function () {
+
+        text.innerHTML = "".concat(
+            "S:", count()[stage.S],
+            ", E:", count()[stage.E],
+            ", IP:", count()[stage.IP],
+            ", IC:", count()[stage.IC],
+            ", IS:", count()[stage.IS],
+            ", R:", count()[stage.R]
+            );
         context.clearRect(0, 0, canvas.width, canvas.height);
 
         nodes.forEach(node => {
@@ -209,68 +237,65 @@ function button_click() {
         requestAnimationFrame(tick);
     };
 
-    var nodes = createNode(node_num);
+    var nodes = createNode(setting.node_num);
     tick();
 
 
     let ctx = document.getElementById('graph').getContext('2d');
+
     let myChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: [],
             datasets: [
                 {
-                    label: 'healthy',
+                    label: stage.S,
                     data: [],
-                    borderColor: 'rgba(0,255,0,1)',
+                    borderColor: colors[stage.S],
                     pointRadius: 0,
                     pointBorderColor: 'rgba(0,0,0,0)'
                 },
                 {
-                    label: 'sick',
+                    label: stage.E,
                     data: [],
-                    borderColor: 'rgba(255,0,0,1)',
+                    borderColor: colors[stage.E],
                     pointRadius: 0,
                     pointBorderColor: 'rgba(0,0,0,0)'
                 },
                 {
-                    label: 'recovered',
+                    label: stage.IP,
                     data: [],
-                    borderColor: 'rgba(0,0,255,1)',
+                    borderColor: colors[stage.IP],
                     pointRadius: 0,
                     pointBorderColor: 'rgba(0,0,0,0)'
-                }]
+                },
+                {
+                    label: stage.IC,
+                    data: [],
+                    borderColor: colors[stage.IC],
+                    pointRadius: 0,
+                    pointBorderColor: 'rgba(0,0,0,0)'
+                },
+                {
+                    label: stage.IS,
+                    data: [],
+                    borderColor: colors[stage.IS],
+                    pointRadius: 0,
+                    pointBorderColor: 'rgba(0,0,0,0)'
+                },
+                {
+                    label: stage.R,
+                    data: [],
+                    borderColor: colors[stage.R],
+                    pointRadius: 0,
+                    pointBorderColor: 'rgba(0,0,0,0)'
+                }
+            ]
         },
         options: {
             responsive: false
         }
     });
-    let ctx2 = document.getElementById('speed_mean').getContext('2d');
-    let myChart2 = new Chart(ctx2, {
-        type: 'line',
-        data: {
-            labels: [],
-            datasets: [
-                {
-                    label: "speed_mean",
-                    data: [],
-                    borderColor: 'rgba(0,0,0,1)',
-                    pointRadius: 0,
-                    pointBorderColor: 'rgba(0,0,0,0)'
-                }]
-        },
-        options: {
-            responsive: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        suggestedMin: 0,
-                        suggestedMax: speed_init
-                    }
-                }]
-            }
-        }
-    })
 
     function addData(chart, label, data) {
         chart.data.labels.push(label);
@@ -284,9 +309,8 @@ function button_click() {
 
     let startTime = new Date().getTime();
     let drawGraph = setInterval(function () {
-        addData(myChart, Math.floor((new Date().getTime() - startTime) / 1000), status);
-        addData(myChart2, Math.floor((new Date().getTime() - startTime) / 1000), status);
-        if ((!(nodes.reduce((a,b) => a || b.flag.HAS_VIRUS, false)) && status['recovered'] > 0) || reset) {
+        addData(myChart, Math.floor((new Date().getTime() - startTime) / 1000), count());
+        if (((count()[stage.E] + count()[stage.IC] + count()[stage.IP] + count()[stage.IS]) === 0 && count()[stage.R] > 0) || reset) {
             clearInterval(drawGraph);
         }
     }, 1000);

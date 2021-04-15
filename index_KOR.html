@@ -57,6 +57,18 @@
     <input type="number" id="social_distancing" value="50"> %
 </form>
 
+<form>
+    인구 분포:
+    <input type="number" id="age_0-9" placeholder="10세 미만">
+    <input type="number" id="age_10-19" placeholder="10대">
+    <input type="number" id="age_20-29" placeholder="20대">
+    <input type="number" id="age_30-39" placeholder="30대">
+    <input type="number" id="age_40-49" placeholder="40대">
+    <input type="number" id="age_50-59" placeholder="50대">
+    <input type="number" id="age_60-69" placeholder="60대">
+    <input type="number" id="age_70-" placeholder="70세 이상">
+</form>
+
 <button type="button" id="start" onclick="button_click()">시작</button>
 <button type="button" id="reset" onclick="reset_click()">초기화</button>
 <br>
@@ -70,5 +82,6 @@
 <script src="node_modules/moment/moment.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="node_modules/underscore/underscore.js"></script>
 <script src="basic_simulation_2.js"></script>
 </html>
