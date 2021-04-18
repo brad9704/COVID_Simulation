@@ -137,33 +137,21 @@ var startSim = function(param) {
     /*
         Location settings
      */
-    simulation.loc = [];
-    simulation.loc.push({loc_count: 0,
-        xrange: [0, param["sim_size"][0]],
-        yrange: [0, param["sim_size"][1]],
-        surface: [
-            {from: {x:0, y:0}, to: {x:param["sim_size"][0], y:0}},
-            {from: {x:param["sim_size"][0], y:0}, to: {x:param["sim_size"][0], y:param["sim_size"][1]}},
-            {from: {x:param["sim_size"][0], y:param["sim_size"][1]}, to: {x:0, y:param["sim_size"][1]}},
-            {from: {x:0, y:param["sim_size"][1]}, to: {x:0, y:0}}
-        ]});
+    simulation.loc = new locs();
+    simulation.loc.push(new location("world", 0, 0, 0, param["sim_size"][0], param["sim_size"][1]));
     if (param["sim_count"] > 1) {
         Loop: for (let v = 0; v < 4; v++) {
             for (let h = 0; h < 4; h++) {
-                simulation.loc.push({loc_count: v * 4 + h + 1,
-                    xrange: [param["sim_size"][0] / 4 * h, param["sim_size"][0] / 4 * (h + 1)],
-                    yrange: [param["sim_size"][1] / 4 * v, param["sim_size"][1] / 4 * (v + 1)],
-                    surface: [{from: {x: param["sim_size"][0] / 4 * h, y: param["sim_size"][1] / 4 * v}, to: {x: param["sim_size"][0] / 4 * (h + 1), y: param["sim_size"][1] / 4 * v}},
-                        {from: {x: param["sim_size"][0] / 4 * (h + 1), y: param["sim_size"][1] / 4 * v}, to: {x: param["sim_size"][0] / 4 * (h + 1), y: param["sim_size"][1] / 4 * (v + 1)}},
-                        {from: {x: param["sim_size"][0] / 4 * (h + 1), y: param["sim_size"][1] / 4 * (v + 1)}, to: {x: param["sim_size"][0] / 4 * h, y: param["sim_size"][1] / 4 * (v + 1)}},
-                        {from: {x: param["sim_size"][0] / 4 * h, y: param["sim_size"][1] / 4 * (v + 1)}, to: {x: param["sim_size"][0] / 4 * (h + 1), y: param["sim_size"][1] / 4 * v}}]});
+                simulation.loc.push(new location("normal", v * 4 + h + 1, param["sim_size"][0] / 4 * h, param["sim_size"][1] / 4 * v, param["sim_size"][0], param["sim_size"][1]));
                 if (v * 4 + h + 1 >= param["sim_count"]) break Loop;
             }
         }
     }
+    if ("quarantine" in param["flag"]) simulation.loc.by_index(1).name = "hospital";
+    if ("age" in param["flag"]) simulation.loc.by_index(2).name = "school";
 
     function get_surface() {
-        return Array.from(simulation.loc, e => e.surface);
+        return Array.from(simulation.loc.list, e => e.surface);
     }
 
     /*
@@ -220,21 +208,14 @@ var startSim = function(param) {
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
     running_time = new Date().getTime();
 
-
+    return 0;
 }
 
 var stopSim = function(param) {
     simulation.stop();
+    return 0;
 }
 
 var reportSim = function(param) {
-    let node_data = simulation.nodes();
-    return {
-        "tick": (new Date().getTime() - running_time) / 1000,
-        "S": node_data.filter(e => e.state === state.S).length,
-        "E": node_data.filter(e => e.state === state.E).length,
-        "I": node_data.filter(e => e.state === state.I).length,
-        "H": node_data.filter(e => e.state === state.H).length,
-        "R": node_data.filter(e => e.state === state.R).length
-    };
+    return simulation.nodes();
 }

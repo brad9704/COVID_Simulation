@@ -2,6 +2,6 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{COVID_Simulation/node_modules}" />
-    <file url="PROJECT" libraries="{@types/underscore, COVID_Simulation/node_modules, d3-force-bounce, d3-force-surface, d3.v5, underscore}" />
+    <file url="PROJECT" libraries="{COVID_Simulation/node_modules, d3-force-bounce, d3-force-surface, d3.v5, underscore}" />
   </component>
 </project>

@@ -19,15 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Disaster_lab.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210418">
       <change beforePath="$PROJECT_DIR$/.idea/COVID_Simulation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/COVID_Simulation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/basic_simulation_2.js" beforeDir="false" afterPath="$PROJECT_DIR$/basic_simulation_2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index_KOR.html" beforeDir="false" afterPath="$PROJECT_DIR$/index_KOR.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +69,7 @@
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
+    <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -104,6 +102,7 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -164,11 +163,13 @@
       <workItem from="1617090554464" duration="2092000" />
       <workItem from="1617158099689" duration="2808000" />
       <workItem from="1618203320519" duration="2055000" />
+      <workItem from="1618735336537" duration="1205000" />
+      <workItem from="1618761874040" duration="4512000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -181,6 +182,10 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="20210418" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210418" />
   </component>
   <component name="WindowStateProjectService">
     <state width="1899" height="262" key="GridCell.Tab.0.bottom" timestamp="1616663012786">

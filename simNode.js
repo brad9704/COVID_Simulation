@@ -7,8 +7,50 @@ const state = {
 };
 
 class location {
-    constructor(name, index, ) {
+    constructor(name, index, coor_x, coor_y, width, height) {
+        this.name = name;
+        this.index = index;
+        this.width = width;
+        this.height = height;
 
+        this.surface = [
+            {
+                from: {x: coor_x, y: coor_y}, to: {x: coor_x + width, y: coor_y}
+            },
+            {
+                from: {x: coor_x + width, y: coor_y}, to: {x: coor_x + width, y: coor_y + height}
+            },
+            {
+                from: {x: coor_x + width, y: coor_y + height}, to: {x: coor_x, y: coor_y + height}
+            },
+            {
+                from: {x: coor_x, y: coor_y + height}, to: {x: coor_x, y: coor_y}
+            }
+        ];
+
+        this.xrange = [coor_x, coor_x + width];
+        this.yrange = [coor_y, coor_y + height];
+    }
+}
+
+class locs {
+    constructor () {
+        this.list = [];
+    }
+
+    by_index (index) {
+        return this.list[index];
+    }
+
+    by_name (name) {
+        let found_loc = this.list.filter(loc => loc.name === name);
+        if (found_loc.length > 1) {
+            return found_loc[Math.floor(Math.random() * found_loc.length)];
+        } else return this.list.find(loc => loc.name === name);
+    }
+
+    push(x) {
+        this.list.push(x);
     }
 }
 
@@ -65,7 +107,7 @@ class Node {
      */
     hospitalized() {
         this.state = state.H;
-        this.move(simulation.loc[1]);
+        this.move(simulation.loc.by_name("hospital"));
     }
 
     /*
@@ -73,7 +115,7 @@ class Node {
      */
     removed() {
         this.state = state.R;
-        this.move(simulation.loc[3]);
+        this.move(simulation.loc.by_name("normal"));
     }
 
     /*
@@ -81,7 +123,7 @@ class Node {
      */
     to_school() {
         if (this.state === state.H) return;
-        this.move(simulation.loc[2]);
+        this.move(simulation.loc.by_name("school"));
         setTimeout(this.from_school.bind(this), 1000);
     }
 
@@ -90,7 +132,7 @@ class Node {
      */
     from_school() {
         if (this.state === state.H) return;
-        this.move(simulation.loc[0]);
+        this.move(simulation.loc.by_name("normal"));
         setTimeout(this.to_school.bind(this), 1000);
     }
 
