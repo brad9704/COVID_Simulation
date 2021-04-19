@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form>
+    <label for="node_num">샘플 수: </label>
+    <input type="number" id="node_num" value="500"> people
+</form>
+
+<form>
+    <label for="speed_init">초기 속도: </label>
+    <input type="number" id="speed_init" value="3"> pixel/tick
+</form>
+
+<form>
+    <label for="sick_init">초기 환자 수: </label>
+    <input type="number" id="sick_init" value="5"> people
+</form>
+
+<form>
+    <label for="sick_min">회복 시간: </label>
+    <input type="number" id="sick_min" value="3000"> ~
+    <input type="number" id="sick_max" value="14000"> Millisecond
+</form>
+
+<form>
+    <label for="node_radius">샘플 크기: </label>
+    <input type="number" id="node_radius" value="3"> pixel
+</form>
+
+<form>
+    <label for="mask_on">마스크 수: </label>
+    <input type="number" id="mask_on" value="250"> people
+</form>
+
+<form>
+    <label for="unmask_prob">마스크 없을 때 전파 확률: </label>
+    <input type="number" id="unmask_prob" value="50"> %
+</form>
+
+<form>
+    <label for="mask_prob">마스크 있을 때 전파 확률: </label>
+    <input type="number" id="mask_prob" value="10"> %
+</form>
+
+<form>
+    <label for="incubation_min">잠복기: </label>
+    <input type="number" id="incubation_min" value="3000"> ~
+    <input type="number" id="incubation_max" value="14000"> Millisecond
+</form>
+
+<form>
+    <label for="social_distancing">사회적 거리두기(속도 감소): </label>
+    <input type="number" id="social_distancing" value="50"> %
+</form>
+
+<form>
+    인구 분포:
+    <input type="number" id="age_0-9" placeholder="10세 미만">
+    <input type="number" id="age_10-19" placeholder="10대">
+    <input type="number" id="age_20-29" placeholder="20대">
+    <input type="number" id="age_30-39" placeholder="30대">
+    <input type="number" id="age_40-49" placeholder="40대">
+    <input type="number" id="age_50-59" placeholder="50대">
+    <input type="number" id="age_60-69" placeholder="60대">
+    <input type="number" id="age_70-" placeholder="70세 이상">
+</form>
+
+<button type="button" id="start" onclick="button_click()">시작</button>
+<button type="button" id="reset" onclick="reset_click()">초기화</button>
+<br>
+<canvas id="canvas" width="1200" height="900"></canvas>
+<h1 id="text" align="center"></h1>
+<div width="1250" height="500">
+    <canvas id="graph" width="600" height="400"></canvas>
+    <canvas id="speed_mean" width="600" height="400"></canvas>
+</div>
+</body>
+<script src="node_modules/moment/moment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="node_modules/underscore/underscore.js"></script>
+<script src="basic_simulation_2.js"></script>
+</html>
