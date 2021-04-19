@@ -146,12 +146,17 @@ var startSim = function(param) {
                 if (v * 4 + h + 1 >= param["sim_count"]) break Loop;
             }
         }
+        if ("quarantine" in param["flag"]) simulation.loc.by_index(1).name = "hospital";
+        if ("age" in param["flag"]) simulation.loc.by_index(2).name = "school";
+    } else {
+        if ("quarantine" in param["flag"]) simulation.loc.push(new location("hospital", 1, 0, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
+        if ("age" in param["flag"]) simulation.loc.push(new location("school", simulation.loc.length, param["sim_size"] * 0.8, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
+        if (simulation.loc.length > 1) simulation.loc.push(new location("normal", simulation.loc.length, 0, param["sim_size"][1] * 0.2, param["sim_size"][0], param["sim_size"][1] * 0.8));
+        else simulation.loc.push(new location("normal", simulation.loc.length, 0, param["sim_size"][1], param["sim_size"][0], param["sim_size"][1]));
     }
-    if ("quarantine" in param["flag"]) simulation.loc.by_index(1).name = "hospital";
-    if ("age" in param["flag"]) simulation.loc.by_index(2).name = "school";
 
     function get_surface() {
-        return Array.from(simulation.loc.list, e => e.surface);
+        return Array.from(simulation.loc.list, e => e.surface).flat();
     }
 
     /*
@@ -208,14 +213,14 @@ var startSim = function(param) {
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
     running_time = new Date().getTime();
 
-    return 0;
+    return {type:"START", state:0};
 }
 
 var stopSim = function(param) {
     simulation.stop();
-    return 0;
+    return {type:"START", state:0};
 }
 
 var reportSim = function(param) {
-    return simulation.nodes();
+    return {type:"REPORT", state:simulation.nodes()};
 }

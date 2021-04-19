@@ -3,73 +3,202 @@ var param, node_data, locations, run,
 var tick = 16.67;
 var w;
 
-const state = {
-    S: "green", // Susceptible
-    E: "yellow", // Exposed, latent period
-    I: "red",
-    H: "grey",
-    R: "blue" // Removed state
-};
-param = {
-    sim_count: null,
-    sim_size: null,
-    flag: [],
-    // General simulation settings
-    node_num: null,
-    speed: null,
-    size: null,
-    initial_patient: null,
-
-    // Epidemic settings
-    latent_period: null,
-    infect_period: null,
-    TPC_base: null,
-
-    // Mask settings
-    mask_ratio: null,
-    mask_factor: null,
-
-    // Flag "age" settings
-    age_distribution: {"10-19": null, "20-39": null, "40-64": null, "65+": null},
-    age_vulnerability: {"10-19": null, "20-39": null, "40-64": null, "65+": null},
-    age_death_rate: {"10-19":null, "20-39":null, "40-64":null, "65+":null},
-
-    // Flag "quarantine" settings
-    hospitalized_rate: null,
-    hospitalization_max: null,
-
-    // Flag "distance" settings
-    social_distancing_strength: null,
-
-    // Flag "vaccine" settings
-}
 node_data = [];
 chart_data = [];
+
+w = new Worker("worker.js");
+
+w.onmessage = function(event) {
+    if (event.data.type !== "REPORT") alert(event.data.state);
+    else {
+        updateSim(event.data.state);
+    }
+}
+w.onerror = function(event) {
+    alert(event.message);
+}
+
+function updateSim(node_data) {
+
+}
+
 
 /*
 Sets param values with retrieved data from input
  */
-function get_attr() {
-    param = {
-        node_num: parseInt(d3.select("#node_num_output").text()),
-        speed: parseFloat(d3.select("#initial_speed_output").text()),
-        size: parseInt(d3.select("#size_output").text()),
-        initial_patient: parseInt(d3.select("#initial_patient_output").text()),
-        age_factor: _.map(_.zip(
-            _.range(10,71,10), // Age
-            _.range(10,71,10).map(e=> parseFloat(d3.select("#pop_" + e.toString()).node().value)), // Population
-            _.range(10,71,10).map(e=> parseFloat(d3.select("#Imm_" + e.toString()).node().value)) // TPC_multiplier: How much is this group strong against the ill?
-            ), e => _.object(["age", "population", "TPC_multiplier"], e)
-        ),
-        mask_ratio: parseFloat(d3.select("#mask_ratio_output").text()), // Mask_ratio: How many of this age group wears mask?
-        latent_period: [parseFloat(d3.select("#latent_period_min_output").text()),parseFloat(d3.select("#latent_period_max_output").text())],
-        infect_period: [parseFloat(d3.select("#duration_min_output").text()), parseFloat(d3.select("#duration_max_output").text())],
-        mask_factor: 0.05, // 1 means no effect by mask, 0 means perfect prevention
-        TPC_base: parseFloat(d3.select('#transmission_rate_output').text()), // Transmission per contact, 1 means transmission occurs 100% per contact, 0 means no transmission
-        hospitalized_rate: parseFloat(d3.select("#hospitalization_output").text()), // How much patients are hospitalized?
-        social_distancing_strength: parseFloat(d3.select("#social_distancing_output").text()),
-        hospitalization_max: parseInt(d3.select("#hospitalization_maximum").text())
-    };
+function get_params() {
+    let param = {};
+    let param_list = [
+        ["sim_count", "int"],
+        ["sim_width", "int"],
+        ["sim_height", "int"],
+
+        // Flags
+        ["flag_age", "int"],
+        ["flag_mask", "int"],
+        ["flag_collision", "int"],
+        ["flag_quarantine", "int"],
+        ["flag_distance", "int"],
+        ["flag_vaccine", "int"],
+
+        // General simulation settings
+        ["node_num", "int"],
+        ["speed", "float"],
+        ["size", "float"],
+        ["initial_patient", "int"],
+
+        // Epidemic settings
+        ["latent_period", "float"],
+        ["infect_period", "float"],
+        ["TPC_base", "float"],
+
+    ];
+
+    param_list.forEach(e => {
+        if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
+        else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+    })
+
+    param["sim_size"] = [param["sim_width"], param["sim_height"]];
+    param["flag"] = [];
+
+    let param_list_age = [
+        // Age settings
+        ["age_dist_10", "float"],
+        ["age_dist_20", "float"],
+        ["age_dist_40", "float"],
+        ["age_dist_65", "float"],
+
+        ["age_vul_10", "float"],
+        ["age_vul_20", "float"],
+        ["age_vul_40", "float"],
+        ["age_vul_65", "float"],
+
+        ["age_death_10", "float"],
+        ["age_death_20", "float"],
+        ["age_death_40", "float"],
+        ["age_death_65", "float"]
+    ];
+    let param_list_mask = [
+        // Mask settings
+        ["mask_ratio", "float"],
+        ["mask_factor", "float"]
+    ];
+    let param_list_quarantine = [
+        // Quarantine settings
+        ["hospitalized_rate", "float"],
+        ["hospitalization_max", "int"]
+    ];
+    let param_list_distancing = [
+        // Distancing settings
+        ["social_distancing_strength", "float"]
+    ];
+    let param_list_vaccine = [
+        // Vaccine settings
+    ];
+
+    if (param["flag_age"] > 0) {
+        param["age_distribution"] = {};
+        param["age_vulnerability"] = {};
+        param["age_death_rate"] = {};
+        param_list_age.forEach(e => {
+            let type = e[0].split("_")[1];
+            let age = e[0].split("_")[2];
+            switch (type) {
+                case "dist":
+                    switch (age) {
+                        case "10":
+                            param["age_distribution"]["10-19"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "20":
+                            param["age_distribution"]["20-39"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "40":
+                            param["age_distribution"]["40-64"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "65":
+                            param["age_distribution"]["65+"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        default:
+                            console.log("Error on setting age parameters: age");
+                    }
+                    break;
+                case "vul":
+                    switch (age) {
+                        case "10":
+                            param["age_vulnerability"]["10-19"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "20":
+                            param["age_vulnerability"]["20-39"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "40":
+                            param["age_vulnerability"]["40-64"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "65":
+                            param["age_vulnerability"]["65+"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        default:
+                            console.log("Error on setting age parameters: age");
+                    }
+                    break;
+                case "death":
+                    switch (age) {
+                        case "10":
+                            param["age_death_rate"]["10-19"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "20":
+                            param["age_death_rate"]["20-39"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "40":
+                            param["age_death_rate"]["40-64"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        case "65":
+                            param["age_death_rate"]["65+"] = parseFloat(d3.select("#" + e[1]).text());
+                            break;
+                        default:
+                            console.log("Error on setting age parameters: age");
+                    }
+                    break;
+                default:
+                    console.log("Error on setting age parameters: type")
+            }
+            param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+        })
+        param["flag"].push("age");
+    }
+    if (param["flag_mask"] > 0) {
+        param_list_mask.forEach(e => {
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+        })
+        param["flag"].push("mask");
+    }
+    if (param["flag_quarantine"] > 0) {
+        param_list_quarantine.forEach(e => {
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+        })
+        param["flag"].push("quarantine");
+    }
+    if (param["flag_distancing"] > 0) {
+        param_list_distancing.forEach(e => {
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+        })
+        param["flag"].push("distance");
+    }
+    if (param["flag_vaccine"] > 0) {
+        param_list_vaccine.forEach(e => {
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+        })
+        param["flag"].push("vaccine");
+    }
+    if (param["flag_collision"] > 0) {
+        param["flag"].push("collision");
+    }
+
+    return param;
 }
 
 function node_draw() {
@@ -146,73 +275,21 @@ function chart_update(chart_param) {
             .curve(d3.curveBasis));
 }
 
+
 function start_simulation() {
 
-    w = new Worker("worker.js");
-    w.onmessage = function(event) {
-        alert(event.data);
-    }
-    w.onerror = function(event) {
-        alert(event.message);
-    }
-    w.postMessage({type: "START", main: "Null"});
+    let param = get_params();
+    w.postMessage({type: "START", main: param});
+
+    var sim_board = d3.select("#sim_board");
+    var chart_board = d3.select("#chart_board");
+    sim_board.selectAll("svg").remove();
+    chart_board.selectAll("svg").remove();
+
+    sim_board.append()
+
 
     chart_data = [];
-    // Get param values
-    get_attr();
-
-    // Transmission probability per contact
-    const TPC = function(node1, node2) {
-        let tpc = param.TPC_base;
-        tpc *= _.find(param.age_factor, function(d) { return d.age === node1.age;}).TPC_multiplier;
-        tpc *= _.find(param.age_factor, function(d) { return d.age === node2.age;}).TPC_multiplier;
-        if (node1.mask) tpc *= param.mask_factor;
-        if (node2.mask) tpc *= param.mask_factor;
-        return tpc;
-    }
-
-    // param data
-    node_data = createNodes();
-    _.sample(node_data,param.mask_ratio).forEach(node => node.mask = true);
-    _.sample(node_data,param.initial_patient).forEach(node => infected.call(node));
-
-    function collision (node1, node2) {
-        // Collision event
-        if (node1.state === state.S && (node2.state === state.E || node2.state === state.I)) {
-            if (Math.random() < TPC(node1,node2)) {
-                node1.infected();
-            }
-        }
-        else if ((node1.state === state.E || node1.state === state.I) && node2.state === state.S) {
-            if (Math.random() < TPC(node1,node2)) {
-                node2.infected();
-            }
-        }
-    }
-
-    // Force setting
-    let surfaces = Array.from(locations.map(loc => [
-        {from: {x:loc.area.x[0], y:loc.area.y[0]}, to: {x:loc.area.x[0], y:loc.area.y[1]}},
-        {from: {x:loc.area.x[0], y:loc.area.y[1]}, to: {x:loc.area.x[1], y:loc.area.y[1]}},
-        {from: {x:loc.area.x[1], y:loc.area.y[1]}, to: {x:loc.area.x[1], y:loc.area.y[0]}},
-        {from: {x:loc.area.x[1], y:loc.area.y[0]}, to: {x:loc.area.x[0], y:loc.area.y[0]}}
-    ])).flat();
-    simulation = d3.forceSimulation()
-        .alphaDecay(0)
-        .velocityDecay(0.0001)
-        .force("bounce", d3.forceBounce()
-            .radius(param.size)
-            .elasticity(1)
-            .onImpact(collision)
-        )
-        .force("surface", d3.forceSurface()
-            .surfaces(surfaces)
-            .elasticity(1)
-            .oneWay(false))
-        .force("charge", d3.forceManyBody()
-            .strength(-1 * param.social_distancing_strength * param.speed * 0.5)
-            .distanceMax(param.size * 10)
-            .distanceMin(param.size));
 
     d3.select("body")
         .selectAll(".board").remove()
@@ -302,8 +379,8 @@ function start_simulation() {
     }, 100)
 }
 function stop_simulation() {
-    run = clearInterval(run);
-    chart = clearInterval(chart);
+    clearInterval(run);
+    clearInterval(chart);
     simulation.stop();
 }
 function reset_simulation() {

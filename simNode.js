@@ -51,6 +51,7 @@ class locs {
 
     push(x) {
         this.list.push(x);
+        this.length = this.list.length;
     }
 }
 
