@@ -1,5 +1,4 @@
-var param, node_data, locations, run,
-    chart_data, running_time, chart;
+var node_data, chart_data, running_time, chart;
 var tick = 16.67;
 var w;
 
@@ -9,18 +8,52 @@ chart_data = [];
 w = new Worker("worker.js");
 
 w.onmessage = function(event) {
-    if (event.data.type !== "REPORT") alert(event.data.state);
-    else {
-        updateSim(event.data.state);
+    switch (event.data.type) {
+        case "START":
+            alert(event.data.state);
+            running_time = event.data.time;
+            break;
+        case "STOP":
+            alert(event.data.state);
+            break;
+        case "REPORT":
+            updateSim(event.data.state, event.data.time);
+            break;
+        default:
+            console.log("Worker message error.");
     }
 }
 w.onerror = function(event) {
     alert(event.message);
 }
 
-function updateSim(node_data) {
-
+function initSim(param, initial_node_data) {
+    d3.select("#board").remove();
+    node_init(param, initial_node_data);
+    chart_data.push({
+        "tick": (time - running_time) / 1000,
+        "S": node_data.filter(e => e.state === state.S).length,
+        "E": node_data.filter(e => e.state === state.E).length,
+        "I": node_data.filter(e => e.state === state.I).length,
+        "H": node_data.filter(e => e.state === state.H).length,
+        "R": node_data.filter(e => e.state === state.R).length
+    });
+    chart_init()
 }
+
+function updateSim(node_data, time) {
+    node_draw(node_data);
+    chart_data.push({
+        "tick": (time - running_time) / 1000,
+        "S": node_data.filter(e => e.state === state.S).length,
+        "E": node_data.filter(e => e.state === state.E).length,
+        "I": node_data.filter(e => e.state === state.I).length,
+        "H": node_data.filter(e => e.state === state.H).length,
+        "R": node_data.filter(e => e.state === state.R).length
+    });
+    chart_update(chart_data);
+}
+
 
 
 /*
@@ -201,23 +234,40 @@ function get_params() {
     return param;
 }
 
+/*
+Initializes node canvas
+ */
+function node_init(param) {
+
+    d3.select("#board").append("canvas")
+        .attr("id", "")
+
+}
+
+function node_update() {
+
+}
+
 function node_draw() {
-    d3.selectAll(".nodes").remove();
-    let circles = d3.select("#simulation_svg").append("g")
-        .attr("class","nodes")
+    let circles = d3.select(".nodes")
         .selectAll("circle")
         .data(node_data)
         .enter().append("circle")
-        .attr("id", function(d) {return "node_" + d.index})
+        .attr("id", function(d) {
+            return "node_" + d.index;
+        })
+        .attr("class", function(d) {
+            return "node_" + d.state;
+        })
         .attr("stroke","black");
     node_data.forEach(node => node.circle = d3.select("#node_" + node.index))
     return circles;
 }
 
-function chart_draw() {
+function chart_init(param) {
     var margin = {top:20, right: 80, bottom: 30, left: 50},
-        width = 960 - margin.left - margin.right,
-        height = 200 - margin.top - margin.bottom;
+        width = param["sim_size"][0] - margin.left - margin.right,
+        height = param["sim_size"][1] * 0.3 - margin.top - margin.bottom;
     var x = d3.scaleLinear().range([0,width]),
         y = d3.scaleLinear().range([height,0]);
     var xAxis = d3.axisBottom().scale(x),
@@ -318,7 +368,7 @@ function start_simulation() {
     node_data.filter(e => e.age === 10).forEach(d => d.to_school())
 
     let circles = node_draw();
-    let chart_param = chart_draw();
+    let chart_param = chart_draw(param);
     simulation.nodes(node_data);
     function ticked() {
         node_data.forEach(e => {

@@ -213,7 +213,7 @@ var startSim = function(param) {
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
     running_time = new Date().getTime();
 
-    return {type:"START", state:0};
+    return {type:"START", state:0, time: running_time};
 }
 
 var stopSim = function(param) {
@@ -222,5 +222,5 @@ var stopSim = function(param) {
 }
 
 var reportSim = function(param) {
-    return {type:"REPORT", state:simulation.nodes()};
+    return {type:"REPORT", state:simulation.nodes(), time: new Date().getTime()};
 }
