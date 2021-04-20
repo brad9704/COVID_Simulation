@@ -6,7 +6,7 @@ const state = {
     R: "blue" // Removed state
 };
 
-class location {
+class simlocation {
     constructor(name, index, coor_x, coor_y, width, height) {
         this.name = name;
         this.index = index;
@@ -62,7 +62,7 @@ class locs {
 }
 
 class Node {
-    constructor(width, height, index, age) {
+    constructor(param, width, height, index, age) {
         let angle = Math.random() * 2 * Math.PI;
 
         // Variables
@@ -76,6 +76,7 @@ class Node {
         this.mask = false;
         this.loc = "Outside";
         this.flag = null;
+        this.param = param;
     }
 
     // Methods
@@ -100,13 +101,13 @@ class Node {
         this.state = state.E;
         setTimeout(() => {
             this.state = state.I;
-            if ("quarantine" in param.flag &&
-                Math.random() < param.hospitalized_rate &&
+            if ("quarantine" in this.param.flag &&
+                Math.random() < this.param.hospitalized_rate &&
                 simulation.nodes().filter(e => e.state === state.H).length < param.hospitalization_max) {
                 setTimeout(this.hospitalized.bind(this), 1000);
             }
-            setTimeout(this.removed.bind(this), param.infect_period);
-        }, param.latent_period * 1000)
+            setTimeout(this.removed.bind(this), this.param.infect_period);
+        }, this.param.latent_period * 1000)
     }
 
     /*

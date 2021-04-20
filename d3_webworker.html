@@ -9,13 +9,13 @@
 <div class="controls">
     <div class="control" id="Sim_setting">
         <p><label>Simulation settings</label>Number of locations, width, height</p>
-        <label>Location number: <output id="sim_count">100</output>
+        <label>Location number: <output id="sim_count">1</output>
             <input type="range" min="1" max="16" value="1" step="1" oninput="d3.select('#sim_count').text(value);">
         </label>
-        <label>Simulation width: <output id="sim_width">100</output>
+        <label>Simulation width: <output id="sim_width">300</output>
             <input type="range" min="100" max="1000" value="300" step="50" oninput="d3.select('#sim_width').text(value);">
         </label>
-        <label>Simulation height: <output id="sim_height">100</output>
+        <label>Simulation height: <output id="sim_height">300</output>
             <input type="range" min="100" max="1000" value="300" step="50" oninput="d3.select('#sim_height').text(value);">
         </label>
     </div>
@@ -27,7 +27,7 @@
         <label>Initial patient: <output id="initial_patient">5</output> people
             <input type="range" min="1" max="100" value="5" step="1" oninput="d3.select('#initial_patient').text(value);">
         </label>
-        <label>Initial speed: <output id="speed">1</output>
+        <label>Initial speed: <output id="speed">1.5</output>
             <input type="range" min="0" max="10" value="1.5" step="0.01" oninput="d3.select('#initial_speed').text(value);">
         </label>
         <label>Size: <output id="size">5</output>
@@ -56,23 +56,56 @@
         <input type="checkbox" id="flag_distance" value="0" onchange="flagChange(this)"> Distance <br>
         <input type="checkbox" id="flag_vaccine" value="0" onchange="flagChange(this)"> Vaccine <br>
     </div>
-    <div class="control" id="flag_age_set">
+    <div class="control" id="flag_age_set" style="display:none">
+        <label>Age settings
+            <table>
+                <tr><th>Age groups</th><th>10-19</th><th>20-39</th><th>40-64</th><th>65+</th></tr>
+                <tr><th>Population</th>
+                    <th><input type="text" id="age_dist_10" value="10"></th>
+                    <th><input type="text" id="age_dist_20" value="10"></th>
+                    <th><input type="text" id="age_dist_40" value="10"></th>
+                    <th><input type="text" id="age_dist_65" value="10"></th>
+                </tr>
+                <tr><th>Vulnerability</th>
+                    <th><input type="number" id="age_vul_10" min="0" max="1" value="1" step="0.1"></th>
+                    <th><input type="number" id="age_vul_20" min="0" max="1" value="1" step="0.1"></th>
+                    <th><input type="number" id="age_vul_40" min="0" max="1" value="1" step="0.1"></th>
+                    <th><input type="number" id="age_vul_65" min="0" max="1" value="1" step="0.1"></th>
+                </tr>
+                <tr><th>Death rate</th>
+                    <th><input type="number" id="age_death_10" min="0" max="1" value="1" step="0.1"></th>
+                    <th><input type="number" id="age_death_20" min="0" max="1" value="1" step="0.1"></th>
+                    <th><input type="number" id="age_death_40" min="0" max="1" value="1" step="0.1"></th>
+                    <th><input type="number" id="age_death_65" min="0" max="1" value="1" step="0.1"></th>
+                </tr>
+            </table>
+        </label>
+    </div>
+    <div class="control" id="flag_mask_set" style="display:none">
+        <label>Ratio wearing mask: <output id="mask_ratio">0.5</output>
+            <input type="range" min="0" max="1" value="0.5" step="0.01" oninput="d3.select('#mask_ratio').text(value);">
+        </label>
+        <label>Effect wearing mask: <output id="mask_factor">0.9</output>
+            <input type="range" min="0" max="1" value="0.9" step="0.01" oninput="d3.select('#mask_factor').text(value);">
+        </label>
+    </div>
+    <div class="control" id="flag_collision_set" style="display:none">
 
     </div>
-    <div class="control" id="flag_mask_set">
-
+    <div class="control" id="flag_quarantine_set" style="display:none">
+        <label>Accuracy for hospitalization: <output id="hospitalized_rate">0.9</output>
+            <input type="range" min="0" max="1" value="0.9" step="0.01" oninput="d3.select('#hospitalized_rate').text(value);">
+        </label>
+        <label>Maximum hospital capacity: <output id="hospitalization_max">50</output>
+            <input type="range" min="0" max="1000" value="50" step="1" oninput="d3.select('#hospitalization_max').text(value);">
+        </label>
     </div>
-    <div class="control" id="flag_collision_set">
-
+    <div class="control" id="flag_distance_set" style="display:none">
+        <label>Social distancing strength (repulsion): <output id="social_distancing_strength">2</output>
+            <input type="range" min="0" max="5" value="2" step="0.01" oninput="d3.select('#social_distancing_strength').text(value);">
+        </label>
     </div>
-    <div class="control" id="flag_quarantine_set">
-
-    </div>
-    <div class="control" id="flag_distance_set">
-
-    </div>
-    <div class="control" id="flag_vaccine_set">
-
+    <div class="control" id="flag_vaccine_set" style="display:none">
     </div>
 
     <div class="control" id="Simulation">
@@ -84,11 +117,12 @@
         </label>
     </div>
 </div>
-
+<div class="board" id="board"></div>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="//unpkg.com/d3-force-bounce/dist/d3-force-bounce.min.js"></script>
 <script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
 <script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
+<script src="simNode.js"></script>
 <script src="main.js"></script>
 </body>
 </html>

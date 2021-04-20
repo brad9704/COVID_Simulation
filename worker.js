@@ -59,7 +59,7 @@ Event data consists of:
 
 var simulation;
 
-function age_list () {
+function create_age_list (param) {
     let age_list = _.range(0, param.node_num);
     let dist_total = 0;
     for (let [k, v] in param["age_distribution"]) {
@@ -81,15 +81,15 @@ function age_list () {
 /*
 Create nodes and assign initial values
  */
-function createNodes () {
+function createNodes (param) {
     let _nodes = [];
 
     // Assigns age factor for each node
-    let age_list = age_list();
+    let age_list = create_age_list(param);
 
     // Initialize node value
     for (let i = 0; i < param.node_num; i++) {
-        _nodes.push(new Node(param["sim_size"][0], param["sim_size"][1], i, age_list[i]));
+        _nodes.push(new Node(param, param["sim_size"][0], param["sim_size"][1], i, age_list[i]));
     }
 
     // console.log(_nodes);
@@ -102,33 +102,33 @@ var startSim = function(param) {
         Assertion for necessary parameters
     */
     function assertion (param) {
-        for (let key in ["sim_count", "sim_size",
+        for (let key of ["sim_count", "sim_size",
             "flag", "node_num", "speed", "size",
             "initial_patient", "latent_period",
             "infect_period", "TPC_base"]) {
             console.assert(param.hasOwnProperty(key));
         }
-        if ("mask" in param["flag"]) {
+        if (param["flag"].includes("mask")) {
             console.assert(param.hasOwnProperty("mask_ratio"));
             console.assert(param.hasOwnProperty("mask_factor"));
         }
-        if ("quarantine" in param["flag"]) {
+        if (param["flag"].includes("quarantine")) {
             console.assert(param.hasOwnProperty("hospitalized_rate"));
             console.assert(param.hasOwnProperty("hospitalization_max"));
         }
-        if ("distance" in param["flag"]) {
+        if (param["flag"].includes("distance")) {
             console.assert(param.hasOwnProperty("social_distancing_strength"));
         }
-        if ("age" in param["flag"]) {
+        if (param["flag"].includes("age")) {
             console.assert(param.hasOwnProperty("age_distribution"));
             console.assert(param.hasOwnProperty("age_vulnerability"));
             console.assert(param.hasOwnProperty("age_death_rate"));
         }
     }
 
-    assertion();
+    assertion(param);
 
-    var node_list = createNodes();
+    var node_list = createNodes(param);
 
     simulation = d3.forceSimulation(node_list)
         .alphaDecay(0)
@@ -138,23 +138,24 @@ var startSim = function(param) {
         Location settings
      */
     simulation.loc = new locs();
-    simulation.loc.push(new location("world", 0, 0, 0, param["sim_size"][0], param["sim_size"][1]));
+    simulation.loc.push(new simlocation("world", 0, 0, 0, param["sim_size"][0], param["sim_size"][1]));
     if (param["sim_count"] > 1) {
         Loop: for (let v = 0; v < 4; v++) {
             for (let h = 0; h < 4; h++) {
-                simulation.loc.push(new location("normal", v * 4 + h + 1, param["sim_size"][0] / 4 * h, param["sim_size"][1] / 4 * v, param["sim_size"][0], param["sim_size"][1]));
+                simulation.loc.push(new simlocation("normal", v * 4 + h + 1, param["sim_size"][0] / 4 * h, param["sim_size"][1] / 4 * v, param["sim_size"][0], param["sim_size"][1]));
                 if (v * 4 + h + 1 >= param["sim_count"]) break Loop;
             }
         }
-        if ("quarantine" in param["flag"]) simulation.loc.by_index(1).name = "hospital";
-        if ("age" in param["flag"]) simulation.loc.by_index(2).name = "school";
+        if (param["flag"].includes("quarantine")) simulation.loc.by_index(1).name = "hospital";
+        if (param["flag"].includes("age")) simulation.loc.by_index(2).name = "school";
     } else {
-        if ("quarantine" in param["flag"]) simulation.loc.push(new location("hospital", 1, 0, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
-        if ("age" in param["flag"]) simulation.loc.push(new location("school", simulation.loc.length, param["sim_size"] * 0.8, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
-        if (simulation.loc.length > 1) simulation.loc.push(new location("normal", simulation.loc.length, 0, param["sim_size"][1] * 0.2, param["sim_size"][0], param["sim_size"][1] * 0.8));
-        else simulation.loc.push(new location("normal", simulation.loc.length, 0, param["sim_size"][1], param["sim_size"][0], param["sim_size"][1]));
+        if (param["flag"].includes("quarantine")) simulation.loc.push(new simlocation("hospital", 1, 0, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
+        if (param["flag"].includes("age")) simulation.loc.push(new simlocation("school", simulation.loc.length, param["sim_size"] * 0.8, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
+        if (simulation.loc.length > 1) simulation.loc.push(new simlocation("normal", simulation.loc.length, 0, param["sim_size"][1] * 0.2, param["sim_size"][0], param["sim_size"][1] * 0.8));
+        else simulation.loc.push(new simlocation("normal", simulation.loc.length, 0, param["sim_size"][1], param["sim_size"][0], param["sim_size"][1]));
     }
 
+    simulation.nodes().forEach(node => node.move(simulation.loc.by_name("normal")))
 
     /*
         Calls when two nodes collide
@@ -178,7 +179,7 @@ var startSim = function(param) {
      */
     const TPC = function(node1, node2) {
         let tpc = param.TPC_base;
-        if ("age" in param["flag"]) {
+        if (param["flag"].includes("age")) {
             tpc *= param["age_vulnerability"][node1.age]
         }
         if (node1.mask) tpc *= param.mask_factor;
@@ -186,7 +187,7 @@ var startSim = function(param) {
         return tpc;
     }
 
-    if ("collision" in param["sim_flag"]) {
+    if (param["flag"].includes("collision")) {
         simulation.force("collide", d3.forceBounce()
             .elasticity(1)
             .onImpact(collision))
@@ -195,7 +196,7 @@ var startSim = function(param) {
             .strength(0)
             .onImpact(collision))
     }
-    if ("distance" in param["sim_flag"]) {
+    if (param["flag"].includes("distance")) {
         simulation.force("charge", d3.forceManyBody()
             .strength(-1 * param.social_distancing_strength))
     }
@@ -207,7 +208,8 @@ var startSim = function(param) {
         .oneWay(true));
     simulation.on("tick", function() { simulation.nodes().forEach(node => node.check_loc())});
 
-    _.sample(simulation.nodes(), param.mask_ratio).forEach(node => node.mask = true);
+    if (param["flag"].includes("mask"))
+        _.sample(simulation.nodes(), param.mask_ratio).forEach(node => node.mask = true);
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
 
     return {type:"START", state:simulation.nodes(), time: new Date().getTime(), loc: simulation.loc};

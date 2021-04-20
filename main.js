@@ -1,4 +1,4 @@
-var node_data, chart_data, running_time, chart, chart_param;
+var run, chart_data, running_time, chart, chart_param;
 var tick = 16.67;
 var w;
 
@@ -9,6 +9,9 @@ w.onmessage = function(event) {
         case "START":
             running_time = event.data.time;
             initSim(this.param, event.data.state, event.data.loc);
+            run = setInterval(() => {
+                w.postMessage({type: "REPORT"});
+            }, tick)
             break;
         case "STOP":
             alert(event.data.state);
@@ -21,14 +24,15 @@ w.onmessage = function(event) {
     }
 }
 w.onerror = function(event) {
-    alert(event.message);
+    alert(event.message + ", " + event.filename + ": "+ event.lineno);
+    w.terminate();
 }
 
 function initSim(param, initial_node_data, loc) {
     d3.select("#board").selectAll("div").remove();
     node_init(param, initial_node_data, loc);
     chart_data.push({
-        "tick": (time - running_time) / 1000,
+        "tick": 0,
         "S": initial_node_data.filter(e => e.state === state.S).length,
         "E": initial_node_data.filter(e => e.state === state.E).length,
         "I": initial_node_data.filter(e => e.state === state.I).length,
@@ -83,8 +87,12 @@ function get_params() {
     ];
 
     param_list.forEach(e => {
-        if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
-        else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+        if (e[0].startsWith("flag")) {
+            param[e[0]] = d3.select("#" + e[0]).node().checked ? 1 : 0;
+        } else {
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[0]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[0]).text());
+        }
     })
 
     param["sim_size"] = [param["sim_width"], param["sim_height"]];
@@ -273,7 +281,7 @@ function node_init(param, node_data, loc) {
 function node_update(param, node_data) {
     d3.select(".nodes")
         .selectAll("circle")
-        .data(node_data, function (d) { return d ? "node_" + d.index : this.id; })
+        .data(node_data)
         .join(
             enter => enter.append("circle")
                 .attr("id", d => "node_" + d.index)
@@ -362,11 +370,6 @@ function start_simulation() {
     let param = get_params();
     w.param = param;
     w.postMessage({type: "START", main: param});
-    setTimeout(() => {
-        run = setInterval(() => {
-            w.postMessage({type: "REPORT"});
-        }, tick)
-    })
 }
 function stop_simulation() {
     clearInterval(run);
@@ -386,8 +389,8 @@ function save_log() {
 
 function flagChange(checkbox) {
     if (checkbox.checked) {
-        document.getElementById(checkbox.id + "_set").removeAttribute("disabled");
+        document.getElementById(checkbox.id + "_set").removeAttribute("style");
     } else {
-        document.getElementById(checkbox.id + "_set").setAttribute("disabled", "disabled");
+        document.getElementById(checkbox.id + "_set").setAttribute("style", "display:none");
     }
 }
