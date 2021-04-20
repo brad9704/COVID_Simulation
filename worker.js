@@ -7,13 +7,13 @@ var running_time = 0;
 
 onmessage = function(event){
     if (event.data.type === "START") {
-        postMessage(startSim(event.data.main))
+        postMessage(startSim(event.data.main));
     }
     else if (event.data.type === "STOP") {
-        postMessage(stopSim(event.data.main))
+        postMessage(stopSim());
     }
     else if (event.data.type === "REPORT") {
-        postMessage(reportSim(event.data.main))
+        postMessage(reportSim());
     }
 }
 
@@ -155,9 +155,6 @@ var startSim = function(param) {
         else simulation.loc.push(new location("normal", simulation.loc.length, 0, param["sim_size"][1], param["sim_size"][0], param["sim_size"][1]));
     }
 
-    function get_surface() {
-        return Array.from(simulation.loc.list, e => e.surface).flat();
-    }
 
     /*
         Calls when two nodes collide
@@ -204,23 +201,23 @@ var startSim = function(param) {
     }
 
     simulation.force("surface", d3.forceSurface()
-        .surfaces(get_surface(param))
+        .surfaces(simulation.loc.get_surface())
         .elasticity(1)
         .radius(param.size)
         .oneWay(true));
+    simulation.on("tick", function() { simulation.nodes().forEach(node => node.check_loc())});
 
     _.sample(simulation.nodes(), param.mask_ratio).forEach(node => node.mask = true);
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
-    running_time = new Date().getTime();
 
-    return {type:"START", state:0, time: running_time};
+    return {type:"START", state:simulation.nodes(), time: new Date().getTime(), loc: simulation.loc};
 }
 
-var stopSim = function(param) {
+var stopSim = function() {
     simulation.stop();
     return {type:"START", state:0};
 }
 
-var reportSim = function(param) {
+var reportSim = function() {
     return {type:"REPORT", state:simulation.nodes(), time: new Date().getTime()};
 }

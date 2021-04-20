@@ -12,6 +12,8 @@ class location {
         this.index = index;
         this.width = width;
         this.height = height;
+        this.x = coor_x;
+        this.y = coor_y;
 
         this.surface = [
             {
@@ -52,6 +54,10 @@ class locs {
     push(x) {
         this.list.push(x);
         this.length = this.list.length;
+    }
+
+    get_surface() {
+        return Array.from(this.list, e => e.surface).flat();
     }
 }
 

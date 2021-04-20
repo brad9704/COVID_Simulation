@@ -1,23 +1,20 @@
-var node_data, chart_data, running_time, chart;
+var node_data, chart_data, running_time, chart, chart_param;
 var tick = 16.67;
 var w;
-
-node_data = [];
-chart_data = [];
 
 w = new Worker("worker.js");
 
 w.onmessage = function(event) {
     switch (event.data.type) {
         case "START":
-            alert(event.data.state);
             running_time = event.data.time;
+            initSim(this.param, event.data.state, event.data.loc);
             break;
         case "STOP":
             alert(event.data.state);
             break;
         case "REPORT":
-            updateSim(event.data.state, event.data.time);
+            updateSim(this.param, event.data.state, event.data.time);
             break;
         default:
             console.log("Worker message error.");
@@ -27,9 +24,22 @@ w.onerror = function(event) {
     alert(event.message);
 }
 
-function initSim(param, initial_node_data) {
-    d3.select("#board").remove();
-    node_init(param, initial_node_data);
+function initSim(param, initial_node_data, loc) {
+    d3.select("#board").selectAll("div").remove();
+    node_init(param, initial_node_data, loc);
+    chart_data.push({
+        "tick": (time - running_time) / 1000,
+        "S": initial_node_data.filter(e => e.state === state.S).length,
+        "E": initial_node_data.filter(e => e.state === state.E).length,
+        "I": initial_node_data.filter(e => e.state === state.I).length,
+        "H": initial_node_data.filter(e => e.state === state.H).length,
+        "R": initial_node_data.filter(e => e.state === state.R).length
+    });
+    chart_param = chart_init(param);
+}
+
+function updateSim(param, node_data, time) {
+    node_update(param, node_data);
     chart_data.push({
         "tick": (time - running_time) / 1000,
         "S": node_data.filter(e => e.state === state.S).length,
@@ -38,23 +48,8 @@ function initSim(param, initial_node_data) {
         "H": node_data.filter(e => e.state === state.H).length,
         "R": node_data.filter(e => e.state === state.R).length
     });
-    chart_init()
+    chart_update(param, chart_param, chart_data);
 }
-
-function updateSim(node_data, time) {
-    node_draw(node_data);
-    chart_data.push({
-        "tick": (time - running_time) / 1000,
-        "S": node_data.filter(e => e.state === state.S).length,
-        "E": node_data.filter(e => e.state === state.E).length,
-        "I": node_data.filter(e => e.state === state.I).length,
-        "H": node_data.filter(e => e.state === state.H).length,
-        "R": node_data.filter(e => e.state === state.R).length
-    });
-    chart_update(chart_data);
-}
-
-
 
 /*
 Sets param values with retrieved data from input
@@ -237,34 +232,71 @@ function get_params() {
 /*
 Initializes node canvas
  */
-function node_init(param) {
+function node_init(param, node_data, loc) {
+    let sim_board = d3.select("#board").append("div")
+        .attr("id", "sim_board")
+        .attr("width", param["sim_size"][0])
+        .attr("height", param["sim_size"][1]);
 
-    d3.select("#board").append("canvas")
-        .attr("id", "")
-
-}
-
-function node_update() {
-
-}
-
-function node_draw() {
-    let circles = d3.select(".nodes")
+    sim_board.append("svg")
+        .attr("id", "sim_container")
+        .attr("width", param["sim_size"][0])
+        .attr("height", param["sim_size"][1])
+        .append("g")
+        .attr("id", "nodes")
         .selectAll("circle")
         .data(node_data)
         .enter().append("circle")
-        .attr("id", function(d) {
+        .attr("id", function (d) {
             return "node_" + d.index;
         })
         .attr("class", function(d) {
             return "node_" + d.state;
         })
-        .attr("stroke","black");
-    node_data.forEach(node => node.circle = d3.select("#node_" + node.index))
-    return circles;
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .attr("r", d => param["size"]);
+
+    sim_board.select("svg")
+        .selectAll("rect")
+        .data(loc.list)
+        .enter().append("rect")
+        .attr("x", d => d.x)
+        .attr("y", d => d.y)
+        .attr("width", d => d.width)
+        .attr("height", d => d.height)
+        .style("stroke", "rgb(0,0,0)")
+        .style("stroke-width", 1)
+        .style("fill", "None");
+}
+
+function node_update(param, node_data) {
+    d3.select(".nodes")
+        .selectAll("circle")
+        .data(node_data, function (d) { return d ? "node_" + d.index : this.id; })
+        .join(
+            enter => enter.append("circle")
+                .attr("id", d => "node_" + d.index)
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("r", param["size"])
+                .attr("class", d => "node_" + d.state)
+                .attr("fill", "None")
+                .attr("stroke", "None"),
+            update => update
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("class", d => "node_" + d.state)
+        );
 }
 
 function chart_init(param) {
+
+    var chart_board = d3.select("#board").append("div")
+        .attr("id", "chart_board")
+        .attr("width", param["sim_size"][0])
+        .attr("height", param["sim_size"][1] * 0.3);
+
     var margin = {top:20, right: 80, bottom: 30, left: 50},
         width = param["sim_size"][0] - margin.left - margin.right,
         height = param["sim_size"][1] * 0.3 - margin.top - margin.bottom;
@@ -273,8 +305,7 @@ function chart_init(param) {
     var xAxis = d3.axisBottom().scale(x),
         yAxis = d3.axisLeft().scale(y);
 
-    var svg = d3.select(".board")
-        .append("svg")
+    var svg = chart_board.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -289,7 +320,7 @@ function chart_init(param) {
     return {x:x, y:y, xAxis:xAxis, yAxis:yAxis, svg:svg};
 }
 
-function chart_update(chart_param) {
+function chart_update(param, chart_param, chart_data) {
     let x = chart_param.x,
         y = chart_param.y,
         xAxis = chart_param.xAxis,
@@ -327,120 +358,36 @@ function chart_update(chart_param) {
 
 
 function start_simulation() {
-
-    let param = get_params();
-    w.postMessage({type: "START", main: param});
-
-    var sim_board = d3.select("#sim_board");
-    var chart_board = d3.select("#chart_board");
-    sim_board.selectAll("svg").remove();
-    chart_board.selectAll("svg").remove();
-
-    sim_board.append()
-
-
     chart_data = [];
-
-    d3.select("body")
-        .selectAll(".board").remove()
-    var simulation_board = d3.select("body")
-        .append("div")
-        .attr("width", Math.max(...locations.map(loc=>loc.width)))
-        .attr("height", Math.max(...locations.map(loc=>loc.height)))
-        .attr("class", "board");
-
-    var svg = simulation_board.append("svg")
-        .attr("id", "simulation_svg")
-        .attr("width", Math.max(...locations.map(loc=>loc.width)))
-        .attr("height", Math.max(...locations.map(loc=>loc.height)));
-    locations.forEach(loc => {
-        svg.append("rect")
-            .attr("x", loc.area.x[0])
-            .attr("y", loc.area.y[0])
-            .attr("width", loc.width)
-            .attr("height", loc.height)
-            .style("stroke","rgb(0,0,0)")
-            .style("stroke-width","1")
-            .style("fill","None");
+    let param = get_params();
+    w.param = param;
+    w.postMessage({type: "START", main: param});
+    setTimeout(() => {
+        run = setInterval(() => {
+            w.postMessage({type: "REPORT"});
+        }, tick)
     })
-
-    node_data = createNodes();
-    node_data.filter(e => e.age === 10).forEach(d => d.to_school())
-
-    let circles = node_draw();
-    let chart_param = chart_draw(param);
-    simulation.nodes(node_data);
-    function ticked() {
-        node_data.forEach(e => {
-            if (!(e.check_loc())) {
-                let area = locations.find(loc => loc.name === e.loc).area;
-                if (area.name === "Outside") {
-                    e.x = d3.randomUniform(area.x[0] + 100, area.x[1] - 100)();
-                    e.y = d3.randomUniform(area.y[0] + 100, area.y[1] - 100)();
-                }
-            }
-        })
-        circles
-            .attr("cx", function(d) {return d.x;})
-            .attr("cy", function(d) {return d.y;})
-            .attr("fill", function(d) {return d.state;})
-            .attr("stroke", "black")
-            .attr("r", param.size);
-
-        /*        node_data.forEach(node => {
-            if (!d3.active(node.circle, "move")) {
-                node.circle
-                    .attr("cx", node.x)
-                    .attr("cy", node.y)
-                    .attr("fill", node.state)
-                    .attr("stroke", "black")
-                    .attr("r", param.size);
-            }
-        })*/
-    }
-
-    _.sample(node_data, param.initial_patient).forEach(e => e.infected())
-    running_time = new Date().getTime();
-    run = setInterval(() => {
-        if (d3.select("#social_distancing_auto").property("checked")) {
-            let patient_stage = Math.floor(node_data.filter( e => ((e.state === state.I) || (e.state === state.H))).length / param.node_num * 10);
-            if (patient_stage < 0) d3.select("#social_distancing_output").text("0");
-            else if (patient_stage > 5) d3.select("#social_distancing_output").text("5");
-            else d3.select("#social_distancing_output").text(patient_stage);
-        }
-        param.social_distancing_strength = parseFloat(d3.select("#social_distancing_output").text());
-        simulation.force("charge").strength(-1 * param.social_distancing_strength * param.speed * 0.5);
-        simulation.tick();
-        ticked();
-    }, tick);
-    chart = setInterval(() => {
-        chart_data.push({
-            "tick": (new Date().getTime() - running_time) / 1000,
-            "S": node_data.filter(e => e.state === state.S).length,
-            "E": node_data.filter(e => e.state === state.E).length,
-            "I": node_data.filter(e => e.state === state.I).length,
-            "H": node_data.filter(e => e.state === state.H).length,
-            "R": node_data.filter(e => e.state === state.R).length
-        })
-        chart_update(chart_param);
-        if (running_time > 5 && node_data.filter(e => ((e.state === state.E) || (e.state === state.I) || (e.state === state.H))).length === 0 ) {
-            stop_simulation();
-        }
-    }, 100)
 }
 function stop_simulation() {
     clearInterval(run);
-    clearInterval(chart);
     simulation.stop();
 }
 function reset_simulation() {
-    d3.select("body")
-        .selectAll(".board").remove();
-    node_data = [];
+    d3.select("#board")
+        .selectAll("div").remove();
+    chart_data = [];
 }
 function save_log() {
     console.log("tick,S,E,I,H,R");
     chart_data.forEach(e => {
         console.log(e.tick + "," + e.S + "," + e.E + "," + e.I + "," + e.H + "," + e.R);
     })
+}
+
+function flagChange(checkbox) {
+    if (checkbox.checked) {
+        document.getElementById(checkbox.id + "_set").removeAttribute("disabled");
+    } else {
+        document.getElementById(checkbox.id + "_set").setAttribute("disabled", "disabled");
+    }
 }
