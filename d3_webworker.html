@@ -22,7 +22,7 @@
     <div class="control" id="Population">
         <p><label>Population statistics</label>Target population number, initial patient, etc.</p>
         <label>Target population number: <output id="node_num">100</output> people
-            <input type="range" min="1" max="500" value="100" step="1" oninput="d3.select('#node_num').text(value);">
+            <input type="range" min="1" max="2000" value="100" step="1" oninput="d3.select('#node_num').text(value);">
         </label>
         <label>Initial patient: <output id="initial_patient">5</output> people
             <input type="range" min="1" max="100" value="5" step="1" oninput="d3.select('#initial_patient').text(value);">
@@ -31,7 +31,7 @@
             <input type="range" min="0" max="10" value="1.5" step="0.01" oninput="d3.select('#initial_speed').text(value);">
         </label>
         <label>Size: <output id="size">5</output>
-            <input type="range" min="0" max="10" value="5" step="0.1" oninput="d3.select('#size').text(value);">
+            <input type="range" min="0" max="20" value="5" step="0.1" oninput="d3.select('#size').text(value);">
         </label>
     </div>
     <div class="control" id="COVID">
@@ -44,8 +44,8 @@
             <output id="infect_period">13.69</output> days (sec)
             <input type="range" min="1" max="30" value="13.69" step="0.01" oninput="d3.select('#infect_period').text(value);">
         </label>
-        <label>Base transmission rate: <output id="TPC_base">0.1</output> transmissions per contact
-            <input type="range" min="0" max="1" value="0.1" step="0.01" oninput="d3.select('#TPC_base').text(value);">
+        <label>Base transmission rate: <output id="TPC_base">0.5</output> transmissions per contact
+            <input type="range" min="0" max="1" value="0.5" step="0.01" oninput="d3.select('#TPC_base').text(value);">
         </label>
     </div>
     <div class="control" id="flags">

@@ -101,12 +101,12 @@ class Node {
         this.state = state.E;
         setTimeout(() => {
             this.state = state.I;
-            if ("quarantine" in this.param.flag &&
+            if (this.param.flag.includes("quarantine") &&
                 Math.random() < this.param.hospitalized_rate &&
-                simulation.nodes().filter(e => e.state === state.H).length < param.hospitalization_max) {
+                simulation.nodes().filter(e => e.state === state.H).length < this.param.hospitalization_max) {
                 setTimeout(this.hospitalized.bind(this), 1000);
             }
-            setTimeout(this.removed.bind(this), this.param.infect_period);
+            setTimeout(this.removed.bind(this), this.param.infect_period * 1000);
         }, this.param.latent_period * 1000)
     }
 
@@ -148,10 +148,10 @@ class Node {
         Checks if this node exceeds given location range
      */
     check_loc() {
-        if (this.x < this.loc.xrange[0] || this.x > this.loc.xrange[1]) {
+        if (this.x < this.loc.xrange[0] - 10 || this.x > this.loc.xrange[1] + 10) {
             this.x = d3.randomUniform(...this.loc.xrange)();
         }
-        if (this.y < this.loc.yrange[0] || this.y > this.loc.yrange[1]) {
+        if (this.y < this.loc.yrange[0] - 10 || this.y > this.loc.yrange[1] + 10) {
             this.y = d3.randomUniform(...this.loc.yrange)();
         }
     }

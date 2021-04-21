@@ -49,23 +49,3 @@ tr {
 td {
     border: 1px solid;
 }
-
-.nodes .node_green {
-    background-image: url("../img/node_s.png");
-    background-size: cover;
-}
-
-.nodes .node_yellow {
-    background-image: url("../img/node_e.png");
-    background-size: cover;
-}
-
-.nodes .node_red {
-    background-image: url("../img/node_i.png");
-    background-size: cover;
-}
-
-.nodes .node_blue {
-    background-image: url("../img/node_r.png");
-    background-size: cover;
-}

@@ -22,7 +22,12 @@
     <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210418">
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021-04-19__10_59__Default_Changelist_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021-04-19__10_59__Default_Changelist_.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/d3_webworker.html" beforeDir="false" afterPath="$PROJECT_DIR$/d3_webworker.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/node_e.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/node_i.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/node_r.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/img/node_s.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/simNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker.js" afterDir="false" />
@@ -169,6 +174,7 @@
       <workItem from="1618797895837" duration="15946000" />
       <workItem from="1618872285731" duration="1300000" />
       <workItem from="1618938195238" duration="845000" />
+      <workItem from="1618979788654" duration="4468000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>

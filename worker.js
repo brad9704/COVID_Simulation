@@ -152,7 +152,7 @@ var startSim = function(param) {
         if (param["flag"].includes("quarantine")) simulation.loc.push(new simlocation("hospital", 1, 0, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
         if (param["flag"].includes("age")) simulation.loc.push(new simlocation("school", simulation.loc.length, param["sim_size"] * 0.8, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
         if (simulation.loc.length > 1) simulation.loc.push(new simlocation("normal", simulation.loc.length, 0, param["sim_size"][1] * 0.2, param["sim_size"][0], param["sim_size"][1] * 0.8));
-        else simulation.loc.push(new simlocation("normal", simulation.loc.length, 0, param["sim_size"][1], param["sim_size"][0], param["sim_size"][1]));
+        else simulation.loc.push(new simlocation("normal", simulation.loc.length, 0, 0, param["sim_size"][0], param["sim_size"][1]));
     }
 
     simulation.nodes().forEach(node => node.move(simulation.loc.by_name("normal")))
@@ -190,10 +190,12 @@ var startSim = function(param) {
     if (param["flag"].includes("collision")) {
         simulation.force("collide", d3.forceBounce()
             .elasticity(1)
+            .radius(param["size"])
             .onImpact(collision))
     } else {
         simulation.force("collide", d3.forceCollide()
             .strength(0)
+            .radius(param["size"])
             .onImpact(collision))
     }
     if (param["flag"].includes("distance")) {
@@ -204,13 +206,17 @@ var startSim = function(param) {
     simulation.force("surface", d3.forceSurface()
         .surfaces(simulation.loc.get_surface())
         .elasticity(1)
-        .radius(param.size)
-        .oneWay(true));
+        .radius(param["size"])
+        .oneWay(false));
     simulation.on("tick", function() { simulation.nodes().forEach(node => node.check_loc())});
 
     if (param["flag"].includes("mask"))
         _.sample(simulation.nodes(), param.mask_ratio).forEach(node => node.mask = true);
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
+
+    if (param["flag"].includes("age")) simulation.nodes().forEach(node => {
+        if (node.age < 20) node.to_school();
+    })
 
     return {type:"START", state:simulation.nodes(), time: new Date().getTime(), loc: simulation.loc};
 }

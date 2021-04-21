@@ -144,16 +144,16 @@ function get_params() {
                 case "dist":
                     switch (age) {
                         case "10":
-                            param["age_distribution"]["10-19"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_distribution"]["10-19"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "20":
-                            param["age_distribution"]["20-39"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_distribution"]["20-39"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "40":
-                            param["age_distribution"]["40-64"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_distribution"]["40-64"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "65":
-                            param["age_distribution"]["65+"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_distribution"]["65+"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         default:
                             console.log("Error on setting age parameters: age");
@@ -162,16 +162,16 @@ function get_params() {
                 case "vul":
                     switch (age) {
                         case "10":
-                            param["age_vulnerability"]["10-19"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_vulnerability"]["10-19"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "20":
-                            param["age_vulnerability"]["20-39"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_vulnerability"]["20-39"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "40":
-                            param["age_vulnerability"]["40-64"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_vulnerability"]["40-64"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "65":
-                            param["age_vulnerability"]["65+"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_vulnerability"]["65+"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         default:
                             console.log("Error on setting age parameters: age");
@@ -180,16 +180,16 @@ function get_params() {
                 case "death":
                     switch (age) {
                         case "10":
-                            param["age_death_rate"]["10-19"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_death_rate"]["10-19"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "20":
-                            param["age_death_rate"]["20-39"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_death_rate"]["20-39"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "40":
-                            param["age_death_rate"]["40-64"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_death_rate"]["40-64"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         case "65":
-                            param["age_death_rate"]["65+"] = parseFloat(d3.select("#" + e[1]).text());
+                            param["age_death_rate"]["65+"] = parseFloat(document.getElementById(e[0]).value);
                             break;
                         default:
                             console.log("Error on setting age parameters: age");
@@ -198,35 +198,35 @@ function get_params() {
                 default:
                     console.log("Error on setting age parameters: type")
             }
-            param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+            param[e[0]] = parseFloat(d3.select("#" + e[0]).text());
         })
         param["flag"].push("age");
     }
     if (param["flag_mask"] > 0) {
         param_list_mask.forEach(e => {
-            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
-            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[0]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[0]).text());
         })
         param["flag"].push("mask");
     }
     if (param["flag_quarantine"] > 0) {
         param_list_quarantine.forEach(e => {
-            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
-            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[0]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[0]).text());
         })
         param["flag"].push("quarantine");
     }
     if (param["flag_distancing"] > 0) {
         param_list_distancing.forEach(e => {
-            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
-            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[0]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[0]).text());
         })
         param["flag"].push("distance");
     }
     if (param["flag_vaccine"] > 0) {
         param_list_vaccine.forEach(e => {
-            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[1]).text());
-            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[1]).text());
+            if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[0]).text());
+            else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[0]).text());
         })
         param["flag"].push("vaccine");
     }
@@ -252,23 +252,27 @@ function node_init(param, node_data, loc) {
         .attr("height", param["sim_size"][1])
         .append("g")
         .attr("id", "nodes")
-        .selectAll("circle")
+        .attr("class", "nodes")
+        .selectAll("image")
         .data(node_data)
-        .enter().append("circle")
+        .enter().append("image")
         .attr("id", function (d) {
             return "node_" + d.index;
         })
         .attr("class", function(d) {
             return "node_" + d.state;
         })
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .attr("r", d => param["size"]);
+        .attr("x", d => d.x)
+        .attr("y", d => d.y)
+        .attr("height", param["size"] * 2)
+        .attr("width", param["size"] * 2)
+        .attr("xlink:href", d => "./img/node_" + d.state + ".png");
 
     sim_board.select("svg")
         .selectAll("rect")
         .data(loc.list)
         .enter().append("rect")
+        .attr("class", "locations")
         .attr("x", d => d.x)
         .attr("y", d => d.y)
         .attr("width", d => d.width)
@@ -280,21 +284,24 @@ function node_init(param, node_data, loc) {
 
 function node_update(param, node_data) {
     d3.select(".nodes")
-        .selectAll("circle")
+        .selectAll("image")
         .data(node_data)
         .join(
-            enter => enter.append("circle")
+            enter => enter.append("image")
                 .attr("id", d => "node_" + d.index)
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
-                .attr("r", param["size"])
+                .attr("x", d => d.x)
+                .attr("y", d => d.y)
+                .attr("width", param["size"] * 2)
+                .attr("height", param["size"] * 2)
                 .attr("class", d => "node_" + d.state)
-                .attr("fill", "None")
-                .attr("stroke", "None"),
+                .attr("xlink:href", d => "./img/node_" + d.state + ".png"),
             update => update
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
+                .attr("x", d => d.x)
+                .attr("y", d => d.y)
+                .attr("width", param["size"] * 2)
+                .attr("height", param["size"] * 2)
                 .attr("class", d => "node_" + d.state)
+                .attr("xlink:href", d => "./img/node_" + d.state + ".png")
         );
 }
 
@@ -373,7 +380,7 @@ function start_simulation() {
 }
 function stop_simulation() {
     clearInterval(run);
-    simulation.stop();
+    w.postMessage({type: "STOP"})
 }
 function reset_simulation() {
     d3.select("#board")
