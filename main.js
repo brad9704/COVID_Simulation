@@ -14,7 +14,6 @@ w.onmessage = function(event) {
             }, tick)
             break;
         case "STOP":
-            alert(event.data.state);
             break;
         case "REPORT":
             updateSim(this.param, event.data.state, event.data.time);
@@ -142,58 +141,13 @@ function get_params() {
             let age = e[0].split("_")[2];
             switch (type) {
                 case "dist":
-                    switch (age) {
-                        case "10":
-                            param["age_distribution"]["10-19"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "20":
-                            param["age_distribution"]["20-39"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "40":
-                            param["age_distribution"]["40-64"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "65":
-                            param["age_distribution"]["65+"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        default:
-                            console.log("Error on setting age parameters: age");
-                    }
+                    param["age_distribution"][age] = parseFloat(document.getElementById(e[0]).value);
                     break;
                 case "vul":
-                    switch (age) {
-                        case "10":
-                            param["age_vulnerability"]["10-19"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "20":
-                            param["age_vulnerability"]["20-39"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "40":
-                            param["age_vulnerability"]["40-64"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "65":
-                            param["age_vulnerability"]["65+"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        default:
-                            console.log("Error on setting age parameters: age");
-                    }
+                    param["age_vulnerability"][age] = parseFloat(document.getElementById(e[0]).value);
                     break;
                 case "death":
-                    switch (age) {
-                        case "10":
-                            param["age_death_rate"]["10-19"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "20":
-                            param["age_death_rate"]["20-39"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "40":
-                            param["age_death_rate"]["40-64"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        case "65":
-                            param["age_death_rate"]["65+"] = parseFloat(document.getElementById(e[0]).value);
-                            break;
-                        default:
-                            console.log("Error on setting age parameters: age");
-                    }
+                    param["age_death_rate"][age] = parseFloat(document.getElementById(e[0]).value);
                     break;
                 default:
                     console.log("Error on setting age parameters: type")
@@ -262,8 +216,8 @@ function node_init(param, node_data, loc) {
         .attr("class", function(d) {
             return "node_" + d.state;
         })
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
+        .attr("x", d => d.x - param["size"])
+        .attr("y", d => d.y - param["size"])
         .attr("height", param["size"] * 2)
         .attr("width", param["size"] * 2)
         .attr("xlink:href", d => "./img/node_" + d.state + ".png");
@@ -289,19 +243,21 @@ function node_update(param, node_data) {
         .join(
             enter => enter.append("image")
                 .attr("id", d => "node_" + d.index)
-                .attr("x", d => d.x)
-                .attr("y", d => d.y)
+                .attr("x", d => d.x - param["size"])
+                .attr("y", d => d.y - param["size"])
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
                 .attr("class", d => "node_" + d.state)
                 .attr("xlink:href", d => "./img/node_" + d.state + ".png"),
             update => update
-                .attr("x", d => d.x)
-                .attr("y", d => d.y)
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
                 .attr("class", d => "node_" + d.state)
                 .attr("xlink:href", d => "./img/node_" + d.state + ".png")
+                .transition()
+                .ease(d3.easeLinear)
+                .attr("x", d => d.x - param["size"])
+                .attr("y", d => d.y - param["size"])
         );
 }
 

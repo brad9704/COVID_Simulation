@@ -12,11 +12,11 @@
         <label>Location number: <output id="sim_count">1</output>
             <input type="range" min="1" max="16" value="1" step="1" oninput="d3.select('#sim_count').text(value);">
         </label>
-        <label>Simulation width: <output id="sim_width">300</output>
-            <input type="range" min="100" max="1000" value="300" step="50" oninput="d3.select('#sim_width').text(value);">
+        <label>Simulation width: <output id="sim_width">1000</output>
+            <input type="range" min="100" max="1000" value="1000" step="50" oninput="d3.select('#sim_width').text(value);">
         </label>
-        <label>Simulation height: <output id="sim_height">300</output>
-            <input type="range" min="100" max="1000" value="300" step="50" oninput="d3.select('#sim_height').text(value);">
+        <label>Simulation height: <output id="sim_height">1000</output>
+            <input type="range" min="100" max="1000" value="1000" step="50" oninput="d3.select('#sim_height').text(value);">
         </label>
     </div>
     <div class="control" id="Population">
@@ -30,8 +30,8 @@
         <label>Initial speed: <output id="speed">1.5</output>
             <input type="range" min="0" max="10" value="1.5" step="0.01" oninput="d3.select('#initial_speed').text(value);">
         </label>
-        <label>Size: <output id="size">5</output>
-            <input type="range" min="0" max="20" value="5" step="0.1" oninput="d3.select('#size').text(value);">
+        <label>Size: <output id="size">20</output>
+            <input type="range" min="0" max="20" value="20" step="0.1" oninput="d3.select('#size').text(value);">
         </label>
     </div>
     <div class="control" id="COVID">

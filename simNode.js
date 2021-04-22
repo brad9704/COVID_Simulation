@@ -123,7 +123,7 @@ class Node {
      */
     removed() {
         this.state = state.R;
-        this.move(simulation.loc.by_name("normal"));
+        if (this.param.flag.includes("quarantine")) this.move(simulation.loc.by_name("normal"));
     }
 
     /*
@@ -132,7 +132,7 @@ class Node {
     to_school() {
         if (this.state === state.H) return;
         this.move(simulation.loc.by_name("school"));
-        setTimeout(this.from_school.bind(this), 1000);
+        setTimeout(this.from_school.bind(this), 2000);
     }
 
     /*
@@ -141,7 +141,7 @@ class Node {
     from_school() {
         if (this.state === state.H) return;
         this.move(simulation.loc.by_name("normal"));
-        setTimeout(this.to_school.bind(this), 1000);
+        setTimeout(this.to_school.bind(this), 2000);
     }
 
     /*

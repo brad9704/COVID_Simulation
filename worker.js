@@ -42,9 +42,9 @@ Event data consists of:
         mask_factor: {float} in [0, 1] represents how much wearing mask would affect
 
         // Flag "age" settings
-        age_distribution: ["10-19": {float}, "20-39": {float}, "40-64": {float}, "65+": {float}]
-        age_vulnerability: ["10-19": {float}, "20-39": {float}, "40-64": {float}, "65+": {float}]
-        age_death_rate: ["10-19":[0,1], "20-39":[0,1], "40-64":[0,1], "65+":[0,1]]
+        age_distribution: ["10": {float}, "20": {float}, "40": {float}, "65": {float}]
+        age_vulnerability: ["10": {float}, "20": {float}, "40": {float}, "65": {float}]
+        age_death_rate: ["10":[0,1], "20":[0,1], "40":[0,1], "65":[0,1]]
 
         // Flag "quarantine" settings
         hospitalized_rate: {float} in [0, 1]
@@ -142,17 +142,24 @@ var startSim = function(param) {
     if (param["sim_count"] > 1) {
         Loop: for (let v = 0; v < 4; v++) {
             for (let h = 0; h < 4; h++) {
-                simulation.loc.push(new simlocation("normal", v * 4 + h + 1, param["sim_size"][0] / 4 * h, param["sim_size"][1] / 4 * v, param["sim_size"][0], param["sim_size"][1]));
+                simulation.loc.push(new simlocation(
+                    "normal", v * 4 + h + 1,
+                    param["sim_size"][0] / 4 * h, param["sim_size"][1] / 4 * v,
+                    param["sim_size"][0] / 4, param["sim_size"][1] / 4));
                 if (v * 4 + h + 1 >= param["sim_count"]) break Loop;
             }
         }
         if (param["flag"].includes("quarantine")) simulation.loc.by_index(1).name = "hospital";
         if (param["flag"].includes("age")) simulation.loc.by_index(2).name = "school";
     } else {
-        if (param["flag"].includes("quarantine")) simulation.loc.push(new simlocation("hospital", 1, 0, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
-        if (param["flag"].includes("age")) simulation.loc.push(new simlocation("school", simulation.loc.length, param["sim_size"] * 0.8, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
-        if (simulation.loc.length > 1) simulation.loc.push(new simlocation("normal", simulation.loc.length, 0, param["sim_size"][1] * 0.2, param["sim_size"][0], param["sim_size"][1] * 0.8));
-        else simulation.loc.push(new simlocation("normal", simulation.loc.length, 0, 0, param["sim_size"][0], param["sim_size"][1]));
+        if (param["flag"].includes("quarantine")) simulation.loc.push(new simlocation(
+            "hospital", 1, 0, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
+        if (param["flag"].includes("age")) simulation.loc.push(new simlocation(
+            "school", simulation.loc.length, param["sim_size"][0] * 0.8, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
+        if (simulation.loc.length > 1) simulation.loc.push(new simlocation(
+            "normal", simulation.loc.length, 0, param["sim_size"][1] * 0.2, param["sim_size"][0], param["sim_size"][1] * 0.8));
+        else simulation.loc.push(new simlocation(
+            "normal", simulation.loc.length, 0, 0, param["sim_size"][0], param["sim_size"][1]));
     }
 
     simulation.nodes().forEach(node => node.move(simulation.loc.by_name("normal")))
@@ -180,10 +187,13 @@ var startSim = function(param) {
     const TPC = function(node1, node2) {
         let tpc = param.TPC_base;
         if (param["flag"].includes("age")) {
-            tpc *= param["age_vulnerability"][node1.age]
+            tpc *= param["age_vulnerability"][node1.age.toString()]
         }
-        if (node1.mask) tpc *= param.mask_factor;
-        if (node2.mask) tpc *= param.mask_factor;
+        if (param["flag"].includes("mask")) {
+            if (node1.mask) tpc *= param.mask_factor;
+            if (node2.mask) tpc *= param.mask_factor;
+        }
+        if (!param["flag"].includes("collision")) tpc /= 30;
         return tpc;
     }
 
@@ -191,12 +201,17 @@ var startSim = function(param) {
         simulation.force("collide", d3.forceBounce()
             .elasticity(1)
             .radius(param["size"])
-            .onImpact(collision))
+            .onImpact(collision));
     } else {
-        simulation.force("collide", d3.forceCollide()
-            .strength(0)
-            .radius(param["size"])
-            .onImpact(collision))
+        simulation.on("tick.impact", function() {
+            this.nodes().forEach(node1 => {
+                this.nodes().forEach(node2 => {
+                    if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param["size"])
+                        collision(node1, node2);
+                })
+            }, this)
+        });
+
     }
     if (param["flag"].includes("distance")) {
         simulation.force("charge", d3.forceManyBody()
@@ -208,7 +223,7 @@ var startSim = function(param) {
         .elasticity(1)
         .radius(param["size"])
         .oneWay(false));
-    simulation.on("tick", function() { simulation.nodes().forEach(node => node.check_loc())});
+    simulation.on("tick.check_loc", function() { this.nodes().forEach(node => node.check_loc())});
 
     if (param["flag"].includes("mask"))
         _.sample(simulation.nodes(), param.mask_ratio).forEach(node => node.mask = true);
@@ -223,7 +238,7 @@ var startSim = function(param) {
 
 var stopSim = function() {
     simulation.stop();
-    return {type:"START", state:0};
+    return {type:"STOP", state:0};
 }
 
 var reportSim = function() {
