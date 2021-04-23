@@ -218,7 +218,7 @@ function node_init(param, node_data, loc) {
         .attr("y", d => d.y - param["size"])
         .attr("height", param["size"] * 2)
         .attr("width", param["size"] * 2)
-        .attr("xlink:href", d => "./img/node_" + d.state + ".png");
+        .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png");
 
     sim_board.select("svg")
         .selectAll("rect")
@@ -246,12 +246,12 @@ function node_update(param, node_data) {
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
                 .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
-                .attr("xlink:href", d => "./img/node_" + d.state + ".png"),
+                .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png"),
             update => update
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
                 .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
-                .attr("xlink:href", d => "./img/node_" + d.state + ".png")
+                .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png")
                 .transition()
                 .ease(d3.easeLinear)
                 .attr("x", d => d.x - param["size"])
