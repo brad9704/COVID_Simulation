@@ -62,18 +62,17 @@ var simulation;
 function create_age_list (param) {
     let age_list = _.range(0, param.node_num);
     let dist_total = 0;
-    for (let [k, v] in param["age_distribution"]) {
-        dist_total += v;
+    for (let k in param["age_distribution"]) {
+        dist_total += param["age_distribution"][k];
     }
     let age_dist = {};
-    for (let [k, v] in param["age_distribution"]) {
-        if (param["age_distribution"].hasOwnProperty(k))
-            age_dist[k] = (Math.ceil(v/dist_total*param.node_num));
+    for (let k in param["age_distribution"]) {
+        age_dist[k] = (Math.ceil(param["age_distribution"][k]/dist_total*param.node_num));
     }
     let acc = 0;
-    for (let [k,v] in age_dist) {
-        age_list.fill(k, acc, acc + v);
-        acc += v;
+    for (let k in age_dist) {
+        age_list.fill(k, acc, acc + age_dist[k]);
+        acc += age_dist[k];
     }
     return d3.shuffle(age_list);
 }
@@ -215,7 +214,9 @@ var startSim = function(param) {
     }
     if (param["flag"].includes("distance")) {
         simulation.force("charge", d3.forceManyBody()
-            .strength(-1 * param.social_distancing_strength))
+            .strength(-1 * param.social_distancing_strength * param.speed * 0.5)
+            .distanceMax(param.size * 10)
+            .distanceMin(param.size));
     }
 
     simulation.force("surface", d3.forceSurface()
@@ -226,7 +227,7 @@ var startSim = function(param) {
     simulation.on("tick.check_loc", function() { this.nodes().forEach(node => node.check_loc())});
 
     if (param["flag"].includes("mask"))
-        _.sample(simulation.nodes(), param.mask_ratio).forEach(node => node.mask = true);
+        _.sample(simulation.nodes(), Math.floor(param.node_num * param.mask_ratio)).forEach(node => node.mask = true);
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
 
     if (param["flag"].includes("age")) simulation.nodes().forEach(node => {

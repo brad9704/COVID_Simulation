@@ -170,7 +170,7 @@ function get_params() {
         })
         param["flag"].push("quarantine");
     }
-    if (param["flag_distancing"] > 0) {
+    if (param["flag_distance"] > 0) {
         param_list_distancing.forEach(e => {
             if (e[1] === "int") param[e[0]] = parseInt(d3.select("#" + e[0]).text());
             else if (e[1] === "float") param[e[0]] = parseFloat(d3.select("#" + e[0]).text());
@@ -213,9 +213,7 @@ function node_init(param, node_data, loc) {
         .attr("id", function (d) {
             return "node_" + d.index;
         })
-        .attr("class", function(d) {
-            return "node_" + d.state;
-        })
+        .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
         .attr("x", d => d.x - param["size"])
         .attr("y", d => d.y - param["size"])
         .attr("height", param["size"] * 2)
@@ -247,12 +245,12 @@ function node_update(param, node_data) {
                 .attr("y", d => d.y - param["size"])
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
-                .attr("class", d => "node_" + d.state)
+                .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
                 .attr("xlink:href", d => "./img/node_" + d.state + ".png"),
             update => update
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
-                .attr("class", d => "node_" + d.state)
+                .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
                 .attr("xlink:href", d => "./img/node_" + d.state + ".png")
                 .transition()
                 .ease(d3.easeLinear)
