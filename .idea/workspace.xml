@@ -20,14 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210423">
-      <change afterPath="$PROJECT_DIR$/img/node_blue_mask.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/node_green_mask.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/node_grey_mask.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/node_red_mask.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/node_yellow_mask.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/d3_webworker.html" beforeDir="false" afterPath="$PROJECT_DIR$/d3_webworker.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +167,7 @@
       <workItem from="1618938195238" duration="845000" />
       <workItem from="1618979788654" duration="5285000" />
       <workItem from="1619067611697" duration="10653000" />
-      <workItem from="1619149377146" duration="5167000" />
+      <workItem from="1619149377146" duration="10015000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -203,7 +197,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619154293197</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="20210423">
+      <created>1619156077063</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1619156077063</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -214,7 +215,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
