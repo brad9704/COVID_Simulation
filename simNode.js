@@ -75,8 +75,9 @@ class Node {
         this.age = age;
         this.mask = false;
         this.loc = "Outside";
-        this.flag = null;
+        this.flag = [];
         this.param = param;
+        this.run = true;
     }
 
     // Methods
@@ -86,11 +87,21 @@ class Node {
         Location should be passed by {loc_count, xrange, yrange, surface} form.
      */
     move(loc_to) {
-        this.flag = "move";
+        this.flag.push("move");
         this.x = d3.randomUniform(...loc_to.xrange)();
         this.y = d3.randomUniform(...loc_to.yrange)();
+        if (loc_to.name !== "hospital") {
+            this.fx = null;
+            this.fy = null;
+            let angle = Math.random() * 2 * Math.PI;
+            this.vx = this.param.speed * Math.cos(angle);
+            this.vy = this.param.speed * Math.sin(angle);
+        } else {
+            this.fx = this.x;
+            this.fy = this.y;
+        }
         this.loc = loc_to;
-        this.flag = null;
+        this.flag.splice(this.flag.indexOf("move"), 1);
     }
 
     /*
@@ -98,6 +109,7 @@ class Node {
      */
     infected() {
         if (this.state !== state.S) return;
+        if (!this.run) return;
         this.state = state.E;
         setTimeout(() => {
             this.state = state.I;
@@ -114,16 +126,25 @@ class Node {
         Hospitalizes this node
      */
     hospitalized() {
+        if (!this.run) return;
         this.state = state.H;
         this.move(simulation.loc.by_name("hospital"));
+        this.flag.push("hidden");
     }
 
     /*
         Removed node, either recovered or dead
      */
     removed() {
+        if (!this.run) return;
         this.state = state.R;
-        if (this.param.flag.includes("quarantine")) this.move(simulation.loc.by_name("normal"));
+        if (this.param.flag.includes("quarantine")) {
+            this.move(simulation.loc.by_name("normal"));
+            this.flag.splice(this.flag.indexOf("hidden"),1);
+        }
+        if (Math.random() < this.param.age_death_rate[this.age]) {
+            this.flag.push("dead");
+        }
     }
 
     /*
@@ -131,6 +152,7 @@ class Node {
      */
     to_school() {
         if (this.state === state.H) return;
+        if (!this.run) return;
         this.move(simulation.loc.by_name("school"));
         setTimeout(this.from_school.bind(this), 2000);
     }
@@ -140,6 +162,7 @@ class Node {
      */
     from_school() {
         if (this.state === state.H) return;
+        if (!this.run) return;
         this.move(simulation.loc.by_name("normal"));
         setTimeout(this.to_school.bind(this), 2000);
     }

@@ -14,6 +14,7 @@ w.onmessage = function(event) {
             }, tick)
             break;
         case "STOP":
+            clearInterval(run);
             break;
         case "REPORT":
             updateSim(this.param, event.data.state, event.data.time);
@@ -52,6 +53,9 @@ function updateSim(param, node_data, time) {
         "R": node_data.filter(e => e.state === state.R).length
     });
     chart_update(param, chart_param, chart_data);
+    if (node_data.filter(e => e.state === state.E || e.state === state.I || e.state === state.H).length === 0) {
+        stop_simulation();
+    }
 }
 
 /*
@@ -225,6 +229,7 @@ function node_init(param, node_data, loc) {
         .data(loc.list)
         .enter().append("rect")
         .attr("class", "locations")
+        .attr("id", d => "loc_" + d.name)
         .attr("x", d => d.x)
         .attr("y", d => d.y)
         .attr("width", d => d.width)
@@ -232,6 +237,18 @@ function node_init(param, node_data, loc) {
         .style("stroke", "rgb(0,0,0)")
         .style("stroke-width", 1)
         .style("fill", "None");
+
+    if (param["flag"].includes("quarantine")) {
+        d3.select("#sim_container").append("text")
+            .attr("x", (loc.list[1].xrange[1] - loc.list[1].xrange[0]) / 2)
+            .attr("y", (loc.list[1].yrange[1] - loc.list[1].yrange[0]) / 2)
+            .attr("id", "hospital_text")
+            .attr("font-size", "20px")
+            .style("fill", "rgb(100,100,100)")
+            .style("stroke", "rgb(0,0,0)")
+            .style("stroke-width", 1)
+            .attr("text-anchor", "middle");
+    }
 }
 
 function node_update(param, node_data) {
@@ -246,17 +263,26 @@ function node_update(param, node_data) {
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
                 .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
                 .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png"),
             update => update
                 .attr("width", param["size"] * 2)
                 .attr("height", param["size"] * 2)
                 .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
                 .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png")
                 .transition()
                 .ease(d3.easeLinear)
                 .attr("x", d => d.x - param["size"])
                 .attr("y", d => d.y - param["size"])
         );
+    if (param["flag"].includes("quarantine")) {
+        let hospital_rate = node_data.filter(e => e.state === state.H).length / (param["hospitalization_max"]);
+        if (hospital_rate < 0.9)
+            d3.select("#loc_hospital").style("fill", "rgba(" + 255 * (1 - hospital_rate) + "," + 255 * (1 - hospital_rate) + "," + 255 * (1 - hospital_rate) + "," + 50 + ")");
+        else d3.select("#loc_hospital").style("fill", "rgba(" + 255 * hospital_rate + "," + 255 * (1 - hospital_rate) + ",0," + 50 + ")");
+        d3.select("#hospital_text").text("" + node_data.filter(e => e.state === state.H).length + " / " + param["hospitalization_max"]);
+    }
 }
 
 function chart_init(param) {
@@ -337,6 +363,7 @@ function stop_simulation() {
     w.postMessage({type: "STOP"})
 }
 function reset_simulation() {
+    stop_simulation();
     d3.select("#board")
         .selectAll("div").remove();
     chart_data = [];

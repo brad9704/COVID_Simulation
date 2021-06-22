@@ -126,6 +126,8 @@ var startSim = function(param) {
     }
 
     assertion(param);
+    running_time = 0;
+    simulation = null;
 
     var node_list = createNodes(param);
 
@@ -239,6 +241,7 @@ var startSim = function(param) {
 
 var stopSim = function() {
     simulation.stop();
+    simulation.nodes().forEach(node => node.run = false)
     return {type:"STOP", state:0};
 }
 

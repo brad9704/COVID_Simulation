@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="controls">
-    <div class="control" id="Sim_setting">
+    <div class="control" id="Sim_setting" style="display:none">
         <p><label>Simulation settings</label>Number of locations, width, height</p>
         <label>Location number: <output id="sim_count">1</output>
             <input type="range" min="1" max="16" value="1" step="1" oninput="d3.select('#sim_count').text(value);">
@@ -30,11 +30,11 @@
         <label>Initial speed: <output id="speed">1.5</output>
             <input type="range" min="0" max="10" value="1.5" step="0.01" oninput="d3.select('#initial_speed').text(value);">
         </label>
-        <label>Size: <output id="size">20</output>
-            <input type="range" min="0" max="20" value="20" step="0.1" oninput="d3.select('#size').text(value);">
+        <label>Size: <output id="size">10</output>
+            <input type="range" min="0" max="20" value="10" step="0.1" oninput="d3.select('#size').text(value);">
         </label>
     </div>
-    <div class="control" id="COVID">
+    <div class="control" id="COVID" style="display:none">
         <p><label>COVID variables</label>Latent period, duration, transmission rate</p>
         <label>Latent period:
             <output id="latent_period">4.78</output> days (sec)
@@ -61,10 +61,10 @@
             <table>
                 <tr><th>Age groups</th><th>10-19</th><th>20-39</th><th>40-64</th><th>65+</th></tr>
                 <tr><th>Population</th>
-                    <th><input type="text" id="age_dist_10" value="10"></th>
-                    <th><input type="text" id="age_dist_20" value="10"></th>
-                    <th><input type="text" id="age_dist_40" value="10"></th>
-                    <th><input type="text" id="age_dist_65" value="10"></th>
+                    <th><input type="text" id="age_dist_10" value="8620277"></th>
+                    <th><input type="text" id="age_dist_20" value="13542355"></th>
+                    <th><input type="text" id="age_dist_40" value="20890135"></th>
+                    <th><input type="text" id="age_dist_65" value="8630258"></th>
                 </tr>
                 <tr><th>Vulnerability</th>
                     <th><input type="number" id="age_vul_10" min="0" max="1" value="1" step="0.1"></th>
@@ -73,10 +73,10 @@
                     <th><input type="number" id="age_vul_65" min="0" max="1" value="1" step="0.1"></th>
                 </tr>
                 <tr><th>Death rate</th>
-                    <th><input type="number" id="age_death_10" min="0" max="1" value="1" step="0.1"></th>
-                    <th><input type="number" id="age_death_20" min="0" max="1" value="1" step="0.1"></th>
-                    <th><input type="number" id="age_death_40" min="0" max="1" value="1" step="0.1"></th>
-                    <th><input type="number" id="age_death_65" min="0" max="1" value="1" step="0.1"></th>
+                    <th><input type="number" id="age_death_10" min="0" max="1" value="0" step="0.1"></th>
+                    <th><input type="number" id="age_death_20" min="0" max="1" value="0.00025" step="0.1"></th>
+                    <th><input type="number" id="age_death_40" min="0" max="1" value="0.001729" step="0.1"></th>
+                    <th><input type="number" id="age_death_65" min="0" max="1" value="0.04927" step="0.1"></th>
                 </tr>
             </table>
         </label>
