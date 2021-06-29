@@ -19,16 +19,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210423">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210622">
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021-04-19__10_59__Default_Changelist_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021-04-19_오전_10_59_[Default_Changelist]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021-04-21__12_59__Default_Changelist_.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2021-04-21_오후_12_59_[Default_Changelist]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_webworker.html" beforeDir="false" afterPath="$PROJECT_DIR$/d3_webworker.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/simNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,6 +184,8 @@
       <workItem from="1620291319311" duration="1092000" />
       <workItem from="1624247504869" duration="8874000" />
       <workItem from="1624334409732" duration="7610000" />
+      <workItem from="1624343250937" duration="1255000" />
+      <workItem from="1624930754157" duration="4298000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -229,7 +229,14 @@
       <option name="project" value="LOCAL" />
       <updated>1619166357341</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="20210622">
+      <created>1624343309948</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1624343309948</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -265,7 +272,8 @@
     <MESSAGE value="20210421_t" />
     <MESSAGE value="20210422" />
     <MESSAGE value="20210423" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210423" />
+    <MESSAGE value="20210622" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210622" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

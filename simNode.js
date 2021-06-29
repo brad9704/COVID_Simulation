@@ -78,6 +78,7 @@ class Node {
         this.flag = [];
         this.param = param;
         this.run = true;
+        this.quarantine_interval = null;
     }
 
     // Methods
@@ -87,6 +88,7 @@ class Node {
         Location should be passed by {loc_count, xrange, yrange, surface} form.
      */
     move(loc_to) {
+        if (this.loc.name === loc_to.name) return;
         this.flag.push("move");
         this.x = d3.randomUniform(...loc_to.xrange)();
         this.y = d3.randomUniform(...loc_to.yrange)();
@@ -114,9 +116,8 @@ class Node {
         setTimeout(() => {
             this.state = state.I;
             if (this.param.flag.includes("quarantine") &&
-                Math.random() < this.param.hospitalized_rate &&
-                simulation.nodes().filter(e => e.state === state.H).length < this.param.hospitalization_max) {
-                setTimeout(this.hospitalized.bind(this), 1000);
+                Math.random() < this.param.hospitalized_rate) {
+                this.quarantine_interval = setInterval(this.hospitalized.bind(this), 1000);
             }
             setTimeout(this.removed.bind(this), this.param.infect_period * 1000);
         }, this.param.latent_period * 1000)
@@ -126,10 +127,14 @@ class Node {
         Hospitalizes this node
      */
     hospitalized() {
-        if (!this.run) return;
+        if (simulation.nodes().filter(e => e.state === state.H).length >= this.param.hospitalization_max) return;
+        if (this.state === state.R || this.state === state.H || !this.run) {
+            clearInterval(this.quarantine_interval);
+            return;
+        }
         this.state = state.H;
         this.move(simulation.loc.by_name("hospital"));
-        this.flag.push("hidden");
+        setTimeout(() => this.flag.push("hidden"), 500)
     }
 
     /*
@@ -142,7 +147,7 @@ class Node {
             this.move(simulation.loc.by_name("normal"));
             this.flag.splice(this.flag.indexOf("hidden"),1);
         }
-        if (Math.random() < this.param.age_death_rate[this.age]) {
+        if (this.param.flag.includes("age") && Math.random() < this.param.age_death_rate[this.age]) {
             this.flag.push("dead");
         }
     }

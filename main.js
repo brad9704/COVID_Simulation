@@ -54,8 +54,13 @@ function updateSim(param, node_data, time) {
     });
     chart_update(param, chart_param, chart_data);
     if (node_data.filter(e => e.state === state.E || e.state === state.I || e.state === state.H).length === 0) {
+        show_result(param);
         stop_simulation();
     }
+}
+
+function show_result(param) {
+
 }
 
 /*
@@ -236,9 +241,21 @@ function node_init(param, node_data, loc) {
         .attr("height", d => d.height)
         .style("stroke", "rgb(0,0,0)")
         .style("stroke-width", 1)
-        .style("fill", "None");
+        .style("fill", "none");
 
     if (param["flag"].includes("quarantine")) {
+        d3.select("#loc_hospital").style("fill", "rgb(200,200,200)");
+
+        d3.select("#sim_container").append("rect")
+            .attr("id", "hospital_fill_rect")
+            .attr("x", (loc.list[1].xrange[0]))
+            .attr("y", (loc.list[1].yrange[0]))
+            .attr("width", (loc.list[1].width))
+            .attr("height", (loc.list[1].height))
+            .style("fill", "white")
+            .style("stroke", "rgb(0,0,0)")
+            .style("stroke-width", 1);
+
         d3.select("#sim_container").append("text")
             .attr("x", (loc.list[1].xrange[1] - loc.list[1].xrange[0]) / 2)
             .attr("y", (loc.list[1].yrange[1] - loc.list[1].yrange[0]) / 2)
@@ -278,9 +295,8 @@ function node_update(param, node_data) {
         );
     if (param["flag"].includes("quarantine")) {
         let hospital_rate = node_data.filter(e => e.state === state.H).length / (param["hospitalization_max"]);
-        if (hospital_rate < 0.9)
-            d3.select("#loc_hospital").style("fill", "rgba(" + 255 * (1 - hospital_rate) + "," + 255 * (1 - hospital_rate) + "," + 255 * (1 - hospital_rate) + "," + 50 + ")");
-        else d3.select("#loc_hospital").style("fill", "rgba(" + 255 * hospital_rate + "," + 255 * (1 - hospital_rate) + ",0," + 50 + ")");
+        if (hospital_rate < 1) d3.select("#hospital_fill_rect").attr("height", 200 * (1 - hospital_rate));
+        else d3.select("#hospital_fill_rect").attr("height", 0);
         d3.select("#hospital_text").text("" + node_data.filter(e => e.state === state.H).length + " / " + param["hospitalization_max"]);
     }
 }
