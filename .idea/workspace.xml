@@ -19,14 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210630_non-jQuery">
-      <change beforePath="$PROJECT_DIR$/.idea/COVID_Simulation.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/COVID_Simulation.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210630_jQuery">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/d3_webworker.html" beforeDir="false" afterPath="$PROJECT_DIR$/d3_webworker.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simNode.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +181,7 @@
       <workItem from="1624334409732" duration="7610000" />
       <workItem from="1624343250937" duration="1255000" />
       <workItem from="1624930754157" duration="6126000" />
-      <workItem from="1625024182026" duration="11536000" />
+      <workItem from="1625024182026" duration="11964000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -251,7 +246,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625024872428</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="20210630_jQuery">
+      <created>1625043182235</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1625043182235</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,7 +292,8 @@
     <MESSAGE value="20210622" />
     <MESSAGE value="20210629" />
     <MESSAGE value="20210630_non-jQuery" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210630_non-jQuery" />
+    <MESSAGE value="20210630_jQuery" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210630_jQuery" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
