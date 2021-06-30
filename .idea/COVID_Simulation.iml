@@ -16,5 +16,6 @@
     <orderEntry type="library" name="d3-force-surface" level="application" />
     <orderEntry type="library" name="d3.v5" level="application" />
     <orderEntry type="library" name="underscore" level="application" />
+    <orderEntry type="library" name="jquery-3.6.0" level="application" />
   </component>
 </module>

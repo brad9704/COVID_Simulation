@@ -54,13 +54,27 @@ function updateSim(param, node_data, time) {
     });
     chart_update(param, chart_param, chart_data);
     if (node_data.filter(e => e.state === state.E || e.state === state.I || e.state === state.H).length === 0) {
-        show_result(param);
+        show_result(param, node_data);
         stop_simulation();
     }
 }
 
-function show_result(param) {
+function show_result(param, node_data) {
+    let last_state = chart_data[chart_data.length - 1];
+    $("#resultTime").text(last_state["tick"]);
+    $("#resultTotalInfected").text(last_state["R"]);
+    $("#resultMaxInfected").text(_.max(chart_data, e => e.I)["I"]);
 
+    if (param["flag"].includes("quarantine")) {
+        let totalH = node_data.filter(e => e.isQuaranted).length;
+        $("#resultTotalQuarantine").text("" + totalH + " (" + (Math.round(totalH / last_state["R"] * 10000) / 100) + "%)");
+        $("#resultQuarantineOverflow").text(Math.round(chart_data.filter(e => e.H === 50).length / tick * 1000) / 1000);
+    }
+
+    $("#popup_result").fadeIn();
+    $(".popBg").on("click", function() {
+        $("#popup_result").fadeOut(200);
+    })
 }
 
 /*
@@ -295,7 +309,7 @@ function node_update(param, node_data) {
         );
     if (param["flag"].includes("quarantine")) {
         let hospital_rate = node_data.filter(e => e.state === state.H).length / (param["hospitalization_max"]);
-        if (hospital_rate < 1) d3.select("#hospital_fill_rect").attr("height", 200 * (1 - hospital_rate));
+        if (hospital_rate < 1) d3.select("#hospital_fill_rect").attr("height", param["sim_height"] * 0.2 * (1 - hospital_rate));
         else d3.select("#hospital_fill_rect").attr("height", 0);
         d3.select("#hospital_text").text("" + node_data.filter(e => e.state === state.H).length + " / " + param["hospitalization_max"]);
     }
@@ -386,6 +400,7 @@ function reset_simulation() {
 }
 function save_log() {
     console.log("tick,S,E,I,H,R");
+    if (chart_data === undefined) return;
     chart_data.forEach(e => {
         console.log(e.tick + "," + e.S + "," + e.E + "," + e.I + "," + e.H + "," + e.R);
     })

@@ -12,11 +12,11 @@
         <label>Location number: <output id="sim_count">1</output>
             <input type="range" min="1" max="16" value="1" step="1" oninput="d3.select('#sim_count').text(value);">
         </label>
-        <label>Simulation width: <output id="sim_width">1000</output>
-            <input type="range" min="100" max="1000" value="1000" step="50" oninput="d3.select('#sim_width').text(value);">
+        <label>Simulation width: <output id="sim_width">800</output>
+            <input type="range" min="100" max="1000" value="800" step="50" oninput="d3.select('#sim_width').text(value);">
         </label>
-        <label>Simulation height: <output id="sim_height">1000</output>
-            <input type="range" min="100" max="1000" value="1000" step="50" oninput="d3.select('#sim_height').text(value);">
+        <label>Simulation height: <output id="sim_height">800</output>
+            <input type="range" min="100" max="1000" value="800" step="50" oninput="d3.select('#sim_height').text(value);">
         </label>
     </div>
     <div class="control" id="Population">
@@ -118,10 +118,30 @@
     </div>
 </div>
 <div class="board" id="board"></div>
+<div id="popup_result" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox">
+        <div class="popHead">Result</div>
+        <div class="popBody">
+            <div class="popCommonVar">
+                Elapsed time: <output id="resultTime"></output> seconds<br>
+                Cumulative patient number: <output id="resultTotalInfected"></output><br>
+                Max patient number: <output id="resultMaxInfected"></output> <br>
+            </div>
+            <div class="popQuarantine">
+                Cumulative "Quarantined" patient number: <output id="resultTotalQuarantine"></output> <br>
+                Hospital overflow time: <output id="resultQuarantineOverflow"></output> seconds<br>
+            </div>
+            <div class="popChart"></div>
+        </div>
+        <div class="popFoot"></div>
+    </div>
+</div>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="//unpkg.com/d3-force-bounce/dist/d3-force-bounce.min.js"></script>
 <script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
 <script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="simNode.js"></script>
 <script src="main.js"></script>
 </body>

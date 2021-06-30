@@ -79,6 +79,7 @@ class Node {
         this.param = param;
         this.run = true;
         this.quarantine_interval = null;
+        this.isQuaranted = false;
     }
 
     // Methods
@@ -133,6 +134,7 @@ class Node {
             return;
         }
         this.state = state.H;
+        this.isQuaranted = true;
         this.move(simulation.loc.by_name("hospital"));
         setTimeout(() => this.flag.push("hidden"), 500)
     }
