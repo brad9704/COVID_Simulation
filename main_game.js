@@ -3,7 +3,7 @@ var chart = 0;
 var tick = 16.67;
 var w;
 
-w = new Worker("worker.js");
+w = new Worker("worker_game.js");
 
 w.onmessage = function(event) {
     switch (event.data.type) {
