@@ -1,9 +1,13 @@
 const state = {
-    S: "green", // Susceptible
-    E: "yellow", // Exposed, latent period
-    I: "red",
-    H: "grey",
-    R: "blue" // Removed state
+    S: "#00FF00", // Susceptible
+    E1: "#FFFF00", // Exposed, non_infectious
+    E2: "#FF9900", // Exposed, infectious
+    I1: "#FF0000", // Infectious, mild
+    I2: "#FF00FF", // Infectious, severe
+    H1: "#C0C0C0", // Self-quarantine
+    H2: "#505050", // Hospitalized
+    R1: "#0000FF", // Recovered
+    R2: "#000000" // Dead
 };
 
 class simlocation {
