@@ -53,8 +53,8 @@
                 <label>Base transmission factor: <output id="TPC_base_output">0.5</output>
                     <input id="TPC_base" type="range" min="0" max="1" value="0.5" step="0.01" oninput="$('#TPC_base_output').text(value);">
                 </label>
-                <label>Maximum hospital capacity: <output id="hospitalization_max">50</output>
-                    <input type="range" min="0" max="1000" value="50" step="1" oninput="d3.select('#hospitalization_max').text(value);">
+                <label>Maximum hospital capacity: <output id="hospital_max_output">50</output>
+                    <input id="hospital_max" type="range" min="0" max="1000" value="50" step="1" oninput="$('#hospital_max_output').text(value);">
                 </label>
             </div>
             <div class="control" id="Simulation">

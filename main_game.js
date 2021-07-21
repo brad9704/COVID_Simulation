@@ -1,6 +1,6 @@
 var run, chart_data, running_time, chart_param;
 var chart = 0;
-var tick = 16.67;
+var tick = 1000 / 30;
 var w;
 
 w = new Worker("worker_game.js");

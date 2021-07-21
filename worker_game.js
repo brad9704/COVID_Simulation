@@ -3,17 +3,27 @@ importScripts("https://d3js.org/d3.v5.min.js",
     "//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js",
     "//unpkg.com/underscore@1.12.0/underscore-min.js",
     "simNode_game.js")
-var running_time = 0;
+var running_time;
+var simulation;
+var param;
 
 onmessage = function(event){
-    if (event.data.type === "START") {
-        postMessage(startSim(event.data.main));
-    }
-    else if (event.data.type === "STOP") {
-        postMessage(stopSim());
-    }
-    else if (event.data.type === "REPORT") {
-        postMessage(reportSim());
+    switch (event.data.type) {
+        case "START":
+            postMessage(startSim(event.data.main));
+            break;
+        case "PAUSE":
+            postMessage(pauseSim());
+            break;
+        case "RESUME":
+            postMessage(resumeSim(event.data.main));
+            break;
+        case "STOP":
+            postMessage(stopSim());
+            break;
+        case "REPORT":
+            postMessage(reportSim());
+            break;
     }
 }
 
@@ -57,79 +67,24 @@ Event data consists of:
     }
 */
 
-var simulation;
 
-function create_age_list (param) {
-    let age_list = _.range(0, param.node_num);
-    let dist_total = 0;
-    for (let k in param["age_distribution"]) {
-        dist_total += param["age_distribution"][k];
-    }
-    let age_dist = {};
-    for (let k in param["age_distribution"]) {
-        age_dist[k] = (Math.ceil(param["age_distribution"][k]/dist_total*param.node_num));
-    }
-    let acc = 0;
-    for (let k in age_dist) {
-        age_list.fill(k, acc, acc + age_dist[k]);
-        acc += age_dist[k];
-    }
-    return d3.shuffle(age_list);
-}
-
-/*
-Create nodes and assign initial values
- */
-function createNodes (param) {
-    let _nodes = [];
-
-    // Assigns age factor for each node
-    let age_list = create_age_list(param);
-
-    // Initialize node value
-    for (let i = 0; i < param.node_num; i++) {
-        _nodes.push(new Node(param, param["sim_size"][0], param["sim_size"][1], i, age_list[i]));
-    }
-
-    // console.log(_nodes);
-    return _nodes;
-}
-
-
-var startSim = function(param) {
+var startSim = function(event_data) {
     /*
         Assertion for necessary parameters
     */
-    function assertion (param) {
-        for (let key of ["sim_count", "sim_size",
-            "flag", "node_num", "speed", "size",
-            "initial_patient", "latent_period",
-            "infect_period", "TPC_base"]) {
-            console.assert(param.hasOwnProperty(key));
-        }
-        if (param["flag"].includes("mask")) {
-            console.assert(param.hasOwnProperty("mask_ratio"));
-            console.assert(param.hasOwnProperty("mask_factor"));
-        }
-        if (param["flag"].includes("quarantine")) {
-            console.assert(param.hasOwnProperty("hospitalized_rate"));
-            console.assert(param.hasOwnProperty("hospitalization_max"));
-        }
-        if (param["flag"].includes("distance")) {
-            console.assert(param.hasOwnProperty("social_distancing_strength"));
-        }
-        if (param["flag"].includes("age")) {
-            console.assert(param.hasOwnProperty("age_distribution"));
-            console.assert(param.hasOwnProperty("age_vulnerability"));
-            console.assert(param.hasOwnProperty("age_death_rate"));
+    function assertion (event_data) {
+        for (let key of ["sim_width", "sim_height", "size", "timeunit", "mask_factor", "duration", "age_dist", "age_infect", "age_severe",
+        "node_num", "initial_patient", "speed", "TPC_base", "hospital_max"]) {
+            console.assert(event_data.hasOwnProperty(key));
         }
     }
-
     assertion(param);
+    param = event_data;
+
     running_time = 0;
     simulation = null;
 
-    var node_list = createNodes(param);
+    var node_list = createNodes();
 
     simulation = d3.forceSimulation(node_list)
         .alphaDecay(0)
@@ -139,32 +94,10 @@ var startSim = function(param) {
         Location settings
      */
     simulation.loc = new locs();
-    simulation.loc.push(new simlocation("world", 0, 0, 0, param["sim_size"][0], param["sim_size"][1]));
-    if (param["sim_count"] > 1) {
-        Loop: for (let v = 0; v < 4; v++) {
-            for (let h = 0; h < 4; h++) {
-                simulation.loc.push(new simlocation(
-                    "normal", v * 4 + h + 1,
-                    param["sim_size"][0] / 4 * h, param["sim_size"][1] / 4 * v,
-                    param["sim_size"][0] / 4, param["sim_size"][1] / 4));
-                if (v * 4 + h + 1 >= param["sim_count"]) break Loop;
-            }
-        }
-        if (param["flag"].includes("quarantine")) simulation.loc.by_index(1).name = "hospital";
-        if (param["flag"].includes("age")) simulation.loc.by_index(2).name = "school";
-    } else {
-        if (param["flag"].includes("quarantine")) simulation.loc.push(new simlocation(
-            "hospital", 1, 0, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
-        if (param["flag"].includes("age")) simulation.loc.push(new simlocation(
-            "school", simulation.loc.length, param["sim_size"][0] * 0.8, 0, param["sim_size"][0] * 0.2, param["sim_size"][1] * 0.2));
-        if (simulation.loc.length > 1) simulation.loc.push(new simlocation(
-            "normal", simulation.loc.length, 0, param["sim_size"][1] * 0.2, param["sim_size"][0], param["sim_size"][1] * 0.8));
-        else simulation.loc.push(new simlocation(
-            "normal", simulation.loc.length, 0, 0, param["sim_size"][0], param["sim_size"][1]));
-    }
+    simulation.loc.push(new simLoc("world", 0, 0, 0, param["sim_width"], param["sim_height"]));
+    simulation.loc.push(new simLoc("hospital", 1, param["sim_width"] * 0.4, param["sim_height"] * 0.4, param["sim_width"] * 0.2, param["sim_height"] * 0.2));
 
-    simulation.nodes().forEach(node => node.move(simulation.loc.by_name("normal")))
-
+    simulation.nodes().forEach(node => node.move(simulation.loc.by_name("world")))
     /*
         Calls when two nodes collide
      */
@@ -239,6 +172,14 @@ var startSim = function(param) {
     return {type:"START", state:simulation.nodes(), time: new Date().getTime(), loc: simulation.loc};
 }
 
+var pauseSim = function() {
+    simulation.stop();
+}
+
+var resumeSim = function(event_data) {
+    simulation.restart();
+}
+
 var stopSim = function() {
     simulation.stop();
     simulation.nodes().forEach(node => node.run = false)
@@ -248,3 +189,43 @@ var stopSim = function() {
 var reportSim = function() {
     return {type:"REPORT", state:simulation.nodes(), time: new Date().getTime()};
 }
+
+function create_age_list () {
+    let age_list = _.range(0, param.node_num);
+    let dist_total = 0;
+    for (let k in param["age_distribution"]) {
+        dist_total += param["age_distribution"][k];
+    }
+    let age_dist = {};
+    for (let k in param["age_distribution"]) {
+        age_dist[k] = (Math.ceil(param["age_distribution"][k]/dist_total*param.node_num));
+    }
+    let acc = 0;
+    for (let k in age_dist) {
+        age_list.fill(k, acc, acc + age_dist[k]);
+        acc += age_dist[k];
+    }
+    return d3.shuffle(age_list);
+}
+
+/*
+Create nodes and assign initial values
+ */
+function createNodes () {
+    let _nodes = [];
+
+    // Assigns age factor for each node
+    let age_list = create_age_list(param);
+
+    // Initialize node value
+    for (let i = 0; i < param.node_num; i++) {
+        _nodes.push(new Node(param, param["sim_size"][0], param["sim_size"][1], i, age_list[i]));
+    }
+
+    // console.log(_nodes);
+    return _nodes;
+}
+
+
+
+

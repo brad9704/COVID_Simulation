@@ -10,7 +10,7 @@ const state = {
     R2: "#000000" // Dead
 };
 
-class simlocation {
+class simLoc {
     constructor(name, index, coor_x, coor_y, width, height) {
         this.name = name;
         this.index = index;
