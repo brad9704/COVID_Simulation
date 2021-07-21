@@ -95,15 +95,69 @@ function get_params() {
         sim_width: 800,
         sim_height: 800,
         size: 10,
+        timeunit: 1000,
+        mask_factor: 0.85,
 
         duration: function(from, to) {
-            if (from === state.S && to === state.E1) {
-                return rand_range()
+            switch ([from, to]) {
+                case ([state.S, state.E1]):
+                    return 0;
+                case ([state.E1, state.E2]):
+                    return _.random(1,2);
+                case ([state.E2, state.I1]):
+                    return _.random(3,4);
+                case ([state.E2, state.I2]):
+                    return _.random(3,4);
+                case ([state.H1, state.I2]):
+                    return _.random(1,2);
+                case ([state.I1, state.H1]):
+                    return 4;
+                case ([state.I2, state.H2]):
+                    return 1;
+                case ([state.I2, state.R2]):
+                    return 4;
+                case ([state.H1, state.R1]):
+                    return 6;
+                case ([state.H2, state.R1]):
+                    return 6;
             }
+        },
+        age_dist: {
+            "0": 94865,
+            "10": 110623,
+            "20": 141167,
+            "30": 147880,
+            "40": 185339,
+            "50": 206852,
+            "60": 151599,
+            "70": 61411,
+            "80": 26633
+        },
+        age_infect: {
+            "0": 2.19,
+            "10": 2.89,
+            "20": 4.44,
+            "30": 3.86,
+            "40": 3.46,
+            "50": 3.80,
+            "60": 3.49,
+            "70": 2.89,
+            "80": 2.95
+        },
+        age_severe: {
+            "0": 0.005,
+            "10": 0.005,
+            "20": 0.005,
+            "30": 0.005,
+            "40": 0.005,
+            "50": 0.01,
+            "60": 0.04,
+            "70": 0.08,
+            "80": 0.13
         }
     };
 
-    $.each($("input"), (i,e) => {
+    $.each($("input[type='range']"), (i,e) => {
         param[e.id] = e.value;
     })
 
@@ -294,6 +348,10 @@ function reset_simulation() {
         .selectAll("div").remove();
     chart_data = [];
 }
+function pause_simulation() {
+
+}
+
 function save_log() {
     console.log("tick,S,E,I,H,R");
     if (chart_data === undefined) return;

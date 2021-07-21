@@ -19,9 +19,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210630_jQuery">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210720_game_">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_webworker.html" beforeDir="false" afterPath="$PROJECT_DIR$/d3_webworker.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/d3_w_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/d3_w_game.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,16 +83,17 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Disaster lab\Documents\COVID_Simulation" />
+      <recent name="C:\Users\Disaster lab\Documents\COVID_Simulation\css" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.d3_webworker.html">
-    <configuration name="Simulation_D3.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/Simulation_D3.html" useBuiltInWebServerPort="true">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="JavaScript Debug.d3_w_game.html">
     <configuration name="d3_html.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_html.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="d3_html_one.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_html_one.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="d3_w_game.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_w_game.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="d3_webworker.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_webworker.html" useBuiltInWebServerPort="true">
@@ -99,11 +104,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.d3_w_game.html" />
         <item itemvalue="JavaScript Debug.d3_webworker.html" />
         <item itemvalue="JavaScript Debug.d3_html_one.html" />
         <item itemvalue="Node.js.d3_js_one.js" />
         <item itemvalue="JavaScript Debug.d3_html.html" />
-        <item itemvalue="JavaScript Debug.Simulation_D3.html" />
       </list>
     </recent_temporary>
   </component>
@@ -181,7 +186,15 @@
       <workItem from="1624334409732" duration="7610000" />
       <workItem from="1624343250937" duration="1255000" />
       <workItem from="1624930754157" duration="6126000" />
-      <workItem from="1625024182026" duration="11964000" />
+      <workItem from="1625024182026" duration="12686000" />
+      <workItem from="1626151269974" duration="598000" />
+      <workItem from="1626226760007" duration="7869000" />
+      <workItem from="1626321234150" duration="3459000" />
+      <workItem from="1626408901640" duration="8713000" />
+      <workItem from="1626657517315" duration="5758000" />
+      <workItem from="1626752084023" duration="131000" />
+      <workItem from="1626752316888" duration="9040000" />
+      <workItem from="1626832072271" duration="17326000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -253,7 +266,35 @@
       <option name="project" value="LOCAL" />
       <updated>1625043182235</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="20210630_jQuery_1">
+      <created>1625043714767</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1625043714767</updated>
+    </task>
+    <task id="LOCAL-00012" summary="20210716_game">
+      <created>1626426423471</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1626426423471</updated>
+    </task>
+    <task id="LOCAL-00013" summary="20210720_game">
+      <created>1626766318690</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1626766318691</updated>
+    </task>
+    <task id="LOCAL-00014" summary="20210720_game_">
+      <created>1626774337237</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1626774337237</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,7 +334,11 @@
     <MESSAGE value="20210629" />
     <MESSAGE value="20210630_non-jQuery" />
     <MESSAGE value="20210630_jQuery" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210630_jQuery" />
+    <MESSAGE value="20210630_jQuery_1" />
+    <MESSAGE value="20210716_game" />
+    <MESSAGE value="20210720_game" />
+    <MESSAGE value="20210720_game_" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210720_game_" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
