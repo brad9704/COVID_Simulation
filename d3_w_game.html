@@ -6,12 +6,13 @@
     <link rel="stylesheet" href="css/style_game.css">
 </head>
 <body>
+<div class="Day">Day: <output id="turn_day"></output></div>
 <div class="board" id="board"></div>
 <div class="control_panel">
     <div class="panel_button">
         <input id="button_pause" type="button" onclick="pause_simulation()" value="Pause">
-        <input id="button_stop" type="button" onclick="stop_simulation()" value="Stop">
-        <input id="button_reset" type="button" onclick="reset_simulation()" value="Reset">
+        <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
+        <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
     </div>
 </div>
 <div id="popup_result" class="popup">
@@ -22,7 +23,7 @@
             <div class="popCommonVar">
                 Elapsed time: <output id="resultTime"></output> seconds<br>
                 Cumulative patient number: <output id="resultTotalInfected"></output><br>
-                Max patient number: <output id="resultMaxInfected"></output> <br>
+                Max quarantined number: <output id="resultMaxQuarantined"></output> <br>
             </div>
             <div class="popQuarantine">
                 Cumulative "Quarantined" patient number: <output id="resultTotalQuarantine"></output> <br>

@@ -13,10 +13,10 @@ onmessage = function(event){
             postMessage(startSim(event.data.main));
             break;
         case "PAUSE":
-            postMessage(pauseSim());
+            pauseSim();
             break;
         case "RESUME":
-            postMessage(resumeSim(event.data.main));
+            resumeSim(event.data.main);
             break;
         case "STOP":
             postMessage(stopSim());
@@ -78,7 +78,7 @@ var startSim = function(event_data) {
             console.assert(event_data.hasOwnProperty(key));
         }
     }
-    assertion(param);
+    assertion(event_data);
     param = event_data;
 
     running_time = 0;
@@ -94,8 +94,7 @@ var startSim = function(event_data) {
         Location settings
      */
     simulation.loc = new locs();
-    simulation.loc.push(new simLoc("world", 0, 0, 0, param["sim_width"], param["sim_height"]));
-    simulation.loc.push(new simLoc("hospital", 1, param["sim_width"] * 0.4, param["sim_height"] * 0.4, param["sim_width"] * 0.2, param["sim_height"] * 0.2));
+    simulation.loc.push(new simLoc("world", 0, 0, 0, param.sim_width, param.sim_height));
 
     simulation.nodes().forEach(node => node.move(simulation.loc.by_name("world")))
     /*
@@ -103,12 +102,12 @@ var startSim = function(event_data) {
      */
     function collision (node1, node2) {
         // Collision event
-        if (node1.state === state.S && (node2.state === state.E || node2.state === state.I)) {
+        if (node1.state === state.S && (node2.state === state.E2 || node2.state === state.I1)) {
             if (Math.random() < TPC(node1,node2)) {
                 node1.infected();
             }
         }
-        else if ((node1.state === state.E || node1.state === state.I) && node2.state === state.S) {
+        else if ((node1.state === state.E2 || node1.state === state.I1) && node2.state === state.S) {
             if (Math.random() < TPC(node1,node2)) {
                 node2.infected();
             }
@@ -120,63 +119,56 @@ var startSim = function(event_data) {
      */
     const TPC = function(node1, node2) {
         let tpc = param.TPC_base;
-        if (param["flag"].includes("age")) {
-            tpc *= param["age_vulnerability"][node1.age.toString()]
-        }
-        if (param["flag"].includes("mask")) {
-            if (node1.mask) tpc *= param.mask_factor;
-            if (node2.mask) tpc *= param.mask_factor;
-        }
-        if (!param["flag"].includes("collision")) tpc /= 30;
+        tpc *= param.age_infect[node1.age.toString()]
+        if (node1.mask) tpc *= param.mask_factor;
+        if (node2.mask) tpc *= param.mask_factor;
         return tpc;
     }
 
-    if (param["flag"].includes("collision")) {
-        simulation.force("collide", d3.forceBounce()
-            .elasticity(1)
-            .radius(param["size"])
-            .onImpact(collision));
-    } else {
-        simulation.on("tick.impact", function() {
-            this.nodes().forEach(node1 => {
-                this.nodes().forEach(node2 => {
-                    if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param["size"])
-                        collision(node1, node2);
-                })
-            }, this)
-        });
-
-    }
-    if (param["flag"].includes("distance")) {
-        simulation.force("charge", d3.forceManyBody()
-            .strength(-1 * param.social_distancing_strength * param.speed * 0.5)
-            .distanceMax(param.size * 10)
-            .distanceMin(param.size));
-    }
+    simulation.on("tick.impact", function() {
+        this.nodes().forEach(node1 => {
+            this.nodes().forEach(node2 => {
+                if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param.size)
+                    collision(node1, node2);
+            })
+        }, this)
+    });
 
     simulation.force("surface", d3.forceSurface()
         .surfaces(simulation.loc.get_surface())
         .elasticity(1)
-        .radius(param["size"])
+        .radius(param.size)
         .oneWay(false));
     simulation.on("tick.check_loc", function() { this.nodes().forEach(node => node.check_loc())});
 
-    if (param["flag"].includes("mask"))
-        _.sample(simulation.nodes(), Math.floor(param.node_num * param.mask_ratio)).forEach(node => node.mask = true);
+    //_.sample(simulation.nodes(), Math.floor(param.node_num * param.mask_ratio)).forEach(node => node.mask = true);
     _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
 
-    if (param["flag"].includes("age")) simulation.nodes().forEach(node => {
-        if (node.age < 20) node.to_school();
+    let report_nodes = [];
+    simulation.nodes().forEach(node => {
+        report_nodes.push({
+            index: node.index,
+            x: node.x,
+            y: node.y,
+            state: node.state,
+            age: node.age,
+            mask: node.mask,
+            loc: node.loc,
+            flag: node.flag,
+            isQuarantined: node.isQuarantined
+        })
     })
 
-    return {type:"START", state:simulation.nodes(), time: new Date().getTime(), loc: simulation.loc};
+    return {type:"START", state:report_nodes, time: new Date().getTime(), loc: simulation.loc};
 }
 
 var pauseSim = function() {
+    simulation.nodes().forEach(node => node.pause())
     simulation.stop();
 }
 
 var resumeSim = function(event_data) {
+    simulation.nodes().forEach(node => node.resume())
     simulation.restart();
 }
 
@@ -187,18 +179,32 @@ var stopSim = function() {
 }
 
 var reportSim = function() {
-    return {type:"REPORT", state:simulation.nodes(), time: new Date().getTime()};
+    let report_nodes = [];
+    simulation.nodes().forEach(node => {
+        report_nodes.push({
+            index: node.index,
+            x: node.x,
+            y: node.y,
+            state: node.state,
+            age: node.age,
+            mask: node.mask,
+            loc: node.loc,
+            flag: node.flag,
+            isQuarantined: node.isQuarantined
+        })
+    })
+    return {type:"REPORT", state:report_nodes, time: new Date().getTime()};
 }
 
 function create_age_list () {
     let age_list = _.range(0, param.node_num);
     let dist_total = 0;
-    for (let k in param["age_distribution"]) {
-        dist_total += param["age_distribution"][k];
+    for (let k in param["age_dist"]) {
+        dist_total += param["age_dist"][k];
     }
     let age_dist = {};
-    for (let k in param["age_distribution"]) {
-        age_dist[k] = (Math.ceil(param["age_distribution"][k]/dist_total*param.node_num));
+    for (let k in param["age_dist"]) {
+        age_dist[k] = (Math.ceil(param["age_dist"][k]/dist_total*param.node_num));
     }
     let acc = 0;
     for (let k in age_dist) {
@@ -219,7 +225,7 @@ function createNodes () {
 
     // Initialize node value
     for (let i = 0; i < param.node_num; i++) {
-        _nodes.push(new Node(param, param["sim_size"][0], param["sim_size"][1], i, age_list[i]));
+        _nodes.push(new Node(param, param.sim_width, param.sim_height, i, age_list[i]));
     }
 
     // console.log(_nodes);

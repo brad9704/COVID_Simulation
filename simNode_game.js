@@ -75,15 +75,23 @@ class Node {
         this.y = d3.randomUniform(height * 0.1, height * 0.9)();
         this.vx = param.speed * Math.cos(angle);
         this.vy = param.speed * Math.sin(angle);
+
         this.state = state.S;
+        this.state_timeout = {
+            id: null,
+            func: null,
+            delay: null,
+            startTime: null
+        };
         this.age = age;
         this.mask = false;
-        this.loc = "Outside";
+        this.loc = "World";
         this.flag = [];
         this.param = param;
         this.run = true;
         this.quarantine_interval = null;
-        this.isQuaranted = false;
+        this.quarantine_delay = null;
+        this.isQuarantined = false;
     }
 
     // Methods
@@ -117,65 +125,90 @@ class Node {
     infected() {
         if (this.state !== state.S) return;
         if (!this.run) return;
-        this.state = state.E;
-        setTimeout(() => {
-            this.state = state.I;
-            if (this.param.flag.includes("quarantine") &&
-                Math.random() < this.param.hospitalized_rate) {
-                this.quarantine_interval = setInterval(this.hospitalized.bind(this), 1000);
+        this.state = state.E1;
+        this.state_timeout.func = () => {
+            this.state = state.I1;
+            this.state_timeout.delay = d3.randomUniform(...this.param.duration["I1-H1"])() * this.param.timeunit;
+            this.state_timeout.startTime = new Date().getTime();
+            this.state_timeout.func = () => {
+                this.state = state.H1;
+                let next_phase = (Math.random() > this.param.age_severe[this.age.toString()]) ? state.R1 : state.I2;
+                if (next_phase === state.R1) {
+                    this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-R1"])() * this.param.timeunit;
+                    this.state_timeout.startTime = new Date().getTime();
+                    this.state_timeout.func = () => {
+                        this.state = state.R1;
+                    }
+                } else {
+                    this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-I2"])() * this.param.timeunit;
+                    this.state_timeout.startTime = new Date().getTime();
+                    this.state_timeout.func = () => {
+                        this.state = state.I2;
+                        this.state_timeout.id = null;
+                        this.state_timeout.delay = d3.randomUniform(...this.param.duration["I2-R2"]) * this.param.timeunit;
+                        this.quarantine_delay = this.param.timeunit / 2;
+                        this.state_timeout.startTime = new Date().getTime();
+                        this.quarantine_interval = setInterval(this.hospitalized.bind(this), this.quarantine_delay);
+                        this.state_timeout.func = () => {
+                            clearInterval(this.quarantine_interval);
+                            this.quarantine_interval = null;
+                            this.state = state.R2;
+                        }
+                        this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
+                    }
+                }
+                this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
             }
-            setTimeout(this.removed.bind(this), this.param.infect_period * 1000);
-        }, this.param.latent_period * 1000)
+            this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
+        };
+        this.state_timeout.delay = d3.randomUniform(...this.param.duration["E1-E2"])() * this.param.timeunit;
+        this.state_timeout.startTime = new Date().getTime();
+        this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
     }
 
     /*
         Hospitalizes this node
      */
     hospitalized() {
-        if (simulation.nodes().filter(e => e.state === state.H).length >= this.param.hospitalization_max) return;
-        if (this.state === state.R || this.state === state.H || !this.run) {
+        if (simulation.nodes().filter(e => e.state === state.H2).length >= this.param["hospital_max"]) return;
+        if (this.state !== state.I2 || !this.run) {
             clearInterval(this.quarantine_interval);
             return;
         }
-        this.state = state.H;
-        this.isQuaranted = true;
-        this.move(simulation.loc.by_name("hospital"));
-        setTimeout(() => this.flag.push("hidden"), 500)
-    }
-
-    /*
-        Removed node, either recovered or dead
-     */
-    removed() {
-        if (!this.run) return;
-        this.state = state.R;
-        if (this.param.flag.includes("quarantine")) {
-            this.move(simulation.loc.by_name("normal"));
-            this.flag.splice(this.flag.indexOf("hidden"),1);
+        this.state = state.H2;
+        this.isQuarantined = true;
+        clearInterval(this.quarantine_interval);
+        if (this.state_timeout.id != null) {
+            clearTimeout(this.state_timeout.id);
         }
-        if (this.param.flag.includes("age") && Math.random() < this.param.age_death_rate[this.age]) {
-            this.flag.push("dead");
+        this.state_timeout.delay = d3.randomUniform(...this.param.duration["H2-R1"])() * this.param.timeunit;
+        this.state_timeout.startTime = new Date().getTime();
+        this.state_timeout.func = () => {
+            this.state = state.R1;
         }
+        this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
     }
 
-    /*
-        Recursively moves this node to school
-     */
-    to_school() {
-        if (this.state === state.H) return;
-        if (!this.run) return;
-        this.move(simulation.loc.by_name("school"));
-        setTimeout(this.from_school.bind(this), 2000);
+    pause() {
+        if (this.quarantine_interval === null && this.state_timeout.id === null) return;
+        else if (this.quarantine_interval != null) {
+            clearInterval(this.quarantine_interval);
+            this.quarantine_delay -= (new Date().getTime() - this.state_timeout.startTime) % (this.param.timeunit / 2);
+        }
+        clearTimeout(this.state_timeout.id);
+        this.state_timeout.delay -= (new Date().getTime() - this.state_timeout.startTime);
     }
 
-    /*
-        Recursively moves this node from school
-     */
-    from_school() {
-        if (this.state === state.H) return;
-        if (!this.run) return;
-        this.move(simulation.loc.by_name("normal"));
-        setTimeout(this.to_school.bind(this), 2000);
+    resume() {
+        if (this.quarantine_delay === null && this.state_timeout.func === null) return;
+        else if (this.quarantine_delay != null) {
+            this.state_timeout.startTime = new Date().getTime();
+            setTimeout(() => {this.quarantine_interval = setInterval(this.hospitalized.bind(this), this.param.timeunit / 2);}, this.quarantine_delay);
+        }
+        if (this.state_timeout.func != null) {
+            this.state_timeout.startTime = new Date().getTime();
+            this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
+        }
     }
 
     /*

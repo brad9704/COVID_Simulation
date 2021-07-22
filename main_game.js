@@ -1,6 +1,7 @@
-var run, chart_data, running_time, chart_param;
+var run, chart_data, running_time, chart_param, pause_time;
+var turn_end = true;
 var chart = 0;
-var tick = 1000 / 30;
+var tick = 1000 / 60;
 var w;
 
 w = new Worker("worker_game.js");
@@ -31,35 +32,56 @@ w.onerror = function(event) {
 }
 
 function initSim(param, initial_node_data, loc) {
+    turn_end = true;
     d3.select("#board").selectAll("div").remove();
+    $(".popChart").find("div").remove();
     node_init(param, initial_node_data, loc);
     chart_data.push({
         "tick": 0,
         "S": initial_node_data.filter(e => e.state === state.S).length,
-        "E": initial_node_data.filter(e => e.state === state.E).length,
-        "I": initial_node_data.filter(e => e.state === state.I).length,
-        "H": initial_node_data.filter(e => e.state === state.H).length,
-        "R": initial_node_data.filter(e => e.state === state.R).length
+        "E1": initial_node_data.filter(e => e.state === state.E1).length,
+        "E2": initial_node_data.filter(e => e.state === state.E2).length,
+        "I1": initial_node_data.filter(e => e.state === state.I1).length,
+        "I2": initial_node_data.filter(e => e.state === state.I2).length,
+        "H1": initial_node_data.filter(e => e.state === state.H1).length,
+        "H2": initial_node_data.filter(e => e.state === state.H2).length,
+        "R1": initial_node_data.filter(e => e.state === state.R1).length,
+        "R2": initial_node_data.filter(e => e.state === state.R2).length
     });
     chart_param = chart_init(param);
 }
 
 function updateSim(param, node_data, time) {
     node_update(param, node_data);
+    let turn = Math.ceil((time - running_time) / 1000) % 14;
+    if (turn === 0) turn = 14;
+    $("#turn_day").text(turn);
     chart += 1;
     if (chart > 6) {
         chart_data.push({
             "tick": (time - running_time) / 1000,
             "S": node_data.filter(e => e.state === state.S).length,
-            "E": node_data.filter(e => e.state === state.E).length,
-            "I": node_data.filter(e => e.state === state.I).length,
-            "H": node_data.filter(e => e.state === state.H).length,
-            "R": node_data.filter(e => e.state === state.R).length
+            "E1": node_data.filter(e => e.state === state.E1).length,
+            "E2": node_data.filter(e => e.state === state.E2).length,
+            "I1": node_data.filter(e => e.state === state.I1).length,
+            "I2": node_data.filter(e => e.state === state.I2).length,
+            "H1": node_data.filter(e => e.state === state.H1).length,
+            "H2": node_data.filter(e => e.state === state.H2).length,
+            "R1": node_data.filter(e => e.state === state.R1).length,
+            "R2": node_data.filter(e => e.state === state.R2).length
         });
         chart_update(param, chart_param, chart_data);
         chart = 0;
     }
-    if (node_data.filter(e => e.state === state.E || e.state === state.I || e.state === state.H).length === 0) {
+    if (!turn_end && (time - running_time) % (param.turnUnit * param.timeunit) < param.timeunit) {
+        pause_simulation();
+        turn_end = true;
+    }
+    if (turn_end && (time - running_time) % (param.turnUnit * param.timeunit) > param.timeunit) {
+        turn_end = false;
+    }
+    if (node_data.filter(e => e.state === state.S || e.state === state.R1 || e.state === state.R2).length === node_data.length &&
+        node_data.filter(e => e.state === state.R1 || e.state === state.R2).length > 0) {
         show_result(param, node_data);
         stop_simulation();
     }
@@ -68,17 +90,19 @@ function updateSim(param, node_data, time) {
 function show_result(param, node_data) {
     let last_state = chart_data[chart_data.length - 1];
     $("#resultTime").text(last_state["tick"]);
-    $("#resultTotalInfected").text(last_state["R"]);
-    $("#resultMaxInfected").text(_.max(chart_data, e => e.I)["I"]);
+    $("#resultTotalInfected").text(param.node_num - last_state["S"]);
+    $("#resultMaxQuarantined").text(_.max(chart_data, e => e.H2)["H2"]);
+    $(".popChart").append($("#chart_board"));
+    $("#chart_board").css("width", 900).css("height", 400);
 
-    if (param["flag"].includes("quarantine")) {
-        let totalH = node_data.filter(e => e.isQuaranted).length;
+   /* if (param["flag"].includes("quarantine")) {
+        let totalH = node_data.filter(e => e.isQuarantined).length;
         $("#resultTotalQuarantine").text("" + totalH + " (" + (Math.round(totalH / last_state["R"] * 10000) / 100) + "%)");
         $("#resultQuarantineOverflow").text(Math.round(chart_data.filter(e => e.H === 50).length / tick * 1000) / 1000);
     } else {
         $("#resultTotalQuarantine").text("");
         $("#resultQuarantineOverflow").text("");
-    }
+    }*/
 
     $("#popup_result").fadeIn();
     $(".popBg").on("click", function() {
@@ -97,30 +121,19 @@ function get_params() {
         size: 10,
         timeunit: 1000,
         mask_factor: 0.85,
+        turnUnit: 14,
 
-        duration: function(from, to) {
-            switch ([from, to]) {
-                case ([state.S, state.E1]):
-                    return 0;
-                case ([state.E1, state.E2]):
-                    return _.random(1,2);
-                case ([state.E2, state.I1]):
-                    return _.random(3,4);
-                case ([state.E2, state.I2]):
-                    return _.random(3,4);
-                case ([state.H1, state.I2]):
-                    return _.random(1,2);
-                case ([state.I1, state.H1]):
-                    return 4;
-                case ([state.I2, state.H2]):
-                    return 1;
-                case ([state.I2, state.R2]):
-                    return 4;
-                case ([state.H1, state.R1]):
-                    return 6;
-                case ([state.H2, state.R1]):
-                    return 6;
-            }
+        duration: {
+            "S-E1": [0,0],
+            "E1-E2": [1,2],
+            "E2-I1": [3,4],
+            "E2-I2": [3,4],
+            "H1-I2": [1,2],
+            "I1-H1": [4,4],
+            "I2-H2": [1,1],
+            "I2-R2": [4,4],
+            "H1-R1": [6,6],
+            "H2-R1": [6,6]
         },
         age_dist: {
             "0": 94865,
@@ -160,7 +173,11 @@ function get_params() {
     $.each($("input[type='range']"), (i,e) => {
         param[e.id] = e.value;
     })
-
+    param["node_num"] = parseInt(param["node_num"]);
+    param["initial_patient"] = parseInt(param["initial_patient"]);
+    param["speed"] = parseFloat(param["speed"]);
+    param["TPC_base"] = parseFloat(param["TPC_base"])
+    param["hospital_max"] = parseInt(param["hospital_max"])
     return param;
 }
 
@@ -170,28 +187,27 @@ Initializes node canvas
 function node_init(param, node_data, loc) {
     let sim_board = d3.select("#board").append("div")
         .attr("id", "sim_board")
-        .attr("width", param["sim_size"][0])
-        .attr("height", param["sim_size"][1]);
+        .attr("width", param.sim_width)
+        .attr("height", param.sim_height);
 
     sim_board.append("svg")
         .attr("id", "sim_container")
-        .attr("width", param["sim_size"][0])
-        .attr("height", param["sim_size"][1])
+        .attr("width", param.sim_width)
+        .attr("height", param.sim_height)
         .append("g")
         .attr("id", "nodes")
         .attr("class", "nodes")
-        .selectAll("image")
+        .selectAll("circle")
         .data(node_data)
-        .enter().append("image")
+        .enter().append("circle")
         .attr("id", function (d) {
             return "node_" + d.index;
         })
-        .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
-        .attr("x", d => d.x - param["size"])
-        .attr("y", d => d.y - param["size"])
-        .attr("height", param["size"] * 2)
-        .attr("width", param["size"] * 2)
-        .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png");
+        .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .attr("r", param["size"])
+        .attr("fill", d => d.state);
 
     sim_board.select("svg")
         .selectAll("rect")
@@ -207,7 +223,7 @@ function node_init(param, node_data, loc) {
         .style("stroke-width", 1)
         .style("fill", "none");
 
-    if (param["flag"].includes("quarantine")) {
+/*    if (param["flag"].includes("quarantine")) {
         d3.select("#loc_hospital").style("fill", "rgb(200,200,200)");
 
         d3.select("#sim_container").append("rect")
@@ -229,52 +245,47 @@ function node_init(param, node_data, loc) {
             .style("stroke", "rgb(0,0,0)")
             .style("stroke-width", 1)
             .attr("text-anchor", "middle");
-    }
+    }*/
 }
 
 function node_update(param, node_data) {
     d3.select(".nodes")
-        .selectAll("image")
+        .selectAll("circle")
         .data(node_data)
         .join(
-            enter => enter.append("image")
+            enter => enter.append("circle")
                 .attr("id", d => "node_" + d.index)
-                .attr("x", d => d.x - param["size"])
-                .attr("y", d => d.y - param["size"])
-                .attr("width", param["size"] * 2)
-                .attr("height", param["size"] * 2)
-                .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("r", param["size"])
+                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
                 .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
-                .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png"),
+                .attr("fill", d => d.state),
             update => update
-                .attr("width", param["size"] * 2)
-                .attr("height", param["size"] * 2)
-                .attr("class", d => (param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
-                .attr("xlink:href", d => "img/" + ((param["flag"].includes("mask") && d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state) + ".png")
-                .transition()
-                .ease(d3.easeLinear)
-                .attr("x", d => d.x - param["size"])
-                .attr("y", d => d.y - param["size"])
+                .attr("fill", d => d.state)
         );
-    if (param["flag"].includes("quarantine")) {
+    /*if (param["flag"].includes("quarantine")) {
         let hospital_rate = node_data.filter(e => e.state === state.H).length / (param["hospitalization_max"]);
         if (hospital_rate < 1) d3.select("#hospital_fill_rect").attr("height", param["sim_height"] * 0.2 * (1 - hospital_rate));
         else d3.select("#hospital_fill_rect").attr("height", 0);
         d3.select("#hospital_text").text("" + node_data.filter(e => e.state === state.H).length + " / " + param["hospitalization_max"]);
-    }
+    }*/
 }
 
 function chart_init(param) {
 
     var chart_board = d3.select("#board").append("div")
         .attr("id", "chart_board")
-        .attr("width", param["sim_size"][0])
-        .attr("height", param["sim_size"][1] * 0.3);
+        .attr("width", param.sim_width)
+        .attr("height", param.sim_height * 0.3);
 
     var margin = {top:20, right: 80, bottom: 30, left: 50},
-        width = param["sim_size"][0] - margin.left - margin.right,
-        height = param["sim_size"][1] * 0.3 - margin.top - margin.bottom;
+        width = param.sim_width - margin.left - margin.right,
+        height = param.sim_height * 0.3 - margin.top - margin.bottom;
     var x = d3.scaleLinear().range([0,width]),
         y = d3.scaleLinear().range([height,0]);
     var xAxis = d3.axisBottom().scale(x),
@@ -313,7 +324,7 @@ function chart_update(param, chart_param, chart_data) {
         .call(yAxis);
 
     var stack = d3.stack()
-        .keys(["S","E","I","H","R"]);
+        .keys(["S","E1","E2","I1","I2","H1","H2","R1","R2"]);
     var series = stack(chart_data);
 
     var v = svg.selectAll(".line")
@@ -340,24 +351,47 @@ function start_simulation() {
 }
 function stop_simulation() {
     clearInterval(run);
-    w.postMessage({type: "STOP"})
+    run = null;
+    w.postMessage({type: "STOP"});
 }
 function reset_simulation() {
     stop_simulation();
     d3.select("#board")
         .selectAll("div").remove();
     chart_data = [];
+    $("#popup_init").fadeIn();
 }
 function pause_simulation() {
+    if (run === null) return;
+    clearInterval(run);
+    run = null;
+    w.postMessage({type: "PAUSE"});
+    pause_time = new Date().getTime();
+}
 
+function resume_simulation() {
+    if (run !== null) return;
+    w.postMessage({type: "RESUME"});
+    run = setInterval(() => {
+        w.postMessage({type: "REPORT"});
+    }, tick);
+    running_time += (new Date().getTime() - pause_time);
 }
 
 function save_log() {
-    console.log("tick,S,E,I,H,R");
+    let str = "tick,S,E1,E2,I1,I2,H1,H2,R1,R2\n";
     if (chart_data === undefined) return;
     chart_data.forEach(e => {
-        console.log(e.tick + "," + e.S + "," + e.E + "," + e.I + "," + e.H + "," + e.R);
+        str += e.tick + "," + e.S + "," + e.E1 + "," + e.E2 + "," + e.I1 + "," + e.I2 + "," + e.H1 + "," + e.H2 + "," + e.R1 + "," + e.R2 + "\n";
     })
+
+    var element = document.createElement("a");
+    element.setAttribute("href", "data:text/plain;charset=utf-8,"+encodeURIComponent(str));
+    element.setAttribute("download", "log.txt");
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
 }
 
 function flagChange(checkbox) {

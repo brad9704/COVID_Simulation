@@ -115,12 +115,12 @@ body {
     color: white;
     background-color: #667cb8;
 }
-.panel_button #button_reset {
+.panel_button #button_resume {
     color: #524782;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-.panel_button #button_reset:hover {
+.panel_button #button_resume:hover {
     color: white;
     background-color: #524782;
 }
@@ -211,4 +211,17 @@ svg {
 #button_start:hover {
     color: white;
     background-color: #578172;
+}
+circle {
+    stroke: black;
+    stroke-width: 1px;
+}
+
+.Day {
+    padding: 5px;
+    position: fixed;
+    width: 120px;
+    height: 50px;
+    border: 1px solid black;
+    font-size: 30px;
 }
