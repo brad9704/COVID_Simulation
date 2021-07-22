@@ -137,7 +137,7 @@ var startSim = function(event_data) {
     simulation.force("surface", d3.forceSurface()
         .surfaces(simulation.loc.get_surface())
         .elasticity(1)
-        .radius(param.size)
+        .radius(param.size * 2)
         .oneWay(false));
     simulation.on("tick.check_loc", function() { this.nodes().forEach(node => node.check_loc())});
 

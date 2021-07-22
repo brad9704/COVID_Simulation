@@ -5,7 +5,7 @@ const state = {
     I1: "#FF0000", // Infectious, mild
     I2: "#FF00FF", // Infectious, severe
     H1: "#C0C0C0", // Self-quarantine
-    H2: "#505050", // Hospitalized
+    H2: "#5000FF", // Hospitalized
     R1: "#0000FF", // Recovered
     R2: "#000000" // Dead
 };
@@ -127,38 +127,44 @@ class Node {
         if (!this.run) return;
         this.state = state.E1;
         this.state_timeout.func = () => {
-            this.state = state.I1;
-            this.state_timeout.delay = d3.randomUniform(...this.param.duration["I1-H1"])() * this.param.timeunit;
-            this.state_timeout.startTime = new Date().getTime();
+            this.state = state.E2;
+            this.state_timeout.delay = d3.randomUniform(...this.param.duration["E2-I1"])() * this.param.timeunit;
             this.state_timeout.func = () => {
-                this.state = state.H1;
-                let next_phase = (Math.random() > this.param.age_severe[this.age.toString()]) ? state.R1 : state.I2;
-                if (next_phase === state.R1) {
-                    this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-R1"])() * this.param.timeunit;
-                    this.state_timeout.startTime = new Date().getTime();
-                    this.state_timeout.func = () => {
-                        this.state = state.R1;
-                    }
-                } else {
-                    this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-I2"])() * this.param.timeunit;
-                    this.state_timeout.startTime = new Date().getTime();
-                    this.state_timeout.func = () => {
-                        this.state = state.I2;
-                        this.state_timeout.id = null;
-                        this.state_timeout.delay = d3.randomUniform(...this.param.duration["I2-R2"]) * this.param.timeunit;
-                        this.quarantine_delay = this.param.timeunit / 2;
+                this.state = state.I1;
+                this.state_timeout.delay = d3.randomUniform(...this.param.duration["I1-H1"])() * this.param.timeunit;
+                this.state_timeout.startTime = new Date().getTime();
+                this.state_timeout.func = () => {
+                    this.state = state.H1;
+                    let next_phase = (Math.random() > this.param.age_severe[this.age.toString()]) ? state.R1 : state.I2;
+                    if (next_phase === state.R1) {
+                        this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-R1"])() * this.param.timeunit;
                         this.state_timeout.startTime = new Date().getTime();
-                        this.quarantine_interval = setInterval(this.hospitalized.bind(this), this.quarantine_delay);
                         this.state_timeout.func = () => {
-                            clearInterval(this.quarantine_interval);
-                            this.quarantine_interval = null;
-                            this.state = state.R2;
+                            this.state = state.R1;
                         }
-                        this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
+                    } else {
+                        this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-I2"])() * this.param.timeunit;
+                        this.state_timeout.startTime = new Date().getTime();
+                        this.state_timeout.func = () => {
+                            this.state = state.I2;
+                            this.state_timeout.id = null;
+                            this.state_timeout.delay = d3.randomUniform(...this.param.duration["I2-R2"])() * this.param.timeunit;
+                            this.quarantine_delay = this.param.timeunit / 2;
+                            this.state_timeout.startTime = new Date().getTime();
+                            this.quarantine_interval = setInterval(this.hospitalized.bind(this), this.quarantine_delay);
+                            this.state_timeout.func = () => {
+                                clearInterval(this.quarantine_interval);
+                                this.quarantine_interval = null;
+                                this.state = state.R2;
+                            }
+                            this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
+                        }
                     }
+                    this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
                 }
                 this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
-            }
+            };
+            this.state_timeout.startTime = new Date().getTime();
             this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
         };
         this.state_timeout.delay = d3.randomUniform(...this.param.duration["E1-E2"])() * this.param.timeunit;

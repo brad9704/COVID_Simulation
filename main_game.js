@@ -57,7 +57,7 @@ function updateSim(param, node_data, time) {
     if (turn === 0) turn = 14;
     $("#turn_day").text(turn);
     chart += 1;
-    if (chart > 6) {
+    if (chart > 60) {
         chart_data.push({
             "tick": (time - running_time) / 1000,
             "S": node_data.filter(e => e.state === state.S).length,
@@ -118,7 +118,7 @@ function get_params() {
     let param = {
         sim_width: 800,
         sim_height: 800,
-        size: 10,
+        size: 5,
         timeunit: 1000,
         mask_factor: 0.85,
         turnUnit: 14,
