@@ -225,3 +225,11 @@ circle {
     border: 1px solid black;
     font-size: 30px;
 }
+#legend {
+    position: absolute;
+    display: inline;
+    top: 10px;
+    left: 820px;
+    width: 800px;
+    height: 400px;
+}

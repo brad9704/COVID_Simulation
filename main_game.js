@@ -223,6 +223,10 @@ function node_init(param, node_data, loc) {
         .style("stroke-width", 1)
         .style("fill", "none");
 
+    d3.select("#board").append("img")
+        .attr("id", "legend")
+        .attr("src", "img/legend.png");
+
 /*    if (param["flag"].includes("quarantine")) {
         d3.select("#loc_hospital").style("fill", "rgb(200,200,200)");
 

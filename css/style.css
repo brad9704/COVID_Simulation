@@ -42,12 +42,16 @@ svg {
 }
 table {
     border: 1px solid;
+    border-spacing: 15px 5px;
+    padding: 5px;
+    width: 100px;
 }
 tr {
     border: 1px solid;
 }
 td {
     border: 1px solid;
+    width: 100%;
 }
 
 .popup {

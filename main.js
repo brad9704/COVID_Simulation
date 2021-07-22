@@ -69,6 +69,9 @@ function show_result(param, node_data) {
         let totalH = node_data.filter(e => e.isQuaranted).length;
         $("#resultTotalQuarantine").text("" + totalH + " (" + (Math.round(totalH / last_state["R"] * 10000) / 100) + "%)");
         $("#resultQuarantineOverflow").text(Math.round(chart_data.filter(e => e.H === 50).length / tick * 1000) / 1000);
+    } else {
+        $("#resultTotalQuarantine").text("");
+        $("#resultQuarantineOverflow").text("");
     }
 
     $("#popup_result").fadeIn();
