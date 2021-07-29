@@ -14,6 +14,20 @@
         <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
         <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
     </div>
+    <div class="panel_policy">
+        <div class="each_policy">
+            <img id="mask" src="img/policy_icon/mask_off.png" alt="mask_required" onclick="change_policy(id)">
+        </div>
+        <div class="each_policy">
+            <img id="lock" src="img/policy_icon/lock_off.png" alt="lockdown" onclick="change_policy(id)">
+        </div>
+        <div class="each_policy">
+            <img id="curfew" src="img/policy_icon/curfew_off.png" alt="curfew" onclick="change_policy(id)">
+        </div>
+        <div class="each_policy">
+            <img id="online" src="img/policy_icon/online_off.png" alt="online_class" onclick="change_policy(id)">
+        </div>
+    </div>
 </div>
 <div id="popup_result" class="popup">
     <div class="popBg"></div>
@@ -31,6 +45,7 @@
             </div>
             <div class="popChart"></div>
             <input type="button" onclick="save_log()" value="Log">
+            <input id="exit" type="button" value="Exit">
         </div>
         <div class="popFoot">
         </div>
@@ -58,14 +73,15 @@
                     <input id="hospital_max" type="range" min="0" max="1000" value="50" step="1" oninput="$('#hospital_max_output').text(value);">
                 </label>
             </div>
+            <div class="control" id="advanced_setting"></div>
             <div class="control" id="Simulation">
                 <input id="button_start" type="button" onclick="start_simulation()" value="Start">
+                <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting">
             </div>
         </div>
     </div>
 </div>
 <script src="https://d3js.org/d3.v5.min.js"></script>
-<script src="//unpkg.com/d3-force-bounce/dist/d3-force-bounce.min.js"></script>
 <script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
 <script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

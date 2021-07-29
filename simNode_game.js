@@ -1,12 +1,12 @@
 const state = {
-    S: "#00FF00", // Susceptible
-    E1: "#FFFF00", // Exposed, non_infectious
+    S: "#98E294", // Susceptible
+    E1: "#FFE054", // Exposed, non_infectious
     E2: "#FF9900", // Exposed, infectious
-    I1: "#FF0000", // Infectious, mild
+    I1: "#C00000", // Infectious, mild
     I2: "#FF00FF", // Infectious, severe
     H1: "#C0C0C0", // Self-quarantine
-    H2: "#5000FF", // Hospitalized
-    R1: "#0000FF", // Recovered
+    H2: "#5260d0", // Hospitalized
+    R1: "#254488", // Recovered
     R2: "#000000" // Dead
 };
 
@@ -77,21 +77,34 @@ class Node {
         this.vy = param.speed * Math.sin(angle);
 
         this.state = state.S;
-        this.state_timeout = {
-            id: null,
-            func: null,
-            delay: null,
-            startTime: null
-        };
         this.age = age;
         this.mask = false;
         this.loc = "World";
         this.flag = [];
         this.param = param;
         this.run = true;
-        this.quarantine_interval = null;
-        this.quarantine_delay = null;
-        this.isQuarantined = false;
+
+        this.curTime = 0;
+        this.queue = [];
+
+        this.dispatch = d3.dispatch("tick", "change");
+
+        this.dispatch.on("tick.time", () => {
+            this.curTime += 1;
+            if (this.queue.length > 0) {
+                this.queue.forEach((task, i) => {
+                    if (this.curTime >= task.time) {
+                        this.dispatch.call("change", this, task);
+                        task.mark_for_delete = true;
+                    }
+                })
+            }
+            this.queue = this.queue.filter(task => !task.hasOwnProperty("mark_for_delete"));
+        });
+
+        this.dispatch.on("change.state", task => {
+            task.func.apply(this, task.args);
+        })
     }
 
     // Methods
@@ -124,96 +137,94 @@ class Node {
      */
     infected() {
         if (this.state !== state.S) return;
-        if (!this.run) return;
         this.state = state.E1;
-        this.state_timeout.func = () => {
-            this.state = state.E2;
-            this.state_timeout.delay = d3.randomUniform(...this.param.duration["E2-I1"])() * this.param.timeunit;
-            this.state_timeout.func = () => {
+        this.queue.push({
+            time: d3.randomUniform(...this.param.duration["E1-E2"])() * this.param.fps + this.curTime,
+            func: this.change_state,
+            args: ["E1", "E2"]
+        });
+    }
+
+    change_state (from, to) {
+        switch (from + "-" + to) {
+            case "E1-E2":
+                if (this.state !== state.E1) return;
+                this.state = state.E2;
+                this.queue.push({
+                    time: d3.randomUniform(...this.param.duration["E2-I1"])() * this.param.fps + this.curTime,
+                    func: this.change_state,
+                    args: ["E2", "I1"]
+                });
+                break;
+            case "E2-I1":
+                if (this.state !== state.E2) return;
                 this.state = state.I1;
-                this.state_timeout.delay = d3.randomUniform(...this.param.duration["I1-H1"])() * this.param.timeunit;
-                this.state_timeout.startTime = new Date().getTime();
-                this.state_timeout.func = () => {
-                    this.state = state.H1;
-                    let next_phase = (Math.random() > this.param.age_severe[this.age.toString()]) ? state.R1 : state.I2;
-                    if (next_phase === state.R1) {
-                        this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-R1"])() * this.param.timeunit;
-                        this.state_timeout.startTime = new Date().getTime();
-                        this.state_timeout.func = () => {
-                            this.state = state.R1;
-                        }
-                    } else {
-                        this.state_timeout.delay = d3.randomUniform(...this.param.duration["H1-I2"])() * this.param.timeunit;
-                        this.state_timeout.startTime = new Date().getTime();
-                        this.state_timeout.func = () => {
-                            this.state = state.I2;
-                            this.state_timeout.id = null;
-                            this.state_timeout.delay = d3.randomUniform(...this.param.duration["I2-R2"])() * this.param.timeunit;
-                            this.quarantine_delay = this.param.timeunit / 2;
-                            this.state_timeout.startTime = new Date().getTime();
-                            this.quarantine_interval = setInterval(this.hospitalized.bind(this), this.quarantine_delay);
-                            this.state_timeout.func = () => {
-                                clearInterval(this.quarantine_interval);
-                                this.quarantine_interval = null;
-                                this.state = state.R2;
-                            }
-                            this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
-                        }
-                    }
-                    this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
+                if (Math.random() < this.param.age_severe[this.age.toString()]) {
+                    this.queue.push({
+                        time: d3.randomUniform(...this.param.duration["I1-I2"])() * this.param.fps + this.curTime,
+                        func: this.change_state,
+                        args: ["I1", "I2"]
+                    });
+                } else {
+                    this.queue.push({
+                        time: d3.randomUniform(...this.param.duration["I1-H1"])() * this.param.fps + this.curTime,
+                        func: this.change_state,
+                        args: ["I1", "H1"]});
+                    this.queue.push({
+                        time: d3.randomUniform(...this.param.duration["I1-R1"])() * this.param.fps + this.curTime,
+                        func: this.change_state,
+                        args: ["I1", "R1"]
+                    });
                 }
-                this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
-            };
-            this.state_timeout.startTime = new Date().getTime();
-            this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
-        };
-        this.state_timeout.delay = d3.randomUniform(...this.param.duration["E1-E2"])() * this.param.timeunit;
-        this.state_timeout.startTime = new Date().getTime();
-        this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
-    }
-
-    /*
-        Hospitalizes this node
-     */
-    hospitalized() {
-        if (simulation.nodes().filter(e => e.state === state.H2).length >= this.param["hospital_max"]) return;
-        if (this.state !== state.I2 || !this.run) {
-            clearInterval(this.quarantine_interval);
-            return;
-        }
-        this.state = state.H2;
-        this.isQuarantined = true;
-        clearInterval(this.quarantine_interval);
-        if (this.state_timeout.id != null) {
-            clearTimeout(this.state_timeout.id);
-        }
-        this.state_timeout.delay = d3.randomUniform(...this.param.duration["H2-R1"])() * this.param.timeunit;
-        this.state_timeout.startTime = new Date().getTime();
-        this.state_timeout.func = () => {
-            this.state = state.R1;
-        }
-        this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
-    }
-
-    pause() {
-        if (this.quarantine_interval === null && this.state_timeout.id === null) return;
-        else if (this.quarantine_interval != null) {
-            clearInterval(this.quarantine_interval);
-            this.quarantine_delay -= (new Date().getTime() - this.state_timeout.startTime) % (this.param.timeunit / 2);
-        }
-        clearTimeout(this.state_timeout.id);
-        this.state_timeout.delay -= (new Date().getTime() - this.state_timeout.startTime);
-    }
-
-    resume() {
-        if (this.quarantine_delay === null && this.state_timeout.func === null) return;
-        else if (this.quarantine_delay != null) {
-            this.state_timeout.startTime = new Date().getTime();
-            setTimeout(() => {this.quarantine_interval = setInterval(this.hospitalized.bind(this), this.param.timeunit / 2);}, this.quarantine_delay);
-        }
-        if (this.state_timeout.func != null) {
-            this.state_timeout.startTime = new Date().getTime();
-            this.state_timeout.id = setTimeout(this.state_timeout.func.bind(this), this.state_timeout.delay);
+                break;
+            case "I1-I2":
+                if (this.state !== state.I1 && this.state !== state.H1) return;
+                this.state = state.I2;
+                this.queue.push({
+                    time: d3.randomUniform(...this.param.duration["I2-H2"])() * this.param.fps + this.curTime,
+                    func: this.change_state,
+                    args: ["I2", "H2"]
+                });
+                this.queue.push({
+                    time: d3.randomUniform(...this.param.duration["I2-R2"])() * this.param.fps + this.curTime,
+                    func: this.change_state,
+                    args: ["I2", "R2"]
+                })
+                break;
+            case "I1-H1":
+                if (this.state !== state.I1) return;
+                this.state = state.H1;
+                break;
+            case "I1-R1":
+                if (this.state !== state.I1 && this.state !== state.H1) return;
+                this.state = state.R1;
+                break;
+            case "I2-H2":
+                if (this.state !== state.I2) return;
+                if (simulation.nodes().filter(e => e.state === state.H2).length >= this.param["hospital_max"]) {
+                    this.queue.push({
+                        time: d3.randomUniform(...this.param.duration["I2-H2"])() * this.param.fps + this.curTime,
+                        func: this.change_state,
+                        args: ["I2", "H2"]
+                    });
+                } else {
+                    this.state = state.H2;
+                    this.queue.push({
+                        time: d3.randomUniform(...this.param.duration["H2-R1"])() * this.param.fps + this.curTime,
+                        func: this.change_state,
+                        args: ["H2", "R1"]
+                    });
+                    this.queue[this.queue.findIndex(task => task.args[1] === "R2")].mark_for_delete = true;
+                }
+                break;
+            case "I2-R2":
+                if (this.state !== state.I2 && this.state !== state.H2) return;
+                this.state = state.R2;
+                break;
+            case "H2-R1":
+                if (this.state !== state.H2) return;
+                this.state = state.R1;
+                break;
         }
     }
 

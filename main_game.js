@@ -1,25 +1,157 @@
 var run, chart_data, running_time, chart_param, pause_time;
+var mask = false, lock = false, curfew = false, online = false;
+var init_param = {
+    sim_width: 800,
+    sim_height: 800,
+    size: 5,
+    timeunit: 1000,
+    mask_factor: 0.85,
+    turnUnit: 7,
+    fps: 60,
+
+    duration: {
+        "E1-E2": [1,2],
+        "E2-I1": [3,4],
+        "I1-I2": [5,6],
+        "I1-H1": [99,99],
+        "I1-R1": [20,20],
+        "I2-H2": [1,1],
+        "I2-R2": [8,8],
+        "H2-R1": [24,24]
+    },
+    age_dist: {
+        "0": 94865,
+        "10": 110623,
+        "20": 141167,
+        "30": 147880,
+        "40": 185339,
+        "50": 206852,
+        "60": 151599,
+        "70": 61411,
+        "80": 26633
+    },
+    age_infect: {
+        "0": 2.19,
+        "10": 2.89,
+        "20": 4.44,
+        "30": 3.86,
+        "40": 3.46,
+        "50": 3.80,
+        "60": 3.49,
+        "70": 2.89,
+        "80": 2.95
+    },
+    age_severe: {
+        "0": 0.015,
+        "10": 0.015,
+        "20": 0.015,
+        "30": 0.015,
+        "40": 0.015,
+        "50": 0.083,
+        "60": 0.171,
+        "70": 0.377,
+        "80": 0.582
+    }
+};
 var turn_end = true;
 var chart = 0;
+var running_speed = 1;
 var tick = 1000 / 60;
 var w;
-
+var receive = false, receive_time = 0;
+var advanced = false;
 w = new Worker("worker_game.js");
+
+function advanced_setting() {
+    advanced = true;
+    $("#advanced_button").attr("disabled","true");
+    d3.select("#advanced_setting").selectAll("label")
+        .data(d3.keys(init_param))
+        .enter()
+        .append("label")
+        .text(d => d + ": ")
+        .append("input")
+        .attr("id", d => d)
+        .attr("type", function(d) {
+            if (typeof init_param[d] === "number") {
+                return "number";
+            } else {
+                return "string";
+            }
+        })
+        .attr("value", d => {
+            if (typeof init_param[d] === "number") {
+                return init_param[d];
+            } else {
+                if (d === "duration") {
+                    return _.values(_.mapObject(init_param[d], function(val, key) {
+                        return val.join(",");
+                    })).join("; ");
+                } else return _.values(init_param[d]).join("; ");
+            }
+        });
+}
+
+/*
+Sets param values with retrieved data from input
+ */
+function get_params() {
+    let param = {};
+
+    $.each($("#init_setting input[type='range']"), (i,e) => {
+        param[e.id] = e.value;
+    })
+    param["node_num"] = parseInt(param["node_num"]);
+    param["initial_patient"] = parseInt(param["initial_patient"]);
+    param["speed"] = parseFloat(param["speed"]);
+    param["TPC_base"] = parseFloat(param["TPC_base"])
+    param["hospital_max"] = parseInt(param["hospital_max"])
+
+    for (const key in init_param) {
+        if (init_param[key] !== null) param[key] = init_param[key];
+    }
+
+    if (advanced) {
+        $.each($("#advanced_setting input[type='number']"), (i, e) => {
+            if (e.id !== "size" || e.id !== "mask_factor") {
+                param[e.id] = parseInt(e.value);
+            } else param[e.id] = parseFloat(e.value);
+        })
+        $.each($("#advanced_setting input[type='string']"), (i, e) => {
+            if (e.id !== "duration") {
+                param[e.id] = _.object(d3.keys(init_param[e.id]), _.map(e.value.split(";"), e => parseFloat(e)));
+            } else {
+                param[e.id] = _.object(d3.keys(init_param[e.id]), _.map(e.value.split(";"), e => _.map(e.split(","), f => parseInt(f))));
+            }
+        })
+    }
+
+    return param;
+}
 
 w.onmessage = function(event) {
     switch (event.data.type) {
         case "START":
+            receive_time = 0;
+            receive = true;
             $("#popup_init").fadeOut();
             running_time = event.data.time;
             initSim(this.param, event.data.state, event.data.loc);
             run = setInterval(() => {
-                w.postMessage({type: "REPORT"});
+                if (receive) {
+                    w.postMessage({type: "REPORT", data: running_speed});
+                    receive = false;
+                    receive_time += 1;
+                }
             }, tick)
             break;
         case "STOP":
             clearInterval(run);
             break;
         case "REPORT":
+            if (receive_time === event.data.time) {
+                receive = true;
+            }
             updateSim(this.param, event.data.state, event.data.time);
             break;
         default:
@@ -36,7 +168,7 @@ function initSim(param, initial_node_data, loc) {
     d3.select("#board").selectAll("div").remove();
     $(".popChart").find("div").remove();
     node_init(param, initial_node_data, loc);
-    chart_data.push({
+    let init_data = {
         "tick": 0,
         "S": initial_node_data.filter(e => e.state === state.S).length,
         "E1": initial_node_data.filter(e => e.state === state.E1).length,
@@ -46,20 +178,22 @@ function initSim(param, initial_node_data, loc) {
         "H1": initial_node_data.filter(e => e.state === state.H1).length,
         "H2": initial_node_data.filter(e => e.state === state.H2).length,
         "R1": initial_node_data.filter(e => e.state === state.R1).length,
-        "R2": initial_node_data.filter(e => e.state === state.R2).length
-    });
+        "R2": initial_node_data.filter(e => e.state === state.R2).length,
+        "GDP": initial_node_data.reduce((prev, curr) => prev + curr.v, 0) / 2
+    };
+    chart_data.push(init_data);
     chart_param = chart_init(param);
 }
 
 function updateSim(param, node_data, time) {
     node_update(param, node_data);
-    let turn = Math.ceil((time - running_time) / 1000) % 14;
-    if (turn === 0) turn = 14;
+    let turn = Math.ceil(time / param.fps) % param.turnUnit;
+    if (turn === 0) turn = param.turnUnit;
     $("#turn_day").text(turn);
     chart += 1;
-    if (chart > 60) {
-        chart_data.push({
-            "tick": (time - running_time) / 1000,
+    if (chart >= 60) {
+        let temp_data = {
+            "tick": time / param.fps,
             "S": node_data.filter(e => e.state === state.S).length,
             "E1": node_data.filter(e => e.state === state.E1).length,
             "E2": node_data.filter(e => e.state === state.E2).length,
@@ -68,18 +202,14 @@ function updateSim(param, node_data, time) {
             "H1": node_data.filter(e => e.state === state.H1).length,
             "H2": node_data.filter(e => e.state === state.H2).length,
             "R1": node_data.filter(e => e.state === state.R1).length,
-            "R2": node_data.filter(e => e.state === state.R2).length
-        });
+            "R2": node_data.filter(e => e.state === state.R2).length,
+            "GDP": node_data.reduce((prev, curr) => prev + curr.v, 0) / 2
+        };
+        chart_data.push(temp_data);
         chart_update(param, chart_param, chart_data);
         chart = 0;
     }
-    if (!turn_end && (time - running_time) % (param.turnUnit * param.timeunit) < param.timeunit) {
-        pause_simulation();
-        turn_end = true;
-    }
-    if (turn_end && (time - running_time) % (param.turnUnit * param.timeunit) > param.timeunit) {
-        turn_end = false;
-    }
+    if (time % (param.turnUnit * param.fps) === 0) pause_simulation();
     if (node_data.filter(e => e.state === state.S || e.state === state.R1 || e.state === state.R2).length === node_data.length &&
         node_data.filter(e => e.state === state.R1 || e.state === state.R2).length > 0) {
         show_result(param, node_data);
@@ -92,94 +222,16 @@ function show_result(param, node_data) {
     $("#resultTime").text(last_state["tick"]);
     $("#resultTotalInfected").text(param.node_num - last_state["S"]);
     $("#resultMaxQuarantined").text(_.max(chart_data, e => e.H2)["H2"]);
-    $(".popChart").append($("#chart_board"));
-    $("#chart_board").css("width", 900).css("height", 400);
-
-   /* if (param["flag"].includes("quarantine")) {
-        let totalH = node_data.filter(e => e.isQuarantined).length;
-        $("#resultTotalQuarantine").text("" + totalH + " (" + (Math.round(totalH / last_state["R"] * 10000) / 100) + "%)");
-        $("#resultQuarantineOverflow").text(Math.round(chart_data.filter(e => e.H === 50).length / tick * 1000) / 1000);
-    } else {
-        $("#resultTotalQuarantine").text("");
-        $("#resultQuarantineOverflow").text("");
-    }*/
-
+    let chart_board = $("#chart_board");
+    chart_board.clone().appendTo($(".popChart"));
     $("#popup_result").fadeIn();
-    $(".popBg").on("click", function() {
+    $(".popBg,#exit").on("click", function() {
         $("#popup_result").fadeOut(200);
         $("#popup_init").fadeIn();
-    })
+    });
 }
 
-/*
-Sets param values with retrieved data from input
- */
-function get_params() {
-    let param = {
-        sim_width: 800,
-        sim_height: 800,
-        size: 5,
-        timeunit: 1000,
-        mask_factor: 0.85,
-        turnUnit: 14,
 
-        duration: {
-            "S-E1": [0,0],
-            "E1-E2": [1,2],
-            "E2-I1": [3,4],
-            "E2-I2": [3,4],
-            "H1-I2": [1,2],
-            "I1-H1": [4,4],
-            "I2-H2": [1,1],
-            "I2-R2": [4,4],
-            "H1-R1": [6,6],
-            "H2-R1": [6,6]
-        },
-        age_dist: {
-            "0": 94865,
-            "10": 110623,
-            "20": 141167,
-            "30": 147880,
-            "40": 185339,
-            "50": 206852,
-            "60": 151599,
-            "70": 61411,
-            "80": 26633
-        },
-        age_infect: {
-            "0": 2.19,
-            "10": 2.89,
-            "20": 4.44,
-            "30": 3.86,
-            "40": 3.46,
-            "50": 3.80,
-            "60": 3.49,
-            "70": 2.89,
-            "80": 2.95
-        },
-        age_severe: {
-            "0": 0.2,
-            "10": 0.2,
-            "20": 0.2,
-            "30": 0.2,
-            "40": 0.2,
-            "50": 0.2,
-            "60": 0.2,
-            "70": 0.2,
-            "80": 0.2
-        }
-    };
-
-    $.each($("input[type='range']"), (i,e) => {
-        param[e.id] = e.value;
-    })
-    param["node_num"] = parseInt(param["node_num"]);
-    param["initial_patient"] = parseInt(param["initial_patient"]);
-    param["speed"] = parseFloat(param["speed"]);
-    param["TPC_base"] = parseFloat(param["TPC_base"])
-    param["hospital_max"] = parseInt(param["hospital_max"])
-    return param;
-}
 
 /*
 Initializes node canvas
@@ -307,7 +359,23 @@ function chart_init(param) {
     svg.append("g")
         .attr("class", "Yaxis");
 
-    return {x:x, y:y, xAxis:xAxis, yAxis:yAxis, svg:svg};
+    var death_board = d3.select("#board").append("div")
+        .attr("id", "death_board")
+        .attr("width", param.sim_width)
+        .attr("height", param.sim_height * 0.3);
+    var death_svg = death_board.append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    death_svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .attr("class", "Xaxis");
+    death_svg.append("g")
+        .attr("class", "Yaxis");
+
+    return {x:x, y:y, xAxis:xAxis, yAxis:yAxis, svg:svg, death_svg: death_svg};
 }
 
 function chart_update(param, chart_param, chart_data) {
@@ -315,7 +383,8 @@ function chart_update(param, chart_param, chart_data) {
         y = chart_param.y,
         xAxis = chart_param.xAxis,
         yAxis = chart_param.yAxis,
-        svg = chart_param.svg;
+        svg = chart_param.svg,
+        death_svg = chart_param.death_svg;
 
     x.domain([0, d3.max(chart_data, function(d) {
         return d["tick"];
@@ -328,7 +397,7 @@ function chart_update(param, chart_param, chart_data) {
         .call(yAxis);
 
     var stack = d3.stack()
-        .keys(["S","E1","E2","I1","I2","H1","H2","R1","R2"]);
+        .keys(["R2","R1","H2","H1","I2","I1","E2","E1","S"]);
     var series = stack(chart_data);
 
     var v = svg.selectAll(".line")
@@ -344,6 +413,39 @@ function chart_update(param, chart_param, chart_data) {
             .y0(function(d) {return y(d[0]);})
             .y1(function(d) {return y(d[1]);})
             .curve(d3.curveBasis));
+
+    death_svg.selectAll(".Xaxis")
+        .call(xAxis);
+    death_svg.selectAll(".Yaxis")
+        .call(yAxis);
+
+
+    let chart_data_ = chart_data.reduce((prev, curr) => {
+        prev[0].data.push(curr.I1 + curr.I2 + curr.H1 + curr.H2);
+        prev[1].data.push(curr.R2);
+        prev[2].data.push(curr.GDP);
+        return prev;
+    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
+
+    var v2 = death_svg.selectAll(".line")
+        .data(chart_data_);
+    v2.enter()
+        .append("path")
+        .attr("class", "line")
+        .merge(v2)
+        .style("stroke", function(d) {return d.color;})
+        .style("fill", "none")
+        .style("stroke-width", 1.5)
+        .attr("d", function (e) {
+            return d3.line()
+                .x(function (d, i) {
+                    return x(i);
+                })
+                .y(function (d) {
+                    return y(d);
+                })
+                .curve(d3.curveBasis)(e.data);
+        });
 }
 
 
@@ -369,17 +471,17 @@ function pause_simulation() {
     if (run === null) return;
     clearInterval(run);
     run = null;
-    w.postMessage({type: "PAUSE"});
-    pause_time = new Date().getTime();
 }
 
 function resume_simulation() {
     if (run !== null) return;
-    w.postMessage({type: "RESUME"});
     run = setInterval(() => {
-        w.postMessage({type: "REPORT"});
+        if (receive) {
+            w.postMessage({type: "REPORT", data: running_speed});
+            receive = false;
+            receive_time += 1;
+        }
     }, tick);
-    running_time += (new Date().getTime() - pause_time);
 }
 
 function save_log() {
@@ -390,18 +492,48 @@ function save_log() {
     })
 
     var element = document.createElement("a");
-    element.setAttribute("href", "data:text/plain;charset=utf-8,"+encodeURIComponent(str));
-    element.setAttribute("download", "log.txt");
+    element.setAttribute("href", "data:application/octet-stream,"+encodeURIComponent(str));
+    element.setAttribute("download", "log.csv");
     element.style.display = "none";
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
 }
 
-function flagChange(checkbox) {
-    if (checkbox.checked) {
-        document.getElementById(checkbox.id + "_set").removeAttribute("style");
-    } else {
-        document.getElementById(checkbox.id + "_set").setAttribute("style", "display:none");
+function change_policy(policy) {
+
+    switch (policy) {
+        case "mask":
+            if (!mask) {
+                $('#mask').attr('src', 'img/policy_icon/mask_on.png');
+            } else {
+                $('#mask').attr('src', 'img/policy_icon/mask_off.png');
+            }
+            mask = !mask;
+            break;
+        case "lock":
+            if (!lock) {
+                $('#lock').attr('src', 'img/policy_icon/lock_on.png');
+            } else {
+                $('#lock').attr('src', 'img/policy_icon/lock_off.png');
+            }
+            lock = !lock;
+            break;
+        case "curfew":
+            if (!curfew) {
+                $('#curfew').attr('src', 'img/policy_icon/curfew_on.png');
+            } else {
+                $('#curfew').attr('src', 'img/policy_icon/curfew_off.png');
+            }
+            curfew = !curfew;
+            break;
+        case "online":
+            if (!online) {
+                $('#online').attr('src', 'img/policy_icon/online_on.png');
+            } else {
+                $('#online').attr('src', 'img/policy_icon/online_off.png');
+            }
+            online = !online;
+            break;
     }
 }
