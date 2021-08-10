@@ -1,11 +1,12 @@
 var run, chart_data, running_time, chart_param, pause_time;
 var mask = false, lock = false, curfew = false, online = false;
 var init_param = {
-    sim_width: 800,
-    sim_height: 800,
     size: 5,
     timeunit: 1000,
     mask_factor: 0.85,
+    lockdown_factor: 0.5,
+    curfew_factor: 0.5,
+    online_factor: 0.5,
     turnUnit: 7,
     fps: 60,
 
@@ -51,6 +52,17 @@ var init_param = {
         "60": 0.171,
         "70": 0.377,
         "80": 0.582
+    },
+    age_speed: {
+        "0": 1,
+        "10": 1,
+        "20": 1,
+        "30": 1,
+        "40": 1,
+        "50": 1,
+        "60": 1,
+        "70": 1,
+        "80": 1
     }
 };
 var turn_end = true;
@@ -127,6 +139,9 @@ function get_params() {
     }
     tick = param["timeunit"] / param["fps"];
 
+    param["sim_width"] = 800;
+    param["sim_height"] = 800;
+
     return param;
 }
 
@@ -142,7 +157,7 @@ w.onmessage = function(event) {
                 if (receive) {
                     w.postMessage({type: "REPORT", data: running_speed});
                     receive = false;
-                    receive_time += 1;
+                    receive_time += running_speed;
                 }
             }, tick)
             break;
@@ -155,8 +170,12 @@ w.onmessage = function(event) {
             }
             updateSim(this.param, event.data.state, event.data.time);
             break;
+        case "LOG":
+            chart_data = event.data.data;
+            save_log();
+            break;
         default:
-            console.log("Worker message error.");
+            console.log("Worker message error: " + event.data.type);
     }
 }
 w.onerror = function(event) {
@@ -191,7 +210,7 @@ function updateSim(param, node_data, time) {
     let turn = Math.ceil(time / param.fps) % param.turnUnit;
     if (turn === 0) turn = param.turnUnit;
     $("#turn_day").text(turn);
-    chart += 1;
+    chart += running_speed;
     if (chart >= param.fps) {
         let temp_data = {
             "tick": time / param.fps,
@@ -422,9 +441,9 @@ function chart_update(param, chart_param, chart_data) {
 
 
     let chart_data_ = chart_data.reduce((prev, curr) => {
-        prev[0].data.push(curr.I1 + curr.I2 + curr.H1 + curr.H2);
-        prev[1].data.push(curr.R2);
-        prev[2].data.push(curr.GDP);
+        prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
+        prev[1].data.push([curr.tick, curr.R2]);
+        prev[2].data.push([curr.tick, curr.GDP]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
 
@@ -439,11 +458,11 @@ function chart_update(param, chart_param, chart_data) {
         .style("stroke-width", 1.5)
         .attr("d", function (e) {
             return d3.line()
-                .x(function (d, i) {
-                    return x(i);
+                .x(function (d) {
+                    return x(d[0]);
                 })
                 .y(function (d) {
-                    return y(d);
+                    return y(d[1]);
                 })
                 .curve(d3.curveBasis)(e.data);
         });
@@ -470,19 +489,25 @@ function reset_simulation() {
 }
 function pause_simulation() {
     if (run === null) return;
+    $(".enable-on-pause").removeAttr("disabled");
     clearInterval(run);
     run = null;
 }
 
 function resume_simulation() {
     if (run !== null) return;
+    $(".enable-on-pause").attr("disabled", "disabled");
     run = setInterval(() => {
         if (receive) {
             w.postMessage({type: "REPORT", data: running_speed});
             receive = false;
-            receive_time += 1;
+            receive_time += running_speed;
         }
     }, tick);
+}
+
+function request_log() {
+    w.postMessage({type:"LOG"});
 }
 
 function save_log() {
@@ -537,4 +562,8 @@ function change_policy(policy) {
             online = !online;
             break;
     }
+}
+
+function change_speed() {
+    running_speed = parseInt($("#speed_input").val());
 }

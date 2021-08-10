@@ -6,6 +6,7 @@ importScripts("https://d3js.org/d3.v5.min.js",
 var running_time;
 var simulation;
 var param;
+var chart_data;
 
 onmessage = function(event){
     switch (event.data.type) {
@@ -20,7 +21,10 @@ onmessage = function(event){
             postMessage(stopSim());
             break;
         case "REPORT":
-            postMessage(reportSim(event.data));
+            postMessage(reportSim(event.data.data));
+            break;
+        case "LOG":
+            postMessage({type: "LOG", data: chart_data});
             break;
     }
 }
@@ -38,7 +42,7 @@ var startSim = function(event_data) {
     }
     assertion(event_data);
     param = event_data;
-
+    chart_data = [];
     running_time = 0;
     simulation = null;
 
@@ -121,6 +125,23 @@ function ticked() {
             })
     }, this);
     simulation.nodes().forEach(node => node.dispatch.call("tick", this));
+
+    if (running_time % param.fps === 0) {
+        let node_data = simulation.nodes();
+        chart_data.push({
+            "tick": running_time / param.fps,
+            "S": node_data.filter(e => e.state === state.S).length,
+            "E1": node_data.filter(e => e.state === state.E1).length,
+            "E2": node_data.filter(e => e.state === state.E2).length,
+            "I1": node_data.filter(e => e.state === state.I1).length,
+            "I2": node_data.filter(e => e.state === state.I2).length,
+            "H1": node_data.filter(e => e.state === state.H1).length,
+            "H2": node_data.filter(e => e.state === state.H2).length,
+            "R1": node_data.filter(e => e.state === state.R1).length,
+            "R2": node_data.filter(e => e.state === state.R2).length,
+            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2
+        });
+    }
 }
 
 var stopSim = function() {
@@ -129,7 +150,10 @@ var stopSim = function() {
 }
 
 var reportSim = function(iter) {
-    ticked.call(simulation);
+    for (let i=0;i<iter;i++) {
+        ticked.call(simulation);
+    }
+    //ticked.call(simulation);
     let report_nodes = [];
     simulation.nodes().forEach(node => {
         report_nodes.push({

@@ -19,10 +19,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210729">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210729_update">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simNode_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode_game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -195,7 +198,12 @@
       <workItem from="1627017268842" duration="5198000" />
       <workItem from="1627263053224" duration="11990000" />
       <workItem from="1627347088174" duration="33784000" />
-      <workItem from="1627520413881" duration="12012000" />
+      <workItem from="1627520413881" duration="13115000" />
+      <workItem from="1627978275483" duration="2002000" />
+      <workItem from="1628038522361" duration="595000" />
+      <workItem from="1628049342098" duration="8516000" />
+      <workItem from="1628124678092" duration="2523000" />
+      <workItem from="1628484220409" duration="622000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -337,7 +345,14 @@
       <option name="project" value="LOCAL" />
       <updated>1627530237537</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="20210729_update">
+      <created>1627536711403</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1627536711403</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -387,7 +402,8 @@
     <MESSAGE value="20210722_game_4" />
     <MESSAGE value="20210722_game_5" />
     <MESSAGE value="20210729" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210729" />
+    <MESSAGE value="20210729_update" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210729_update" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
@@ -395,7 +411,7 @@
         <watch expression="t._groups" />
         <watch expression="this.circle._groups" />
       </configuration>
-      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="146">
+      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="161">
         <watch expression="tick" language="JavaScript" />
       </inline-watch>
     </watches-manager>

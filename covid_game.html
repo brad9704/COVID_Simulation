@@ -7,6 +7,10 @@
 </head>
 <body>
 <div class="Day">Day: <output id="turn_day"></output></div>
+<div class="speed">
+    <input id="speed_input" type="number" min="1" value="1">
+    <input id="speed_on" class="enable-on-pause" type="button" onclick="change_speed()" value="Apply speed">
+</div>
 <div class="board" id="board"></div>
 <div class="control_panel">
     <div class="panel_button">
@@ -16,16 +20,16 @@
     </div>
     <div class="panel_policy">
         <div class="each_policy">
-            <img id="mask" src="img/policy_icon/mask_off.png" alt="mask_required" onclick="change_policy(id)">
+            <button class="enable-on-pause" onclick="change_policy('mask')" disabled="disabled"><img id="mask" src="img/policy_icon/mask_off.png" alt="mask_required"></button>
         </div>
         <div class="each_policy">
-            <img id="lock" src="img/policy_icon/lock_off.png" alt="lockdown" onclick="change_policy(id)">
+            <button class="enable-on-pause" onclick="change_policy('lock')" disabled="disabled"><img id="lock" src="img/policy_icon/lock_off.png" alt="lockdown"></button>
         </div>
         <div class="each_policy">
-            <img id="curfew" src="img/policy_icon/curfew_off.png" alt="curfew" onclick="change_policy(id)">
+            <button class="enable-on-pause" onclick="change_policy('curfew')" disabled="disabled"><img id="curfew" src="img/policy_icon/curfew_off.png" alt="curfew"></button>
         </div>
         <div class="each_policy">
-            <img id="online" src="img/policy_icon/online_off.png" alt="online_class" onclick="change_policy(id)">
+            <button class="enable-on-pause" onclick="change_policy('online')" disabled="disabled"> <img id="online" src="img/policy_icon/online_off.png" alt="online_class"></button>
         </div>
     </div>
 </div>
@@ -44,7 +48,7 @@
                 Hospital overflow time: <output id="resultQuarantineOverflow"></output> seconds<br>
             </div>
             <div class="popChart"></div>
-            <input type="button" onclick="save_log()" value="Log">
+            <input type="button" onclick="request_log()" value="Log">
             <input id="exit" type="button" value="Exit">
         </div>
         <div class="popFoot">

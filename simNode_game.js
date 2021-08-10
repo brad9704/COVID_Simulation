@@ -68,13 +68,14 @@ class locs {
 class Node {
     constructor(param, width, height, index, age) {
         let angle = Math.random() * 2 * Math.PI;
+        let speed = param.speed * param.age_speed[age.toString()];
 
         // Variables
         this.index = index;
         this.x = d3.randomUniform(width * 0.1, width * 0.9)();
         this.y = d3.randomUniform(height * 0.1, height * 0.9)();
-        this.vx = param.speed * Math.cos(angle);
-        this.vy = param.speed * Math.sin(angle);
+        this.vx = speed * Math.cos(angle);
+        this.vy = speed * Math.sin(angle);
 
         this.state = state.S;
         this.age = age;

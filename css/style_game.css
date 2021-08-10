@@ -13,10 +13,11 @@ body {
     top:0;
     left:50%;
     width:450px;
-    margin:50px 0 0 -230px;
+    margin:20px 0 0 -230px;
     text-align:left;
     border-radius:5px;
     background-color: #fff;
+    font-size: 90%;
 }
 .controls .control {
     background-color: #eee;
@@ -229,6 +230,33 @@ circle {
     border-radius: 5px;
     font-size: 30px;
 }
+.speed {
+    padding: 5px;
+    position: fixed;
+    width: 120px;
+    height: 50px;
+    top: 70px;
+}
+
+.speed input[type=number] {
+    text-align: center;
+    width: 120px;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.speed input[type=button] {
+    width: 126px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #b0dcde;
+    color: black;
+}
+
+.speed input[type=button]:hover {
+    background-color: #254488;
+    color: white;
+}
+
 #legend {
     position: absolute;
     display: inline;
@@ -263,6 +291,12 @@ circle {
     width: 100px;
     height: 95px;
     box-shadow: 0 5px 5px 0 #606060;
+}
+
+.panel_policy div button {
+    border: none;
+    margin: 0;
+    padding: 0;
 }
 
 .panel_policy div img:active {
