@@ -199,7 +199,7 @@ function initSim(param, initial_node_data, loc) {
         "H2": initial_node_data.filter(e => e.state === state.H2).length,
         "R1": initial_node_data.filter(e => e.state === state.R1).length,
         "R2": initial_node_data.filter(e => e.state === state.R2).length,
-        "GDP": initial_node_data.reduce((prev, curr) => prev + curr.v, 0) / 2
+        "GDP": initial_node_data.reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9
     };
     chart_data.push(init_data);
     chart_param = chart_init(param);
@@ -223,7 +223,7 @@ function updateSim(param, node_data, time) {
             "H2": node_data.filter(e => e.state === state.H2).length,
             "R1": node_data.filter(e => e.state === state.R1).length,
             "R2": node_data.filter(e => e.state === state.R2).length,
-            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2
+            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9
         };
         chart_data.push(temp_data);
         chart_update(param, chart_param, chart_data);

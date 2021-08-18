@@ -4,6 +4,7 @@ body {
     margin: 0; padding: 0;
     font-family: sans-serif;
     font-size: 75%;
+    background-color: white;
 }
 .controls{
     padding: 0 5px;
@@ -219,6 +220,11 @@ svg {
 circle {
     stroke: black;
     stroke-width: 1px;
+}
+
+circle[class="node_#000000"] {
+    opacity: 25%;
+    stroke: none;
 }
 
 .Day {

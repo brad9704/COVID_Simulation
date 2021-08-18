@@ -19,10 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210810">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210818">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simNode_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -204,6 +205,7 @@
       <workItem from="1628571443423" duration="36000" />
       <workItem from="1629190822980" duration="1438000" />
       <workItem from="1629248915549" duration="1213000" />
+      <workItem from="1629267216272" duration="1164000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -359,7 +361,14 @@
       <option name="project" value="LOCAL" />
       <updated>1628571461743</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="20210818">
+      <created>1629267591737</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1629267591737</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -411,7 +420,8 @@
     <MESSAGE value="20210729" />
     <MESSAGE value="20210729_update" />
     <MESSAGE value="20210810" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210810" />
+    <MESSAGE value="20210818" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210818" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
