@@ -395,6 +395,30 @@ function chart_init(param) {
     death_svg.append("g")
         .attr("class", "Yaxis");
 
+/*    var death_legend = death_board.append("div")
+        .attr("class", "legend");
+    death_legend.append("circle")
+        .attr("cx", 50).attr("cy", 50)
+        .attr("r", 5)
+        .attr("fill", "red");
+    death_legend.append("circle")
+        .attr("cx", 50).attr("cy", 70)
+        .attr("r", 5)
+        .attr("fill", "black");
+    death_legend.append("circle")
+        .attr("cx", 50).attr("cy", 90)
+        .attr("r", 5)
+        .attr("fill", "blue");
+    death_legend.append("text")
+        .attr("x", 75).attr("y", 50)
+        .text("Infected");
+    death_legend.append("text")
+        .attr("x", 75).attr("y", 70)
+        .text("Dead");
+    death_legend.append("text")
+        .attr("x", 75).attr("y", 90)
+        .text("Movement");*/
+
     return {x:x, y:y, xAxis:xAxis, yAxis:yAxis, svg:svg, death_svg: death_svg};
 }
 

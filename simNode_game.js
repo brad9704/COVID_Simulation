@@ -210,6 +210,10 @@ class Node {
                     });
                 } else {
                     this.state = state.H2;
+                    this._vx = this.vx;
+                    this._vy = this.vy;
+                    this.vx = 0;
+                    this.vy = 0;
                     this.queue.push({
                         time: d3.randomUniform(...this.param.duration["H2-R1"])() * this.param.fps + this.curTime,
                         func: this.change_state,
@@ -221,10 +225,16 @@ class Node {
             case "I2-R2":
                 if (this.state !== state.I2 && this.state !== state.H2) return;
                 this.state = state.R2;
+                this.vx = 0;
+                this.vy = 0;
                 break;
             case "H2-R1":
                 if (this.state !== state.H2) return;
                 this.state = state.R1;
+                this.vx = this._vx;
+                this.vy = this._vy;
+                this._vx = null;
+                this._vy = null;
                 break;
         }
     }

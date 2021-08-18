@@ -265,6 +265,16 @@ circle {
     height: 270px;
 }
 
+.board .legend {
+    position: absolute;
+    top: 10px;
+    left: 600px;
+    width: 100px;
+    height: 100px;
+    font-size: 15px;
+    display: block;
+}
+
 .panel_policy {
     position: absolute;
     top: 10px;
