@@ -7,6 +7,12 @@ var running_time;
 var simulation;
 var param;
 var chart_data;
+var policy_setting = {
+    mask: false,
+    lock: false,
+    curfew: false,
+    online: false
+};
 
 onmessage = function(event){
     switch (event.data.type) {
@@ -16,6 +22,11 @@ onmessage = function(event){
         case "PAUSE":
             break;
         case "RESUME":
+            let policy = _.mapObject(policy_setting, (value, key) => {
+                return ([value !== event.data.data[key], event.data.data[key]]);
+            })
+            policy_setting = event.data.data;
+            apply_policy(policy);
             break;
         case "STOP":
             postMessage(stopSim());
@@ -142,6 +153,9 @@ function ticked() {
             "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2
         });
     }
+    if (Math.ceil(running_time / (param.fps * param.turnUnit)) !== Math.ceil((running_time + 1) / (param.fps * param.turnUnit))) {
+        postMessage({type:"PAUSE"});
+    }
 }
 
 var stopSim = function() {
@@ -209,6 +223,43 @@ function createNodes () {
     return _nodes;
 }
 
-
+function apply_policy(policy) {
+    if (policy.mask[0] && policy.mask[1]) {
+        simulation.nodes().forEach(node => {
+            node.mask = true;
+        })
+    } else if (policy.mask[0]){
+        simulation.nodes().forEach(node => {
+            node.mask = false;
+        })
+    }
+    if (policy.lock[0] && policy.lock[1]) {
+        simulation.nodes().forEach(node => {
+            node.change_speed(param.lockdown_factor);
+        })
+    } else if (policy.lock[0]){
+        simulation.nodes().forEach(node => {
+            node.change_speed(1 / param.lockdown_factor);
+        })
+    }
+    if (policy.curfew[0] && policy.curfew[1]) {
+        simulation.nodes().filter(node => node.age > 10 && node.age < 60).forEach(node => {
+            node.change_speed(param.curfew_factor);
+        })
+    } else if (policy.curfew[0]) {
+        simulation.nodes().filter(node => node.age > 10 && node.age < 60).forEach(node => {
+            node.change_speed(1 / param.curfew_factor);
+        })
+    }
+    if (policy.online[0] && policy.online[1]) {
+        simulation.nodes().filter(node => node.age < 20).forEach(node => {
+            node.change_speed(param.online_factor);
+        })
+    } else if (policy.online[0]) {
+        simulation.nodes().filter(node => node.age < 20).forEach(node => {
+            node.change_speed(1 / param.online_factor);
+        })
+    }
+}
 
 

@@ -1,5 +1,10 @@
 var run, chart_data, running_time, chart_param, pause_time;
-var mask = false, lock = false, curfew = false, online = false;
+var policy_setting = {
+    mask: false,
+    lock: false,
+    curfew: false,
+    online: false
+};
 var init_param = {
     size: 5,
     timeunit: 1000,
@@ -8,7 +13,7 @@ var init_param = {
     curfew_factor: 0.5,
     online_factor: 0.5,
     turnUnit: 7,
-    fps: 60,
+    fps: 24,
 
     duration: {
         "E1-E2": [1,2],
@@ -116,8 +121,8 @@ function get_params() {
     param["node_num"] = parseInt(param["node_num"]);
     param["initial_patient"] = parseInt(param["initial_patient"]);
     param["speed"] = parseFloat(param["speed"]);
-    param["TPC_base"] = parseFloat(param["TPC_base"])
-    param["hospital_max"] = parseInt(param["hospital_max"])
+    param["TPC_base"] = parseFloat(param["TPC_base"]);
+    param["hospital_max"] = Math.ceil(param["node_num"] * parseFloat(param["hospital_max"]));
 
     for (const key in init_param) {
         param[key] = init_param[key];
@@ -174,6 +179,10 @@ w.onmessage = function(event) {
             chart_data = event.data.data;
             save_log();
             break;
+        case "PAUSE":
+            pause_simulation();
+            weekly_report();
+            break;
         default:
             console.log("Worker message error: " + event.data.type);
     }
@@ -213,7 +222,7 @@ function updateSim(param, node_data, time) {
     chart += running_speed;
     if (chart >= param.fps) {
         let temp_data = {
-            "tick": time / param.fps,
+            "tick": Math.round(time / param.fps),
             "S": node_data.filter(e => e.state === state.S).length,
             "E1": node_data.filter(e => e.state === state.E1).length,
             "E2": node_data.filter(e => e.state === state.E2).length,
@@ -229,7 +238,7 @@ function updateSim(param, node_data, time) {
         chart_update(param, chart_param, chart_data);
         chart = 0;
     }
-    if (time % (param.turnUnit * param.fps) === 0) pause_simulation();
+//    if (time % (param.turnUnit * param.fps) === 0) pause_simulation();
     if (node_data.filter(e => e.state === state.S || e.state === state.R1 || e.state === state.R2).length === node_data.length &&
         node_data.filter(e => e.state === state.R1 || e.state === state.R2).length > 0) {
         show_result(param, node_data);
@@ -242,8 +251,8 @@ function show_result(param, node_data) {
     $("#resultTime").text(last_state["tick"]);
     $("#resultTotalInfected").text(param.node_num - last_state["S"]);
     $("#resultMaxQuarantined").text(_.max(chart_data, e => e.H2)["H2"]);
-    let chart_board = $("#chart_board");
-    chart_board.clone().appendTo($(".popChart"));
+    let chart_board = $("#chart_board").clone()
+        .attr("id", "chart_board_result").appendTo($(".popChart"));
     $("#popup_result").fadeIn();
     $(".popBg,#exit").on("click", function() {
         $("#popup_result").fadeOut(200);
@@ -395,29 +404,29 @@ function chart_init(param) {
     death_svg.append("g")
         .attr("class", "Yaxis");
 
-/*    var death_legend = death_board.append("div")
+    var death_legend = death_board.append("svg")
         .attr("class", "legend");
     death_legend.append("circle")
-        .attr("cx", 50).attr("cy", 50)
+        .attr("cx", 10).attr("cy", 15)
         .attr("r", 5)
         .attr("fill", "red");
     death_legend.append("circle")
-        .attr("cx", 50).attr("cy", 70)
+        .attr("cx", 10).attr("cy", 35)
         .attr("r", 5)
         .attr("fill", "black");
     death_legend.append("circle")
-        .attr("cx", 50).attr("cy", 90)
+        .attr("cx", 10).attr("cy", 55)
         .attr("r", 5)
         .attr("fill", "blue");
     death_legend.append("text")
-        .attr("x", 75).attr("y", 50)
+        .attr("x", 25).attr("y", 20)
         .text("Infected");
     death_legend.append("text")
-        .attr("x", 75).attr("y", 70)
+        .attr("x", 25).attr("y", 40)
         .text("Dead");
     death_legend.append("text")
-        .attr("x", 75).attr("y", 90)
-        .text("Movement");*/
+        .attr("x", 25).attr("y", 60)
+        .text("Movement");
 
     return {x:x, y:y, xAxis:xAxis, yAxis:yAxis, svg:svg, death_svg: death_svg};
 }
@@ -521,6 +530,8 @@ function pause_simulation() {
 function resume_simulation() {
     if (run !== null) return;
     $(".enable-on-pause").attr("disabled", "disabled");
+    w.postMessage({type: "RESUME", data: policy_setting});
+    $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
             w.postMessage({type: "REPORT", data: running_speed});
@@ -551,43 +562,44 @@ function save_log() {
 }
 
 function change_policy(policy) {
-
-    switch (policy) {
-        case "mask":
-            if (!mask) {
-                $('#mask').attr('src', 'img/policy_icon/mask_on.png');
-            } else {
-                $('#mask').attr('src', 'img/policy_icon/mask_off.png');
-            }
-            mask = !mask;
-            break;
-        case "lock":
-            if (!lock) {
-                $('#lock').attr('src', 'img/policy_icon/lock_on.png');
-            } else {
-                $('#lock').attr('src', 'img/policy_icon/lock_off.png');
-            }
-            lock = !lock;
-            break;
-        case "curfew":
-            if (!curfew) {
-                $('#curfew').attr('src', 'img/policy_icon/curfew_on.png');
-            } else {
-                $('#curfew').attr('src', 'img/policy_icon/curfew_off.png');
-            }
-            curfew = !curfew;
-            break;
-        case "online":
-            if (!online) {
-                $('#online').attr('src', 'img/policy_icon/online_on.png');
-            } else {
-                $('#online').attr('src', 'img/policy_icon/online_off.png');
-            }
-            online = !online;
-            break;
+    if (!policy_setting[policy]) {
+        $('.' + policy).attr("src", "img/policy_icon/" + policy + "_on.png");
+    } else {
+        $('.' + policy).attr("src", "img/policy_icon/" + policy + "_off.png");
     }
+    policy_setting[policy] = !policy_setting[policy];
 }
 
-function change_speed() {
-    running_speed = parseInt($("#speed_input").val());
+function change_speed(direction) {
+    if (direction > 0) {
+        if (running_speed === 8) return;
+        running_speed *= 2;
+    } else {
+        if (running_speed === 1) return;
+        running_speed /= 2;
+    }
+    $("#speed_out").val(running_speed.toString() + "x");
+}
+
+function weekly_report() {
+    let data_to = chart_data[chart_data.length - 1];
+    let data_from = chart_data[chart_data.length - w.param.turnUnit - 1];
+    if (data_from === undefined) data_from = chart_data[chart_data.length - w.param.turnUnit];
+
+    $("#weekly_date_from").val(data_from.tick + 1);
+    $("#weekly_date_to").val(data_to.tick + 1);
+    $("#weekly_new_infect").val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
+    $("#weekly_hospitalized").val(data_to.H2);
+    $("#weekly_death").val(data_to.R2 - data_from.R2);
+    let GDP_drop = (data_to.GDP - data_from.GDP) / data_from.GDP * 100;
+    if (GDP_drop < 0) {
+        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop));
+    } else {
+        $("#weekly_GDP_drop").val("increased by " + GDP_drop);
+    }
+
+
+
+
+    $("#popup_weekly").fadeIn();
 }

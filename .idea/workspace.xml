@@ -19,11 +19,13 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210818">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210820">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/simNode_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode_game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,9 +35,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="JavaScript File" />
         <option value="CSS File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -88,13 +90,13 @@
     <configuration name="covid_game.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/covid_game.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="d3_html_one.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_html_one.html" useBuiltInWebServerPort="true">
-      <method v="2" />
-    </configuration>
     <configuration name="d3_w_game.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_w_game.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="d3_webworker.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_webworker.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="test.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/test.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="main_game.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/main_game.js" working-dir="$PROJECT_DIR$">
@@ -103,10 +105,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JavaScript Debug.covid_game.html" />
+        <item itemvalue="JavaScript Debug.test.html" />
         <item itemvalue="Node.js.main_game.js" />
         <item itemvalue="JavaScript Debug.d3_w_game.html" />
         <item itemvalue="JavaScript Debug.d3_webworker.html" />
-        <item itemvalue="JavaScript Debug.d3_html_one.html" />
       </list>
     </recent_temporary>
   </component>
@@ -205,7 +207,11 @@
       <workItem from="1628571443423" duration="36000" />
       <workItem from="1629190822980" duration="1438000" />
       <workItem from="1629248915549" duration="1213000" />
-      <workItem from="1629267216272" duration="1164000" />
+      <workItem from="1629267216272" duration="2142000" />
+      <workItem from="1629273723605" duration="2459000" />
+      <workItem from="1629445569093" duration="55000" />
+      <workItem from="1629683269943" duration="12322000" />
+      <workItem from="1629776144443" duration="10846000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -368,7 +374,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629267591737</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="20210818_">
+      <created>1629268675957</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1629268675957</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -421,7 +434,8 @@
     <MESSAGE value="20210729_update" />
     <MESSAGE value="20210810" />
     <MESSAGE value="20210818" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210818" />
+    <MESSAGE value="20210818_" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210818_" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
@@ -429,7 +443,7 @@
         <watch expression="t._groups" />
         <watch expression="this.circle._groups" />
       </configuration>
-      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="161">
+      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="166">
         <watch expression="tick" language="JavaScript" />
       </inline-watch>
     </watches-manager>

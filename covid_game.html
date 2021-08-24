@@ -8,28 +8,74 @@
 <body>
 <div class="Day">Day: <output id="turn_day"></output></div>
 <div class="speed">
-    <input id="speed_input" type="number" min="1" value="1">
-    <input id="speed_on" class="enable-on-pause" type="button" onclick="change_speed()" value="Apply speed">
+    <div id="speed_output_wrapper">
+        <output id="speed_out">1x</output>
+    </div>
+    <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<<">
+    <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
 </div>
 <div class="board" id="board"></div>
 <div class="control_panel">
     <div class="panel_button">
-        <input id="button_pause" type="button" onclick="pause_simulation()" value="Pause">
         <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
-        <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
     </div>
     <div class="panel_policy">
         <div class="each_policy">
-            <button class="enable-on-pause" onclick="change_policy('mask')" disabled="disabled"><img id="mask" src="img/policy_icon/mask_off.png" alt="mask_required"></button>
+            <img id="mask_show" class="policy mask" src="img/policy_icon/mask_off.png" alt="mask_required">
         </div>
         <div class="each_policy">
-            <button class="enable-on-pause" onclick="change_policy('lock')" disabled="disabled"><img id="lock" src="img/policy_icon/lock_off.png" alt="lockdown"></button>
+            <img id="lock_show" class="policy lock" src="img/policy_icon/lock_off.png" alt="lockdown">
         </div>
         <div class="each_policy">
-            <button class="enable-on-pause" onclick="change_policy('curfew')" disabled="disabled"><img id="curfew" src="img/policy_icon/curfew_off.png" alt="curfew"></button>
+            <img id="curfew_show" class="policy curfew" src="img/policy_icon/curfew_off.png" alt="curfew">
         </div>
         <div class="each_policy">
-            <button class="enable-on-pause" onclick="change_policy('online')" disabled="disabled"> <img id="online" src="img/policy_icon/online_off.png" alt="online_class"></button>
+            <img id="online_show" class="policy online" src="img/policy_icon/online_off.png" alt="online_class">
+        </div>
+    </div>
+</div>
+<div id="popup_weekly" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox">
+        <div class="popHead">Weekly Report</div>
+        <div class="popBody">
+            <div class="weekly_status">
+                For day <output id="weekly_date_from">1</output> to day <output id="weekly_date_to">7</output>, there were: <br>
+                - <output id="weekly_new_infect">0</output> new patients were found.<br>
+                - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
+                - <output id="weekly_death">0</output> people were dead due to insufficient medical service.<br>
+                <br>
+                - Local GDP was <output id="weekly_GDP_drop">dropped by 0</output> %. <br>
+            </div> <br>
+            <div class="weekly_chart">
+                Weekly Chart<br>
+                <div class="weekly_board">
+                </div>
+            </div>
+            <div class="weekly_cmt">
+                Experts suggest:<br>
+                - Economist: "<output id="weekly_cmt_economy">No comments today, sir. Everything is fine.</output>"<br>
+                - Epidemiologist: "<output id="weekly_cmt_epidemic">No comments today, sir. Everything is fine.</output>"<br>
+            </div>
+            <div class="weekly_policy">
+                <div class="panel_policy">
+                    <div class="each_policy">
+                        <button class="enable-on-pause" onclick="change_policy('mask')" disabled="disabled"><img id="mask" class="policy mask" src="img/policy_icon/mask_off.png" alt="mask_required"></button>
+                    </div>
+                    <div class="each_policy">
+                        <button class="enable-on-pause" onclick="change_policy('lock')" disabled="disabled"><img id="lock" class="policy lock" src="img/policy_icon/lock_off.png" alt="lockdown"></button>
+                    </div>
+                    <div class="each_policy">
+                        <button class="enable-on-pause" onclick="change_policy('curfew')" disabled="disabled"><img id="curfew" class="policy curfew" src="img/policy_icon/curfew_off.png" alt="curfew"></button>
+                    </div>
+                    <div class="each_policy">
+                        <button class="enable-on-pause" onclick="change_policy('online')" disabled="disabled"> <img id="online" class="policy online" src="img/policy_icon/online_off.png" alt="online_class"></button>
+                    </div>
+                </div>
+            </div>
+            <div id="button_wrapper">
+                <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
+            </div>
         </div>
     </div>
 </div>
@@ -73,8 +119,8 @@
                 <label>Base transmission factor: <output id="TPC_base_output">0.5</output>
                     <input id="TPC_base" type="range" min="0" max="1" value="0.5" step="0.01" oninput="$('#TPC_base_output').text(value);">
                 </label>
-                <label>Maximum hospital capacity: <output id="hospital_max_output">50</output>
-                    <input id="hospital_max" type="range" min="0" max="1000" value="50" step="1" oninput="$('#hospital_max_output').text(value);">
+                <label>Maximum hospital capacity: <output id="hospital_max_output">0.1</output>
+                    <input id="hospital_max" type="range" min="0" max="1" value="0.1" step="0.01" oninput="$('#hospital_max_output').text(value);">
                 </label>
             </div>
             <div class="control" id="advanced_setting"></div>

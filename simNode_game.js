@@ -251,4 +251,9 @@ class Node {
         }
     }
 
+    change_speed (multiplier) {
+        this.vx *= multiplier;
+        this.vy *= multiplier;
+    }
+
 }

@@ -230,6 +230,7 @@ circle[class="node_#000000"] {
 .Day {
     padding: 5px;
     position: fixed;
+    margin: 2px;
     width: 120px;
     height: 50px;
     border: 1px solid black;
@@ -244,14 +245,18 @@ circle[class="node_#000000"] {
     top: 70px;
 }
 
-.speed input[type=number] {
+#speed_output_wrapper {
     text-align: center;
-    width: 120px;
+    font-size: 18px;
+    width: 100%;
+    font-weight: bold;
     border: 1px solid black;
     border-radius: 5px;
 }
 .speed input[type=button] {
-    width: 126px;
+    margin: 1px;
+    display: inline;
+    width: 46.5%;
     border: 1px solid black;
     border-radius: 5px;
     background-color: #b0dcde;
@@ -273,10 +278,10 @@ circle[class="node_#000000"] {
 
 .board .legend {
     position: absolute;
-    top: 10px;
-    left: 600px;
-    width: 100px;
-    height: 100px;
+    top: -80px;
+    left: 675px;
+    width: 110px;
+    height: 70px;
     font-size: 15px;
     display: block;
 }
@@ -322,6 +327,51 @@ circle[class="node_#000000"] {
 
 #death_board {
     position: absolute;
-    left: 800px;
-    top: 320px;
+    left: 810px;
+    top: 310px;
+}
+
+#chart_board {
+    position: absolute;
+    left: 810px;
+    top: 555px;
+}
+
+#popup_weekly .popInnerBox {
+    background-image: url("../img/report_background.jpg");
+    height: auto;
+}
+
+#popup_weekly .popHead {
+    margin: 3px 3px 3px 3px;
+    background-color: rgba(0,0,0,0.9);
+    border-radius: 10px;
+}
+
+#popup_weekly .popBody {
+    background-color: rgba(256,256,256,0.5);
+    font-size: 20px;
+    text-align: left;
+    height: auto;
+}
+
+#popup_weekly .weekly_board {
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100%;
+    height: 200px;
+    margin: 10px 0 0 0;
+}
+
+#popup_weekly .panel_policy {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    margin: 5px;
+}
+
+#popup_weekly .panel_policy .each_policy {
+    margin: 5px 10px 0 10px;
 }
