@@ -19,13 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210820">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210824">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simNode_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode_game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +208,8 @@
       <workItem from="1629273723605" duration="2459000" />
       <workItem from="1629445569093" duration="55000" />
       <workItem from="1629683269943" duration="12322000" />
-      <workItem from="1629776144443" duration="10846000" />
+      <workItem from="1629776144443" duration="14520000" />
+      <workItem from="1629853053935" duration="6783000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -381,7 +379,14 @@
       <option name="project" value="LOCAL" />
       <updated>1629268675957</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="20210824">
+      <created>1629790964662</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1629790964662</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -435,7 +440,8 @@
     <MESSAGE value="20210810" />
     <MESSAGE value="20210818" />
     <MESSAGE value="20210818_" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210818_" />
+    <MESSAGE value="20210824" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210824" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

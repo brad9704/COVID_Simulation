@@ -586,9 +586,23 @@ function weekly_report() {
     let data_from = chart_data[chart_data.length - w.param.turnUnit - 1];
     if (data_from === undefined) data_from = chart_data[chart_data.length - w.param.turnUnit];
 
+    let new_infect = $("#weekly_new_infect");
+    let prev_new_patient = parseInt(new_infect.val());
+    let this_new_patient = (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2);
+    if (prev_new_patient < this_new_patient) {
+        d3.select("#weekly_change_infect").style("color", "red");
+        $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient));
+    } else if (prev_new_patient > this_new_patient) {
+        d3.select("#weekly_change_infect").style("color", "blue");
+        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient));
+    } else {
+        d3.select("#weekly_change_infect").style("color", "black");
+        $("#weekly_change_infect").val("▲0");
+    }
+
     $("#weekly_date_from").val(data_from.tick + 1);
     $("#weekly_date_to").val(data_to.tick + 1);
-    $("#weekly_new_infect").val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
+    new_infect.val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
     $("#weekly_hospitalized").val(data_to.H2);
     $("#weekly_death").val(data_to.R2 - data_from.R2);
     let GDP_drop = (data_to.GDP - data_from.GDP) / data_from.GDP * 100;
@@ -598,8 +612,58 @@ function weekly_report() {
         $("#weekly_GDP_drop").val("increased by " + GDP_drop);
     }
 
-
-
+    let chart_data_ = chart_data.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
+        prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
+        prev[1].data.push([curr.tick, curr.R2]);
+        return prev;
+    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}]);
 
     $("#popup_weekly").fadeIn();
+
+    let board = d3.select(".weekly_board");
+    board.selectAll("svg").remove();
+    let board_svg = board.append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%");
+    let board_svg_size = board_svg.node().getBoundingClientRect();
+    let xScale = d3.scaleLinear()
+        .domain([data_from.tick, data_to.tick])
+        .range([0, board_svg_size.width - 50]);
+    let yScale = d3.scaleLinear()
+        .domain([0, w.param.node_num * 0.3])
+        .range([board_svg_size.height - 50, 0]);
+    let xAxis = d3.axisBottom().scale(xScale);
+    let yAxis = d3.axisLeft().scale(yScale);
+
+    board_svg = board_svg.append("g")
+        .attr("transform", "translate(30,20)");
+
+    board_svg.append("g")
+        .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")")
+        .attr("class", "xAxis");
+    board_svg.append("g")
+        .attr("class", "yAxis");
+
+    board_svg.selectAll(".xAxis").call(xAxis);
+    board_svg.selectAll(".yAxis").call(yAxis);
+
+    var v = board_svg.selectAll(".line")
+        .data(chart_data_);
+    v.enter()
+        .append("path")
+        .attr("class", "line")
+        .style("stroke", function(d) {return d.color;})
+        .style("fill", "none")
+        .style("stroke-width", 1.5)
+        .attr("d", function (e) {
+            return d3.line()
+                .x(function (d) {
+                    return xScale(d[0]);
+                })
+                .y(function (d) {
+                    return yScale(d[1]);
+                })
+                .curve(d3.curveBasis)(e.data);
+        });
+
 }
