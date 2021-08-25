@@ -37,10 +37,10 @@
 <div id="popup_weekly" class="popup">
     <div class="popBg"></div>
     <div class="popInnerBox">
-        <div class="popHead">Weekly Report</div>
+        <div class="popHead">Weekly Report<output></output></div>
         <div class="popBody">
             <div class="weekly_status">
-                For day <output id="weekly_date_from">1</output> to day <output id="weekly_date_to">7</output>, there were: <br>
+                For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output>, there were: <br>
                 - <output id="weekly_new_infect">0</output> new patients were found. (<output id="weekly_change_infect">▲0</output>)<br>
                 - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
                 - <output id="weekly_death">0</output> people were dead due to insufficient medical service.<br>
@@ -88,10 +88,6 @@
                 Elapsed time: <output id="resultTime"></output> seconds<br>
                 Cumulative patient number: <output id="resultTotalInfected"></output><br>
                 Max quarantined number: <output id="resultMaxQuarantined"></output> <br>
-            </div>
-            <div class="popQuarantine">
-                Cumulative "Quarantined" patient number: <output id="resultTotalQuarantine"></output> <br>
-                Hospital overflow time: <output id="resultQuarantineOverflow"></output> seconds<br>
             </div>
             <div class="popChart"></div>
             <input type="button" onclick="request_log()" value="Log">

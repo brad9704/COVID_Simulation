@@ -375,3 +375,23 @@ circle[class="node_#000000"] {
 #popup_weekly .panel_policy .each_policy {
     margin: 5px 10px 0 10px;
 }
+
+#button_wrapper {
+    width: 100%;
+    text-align: center;
+}
+
+#button_wrapper input {
+    margin: 5px;
+    padding: 10px 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 20px;
+    color: #524782;
+    background-color: white;
+}
+
+#button_wrapper input:hover {
+    color: white;
+    background-color: #524782;
+}
