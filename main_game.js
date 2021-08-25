@@ -511,6 +511,7 @@ function start_simulation() {
 function stop_simulation() {
     clearInterval(run);
     run = null;
+    $("#popup_weekly").fadeOut();
     w.postMessage({type: "STOP"});
 }
 function reset_simulation() {
@@ -605,7 +606,7 @@ function weekly_report() {
     new_infect.val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
     $("#weekly_hospitalized").val(data_to.H2);
     $("#weekly_death").val(data_to.R2 - data_from.R2);
-    let GDP_drop = (data_to.GDP - data_from.GDP) / data_from.GDP * 100;
+    let GDP_drop = Math.round((data_to.GDP - data_from.GDP) / data_from.GDP * 10000) / 100;
     if (GDP_drop < 0) {
         $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop));
     } else {
