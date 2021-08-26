@@ -235,29 +235,29 @@ function apply_policy(policy) {
     }
     if (policy.lock[0] && policy.lock[1]) {
         simulation.nodes().forEach(node => {
-            node.change_speed(param.lockdown_factor);
+            node.speed(param.lockdown_factor);
         })
     } else if (policy.lock[0]){
         simulation.nodes().forEach(node => {
-            node.change_speed(1 / param.lockdown_factor);
+            node.speed(1 / param.lockdown_factor);
         })
     }
     if (policy.curfew[0] && policy.curfew[1]) {
         simulation.nodes().filter(node => node.age > 10 && node.age < 60).forEach(node => {
-            node.change_speed(param.curfew_factor);
+            node.speed(param.curfew_factor);
         })
     } else if (policy.curfew[0]) {
         simulation.nodes().filter(node => node.age > 10 && node.age < 60).forEach(node => {
-            node.change_speed(1 / param.curfew_factor);
+            node.speed(1 / param.curfew_factor);
         })
     }
     if (policy.online[0] && policy.online[1]) {
         simulation.nodes().filter(node => node.age < 20).forEach(node => {
-            node.change_speed(param.online_factor);
+            node.speed(param.online_factor);
         })
     } else if (policy.online[0]) {
         simulation.nodes().filter(node => node.age < 20).forEach(node => {
-            node.change_speed(1 / param.online_factor);
+            node.speed(1 / param.online_factor);
         })
     }
 }

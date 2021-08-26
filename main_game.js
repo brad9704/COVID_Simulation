@@ -130,7 +130,7 @@ function get_params() {
 
     if (advanced) {
         $.each($("#advanced_setting input[type='number']"), (i, e) => {
-            if (e.id !== "size" || e.id !== "mask_factor") {
+            if (e.id !== "size" && e.id !== "mask_factor" && e.id !== "lockdown_factor" && e.id !== "curfew_factor" && e.id !== "online_factor") {
                 param[e.id] = parseInt(e.value);
             } else param[e.id] = parseFloat(e.value);
         })

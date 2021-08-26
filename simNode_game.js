@@ -68,7 +68,7 @@ class locs {
 class Node {
     constructor(param, width, height, index, age) {
         let angle = Math.random() * 2 * Math.PI;
-        let speed = param.speed * param.age_speed[age.toString()];
+        let speed = param.speed * param.age_speed[age];
 
         // Variables
         this.index = index;
@@ -122,9 +122,6 @@ class Node {
         if (loc_to.name !== "hospital") {
             this.fx = null;
             this.fy = null;
-            let angle = Math.random() * 2 * Math.PI;
-            this.vx = this.param.speed * Math.cos(angle);
-            this.vy = this.param.speed * Math.sin(angle);
         } else {
             this.fx = this.x;
             this.fy = this.y;
@@ -251,9 +248,9 @@ class Node {
         }
     }
 
-    change_speed (multiplier) {
-        this.vx *= multiplier;
-        this.vy *= multiplier;
+    speed (multiplier) {
+        this.vx = this.vx * multiplier;
+        this.vy = this.vy * multiplier;
     }
 
 }
