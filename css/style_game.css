@@ -109,10 +109,6 @@ body {
     color: white;
     background-color: #b0dcde;
 }
-.panel_button #button_pause {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-}
 .panel_button #button_stop {
     color: #254488;
 }
@@ -120,16 +116,6 @@ body {
     color: white;
     background-color: #667cb8;
 }
-.panel_button #button_resume {
-    color: #524782;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-.panel_button #button_resume:hover {
-    color: white;
-    background-color: #524782;
-}
-
 svg {
     border:1px solid black;
 }
@@ -202,7 +188,7 @@ svg {
     background-color: #578172;
 }
 
-#button_start {
+#popup_init #button_start {
     margin: 15px auto;
     max-width: 100%;
     display: block;
@@ -213,37 +199,67 @@ svg {
     border: 1px solid black;
     border-radius: 5px;
 }
-#button_start:hover {
+#popup_init #button_start:hover {
     color: white;
     background-color: #578172;
 }
-circle {
+#sim_board circle {
     stroke: black;
     stroke-width: 1px;
 }
 
-circle[class="node_#000000"] {
+#sim_board circle[class="node_#000000"] {
     opacity: 25%;
     stroke: none;
 }
 
-.Day {
+.sidebar {
+    width: 125px;
+    height: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.sidebar div {
+    border-radius: 5px;
+    background-color: white;
+}
+.sidebar .Day {
     padding: 5px;
-    position: fixed;
-    margin: 2px;
-    width: 120px;
+    margin: 5px;
+    width: 80%;
     height: 50px;
     border: 1px solid black;
     border-radius: 5px;
-    font-size: 30px;
+    font-size: 25px;
+    text-align: left;
 }
-.speed {
+.sidebar .speed {
     padding: 5px;
-    position: fixed;
-    width: 120px;
+    margin: 5px;
+    width: 80%;
     height: 50px;
     top: 70px;
 }
+.sidebar .speed .button {
+    width: 100%;
+}
+.sidebar .speed .button input {
+    width: 49%;
+    margin-top: 3px;
+    padding: 0;
+}
+.sidebar .speed .button #speed_slower {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: -2px;
+}
+.sidebar .speed .button #speed_faster {
+    margin-left: -2.5px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+
 
 #speed_output_wrapper {
     text-align: center;

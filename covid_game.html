@@ -6,13 +6,17 @@
     <link rel="stylesheet" href="css/style_game.css">
 </head>
 <body>
-<div class="Day">Day: <output id="turn_day"></output></div>
-<div class="speed">
-    <div id="speed_output_wrapper">
-        <output id="speed_out">1x</output>
+<div class="sidebar">
+    <div class="Day">Day: <output id="turn_day"></output></div>
+    <div class="speed">
+        <div id="speed_output_wrapper">
+            <output id="speed_out">1x</output>
+        </div>
+        <div class="button">
+            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<<">
+            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
+        </div>
     </div>
-    <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<<">
-    <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
 </div>
 <div class="board" id="board"></div>
 <div class="control_panel">
@@ -45,7 +49,7 @@
                 - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
                 - <output id="weekly_death">0</output> people were dead due to insufficient medical service.<br>
                 <br>
-                - Local GDP was <output id="weekly_GDP_drop">dropped by 0</output> %. <br>
+                - Local GDP was <output id="weekly_GDP_drop">dropped by 0</output> $. <br>
             </div> <br>
             <div class="weekly_chart">
                 Weekly Chart<br>
@@ -116,7 +120,7 @@
                     <input id="TPC_base" type="range" min="0" max="1" value="0.5" step="0.01" oninput="$('#TPC_base_output').text(value);">
                 </label>
                 <label>Maximum hospital capacity: <output id="hospital_max_output">0.01</output>
-                    <input id="hospital_max" type="range" min="0" max="1" value="0.1" step="0.001" oninput="$('#hospital_max_output').text(value);">
+                    <input id="hospital_max" type="range" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max_output').text(value);">
                 </label>
             </div>
             <div class="control" id="advanced_setting"></div>

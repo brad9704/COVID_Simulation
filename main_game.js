@@ -22,7 +22,7 @@ var init_param = {
         "I1-H1": [99,99],
         "I1-R1": [20,20],
         "I2-H2": [1,1],
-        "I2-R2": [8,8],
+        "I2-R2": [3,3],
         "H2-R1": [24,24]
     },
     age_dist: {
@@ -48,15 +48,15 @@ var init_param = {
         "80": 2.95
     },
     age_severe: {
-        "0": 0.015,
-        "10": 0.015,
-        "20": 0.015,
-        "30": 0.015,
-        "40": 0.015,
-        "50": 0.083,
-        "60": 0.171,
-        "70": 0.377,
-        "80": 0.582
+        "0": 0.045,
+        "10": 0.045,
+        "20": 0.045,
+        "30": 0.045,
+        "40": 0.045,
+        "50": 0.249,
+        "60": 0.513,
+        "70": 1,
+        "80": 1
     },
     age_speed: {
         "0": 1,
@@ -606,7 +606,7 @@ function weekly_report() {
     new_infect.val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
     $("#weekly_hospitalized").val(data_to.H2);
     $("#weekly_death").val(data_to.R2 - data_from.R2);
-    let GDP_drop = Math.round((data_to.GDP - data_from.GDP) / data_from.GDP * 10000) / 100;
+    let GDP_drop = Math.round(data_to.GDP - data_from.GDP);
     if (GDP_drop < 0) {
         $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop));
     } else {
@@ -631,7 +631,7 @@ function weekly_report() {
         .domain([data_from.tick, data_to.tick])
         .range([0, board_svg_size.width - 50]);
     let yScale = d3.scaleLinear()
-        .domain([0, w.param.node_num * 0.3])
+        .domain([0, w.param.node_num])
         .range([board_svg_size.height - 50, 0]);
     let xAxis = d3.axisBottom().scale(xScale);
     let yAxis = d3.axisLeft().scale(yScale);
