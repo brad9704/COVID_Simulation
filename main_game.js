@@ -608,9 +608,9 @@ function weekly_report() {
     $("#weekly_death").val("" + (data_to.R2 - data_from.R2) + "/" + data_to.R2);
     let GDP_drop = Math.round(data_to.GDP - data_from.GDP);
     if (GDP_drop < 0) {
-        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop) + "/" + chart_data.reduce((prev, curr) => prev + curr.v, 0));
+        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop) + "/" + chart_data.reduce((prev, curr) => prev + curr.GDP, 0));
     } else {
-        $("#weekly_GDP_drop").val("increased by " + GDP_drop);
+        $("#weekly_GDP_drop").val("increased by " + GDP_drop + "/" + chart_data.reduce((prev, curr) => prev + curr.GDP, 0));
     }
 
     let chart_data_ = chart_data.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
