@@ -531,7 +531,18 @@ function pause_simulation() {
 function resume_simulation() {
     if (run !== null) return;
     $(".enable-on-pause").attr("disabled", "disabled");
-    w.postMessage({type: "RESUME", data: policy_setting});
+    w.postMessage({type: "RESUME", data: {
+        "0": $("#policy_0").val(),
+            "10": $("#policy_10").val(),
+            "20": $("#policy_20").val(),
+            "30": $("#policy_30").val(),
+            "40": $("#policy_40").val(),
+            "50": $("#policy_50").val(),
+            "60": $("#policy_60").val(),
+            "70": $("#policy_70").val(),
+            "80": $("#policy_80").val()
+
+        }});
     $("#popup_weekly > .popInnerBox").off("mouseenter");
     $("#popup_weekly > .popInnerBox").off("mouseleave");
     $("#popup_weekly").fadeOut();
