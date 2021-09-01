@@ -22,20 +22,8 @@
     <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210826 (bug fix)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_html.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_html_one.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_js.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_js_one.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/d3_webworker.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/simNode.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/simNode_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode_game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -494,7 +482,7 @@
         <watch expression="t._groups" />
         <watch expression="this.circle._groups" />
       </configuration>
-      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="160">
+      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="166">
         <watch expression="tick" language="JavaScript" />
       </inline-watch>
     </watches-manager>

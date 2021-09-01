@@ -1,0 +1,12 @@
+@charset "utf-8";
+
+.graph-container-01{
+    min-width: 360px;
+    max-width: 600px;
+    margin: 1em auto;
+}
+
+#canvas {
+    position: absolute;
+    margin: auto;
+}

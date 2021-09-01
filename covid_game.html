@@ -107,14 +107,14 @@
         <div class="controls">
             <div class="control" id="init_setting">
                 <p><label>Initial setting</label><br>Target population number, initial patient, etc.</p>
-                <label>Target population number: <output id="node_num_output">1000</output> people
-                    <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').text(value); $('#initial_patient').attr('max',value); $('#initial_patient').attr('value',1); $('#initial_patient_output').text(1);">
+                <label>Target population number: <output id="node_num_output">500</output> people
+                    <input id="node_num" type="range" min="1" max="2000" value="500" step="1" oninput="$('#node_num_output').text(value); $('#initial_patient').attr('max',value); $('#initial_patient').attr('value',1); $('#initial_patient_output').text(1);">
                 </label>
                 <label>Initial patient: <output id="initial_patient_output">5</output> people
                     <input id="initial_patient" type="range" min="1" max="100" value="5" step="1" oninput="$('#initial_patient_output').text(value);">
                 </label>
-                <label>Initial speed: <output id="speed_output">0.2</output>
-                    <input id="speed" type="range" min="0" max="10" value="0.2" step="0.01" oninput="$('#speed_output').text(value);">
+                <label>Initial speed: <output id="speed_output">0.5</output>
+                    <input id="speed" type="range" min="0" max="10" value="0.5" step="0.01" oninput="$('#speed_output').text(value);">
                 </label>
                 <label>Base transmission factor: <output id="TPC_base_output">0.5</output>
                     <input id="TPC_base" type="range" min="0" max="1" value="0.5" step="0.01" oninput="$('#TPC_base_output').text(value);">

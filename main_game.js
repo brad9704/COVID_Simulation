@@ -1,4 +1,10 @@
-var run, chart_data, running_time, chart_param;
+var run, chart_data, running_time, chart_param, pause_time;
+var policy_setting = {
+    mask: false,
+    lock: false,
+    curfew: false,
+    online: false
+};
 var init_param = {
     size: 5,
     timeunit: 1000,
@@ -54,11 +60,11 @@ var init_param = {
     },
     age_speed: {
         "0": 1,
-        "10": 2,
-        "20": 2,
-        "30": 3,
-        "40": 3,
-        "50": 2,
+        "10": 1,
+        "20": 1,
+        "30": 1,
+        "40": 1,
+        "50": 1,
         "60": 1,
         "70": 1,
         "80": 1
