@@ -532,6 +532,8 @@ function resume_simulation() {
     if (run !== null) return;
     $(".enable-on-pause").attr("disabled", "disabled");
     w.postMessage({type: "RESUME", data: policy_setting});
+    $("#popup_weekly > .popInnerBox").off("mouseenter");
+    $("#popup_weekly > .popInnerBox").off("mouseleave");
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
