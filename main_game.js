@@ -610,16 +610,17 @@ function weekly_report() {
     $("#weekly_death").val("" + (data_to.R2 - data_from.R2) + "/" + data_to.R2);
     let GDP_drop = Math.round(data_to.GDP - data_from.GDP);
     if (GDP_drop < 0) {
-        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop) + "/" + chart_data.reduce((prev, curr) => prev + curr.GDP, 0));
+        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop) + "/" + Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP, 0)));
     } else {
-        $("#weekly_GDP_drop").val("increased by " + GDP_drop + "/" + chart_data.reduce((prev, curr) => prev + curr.GDP, 0));
+        $("#weekly_GDP_drop").val("increased by " + GDP_drop + "/" + Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP, 0)));
     }
 
     let chart_data_ = chart_data.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
         prev[1].data.push([curr.tick, curr.R2]);
+        prev[2].data.push([curr.tick, curr.GDP]);
         return prev;
-    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}]);
+    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
 
     let weekly_pointer = $("#popup_weekly");
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
