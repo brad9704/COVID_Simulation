@@ -592,23 +592,23 @@ function weekly_report() {
     let this_new_patient = (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2);
     if (prev_new_patient < this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "red");
-        $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient));
+        $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient) + "/" + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
     } else if (prev_new_patient > this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "blue");
-        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient));
+        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient) + "/" + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
     } else {
         d3.select("#weekly_change_infect").style("color", "black");
-        $("#weekly_change_infect").val("▲0");
+        $("#weekly_change_infect").val("▲0/" + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
     }
 
     $("#weekly_date_from").val(data_from.tick + 1);
     $("#weekly_date_to").val(data_to.tick + 1);
     new_infect.val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
     $("#weekly_hospitalized").val(data_to.H2);
-    $("#weekly_death").val(data_to.R2 - data_from.R2);
+    $("#weekly_death").val("" + (data_to.R2 - data_from.R2) + "/" + data_to.R2);
     let GDP_drop = Math.round(data_to.GDP - data_from.GDP);
     if (GDP_drop < 0) {
-        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop));
+        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop) + "/" + chart_data.reduce((prev, curr) => prev + curr.v, 0));
     } else {
         $("#weekly_GDP_drop").val("increased by " + GDP_drop);
     }
@@ -619,7 +619,15 @@ function weekly_report() {
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}]);
 
-    $("#popup_weekly").fadeIn();
+    let weekly_pointer = $("#popup_weekly");
+    let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
+    weekly_pointer.fadeIn();
+    weekly_inner_pointer.on("mouseleave", function() {
+        weekly_pointer.fadeTo(200,0.2);
+    });
+    weekly_inner_pointer.on("mouseenter", function() {
+        weekly_pointer.fadeTo(200, 1);
+    })
 
     let board = d3.select(".weekly_board");
     board.selectAll("svg").remove();

@@ -22,8 +22,8 @@
     <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210826 (bug fix)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -423,6 +423,16 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
