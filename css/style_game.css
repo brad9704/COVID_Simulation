@@ -411,3 +411,13 @@ svg {
     color: white;
     background-color: #524782;
 }
+
+.panel_policy input[type=range] {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    width: 10px;
+    height: 100px;
+}
+.panel_policy label {
+    text-align: center;
+}

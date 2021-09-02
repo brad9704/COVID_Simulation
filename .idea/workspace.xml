@@ -20,6 +20,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210901 (temp)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -443,7 +446,21 @@
       <option name="project" value="LOCAL" />
       <updated>1630462780839</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="20210901 (temp)">
+      <created>1630463059395</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1630463059395</updated>
+    </task>
+    <task id="LOCAL-00035" summary="20210901 (temp)">
+      <created>1630463225853</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1630463225853</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
