@@ -19,11 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210901 (temp)">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210902">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simNode_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/simNode_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,6 +212,8 @@
       <workItem from="1629939895441" duration="1785000" />
       <workItem from="1630289368006" duration="3247000" />
       <workItem from="1630390092853" duration="666000" />
+      <workItem from="1630573482755" duration="102000" />
+      <workItem from="1630653614810" duration="973000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -460,7 +460,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630463225853</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="20210902">
+      <created>1630573559127</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1630573559127</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -501,7 +508,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="20210423" />
     <MESSAGE value="20210622" />
     <MESSAGE value="20210629" />
     <MESSAGE value="20210630_non-jQuery" />
@@ -526,7 +532,8 @@
     <MESSAGE value="20210825_2" />
     <MESSAGE value="20210826 (bug fix)" />
     <MESSAGE value="20210901 (temp)" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210901 (temp)" />
+    <MESSAGE value="20210902" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210902" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

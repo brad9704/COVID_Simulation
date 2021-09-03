@@ -71,6 +71,7 @@ class Node {
         let speed = param.speed * param.age_speed[age];
 
         // Variables
+        this.multiplier = 1;
         this.index = index;
         this.x = d3.randomUniform(width * 0.1, width * 0.9)();
         this.y = d3.randomUniform(height * 0.1, height * 0.9)();
@@ -249,8 +250,9 @@ class Node {
     }
 
     speed (multiplier) {
-        this.vx = this.vx * multiplier;
-        this.vy = this.vy * multiplier;
+        this.vx = this.vx / this.multiplier * multiplier;
+        this.vy = this.vy / this.multiplier * multiplier;
+        this.multiplier = multiplier;
     }
 
 }
