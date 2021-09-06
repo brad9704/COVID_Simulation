@@ -607,10 +607,10 @@ function weekly_report() {
     let this_new_patient = (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2);
     if (prev_new_patient < this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "red");
-        $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient) + "/" + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
+        $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient) + ", total: " + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
     } else if (prev_new_patient > this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "blue");
-        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient) + "/" + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
+        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient) + ", total: " + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
     } else {
         d3.select("#weekly_change_infect").style("color", "black");
         $("#weekly_change_infect").val("▲0/" + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
@@ -618,10 +618,10 @@ function weekly_report() {
 
     $("#weekly_date_from").val(data_from.tick + 1);
     $("#weekly_date_to").val(data_to.tick + 1);
-    $("#weekly_week").text(Math.round(data_to.tick + 1 / w.param.turnUnit));
+    $("#weekly_week").text(Math.round((data_to.tick + 1) / w.param.turnUnit));
     new_infect.val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
     $("#weekly_hospitalized").val(data_to.H2);
-    $("#weekly_death").val("" + (data_to.R2 - data_from.R2) + "/" + data_to.R2);
+    $("#weekly_death").val("" + (data_to.R2 - data_from.R2) + "(total " + data_to.R2 + ")");
     let GDP_drop = Math.round((data_to.GDP - data_from.GDP));
     if (GDP_drop < 0) {
         $("#weekly_GDP_drop").val("dropped by $" + (-1*GDP_drop));

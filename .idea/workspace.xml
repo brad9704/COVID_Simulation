@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210906_table">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210906_text_fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
@@ -216,7 +216,7 @@
       <workItem from="1630573482755" duration="102000" />
       <workItem from="1630653614810" duration="1636000" />
       <workItem from="1630892806610" duration="28000" />
-      <workItem from="1630892982695" duration="7941000" />
+      <workItem from="1630892982695" duration="8614000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -491,7 +491,14 @@
       <option name="project" value="LOCAL" />
       <updated>1630905974895</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="20210906_text_fix">
+      <created>1630906666605</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1630906666605</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -532,7 +539,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="20210630_jQuery" />
     <MESSAGE value="20210630_jQuery_1" />
     <MESSAGE value="20210716_game" />
     <MESSAGE value="20210720_game" />
@@ -557,7 +563,8 @@
     <MESSAGE value="20210903&#10;Fix bug on changing speed" />
     <MESSAGE value="20210906" />
     <MESSAGE value="20210906_table" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210906_table" />
+    <MESSAGE value="20210906_text_fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210906_text_fix" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
