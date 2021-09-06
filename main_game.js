@@ -476,7 +476,7 @@ function chart_update(param, chart_param, chart_data) {
     let chart_data_ = chart_data.reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
         prev[1].data.push([curr.tick, curr.R2]);
-        prev[2].data.push([curr.tick, curr.GDP]);
+        prev[2].data.push([curr.tick, curr.GDP / chart_data[0].GDP * w.param.node_num]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
 
@@ -616,20 +616,23 @@ function weekly_report() {
 
     $("#weekly_date_from").val(data_from.tick + 1);
     $("#weekly_date_to").val(data_to.tick + 1);
+    $("#weekly_week").text(Math.round(data_to.tick + 1 / w.param.turnUnit));
     new_infect.val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
     $("#weekly_hospitalized").val(data_to.H2);
     $("#weekly_death").val("" + (data_to.R2 - data_from.R2) + "/" + data_to.R2);
-    let GDP_drop = Math.round(data_to.GDP - data_from.GDP);
+    let GDP_drop = Math.round((data_to.GDP - data_from.GDP));
     if (GDP_drop < 0) {
-        $("#weekly_GDP_drop").val("dropped by " + (-1*GDP_drop) + "/" + Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP, 0)));
+        $("#weekly_GDP_drop").val("dropped by $" + (-1*GDP_drop));
+
     } else {
-        $("#weekly_GDP_drop").val("increased by " + GDP_drop + "/" + Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP, 0)));
+        $("#weekly_GDP_drop").val("increased by $" + GDP_drop);
     }
+    $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0) + chart_data[0].GDP * 7));
 
     let chart_data_ = chart_data.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
         prev[1].data.push([curr.tick, curr.R2]);
-        prev[2].data.push([curr.tick, curr.GDP]);
+        prev[2].data.push([curr.tick, curr.GDP / chart_data[0].GDP * w.param.node_num]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
 

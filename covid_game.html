@@ -44,12 +44,12 @@
         <div class="popHead">Weekly Report<output></output></div>
         <div class="popBody">
             <div class="weekly_status">
-                For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output>, there were: <br>
+                For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output> (week <output id="weekly_week">1</output>), there were: <br>
                 - <output id="weekly_new_infect">0</output> new patients were found. (<output id="weekly_change_infect">▲0</output>)<br>
                 - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
                 - <output id="weekly_death">0</output> people were dead due to insufficient medical service.<br>
                 <br>
-                - Local GDP was <output id="weekly_GDP_drop">dropped by 0</output> $. <br>
+                - Local GDP was <output id="weekly_GDP_drop">dropped by $0</output>/day compared to last week, total: $<output id="weekly_GDP_total">0</output>. <br>
             </div> <br>
             <div class="weekly_chart">
                 Weekly Chart<br>
@@ -63,32 +63,32 @@
             </div>
             <div class="weekly_policy">
                 <div class="panel_policy">
-                    <label> 00-09
-                        <input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 0-9: <output id="policy_0_output">1.00</output>
+                        <input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1.00" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label> 10-19
-                        <input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 10-19: <output id="policy_10_output">1.00</output>
+                        <input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label> 20-29
-                        <input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 20-29: <output id="policy_20_output">1.00</output>
+                        <input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label> 30-39
-                        <input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 30-39: <output id="policy_30_output">1.00</output>
+                        <input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label> 40-49
-                        <input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 40-49: <output id="policy_40_output">1.00</output>
+                        <input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label> 50-59
-                        <input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 50-59: <output id="policy_50_output">1.00</output>
+                        <input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label>60-69
-                        <input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 60-69: <output id="policy_60_output">1.00</output>
+                        <input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label> 70-79
-                        <input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 70-79: <output id="policy_70_output">1.00</output>
+                        <input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
-                    <label> 80+
-                        <input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1">
+                    <label> 80+: <output id="policy_80_output">1.00</output>
+                        <input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                     </label>
 
                 </div>
