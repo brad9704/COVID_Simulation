@@ -504,6 +504,8 @@ function chart_update(param, chart_param, chart_data) {
 
 function start_simulation() {
     chart_data = [];
+    $(".table_sliders > td > input").val(1);
+    $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     let param = get_params();
     w.param = param;
     w.postMessage({type: "START", main: param});
