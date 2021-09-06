@@ -416,9 +416,20 @@ svg {
     -webkit-appearance: slider-vertical;
     writing-mode: bt-lr;
     width: 10px;
-    height: 100px;
+    height: 60px;
 }
 .panel_policy label {
     text-align: center;
     font-size: 17px;
+}
+
+.panel_policy table td {
+    width: 60px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.table_ages td {
+    color: blue;
+    font-weight: bold;
 }

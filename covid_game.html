@@ -63,34 +63,95 @@
             </div>
             <div class="weekly_policy">
                 <div class="panel_policy">
-                    <label> 0-9: <output id="policy_0_output">1.00</output>
-                        <input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1.00" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 10-19: <output id="policy_10_output">1.00</output>
-                        <input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 20-29: <output id="policy_20_output">1.00</output>
-                        <input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 30-39: <output id="policy_30_output">1.00</output>
-                        <input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 40-49: <output id="policy_40_output">1.00</output>
-                        <input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 50-59: <output id="policy_50_output">1.00</output>
-                        <input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 60-69: <output id="policy_60_output">1.00</output>
-                        <input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 70-79: <output id="policy_70_output">1.00</output>
-                        <input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-                    <label> 80+: <output id="policy_80_output">1.00</output>
-                        <input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
-                    </label>
-
+                    <table>
+                        <tr class="table_ages">
+                            <td>
+                                0-9
+                            </td>
+                            <td>
+                                10-19
+                            </td>
+                            <td>
+                                20-29
+                            </td>
+                            <td>
+                                30-39
+                            </td>
+                            <td>
+                                40-49
+                            </td>
+                            <td>
+                                50-59
+                            </td>
+                            <td>
+                                60-69
+                            </td>
+                            <td>
+                                70-79
+                            </td>
+                            <td>
+                                80+
+                            </td>
+                        </tr>
+                        <tr class="table_sliders">
+                            <td>
+                                <input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1.00" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                            <td>
+                                <input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                            </td>
+                        </tr>
+                        <tr class="table_floats">
+                            <td>
+                                <output id="policy_0_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_10_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_20_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_30_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_40_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_50_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_60_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_70_output">1.00</output>
+                            </td>
+                            <td>
+                                <output id="policy_80_output">1.00</output>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
             <div id="button_wrapper">
