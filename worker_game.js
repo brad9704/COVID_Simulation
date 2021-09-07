@@ -220,5 +220,3 @@ function apply_policy(policy) {
             .forEach(node => node.speed(policy[i]));
     }
 }
-
-

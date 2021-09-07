@@ -19,8 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210906_text_fix2">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20210906_Remove old files">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker_game.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,6 +216,7 @@
       <workItem from="1630653614810" duration="1636000" />
       <workItem from="1630892806610" duration="28000" />
       <workItem from="1630892982695" duration="9884000" />
+      <workItem from="1630915958370" duration="442000" />
     </task>
     <task id="LOCAL-00001" summary="20210419">
       <created>1618824417324</created>
@@ -503,7 +505,21 @@
       <option name="project" value="LOCAL" />
       <updated>1630907346263</updated>
     </task>
-    <option name="localTasksCounter" value="42" />
+    <task id="LOCAL-00042" summary="20210906_Remove old files">
+      <created>1630916058400</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1630916058400</updated>
+    </task>
+    <task id="LOCAL-00043" summary="20210906_Remove old files">
+      <created>1630916157183</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1630916157183</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -544,7 +560,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="20210716_game" />
     <MESSAGE value="20210720_game" />
     <MESSAGE value="20210720_game_" />
     <MESSAGE value="20210722_game" />
@@ -569,7 +584,8 @@
     <MESSAGE value="20210906_table" />
     <MESSAGE value="20210906_text_fix" />
     <MESSAGE value="20210906_text_fix2" />
-    <option name="LAST_COMMIT_MESSAGE" value="20210906_text_fix2" />
+    <MESSAGE value="20210906_Remove old files" />
+    <option name="LAST_COMMIT_MESSAGE" value="20210906_Remove old files" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
