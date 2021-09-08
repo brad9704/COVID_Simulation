@@ -1,10 +1,5 @@
 var run, chart_data, running_time, chart_param, pause_time;
-var policy_setting = {
-    mask: false,
-    lock: false,
-    curfew: false,
-    online: false
-};
+
 var init_param = {
     size: 5,
     timeunit: 1000,
@@ -588,14 +583,6 @@ function save_log() {
     document.body.removeChild(element);
 }
 
-function change_policy(policy) {
-    if (!policy_setting[policy]) {
-        $('.' + policy).attr("src", "img/policy_icon/" + policy + "_on.png");
-    } else {
-        $('.' + policy).attr("src", "img/policy_icon/" + policy + "_off.png");
-    }
-    policy_setting[policy] = !policy_setting[policy];
-}
 
 function change_speed(direction) {
     if (direction > 0) {
