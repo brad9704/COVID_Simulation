@@ -75,6 +75,8 @@ class Node {
         this.index = index;
         this.x = d3.randomUniform(width * 0.1, width * 0.9)();
         this.y = d3.randomUniform(height * 0.1, height * 0.9)();
+        this._vx = null;
+        this._vy = null;
         this.vx = speed * Math.cos(angle);
         this.vy = speed * Math.sin(angle);
 
@@ -250,8 +252,14 @@ class Node {
     }
 
     speed (multiplier) {
-        this.vx = this.vx / this.multiplier * multiplier;
-        this.vy = this.vy / this.multiplier * multiplier;
+        if (this._vx === null) {
+            this.vx = this.vx / this.multiplier * multiplier;
+            this.vy = this.vy / this.multiplier * multiplier;
+        }
+        else {
+            this._vx = this._vx / this.multiplier * multiplier;
+            this._vy = this._vy / this.multiplier * multiplier;
+        }
         this.multiplier = multiplier;
     }
 

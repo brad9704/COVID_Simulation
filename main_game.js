@@ -439,6 +439,17 @@ function chart_update(param, chart_param, chart_data) {
         svg = chart_param.svg,
         death_svg = chart_param.death_svg;
 
+    let now = chart_data[chart_data.length - 1], last = chart_data[chart_data.length - 2];
+    $(".infectious_new").val(last.S+last.E1+last.E2-now.S-now.E1-now.E2);
+    $(".infectious_now").val(now.I1+now.I2+now.H1+now.H2);
+    $(".infectious_total").val(w.param.node_num - now.S - now.E1 - now.E2);
+    $(".hospital_now").val(now.H2);
+    $(".hospital_max").val(w.param.hospital_max);
+    $(".death_now").val(now.R2-last.R2);
+    $(".death_total").val(now.R2);
+    $(".GDP_now").val(Math.round(now.GDP));
+    $(".GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) * 10000) / 100);
+
     x.domain([0, d3.max(chart_data, function(d) {
         return d["tick"];
     })]);
@@ -629,7 +640,7 @@ function weekly_report() {
     } else {
         $("#weekly_GDP_drop").val("increased by $" + GDP_drop);
     }
-    $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0) + chart_data[0].GDP * 7));
+    $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0)));
 
     let chart_data_ = chart_data.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);

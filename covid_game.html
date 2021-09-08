@@ -24,18 +24,50 @@
         <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
     </div>
     <div class="panel_policy">
-        <div class="each_policy">
-            <img id="mask_show" class="policy mask" src="img/policy_icon/mask_off.png" alt="mask_required">
-        </div>
-        <div class="each_policy">
-            <img id="lock_show" class="policy lock" src="img/policy_icon/lock_off.png" alt="lockdown">
-        </div>
-        <div class="each_policy">
-            <img id="curfew_show" class="policy curfew" src="img/policy_icon/curfew_off.png" alt="curfew">
-        </div>
-        <div class="each_policy">
-            <img id="online_show" class="policy online" src="img/policy_icon/online_off.png" alt="online_class">
-        </div>
+        <table class="panel_status">
+            <tr class="tag">
+                <td class="infectious">
+                    Infectious
+                </td>
+                <td class="hospital">
+                    ICU
+                </td>
+                <td class="death">
+                    Death
+                </td>
+                <td class="GDP">
+                    GDP
+                </td>
+            </tr>
+            <tr class="tag">
+                <td class="infectious">
+                    daily new (current/cumulative)
+                </td>
+                <td class="hospital">
+                    current / maximum
+                </td>
+                <td class="death">
+                    daily (cumulative)
+                </td>
+                <td class="GDP">
+                    daily (cumulative %)
+                </td>
+            </tr>
+            <tr class="var">
+                <td class="infectious">
+                    <output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)
+                </td>
+                <td class="hospital">
+                    <output class="hospital_now">0</output> / <output class="hospital_max">0</output>
+                </td>
+                <td class="death">
+                    <output class="death_now">0</output> (<output class="death_total">0</output>)
+                </td>
+                <td class="GDP">
+                    <output class="GDP_now">0</output> (<output class="GDP_total">0</output>%)
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 <div id="popup_weekly" class="popup">
@@ -95,31 +127,31 @@
                         </tr>
                         <tr class="table_sliders">
                             <td>
-                                <input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1.00" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1.00" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                             <td>
-                                <input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.01" max="1" step="0.01" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
+                                <input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))">
                             </td>
                         </tr>
                         <tr class="table_floats">

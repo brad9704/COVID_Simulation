@@ -433,3 +433,29 @@ svg {
     color: blue;
     font-weight: bold;
 }
+
+.panel_status {
+    width: 100%;
+}
+
+.panel_status tr td {
+    width: 25%;
+    border: 1px solid #d3d3d3;
+    border-left: none;
+    border-top: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+.panel_status .infectious output {
+    color: #C00000;
+}
+.panel_status .hospital output {
+    color: #5260d0;
+}
+.panel_status .death output {
+    color: #000000;
+}
+.panel_status .GDP output {
+    color: blue;
+}
