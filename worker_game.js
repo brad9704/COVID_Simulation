@@ -129,19 +129,23 @@ function ticked() {
 
     if (running_time % param.fps === 0) {
         let node_data = simulation.nodes();
-        chart_data.push({
+        let temp_data = {
             "tick": running_time / param.fps,
-            "S": node_data.filter(e => e.state === state.S).length,
-            "E1": node_data.filter(e => e.state === state.E1).length,
-            "E2": node_data.filter(e => e.state === state.E2).length,
-            "I1": node_data.filter(e => e.state === state.I1).length,
-            "I2": node_data.filter(e => e.state === state.I2).length,
-            "H1": node_data.filter(e => e.state === state.H1).length,
-            "H2": node_data.filter(e => e.state === state.H2).length,
-            "R1": node_data.filter(e => e.state === state.R1).length,
-            "R2": node_data.filter(e => e.state === state.R2).length,
             "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2
+        };
+        Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
+            temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "10").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "20").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "30").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "40").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "50").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "60").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "70").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "80").length,
+                node_data.filter(e => e.state === state[stat]).length];
         });
+        chart_data.push(temp_data);
     }
     if (Math.ceil(running_time / (param.fps * param.turnUnit)) !== Math.ceil((running_time + 1) / (param.fps * param.turnUnit))) {
         postMessage({type:"PAUSE"});

@@ -35,13 +35,13 @@
                 <td class="infectious">daily new (current/cumulative)</td>
                 <td class="hospital">current / maximum</td>
                 <td class="death">daily (cumulative)</td>
-                <td class="GDP">daily (total % compared with pre-COVID)</td>
+                <td class="GDP">daily (compared to pre-COVID)</td>
             </tr>
             <tr class="panel var">
                 <td class="infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</td>
                 <td class="hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></td>
                 <td class="death"><output class="death_now">0</output> (<output class="death_total">0</output>)</td>
-                <td class="GDP"><output class="GDP_now">0</output> (<output class="GDP_total">0</output>%)</td>
+                <td class="GDP">$<output class="GDP_now">0</output> (<output class="GDP_total">0</output>%)</td>
             </tr>
         </table>
     </div>
@@ -53,13 +53,23 @@
         <div class="popBody">
             <div class="weekly_status">
                 For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output> (week <output id="weekly_week">1</output>), there were: <br>
-                - <output id="weekly_new_infect">0</output> new patients were found. (<output id="weekly_change_infect">▲0</output>)<br>
+                - <output id="weekly_new_infect">0</output>(<output id="weekly_change_infect">▲0</output>) new patients were found (Total <output class="weekly infectious" age="90">0</output>).<br>
                 - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
-                - <output id="weekly_death">0</output> people were dead due to insufficient medical service.<br>
+                - <output id="weekly_death">0</output> people were dead due to insufficient medical service (Total <output class="weekly death" age="90">0</output>). <br>
                 <br>
-                - Local GDP was $<output class="GDP_now">0</output>/day, cumulated GDP compared with pre-COVID: <output class="GDP_total">0</output>%. <br>
+                - Local GDP was $<output class="GDP_now">0</output>/day, compared to pre-COVID: <output class="GDP_total">0</output>%. <br>
             </div> <br>
             <div class="weekly_chart">
+                <div class="weekly legend">
+                    <svg>
+                        <circle cx="10" cy="10" r="6" fill="red"></circle>
+                        <text x="25" y="16">Infected</text>
+                        <circle cx="10" cy="30" r="6" fill="black"></circle>
+                        <text x="25" y="36">Dead</text>
+                        <circle cx="10" cy="50" r="6" fill="blue"></circle>
+                        <text x="25" y="56">Daily GDP</text>
+                    </svg>
+                </div>
                 Weekly Chart<br>
                 <div class="weekly_board">
                 </div>
@@ -68,7 +78,7 @@
                 <div class="panel_policy">
                     <table>
                         <tr class="table_ages">
-                            <td></td>
+                            <td class="weekly tag column"></td>
                             <td>0-9</td>
                             <td>10-19</td>
                             <td>20-29</td>
@@ -78,10 +88,50 @@
                             <td>60-69</td>
                             <td>70-79</td>
                             <td>80+</td>
+                            <td>Total</td>
+                        </tr>
+                        <tr class="weekly infectious">
+                            <td class="weekly tag column">Infectious</td>
+                            <td><output class="weekly infectious" age="0">0</output></td>
+                            <td><output class="weekly infectious" age="10">0</output></td>
+                            <td><output class="weekly infectious" age="20">0</output></td>
+                            <td><output class="weekly infectious" age="30">0</output></td>
+                            <td><output class="weekly infectious" age="40">0</output></td>
+                            <td><output class="weekly infectious" age="50">0</output></td>
+                            <td><output class="weekly infectious" age="60">0</output></td>
+                            <td><output class="weekly infectious" age="70">0</output></td>
+                            <td><output class="weekly infectious" age="80">0</output></td>
+                            <td><output class="weekly infectious" age="90">0</output></td>
+                        </tr>
+                        <tr class="weekly ICU">
+                            <td class="weekly tag column">ICU</td>
+                            <td><output class="weekly ICU" age="0">0</output></td>
+                            <td><output class="weekly ICU" age="10">0</output></td>
+                            <td><output class="weekly ICU" age="20">0</output></td>
+                            <td><output class="weekly ICU" age="30">0</output></td>
+                            <td><output class="weekly ICU" age="40">0</output></td>
+                            <td><output class="weekly ICU" age="50">0</output></td>
+                            <td><output class="weekly ICU" age="60">0</output></td>
+                            <td><output class="weekly ICU" age="70">0</output></td>
+                            <td><output class="weekly ICU" age="80">0</output></td>
+                            <td><output class="weekly ICU" age="90">0</output></td>
+                        </tr>
+                        <tr class="weekly death">
+                            <td class="weekly tag column">Death</td>
+                            <td><output class="weekly death" age="0">0</output></td>
+                            <td><output class="weekly death" age="10">0</output></td>
+                            <td><output class="weekly death" age="20">0</output></td>
+                            <td><output class="weekly death" age="30">0</output></td>
+                            <td><output class="weekly death" age="40">0</output></td>
+                            <td><output class="weekly death" age="50">0</output></td>
+                            <td><output class="weekly death" age="60">0</output></td>
+                            <td><output class="weekly death" age="70">0</output></td>
+                            <td><output class="weekly death" age="80">0</output></td>
+                            <td><output class="weekly death" age="90">0</output></td>
                         </tr>
                         <tr class="table_sliders">
-                            <td>Movement setting</td>
-                            <td><input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1.00" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
+                            <td class="weekly tag column">Movement setting</td>
+                            <td><input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
                             <td><input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
                             <td><input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
                             <td><input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
@@ -92,7 +142,7 @@
                             <td><input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
                         </tr>
                         <tr class="table_floats">
-                            <td>Movement multiplier</td>
+                            <td class="weekly tag column">Movement multiplier</td>
                             <td><output id="policy_0_output">1.00</output></td>
                             <td><output id="policy_10_output">1.00</output></td>
                             <td><output id="policy_20_output">1.00</output></td>
@@ -118,12 +168,29 @@
         <div class="popHead">RESULT</div>
         <div class="popBody">
             <div class="popCommonVar">
-                Elapsed time: <output id="resultTime"></output> seconds<br>
-                Cumulative patient number: <output id="resultTotalInfected"></output><br>
-                Max quarantined number: <output id="resultMaxQuarantined"></output> <br>
+                Elapsed time: <output id="resultTime">0</output> days<br>
             </div>
             <div class="popChart"></div>
-            <input type="button" onclick="request_log()" value="Log">
+            <div class="panel_policy_result">
+                <table class="panel_status">
+                    <tr class="panel tag">
+                        <td class="infectious">Infectious</td>
+                        <td class="death">Death</td>
+                        <td class="GDP">GDP</td>
+                    </tr>
+                    <tr class="panel unit">
+                        <td class="infectious">cumulative</td>
+                        <td class="death">cumulative</td>
+                        <td class="GDP">compared to pre-COVID</td>
+                    </tr>
+                    <tr class="panel var">
+                        <td class="infectious"><output class="infectious_total">0</output></td>
+                        <td class="death"><output class="death_total">0</output></td>
+                        <td class="GDP"><output class="GDP_total">0</output>%</td>
+                    </tr>
+                </table>
+            </div>
+            <input type="button" onclick="request_log()" value="Log" disabled style="display:none">
             <input id="exit" type="button" value="Exit">
         </div>
         <div class="popFoot">

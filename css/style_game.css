@@ -455,3 +455,18 @@ svg {
 .panel_status .GDP output {
     color: blue;
 }
+
+.weekly.legend {
+    position: absolute;
+    left: 920px;
+    top: 340px;
+}
+.weekly.legend svg {
+    width: 100px;
+    height: 65px;
+    font-size: 15px;
+}
+
+.weekly.tag.column {
+    width: 180px;
+}

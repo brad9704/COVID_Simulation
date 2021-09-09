@@ -194,17 +194,20 @@ function initSim(param, initial_node_data, loc) {
     node_init(param, initial_node_data, loc);
     let init_data = {
         "tick": 0,
-        "S": initial_node_data.filter(e => e.state === state.S).length,
-        "E1": initial_node_data.filter(e => e.state === state.E1).length,
-        "E2": initial_node_data.filter(e => e.state === state.E2).length,
-        "I1": initial_node_data.filter(e => e.state === state.I1).length,
-        "I2": initial_node_data.filter(e => e.state === state.I2).length,
-        "H1": initial_node_data.filter(e => e.state === state.H1).length,
-        "H2": initial_node_data.filter(e => e.state === state.H2).length,
-        "R1": initial_node_data.filter(e => e.state === state.R1).length,
-        "R2": initial_node_data.filter(e => e.state === state.R2).length,
         "GDP": initial_node_data.reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9
     };
+    Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
+        init_data[stat] = [initial_node_data.filter(e => e.state === state[stat] && e.age === "0").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "10").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "20").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "30").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "40").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "50").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "60").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "70").length,
+            initial_node_data.filter(e => e.state === state[stat] && e.age === "80").length,
+            initial_node_data.filter(e => e.state === state[stat]).length];
+    })
     chart_data.push(init_data);
     chart_param = chart_init(param);
 }
@@ -218,17 +221,20 @@ function updateSim(param, node_data, time) {
     if (chart >= param.fps) {
         let temp_data = {
             "tick": Math.round(time / param.fps),
-            "S": node_data.filter(e => e.state === state.S).length,
-            "E1": node_data.filter(e => e.state === state.E1).length,
-            "E2": node_data.filter(e => e.state === state.E2).length,
-            "I1": node_data.filter(e => e.state === state.I1).length,
-            "I2": node_data.filter(e => e.state === state.I2).length,
-            "H1": node_data.filter(e => e.state === state.H1).length,
-            "H2": node_data.filter(e => e.state === state.H2).length,
-            "R1": node_data.filter(e => e.state === state.R1).length,
-            "R2": node_data.filter(e => e.state === state.R2).length,
             "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9
         };
+        Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
+            temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "10").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "20").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "30").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "40").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "50").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "60").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "70").length,
+                node_data.filter(e => e.state === state[stat] && e.age === "80").length,
+                node_data.filter(e => e.state === state[stat]).length];
+        })
         chart_data.push(temp_data);
         chart_update(param, chart_param, chart_data);
         chart = 0;
@@ -245,7 +251,7 @@ function show_result(param, node_data) {
     let last_state = chart_data[chart_data.length - 1];
     $("#resultTime").text(last_state["tick"]);
     $("#resultTotalInfected").text(param.node_num - last_state["S"]);
-    $("#resultMaxQuarantined").text(_.max(chart_data, e => e.H2)["H2"]);
+    $("#resultMaxQuarantined").text(_.max(chart_data, e => e.H2[9])["H2"][9]);
     let chart_board = $("#chart_board").clone()
         .attr("id", "chart_board_result").appendTo($(".popChart"));
     $("#popup_result").fadeIn();
@@ -434,7 +440,20 @@ function chart_update(param, chart_param, chart_data) {
         svg = chart_param.svg,
         death_svg = chart_param.death_svg;
 
-    let now = chart_data[chart_data.length - 1], last = chart_data[chart_data.length - 2];
+    let chart_data_total = [];
+    chart_data.forEach(data => {
+        let temp_data = {};
+        for (const prob in data) {
+            if (prob === "tick" || prob === "GDP") {
+                temp_data[prob] = data[prob];
+            } else {
+                temp_data[prob] = data[prob][9];
+            }
+        }
+        chart_data_total.push(temp_data);
+    })
+
+    let now = chart_data_total[chart_data_total.length - 1], last = chart_data_total[chart_data_total.length - 2];
     $(".infectious_new").val(last.S+last.E1+last.E2-now.S-now.E1-now.E2);
     $(".infectious_now").val(now.I1+now.I2+now.H1+now.H2);
     $(".infectious_total").val(w.param.node_num - now.S - now.E1 - now.E2);
@@ -443,9 +462,9 @@ function chart_update(param, chart_param, chart_data) {
     $(".death_now").val(now.R2-last.R2);
     $(".death_total").val(now.R2);
     $(".GDP_now").val(Math.round(now.GDP));
-    $(".GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) * 10000) / 100);
+    $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 10000) / 100);
 
-    x.domain([0, d3.max(chart_data, function(d) {
+    x.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
     })]);
     svg.selectAll(".Xaxis")
@@ -455,9 +474,10 @@ function chart_update(param, chart_param, chart_data) {
     svg.selectAll(".Yaxis")
         .call(yAxis);
 
+
     var stack = d3.stack()
         .keys(["R2","R1","H2","H1","I2","I1","E2","E1","S"]);
-    var series = stack(chart_data);
+    var series = stack(chart_data_total);
 
     var v = svg.selectAll(".line")
         .data(series);
@@ -479,10 +499,10 @@ function chart_update(param, chart_param, chart_data) {
         .call(yAxis);
 
 
-    let chart_data_ = chart_data.reduce((prev, curr) => {
+    let chart_data_ = chart_data_total.reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
         prev[1].data.push([curr.tick, curr.R2]);
-        prev[2].data.push([curr.tick, curr.GDP / chart_data[0].GDP * w.param.node_num]);
+        prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
 
@@ -596,30 +616,43 @@ function change_speed(direction) {
 }
 
 function weekly_report() {
+    let chart_data_total = [];
+    chart_data.forEach(data => {
+        let temp_data = {};
+        for (const prob in data) {
+            if (prob === "tick" || prob === "GDP") {
+                temp_data[prob] = data[prob];
+            } else {
+                temp_data[prob] = data[prob][9];
+            }
+        }
+        chart_data_total.push(temp_data);
+    })
+
     let data_to = chart_data[chart_data.length - 1];
     let data_from = chart_data[chart_data.length - w.param.turnUnit - 1];
     if (data_from === undefined) data_from = chart_data[chart_data.length - w.param.turnUnit];
 
     let new_infect = $("#weekly_new_infect");
     let prev_new_patient = parseInt(new_infect.val());
-    let this_new_patient = (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2);
+    let this_new_patient = (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]);
     if (prev_new_patient < this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "red");
-        $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient) + ", total: " + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
+        $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient));
     } else if (prev_new_patient > this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "blue");
-        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient) + ", total: " + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
+        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient));
     } else {
         d3.select("#weekly_change_infect").style("color", "black");
-        $("#weekly_change_infect").val("▲0/" + (data_to.I1 + data_to.I2 + data_to.H1 + data_to.H2));
+        $("#weekly_change_infect").val("▲0");
     }
 
     $("#weekly_date_from").val(data_from.tick + 1);
     $("#weekly_date_to").val(data_to.tick + 1);
     $("#weekly_week").text(Math.round((data_to.tick + 1) / w.param.turnUnit));
-    new_infect.val( (data_from.S + data_from.E1 + data_from.E2) - (data_to.S + data_to.E1 + data_to.E2));
-    $("#weekly_hospitalized").val(data_to.H2);
-    $("#weekly_death").val("" + (data_to.R2 - data_from.R2) + "(total " + data_to.R2 + ")");
+    new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
+    $("#weekly_hospitalized").val(data_to.H2[9]);
+    $("#weekly_death").val(data_to.R2[9] - data_from.R2[9]);
     let GDP_drop = Math.round((data_to.GDP - data_from.GDP));
     if (GDP_drop < 0) {
         $("#weekly_GDP_drop").val("dropped by $" + (-1*GDP_drop));
@@ -629,10 +662,20 @@ function weekly_report() {
     }
     $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0)));
 
-    let chart_data_ = chart_data.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
+    $("output.weekly.infectious").each(function(e) {
+        this.value = (data_to.I1[parseInt(this.getAttribute("age")) / 10] + data_to.I2[parseInt(this.getAttribute("age")) / 10]);
+    });
+    $("output.weekly.ICU").each(function(e) {
+        this.value = (data_to.H2[parseInt(this.getAttribute("age")) / 10]);
+    });
+    $("output.weekly.death").each(function(e) {
+        this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
+    })
+
+    let chart_data_ = chart_data_total.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
         prev[1].data.push([curr.tick, curr.R2]);
-        prev[2].data.push([curr.tick, curr.GDP / chart_data[0].GDP * w.param.node_num]);
+        prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
 
