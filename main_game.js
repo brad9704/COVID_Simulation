@@ -1,5 +1,5 @@
 var run, chart_data, running_time, chart_param, pause_time;
-
+var clicker = 0;
 var init_param = {
     size: 5,
     timeunit: 1000,
@@ -602,6 +602,10 @@ function save_log() {
 
 
 function change_speed(direction) {
+    clicker += 1;
+    if (clicker > 30) {
+        $(".Day").text("🥕: ");
+    }
     if (direction > 0) {
         if (running_speed === 8) return;
         running_speed *= 2;
