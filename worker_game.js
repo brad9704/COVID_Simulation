@@ -36,7 +36,7 @@ var startSim = function(event_data) {
         Assertion for necessary parameters
     */
     function assertion (event_data) {
-        for (let key of ["sim_width", "sim_height", "size", "timeunit", "fps", "mask_factor", "duration", "age_dist", "age_infect", "age_severe",
+        for (let key of ["sim_width", "sim_height", "size", "timeunit", "fps", "duration", "age_dist", "age_infect", "age_severe",
             "node_num", "initial_patient", "speed", "TPC_base", "hospital_max"]) {
             console.assert(event_data.hasOwnProperty(key));
         }

@@ -3,13 +3,8 @@ var run, chart_data, running_time, chart_param, pause_time;
 var init_param = {
     size: 5,
     timeunit: 1000,
-    mask_factor: 0.85,
-    lockdown_factor: 0.5,
-    curfew_factor: 0.5,
-    online_factor: 0.5,
     turnUnit: 7,
     fps: 24,
-
     duration: {
         "E1-E2": [1,2],
         "E2-I1": [3,4],
@@ -463,6 +458,7 @@ function chart_update(param, chart_param, chart_data) {
     $(".death_total").val(now.R2);
     $(".GDP_now").val(Math.round(now.GDP));
     $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 10000) / 100);
+    $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 10000) / 100);
 
     x.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
