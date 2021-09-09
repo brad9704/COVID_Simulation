@@ -604,7 +604,7 @@ function save_log() {
 function change_speed(direction) {
     clicker += 1;
     if (clicker > 30) {
-        $(".Day").text("🥕: ");
+        $("#day_text").text("🥕: ");
     }
     if (direction > 0) {
         if (running_speed === 8) return;
