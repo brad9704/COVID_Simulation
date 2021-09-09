@@ -76,6 +76,7 @@ function advanced_setting() {
         .data(d3.keys(init_param))
         .enter()
         .append("label")
+        .attr("id", d => d + "_label")
         .text(d => d + ": ")
         .append("input")
         .attr("id", d => d)

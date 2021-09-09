@@ -470,3 +470,7 @@ svg {
 .weekly.tag.column {
     width: 180px;
 }
+
+#duration_label::after {
+    content: "E1->E2; E2->I1; I1->I2; I1->H1; I1->R1; I2->H2; I2->R2; H2->R1";
+}
