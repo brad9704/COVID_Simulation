@@ -7,6 +7,7 @@ var running_time;
 var simulation;
 var param;
 var chart_data;
+var global_policy;
 
 onmessage = function(event){
     switch (event.data.type) {
@@ -46,6 +47,7 @@ var startSim = function(event_data) {
     chart_data = [];
     running_time = 0;
     simulation = null;
+    global_policy = [1,1,1,1,1,1,1,1,1];
 
     var node_list = createNodes();
 
@@ -111,8 +113,7 @@ Transmission probability per contact
 const TPC = function(node1, node2) {
     let tpc = param.TPC_base;
     tpc *= param.age_infect[node1.age.toString()]
-    if (node1.mask) tpc *= param.mask_factor;
-    if (node2.mask) tpc *= param.mask_factor;
+    tpc /= param.fps;
     return tpc;
 }
 
@@ -131,7 +132,8 @@ function ticked() {
         let node_data = simulation.nodes();
         let temp_data = {
             "tick": running_time / param.fps,
-            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2
+            "GDP": node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + Math.hypot(curr.vx, curr.vy), 0) / param.speed * 0.9,
+            "policy": Array.from(global_policy)
         };
         Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
             temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
@@ -218,9 +220,12 @@ function createNodes () {
 }
 
 function apply_policy(policy) {
+    let count = 0;
     for (let i in policy) {
         simulation.nodes()
             .filter(node => node.age === i)
             .forEach(node => node.speed(policy[i]));
+        global_policy[count] = policy[i];
+        count++;
     }
 }

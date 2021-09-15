@@ -568,8 +568,7 @@ function resume_simulation() {
             "80": $("#policy_80").val()
 
         }});
-    $("#popup_weekly > .popInnerBox").off("mouseenter");
-    $("#popup_weekly > .popInnerBox").off("mouseleave");
+    $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
@@ -585,15 +584,25 @@ function request_log() {
 }
 
 function save_log() {
-    let str = "tick,S,E1,E2,I1,I2,H1,H2,R1,R2\n";
+    let str = "day," +
+        "S(0-9),S(10-19),S(20-29),S(30-39),S(40-49),S(50-59),S(60-69),S(70-79),S(80+),S(Total)," +
+        "E1(0-9),E1(10-19),E1(20-29),E1(30-39),E1(40-49),E1(50-59),E1(60-69),E1(70-79),E1(80+),E1(Total)," +
+        "E2(0-9),E2(10-19),E2(20-29),E2(30-39),E2(40-49),E2(50-59),E2(60-69),E2(70-79),E2(80+),E2(Total)," +
+        "I1(0-9),I1(10-19),I1(20-29),I1(30-39),I1(40-49),I1(50-59),I1(60-69),I1(70-79),I1(80+),I1(Total)," +
+        "I2(0-9),I2(10-19),I2(20-29),I2(30-39),I2(40-49),I2(50-59),I2(60-69),I2(70-79),I2(80+),I2(Total)," +
+        "H1(0-9),H1(10-19),H1(20-29),H1(30-39),H1(40-49),H1(50-59),H1(60-69),H1(70-79),H1(80+),H1(Total)," +
+        "H2(0-9),H2(10-19),H2(20-29),H2(30-39),H2(40-49),H2(50-59),H2(60-69),H2(70-79),H2(80+),H2(Total)," +
+        "R1(0-9),R1(10-19),R1(20-29),R1(30-39),R1(40-49),R1(50-59),R1(60-69),R1(70-79),R1(80+),R1(Total)," +
+        "R2(0-9),R2(10-19),R2(20-29),R2(30-39),R2(40-49),R2(50-59),R2(60-69),R2(70-79),R2(80+),R2(Total)," +
+        "Policy(0-9),Policy(10-19),Policy(20-29),Policy(30-39),Policy(40-49),Policy(50-59),Policy(60-69),Policy(70-79),Policy(80+),GDP\n";
     if (chart_data === undefined) return;
     chart_data.forEach(e => {
-        str += e.tick + "," + e.S + "," + e.E1 + "," + e.E2 + "," + e.I1 + "," + e.I2 + "," + e.H1 + "," + e.H2 + "," + e.R1 + "," + e.R2 + "\n";
+        str += e.tick + "," + e.S + "," + e.E1 + "," + e.E2 + "," + e.I1 + "," + e.I2 + "," + e.H1 + "," + e.H2 + "," + e.R1 + "," + e.R2 + "," + e.policy + "," + e.GDP + "\n";
     })
 
     var element = document.createElement("a");
     element.setAttribute("href", "data:application/octet-stream,"+encodeURIComponent(str));
-    element.setAttribute("download", "log.csv");
+    element.setAttribute("download", "log_" + $("#student_id").val() + "_" + $("#student_name").val() + ".csv");
     element.style.display = "none";
     document.body.appendChild(element);
     element.click();

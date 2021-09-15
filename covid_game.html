@@ -133,27 +133,27 @@
                         </tr>
                         <tr class="table_sliders">
                             <td class="weekly tag column">Movement setting</td>
-                            <td><input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').text(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            <td><input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
                         </tr>
                         <tr class="table_floats">
                             <td class="weekly tag column">Movement multiplier</td>
-                            <td><output id="policy_0_output">1.00</output></td>
-                            <td><output id="policy_10_output">1.00</output></td>
-                            <td><output id="policy_20_output">1.00</output></td>
-                            <td><output id="policy_30_output">1.00</output></td>
-                            <td><output id="policy_40_output">1.00</output></td>
-                            <td><output id="policy_50_output">1.00</output></td>
-                            <td><output id="policy_60_output">1.00</output></td>
-                            <td><output id="policy_70_output">1.00</output></td>
-                            <td><output id="policy_80_output">1.00</output></td>
+                            <td><input id="policy_0_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_0').val(value)"></td>
+                            <td><input id="policy_10_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_10').val(value)"></td>
+                            <td><input id="policy_20_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_20').val(value)"></td>
+                            <td><input id="policy_30_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_30').val(value)"></td>
+                            <td><input id="policy_40_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_40').val(value)"></td>
+                            <td><input id="policy_50_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_50').val(value)"></td>
+                            <td><input id="policy_60_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_60').val(value)"></td>
+                            <td><input id="policy_70_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_70').val(value)"></td>
+                            <td><input id="policy_80_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_80').val(value)"></td>
                         </tr>
                     </table>
                 </div>
@@ -192,7 +192,7 @@
                     </tr>
                 </table>
             </div>
-            <input type="button" onclick="request_log()" value="Log" disabled style="display:none">
+            <input type="button" onclick="request_log()" value="Log">
             <input id="exit" type="button" value="Exit">
         </div>
         <div class="popFoot">
@@ -205,20 +205,21 @@
         <div class="controls">
             <div class="control" id="init_setting">
                 <p><label>Initial setting</label><br>Target population number, initial patient, etc.</p>
-                <label>Target population number: <output id="node_num_output">1000</output> people
-                    <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').text(value); $('#initial_patient').attr('max',value); $('#initial_patient').attr('value',1); $('#initial_patient_output').text(1);">
+                <label>Student ID: <input id="student_id" type="text"><br>Your name (ENG): <input id="student_name" type="text"></label>
+                <label>Target population number: <input id="node_num_output" type="number" min="1" max="2000" value="1000" step="1" oninput="$('#node_num').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);"> people
+                    <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);">
                 </label>
-                <label>Initial patient: <output id="initial_patient_output">5</output> people
-                    <input id="initial_patient" type="range" min="1" max="100" value="5" step="1" oninput="$('#initial_patient_output').text(value);">
+                <label>Initial patient: <input id="initial_patient_output" type="number" min="1" max="100" value="5" step="1" oninput="$('#initial_patient').val(value);"> people
+                    <input id="initial_patient" type="range" min="1" max="100" value="5" step="1" oninput="$('#initial_patient_output').val(value);">
                 </label>
-                <label>Initial speed: <output id="speed_output">0.2</output>
-                    <input id="speed" type="range" min="0" max="10" value="0.2" step="0.01" oninput="$('#speed_output').text(value);">
+                <label>Initial speed: <input id="speed_output" type="number" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed').val(value);">
+                    <input id="speed" type="range" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed_output').val(value);">
                 </label>
-                <label>Base transmission factor: <output id="TPC_base_output">0.5</output>
-                    <input id="TPC_base" type="range" min="0" max="1" value="0.5" step="0.01" oninput="$('#TPC_base_output').text(value);">
+                <label>Base transmission factor: <input id="TPC_base_output" type="number" min="0" max="1" value="0.10" step="0.001" oninput="$('#TPC_base').val(value);">
+                    <input id="TPC_base" type="range" min="0" max="1" value="0.10" step="0.001" oninput="$('#TPC_base_output').val(value);">
                 </label>
-                <label>Maximum hospital capacity: <output id="hospital_max_output">0.01</output>
-                    <input id="hospital_max" type="range" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max_output').text(value);">
+                <label>Maximum hospital capacity: <input id="hospital_max_output" type="number" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max').val(value);">
+                    <input id="hospital_max" type="range" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max_output').val(value);">
                 </label>
             </div>
             <div class="control" id="advanced_setting"></div>
