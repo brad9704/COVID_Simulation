@@ -26,7 +26,7 @@ body {
     padding: 5px;
     margin: 5px 0;
 }
-#init_setting input {
+#init_setting input[type=range] {
     -webkit-appearance: none;
     appearance: none;
     width: 430px;
@@ -37,6 +37,12 @@ body {
     -webkit-transition: .2s;
     transition: opacity .2s;
     border-radius: 5px;
+}
+#init_setting input[type=number] {
+    width: 50px;
+}
+#init_setting input[type=text] {
+    width: 150px;
 }
 #init_setting input:hover {
     opacity: 1;
@@ -414,6 +420,10 @@ svg {
     width: 10px;
     height: 60px;
 }
+.panel_policy input[type=number] {
+    width: 40px;
+}
+
 .panel_policy label {
     text-align: center;
     font-size: 17px;
@@ -474,4 +484,50 @@ svg {
 
 #duration_label::after {
     content: "E1->E2; E2->I1; I1->I2; I1->H1; I1->R1; I2->H2; I2->R2; H2->R1";
+}
+
+.stat input[type="button"] {
+    border: none;
+    background: none;
+    color: black;
+}
+
+.stat input[type="button"]:hover {
+    color: #98E294;
+}
+
+
+
+td.stat.label {
+    padding-left: 10px;
+    padding-right: 10px;
+    border-right: 1px solid black;
+}
+
+text.stat.total {
+    padding-left: 10px;
+}
+
+table.stat {
+    border-collapse: collapse;
+    border: 1px solid black;
+    font-size: 15px;
+    color: black;
+    margin: 10px;
+}
+
+div.stat.left {
+    display: inline-block;
+    position: relative;
+}
+
+.stat.description {
+    display: inline-block;
+    position: absolute;
+    margin: 10px 0 0 0;
+    width: 300px;
+}
+
+div.stat.desc {
+    display: none;
 }

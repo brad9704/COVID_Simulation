@@ -209,25 +209,81 @@
                 <label>Target population number: <input id="node_num_output" type="number" min="1" max="2000" value="1000" step="1" oninput="$('#node_num').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);"> people
                     <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);">
                 </label>
-                <label>Initial patient: <input id="initial_patient_output" type="number" min="1" max="100" value="5" step="1" oninput="$('#initial_patient').val(value);"> people
+                <label style="display:none;">Initial patient: <input id="initial_patient_output" type="number" min="1" max="100" value="5" step="1" oninput="$('#initial_patient').val(value);"> people
                     <input id="initial_patient" type="range" min="1" max="100" value="5" step="1" oninput="$('#initial_patient_output').val(value);">
                 </label>
-                <label>Initial speed: <input id="speed_output" type="number" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed').val(value);">
+                <label style="display:none;">Initial speed: <input id="speed_output" type="number" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed').val(value);" >
                     <input id="speed" type="range" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed_output').val(value);">
                 </label>
-                <label>Base transmission factor: <input id="TPC_base_output" type="number" min="0" max="1" value="0.10" step="0.001" oninput="$('#TPC_base').val(value);">
+                <label style="display:none;">Base transmission factor: <input id="TPC_base_output" type="number" min="0" max="1" value="0.10" step="0.001" oninput="$('#TPC_base').val(value);">
                     <input id="TPC_base" type="range" min="0" max="1" value="0.10" step="0.001" oninput="$('#TPC_base_output').val(value);">
                 </label>
                 <label>Maximum hospital capacity: <input id="hospital_max_output" type="number" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max').val(value);">
                     <input id="hospital_max" type="range" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max_output').val(value);">
                 </label>
             </div>
-            <div class="control" id="advanced_setting"></div>
-            <div class="control" id="Simulation">
-                <input id="button_start" type="button" onclick="start_simulation()" value="Start">
-                <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting">
+            <div class="control" id="advanced_setting" style="display:none;"></div>
+            <div class="stat wrapper">
+            <div class="stat left">
+                <table class="stat def">
+                    <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
+                        <td class="stat label stat1">stat1</td>
+                        <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
+                        <td class="stat value stat1"><output class="stat value stat1">0</output></td>
+                        <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
+                    </tr>
+                    <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
+                        <td class="stat label stat2">stat2</td>
+                        <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
+                        <td class="stat value stat2"><output class="stat value stat2">0</output></td>
+                        <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
+                    </tr>
+                    <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
+                        <td class="stat label stat3">stat3</td>
+                        <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
+                        <td class="stat value stat3"><output class="stat value stat3">0</output></td>
+                        <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
+                    </tr>
+                    <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
+                        <td class="stat label stat4">stat4</td>
+                        <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
+                        <td class="stat value stat4"><output class="stat value stat4">0</output></td>
+                        <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
+                    </tr>
+
+                </table>
+                <text class="stat label total">Remaining stat: <output class="stat value total">25</output></text>
+            </div>
+            <div class="stat description">
+                <div class="stat desc stat1">
+                    This is stat 1.<br>
+                    It increases latent period +1 day for each 2 points.<br>
+                    Maximum latent period added is +12 (1~2 days -> 13~14 days) with 24 points cost. <br>
+                </div>
+                <div class="stat desc stat2">
+                    This is stat 2.<br>
+                    It increases infectious period +1 day for each 3 points.<br>
+                    Maximum infectious period added is +8 (1~2 -> 9~10 days) with 24 points cost. <br>
+                </div>
+                <div class="stat desc stat3">
+                    This is stat 3.<br>
+                    It increases the chance of infection by contact +4% for each 1 point.<br>
+                    Maximum chance of infection is twice of normal with 25 points cost. <br>
+                </div>
+                <div class="stat desc stat4">
+                    This is stat 4.<br>
+                    It increases the chance of transfer from light patient to severe patient +2%p for each 1 point.<br>
+                    Maximum latent period added is +50%p with 25 points cost. <br>
+                </div>
             </div>
         </div>
+            <div class="control" id="Simulation">
+                <input id="button_start" type="button" onclick="start_simulation()" value="Start">
+                <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
+            </div>
+            
+        </div>
+        
     </div>
 </div>
 <script src="https://d3js.org/d3.v5.min.js"></script>

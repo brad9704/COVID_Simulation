@@ -1,4 +1,11 @@
-var run, chart_data, running_time, chart_param, pause_time;
+var run, chart_data, running_time, chart_param;
+var stat = {
+    total: 25,
+    stat1: 0,
+    stat2: 0,
+    stat3: 0,
+    stat4: 0
+};
 var clicker = 0;
 var init_param = {
     size: 5,
@@ -567,8 +574,7 @@ function resume_simulation() {
             "80": $("#policy_80").val()
 
         }});
-    $("#popup_weekly > .popInnerBox").off("mouseenter");
-    $("#popup_weekly > .popInnerBox").off("mouseleave");
+    $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
@@ -613,6 +619,18 @@ function change_speed(direction) {
         running_speed /= 2;
     }
     $("#speed_out").val(running_speed.toString() + "x");
+}
+
+
+function change_stat(stat_index, direction) {
+    if (direction > 0 && stat.total > 0) {
+        stat.total--;
+    } else if (direction < 0 && stat[stat_index] > 0) {
+        stat.total++;
+    } else return;
+    stat[stat_index] += direction;
+    $("output.stat.value." + stat_index).text(stat[stat_index]);
+    $("output.stat.value.total").text(stat["total"]);
 }
 
 function weekly_report() {
