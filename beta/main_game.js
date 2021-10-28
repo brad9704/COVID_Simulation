@@ -1,4 +1,11 @@
-var run, chart_data, running_time, chart_param, pause_time;
+var run, chart_data, running_time, chart_param;
+var stat = {
+    total: 25,
+    stat1: 0,
+    stat2: 0,
+    stat3: 0,
+    stat4: 0
+};
 var clicker = 0;
 var init_param = {
     size: 5,
@@ -134,6 +141,17 @@ function get_params() {
         })
     }
     tick = param["timeunit"] / param["fps"];
+
+    param["duration"]["E2-I1"][0] += Math.round(stat.stat1 / 2);
+    param["duration"]["E2-I1"][1] += Math.round(stat.stat1 / 2);
+    param["duration"]["I1-I2"][0] += Math.round(stat.stat2 / 3);
+    param["duration"]["I1-I2"][1] += Math.round(stat.stat2 / 3);
+    param["duration"]["I1-R1"][0] += Math.round(stat.stat2 / 3);
+    param["duration"]["I1-R1"][1] += Math.round(stat.stat2 / 3);
+    param["TPC_base"] *= (1 + stat.stat3 * 0.04);
+    for (const age in param["age_severe"]) {
+        param["age_severe"][age] += stat.stat4 * 0.02;
+    }
 
     param["sim_width"] = 800;
     param["sim_height"] = 800;
@@ -567,8 +585,7 @@ function resume_simulation() {
             "80": $("#policy_80").val()
 
         }});
-    $("#popup_weekly > .popInnerBox").off("mouseenter");
-    $("#popup_weekly > .popInnerBox").off("mouseleave");
+    $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
@@ -613,6 +630,18 @@ function change_speed(direction) {
         running_speed /= 2;
     }
     $("#speed_out").val(running_speed.toString() + "x");
+}
+
+
+function change_stat(stat_index, direction) {
+    if (direction > 0 && stat.total > 0) {
+        stat.total--;
+    } else if (direction < 0 && stat[stat_index] > 0) {
+        stat.total++;
+    } else return;
+    stat[stat_index] += direction;
+    $("output.stat.value." + stat_index).text(stat[stat_index]);
+    $("output.stat.value.total").text(stat["total"]);
 }
 
 function weekly_report() {
@@ -671,7 +700,6 @@ function weekly_report() {
     $("output.weekly.death").each(function(e) {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
-
     let chart_data_ = chart_data_total.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
         prev[1].data.push([curr.tick, curr.R2]);
@@ -716,16 +744,27 @@ function weekly_report() {
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
 
-    var v = board_svg.selectAll(".line")
-        .data(chart_data_);
+    let data_stacked = d3.stack().keys(["S","I1","R1","R2"])(chart_data_total.filter(node => node.tick % w.param.turnUnit === 0));
+    console.log(data_stacked);
+    var v = board_svg.selectAll(".bar")
+        .data(data_stacked)
+        .enter()
+        .append("rect")
+        .attr("class","bar")
+        .style("fill",function(d) {console.log(d); return state[d.key];})
+        .attr("width",xScale.bandwidth())
+        .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
+        .attr("x", function(d) {return xScale(d.index)})
+        .attr("y", function(d) {return yScale(d[1])})
+/*
     v.enter()
-        .append("path")
-        .attr("class", "line")
+        .append("rect")
+        .attr("class", "bar")
         .style("stroke", function(d) {return d.color;})
         .style("fill", "none")
         .style("stroke-width", 1.5)
         .attr("d", function (e) {
-            return d3.line()
+            return d3.bar()
                 .x(function (d) {
                     return xScale(d[0]);
                 })
@@ -733,6 +772,7 @@ function weekly_report() {
                     return yScale(d[1]);
                 })
                 .curve(d3.curveBasis)(e.data);
-        });
+        })
+*/
 
 }
