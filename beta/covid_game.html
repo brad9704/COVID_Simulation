@@ -78,85 +78,102 @@
             </div>
             <div class="weekly_policy">
                 <div class="panel_policy">
-                    <table>
-                        <tr class="table_ages">
-                            <td class="weekly tag column"></td>
-                            <td>0-9</td>
-                            <td>10-19</td>
-                            <td>20-29</td>
-                            <td>30-39</td>
-                            <td>40-49</td>
-                            <td>50-59</td>
-                            <td>60-69</td>
-                            <td>70-79</td>
-                            <td>80+</td>
-                            <td>Total</td>
-                        </tr>
-                        <tr class="weekly infectious">
-                            <td class="weekly tag column">Infectious</td>
-                            <td><output class="weekly infectious" age="0">0</output></td>
-                            <td><output class="weekly infectious" age="10">0</output></td>
-                            <td><output class="weekly infectious" age="20">0</output></td>
-                            <td><output class="weekly infectious" age="30">0</output></td>
-                            <td><output class="weekly infectious" age="40">0</output></td>
-                            <td><output class="weekly infectious" age="50">0</output></td>
-                            <td><output class="weekly infectious" age="60">0</output></td>
-                            <td><output class="weekly infectious" age="70">0</output></td>
-                            <td><output class="weekly infectious" age="80">0</output></td>
-                            <td><output class="weekly infectious" age="90">0</output></td>
-                        </tr>
-                        <tr class="weekly ICU">
-                            <td class="weekly tag column">ICU</td>
-                            <td><output class="weekly ICU" age="0">0</output></td>
-                            <td><output class="weekly ICU" age="10">0</output></td>
-                            <td><output class="weekly ICU" age="20">0</output></td>
-                            <td><output class="weekly ICU" age="30">0</output></td>
-                            <td><output class="weekly ICU" age="40">0</output></td>
-                            <td><output class="weekly ICU" age="50">0</output></td>
-                            <td><output class="weekly ICU" age="60">0</output></td>
-                            <td><output class="weekly ICU" age="70">0</output></td>
-                            <td><output class="weekly ICU" age="80">0</output></td>
-                            <td><output class="weekly ICU" age="90">0</output></td>
-                        </tr>
-                        <tr class="weekly death">
-                            <td class="weekly tag column">Death</td>
-                            <td><output class="weekly death" age="0">0</output></td>
-                            <td><output class="weekly death" age="10">0</output></td>
-                            <td><output class="weekly death" age="20">0</output></td>
-                            <td><output class="weekly death" age="30">0</output></td>
-                            <td><output class="weekly death" age="40">0</output></td>
-                            <td><output class="weekly death" age="50">0</output></td>
-                            <td><output class="weekly death" age="60">0</output></td>
-                            <td><output class="weekly death" age="70">0</output></td>
-                            <td><output class="weekly death" age="80">0</output></td>
-                            <td><output class="weekly death" age="90">0</output></td>
-                        </tr>
-                        <tr class="table_sliders">
-                            <td class="weekly tag column">Movement setting</td>
-                            <td><input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                            <td><input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
-                        </tr>
-                        <tr class="table_floats">
-                            <td class="weekly tag column">Movement multiplier</td>
-                            <td><input id="policy_0_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_0').val(value)"></td>
-                            <td><input id="policy_10_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_10').val(value)"></td>
-                            <td><input id="policy_20_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_20').val(value)"></td>
-                            <td><input id="policy_30_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_30').val(value)"></td>
-                            <td><input id="policy_40_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_40').val(value)"></td>
-                            <td><input id="policy_50_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_50').val(value)"></td>
-                            <td><input id="policy_60_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_60').val(value)"></td>
-                            <td><input id="policy_70_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_70').val(value)"></td>
-                            <td><input id="policy_80_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_80').val(value)"></td>
-                        </tr>
-                    </table>
+                    <div class="weekly age tab">
+                        <table>
+                            <tr class="table_ages">
+                                <td class="weekly tag column"></td>
+                                <td>0-9</td>
+                                <td>10-19</td>
+                                <td>20-29</td>
+                                <td>30-39</td>
+                                <td>40-49</td>
+                                <td>50-59</td>
+                                <td>60-69</td>
+                                <td>70-79</td>
+                                <td>80+</td>
+                                <td>Total</td>
+                            </tr>
+                            <tr class="weekly infectious">
+                                <td class="weekly tag column">Infectious</td>
+                                <td><output class="weekly infectious" age="0">0</output></td>
+                                <td><output class="weekly infectious" age="10">0</output></td>
+                                <td><output class="weekly infectious" age="20">0</output></td>
+                                <td><output class="weekly infectious" age="30">0</output></td>
+                                <td><output class="weekly infectious" age="40">0</output></td>
+                                <td><output class="weekly infectious" age="50">0</output></td>
+                                <td><output class="weekly infectious" age="60">0</output></td>
+                                <td><output class="weekly infectious" age="70">0</output></td>
+                                <td><output class="weekly infectious" age="80">0</output></td>
+                                <td><output class="weekly infectious" age="90">0</output></td>
+                            </tr>
+                            <tr class="weekly ICU">
+                                <td class="weekly tag column">ICU</td>
+                                <td><output class="weekly ICU" age="0">0</output></td>
+                                <td><output class="weekly ICU" age="10">0</output></td>
+                                <td><output class="weekly ICU" age="20">0</output></td>
+                                <td><output class="weekly ICU" age="30">0</output></td>
+                                <td><output class="weekly ICU" age="40">0</output></td>
+                                <td><output class="weekly ICU" age="50">0</output></td>
+                                <td><output class="weekly ICU" age="60">0</output></td>
+                                <td><output class="weekly ICU" age="70">0</output></td>
+                                <td><output class="weekly ICU" age="80">0</output></td>
+                                <td><output class="weekly ICU" age="90">0</output></td>
+                            </tr>
+                            <tr class="weekly death">
+                                <td class="weekly tag column">Death</td>
+                                <td><output class="weekly death" age="0">0</output></td>
+                                <td><output class="weekly death" age="10">0</output></td>
+                                <td><output class="weekly death" age="20">0</output></td>
+                                <td><output class="weekly death" age="30">0</output></td>
+                                <td><output class="weekly death" age="40">0</output></td>
+                                <td><output class="weekly death" age="50">0</output></td>
+                                <td><output class="weekly death" age="60">0</output></td>
+                                <td><output class="weekly death" age="70">0</output></td>
+                                <td><output class="weekly death" age="80">0</output></td>
+                                <td><output class="weekly death" age="90">0</output></td>
+                            </tr>
+                            <tr class="table_sliders">
+                                <td class="weekly tag column">Movement setting</td>
+                                <td><input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            </tr>
+                            <tr class="table_floats">
+                                <td class="weekly tag column">Movement multiplier</td>
+                                <td><input id="policy_0_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_0').val(value)"></td>
+                                <td><input id="policy_10_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_10').val(value)"></td>
+                                <td><input id="policy_20_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_20').val(value)"></td>
+                                <td><input id="policy_30_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_30').val(value)"></td>
+                                <td><input id="policy_40_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_40').val(value)"></td>
+                                <td><input id="policy_50_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_50').val(value)"></td>
+                                <td><input id="policy_60_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_60').val(value)"></td>
+                                <td><input id="policy_70_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_70').val(value)"></td>
+                                <td><input id="policy_80_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_80').val(value)"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="weekly area tab">
+                        <div class="area_policy area_blocker">
+                            <input class="area block button upper left" type="button" onclick="toggle_area('upper','left','block')">
+                            <input class="area block button upper right" type="button" onclick="toggle_area('upper','right','block')">
+                            <input class="area block button lower left" type="button" onclick="toggle_area('lower','left','block')">
+                            <input class="area block button lower right" type="button" onclick="toggle_area('lower','right','block')">
+                        </div>
+                        <div class="area_policy area_slower">
+                            <input class="area slow button upper left" type="button" onclick="toggle_area('upper','left','slow')">
+                            <input class="area slow button upper right" type="button" onclick="toggle_area('upper','right','slow')">
+                            <input class="area slow button lower left" type="button" onclick="toggle_area('lower','left','slow')">
+                            <input class="area slow button lower right" type="button" onclick="toggle_area('lower','right','slow')">
+                        </div>
+                    </div>
                 </div>
+
             </div>
             <div id="button_wrapper">
                 <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">

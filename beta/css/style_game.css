@@ -317,35 +317,6 @@ svg {
     width: 1400px;
     height: 140px;
 }
-.panel_policy div {
-    display: inline-block;
-    margin: 10px 200px 0 20px;
-    padding: 5px;
-    width: 100px;
-    height: 100px;
-    border: 1px solid black;
-    border-radius: 5px;
-    font-size: 10px;
-}
-
-.panel_policy div img {
-    border: 1px solid black;
-    border-radius: 5px;
-    width: 100px;
-    height: 95px;
-    box-shadow: 0 5px 5px 0 #606060;
-}
-
-.panel_policy div button {
-    border: none;
-    margin: 0;
-    padding: 0;
-}
-
-.panel_policy div img:active {
-    box-shadow: 0 3px 5px 0 #606060;
-    transform: translateY(2px);
-}
 
 #death_board {
     position: absolute;
@@ -394,12 +365,18 @@ svg {
     margin: 5px;
 }
 
+div.weekly.tab.age {display: none;
+}
+div.weekly.tab.area {
+    height: 100px;
+}
+
 #button_wrapper {
     width: 100%;
     text-align: center;
 }
 
-#button_wrapper input {
+#button_resume {
     margin: 5px;
     padding: 10px 100px;
     border: 1px solid black;
@@ -409,9 +386,53 @@ svg {
     background-color: white;
 }
 
-#button_wrapper input:hover {
+#button_resume:hover {
     color: white;
     background-color: #524782;
+}
+div.area_policy {
+    position: absolute;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    top: 10px;
+}
+div.area_blocker {
+    left: 10%;
+}
+div.area_slower {
+    left: 25%;
+}
+
+input.area.button {
+    position: absolute;
+    border: 1px solid black;
+    border-radius: 5px;
+    color: #524782;
+    background-color: white;
+    width: 40px;
+    height: 40px;
+}
+
+input.area.button.upper {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    top: 0;
+}
+input.area.button.lower {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    bottom: 0;
+}
+input.area.button.left {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    left: 0;
+}
+input.area.button.right {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    right: 0;
 }
 
 .panel_policy input[type=range] {
@@ -472,6 +493,7 @@ svg {
     top: 340px;
 }
 .weekly.legend svg {
+    background-color: white;
     width: 100px;
     height: 65px;
     font-size: 15px;

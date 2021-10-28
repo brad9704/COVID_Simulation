@@ -632,7 +632,6 @@ function change_speed(direction) {
     $("#speed_out").val(running_speed.toString() + "x");
 }
 
-
 function change_stat(stat_index, direction) {
     if (direction > 0 && stat.total > 0) {
         stat.total--;
@@ -642,6 +641,10 @@ function change_stat(stat_index, direction) {
     stat[stat_index] += direction;
     $("output.stat.value." + stat_index).text(stat[stat_index]);
     $("output.stat.value.total").text(stat["total"]);
+}
+
+function toggle_area(area_x, area_y, method) {
+
 }
 
 function weekly_report() {
@@ -701,11 +704,9 @@ function weekly_report() {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
     let chart_data_ = chart_data_total.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
-        prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
-        prev[1].data.push([curr.tick, curr.R2]);
-        prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
+        prev[0].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
         return prev;
-    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
+    }, [{type: "GDP", data: [], color: "blue"}]);
 
     let weekly_pointer = $("#popup_weekly");
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
@@ -724,12 +725,12 @@ function weekly_report() {
         .attr("height", "100%");
     let board_svg_size = board_svg.node().getBoundingClientRect();
     let xScale = d3.scaleLinear()
-        .domain([data_from.tick, data_to.tick])
+        .domain([0, data_to.tick])
         .range([0, board_svg_size.width - 50]);
     let yScale = d3.scaleLinear()
         .domain([0, w.param.node_num])
         .range([board_svg_size.height - 50, 0]);
-    let xAxis = d3.axisBottom().scale(xScale);
+    let xAxis = d3.axisBottom().scale(xScale).tickFormat(d3.format("d"));
     let yAxis = d3.axisLeft().scale(yScale);
 
     board_svg = board_svg.append("g")
@@ -744,27 +745,33 @@ function weekly_report() {
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
 
-    let data_stacked = d3.stack().keys(["S","I1","R1","R2"])(chart_data_total.filter(node => node.tick % w.param.turnUnit === 0));
-    console.log(data_stacked);
-    var v = board_svg.selectAll(".bar")
+    let data_stacked = d3.stack().keys(["I1","R2"])(chart_data_total);
+    var v = board_svg.append("g").attr("class","bar");
+    v.selectAll("g")
         .data(data_stacked)
         .enter()
+        .append("g")
+        .attr("fill",function(d) {return state[d.key];})
+        .attr("stroke","none")
+        .selectAll("rect")
+        .data(function(d) {return d;})
+        .enter()
         .append("rect")
-        .attr("class","bar")
-        .style("fill",function(d) {console.log(d); return state[d.key];})
-        .attr("width",xScale.bandwidth())
+        .attr("width", (xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.8)
         .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
-        .attr("x", function(d) {return xScale(d.index)})
+        .attr("x", function(d) {return xScale(d.data.tick)})
         .attr("y", function(d) {return yScale(d[1])})
-/*
-    v.enter()
-        .append("rect")
-        .attr("class", "bar")
+        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
+    v.selectAll(".line")
+        .data(chart_data_)
+        .enter()
+        .append("path")
+        .attr("class", "line")
         .style("stroke", function(d) {return d.color;})
         .style("fill", "none")
         .style("stroke-width", 1.5)
         .attr("d", function (e) {
-            return d3.bar()
+            return d3.line()
                 .x(function (d) {
                     return xScale(d[0]);
                 })
@@ -773,6 +780,6 @@ function weekly_report() {
                 })
                 .curve(d3.curveBasis)(e.data);
         })
-*/
+
 
 }
