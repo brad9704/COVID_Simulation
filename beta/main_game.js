@@ -6,6 +6,24 @@ var stat = {
     stat3: 0,
     stat4: 0
 };
+var area = {
+    upper_left: {
+        block: false,
+        slow: false
+    },
+    upper_right: {
+        block: false,
+        slow: false
+    },
+    lower_left: {
+        block: false,
+        slow: false
+    },
+    lower_right: {
+        block: false,
+        slow: false
+    }
+}
 var clicker = 0;
 var init_param = {
     size: 5,
@@ -644,7 +662,12 @@ function change_stat(stat_index, direction) {
 }
 
 function toggle_area(area_x, area_y, method) {
-
+    if (area[area_x + "_" + area_y][method]) {
+        $("input.area.button." + area_x + "." + area_y + "." + method).attr("active", "false");
+    } else {
+        $("input.area.button." + area_x + "." + area_y + "." + method).attr("active", "true");
+    }
+    area[area_x + "_" + area_y][method] = !(area[area_x + "_" + area_y][method]);
 }
 
 function weekly_report() {
@@ -703,7 +726,8 @@ function weekly_report() {
     $("output.weekly.death").each(function(e) {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
-    let chart_data_ = chart_data_total.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
+    // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
+    let chart_data_ = chart_data_total.reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
         return prev;
     }, [{type: "GDP", data: [], color: "blue"}]);
