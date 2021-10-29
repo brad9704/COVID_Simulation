@@ -53,7 +53,25 @@
     <div class="popInnerBox">
         <div class="popHead">Weekly Report<output></output></div>
         <div class="popBody">
-            <div class="weekly_status">
+            <div class="weekly switch tabs">
+                <input class="weekly tab switch overall" type="button" value="Overall" active="true" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.overall').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.overall').css('display','block');">
+                <input class="weekly tab switch age" type="button" value="Age policy" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.age').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.age').css('display','block');">
+                <input class="weekly tab switch area" type="button" value="Area restrictions" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.area').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.area').css('display','block');">
+            </div>
+            <div class="weekly overall tab content">
+                <div class="weekly_status">
                 For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output> (week <output id="weekly_week">1</output>), there were: <br>
                 - <output id="weekly_new_infect">0</output>(<output id="weekly_change_infect">▲0</output>) new patients were found (Total <output class="weekly infectious" age="90">0</output>).<br>
                 - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
@@ -61,24 +79,25 @@
                 <br>
                 - Local GDP was $<output class="GDP_now">0</output>/day, compared to pre-COVID: <output class="GDP_now_ratio">0</output>%. <br>
             </div> <br>
-            <div class="weekly_chart">
-                <div class="weekly legend">
-                    <svg>
-                        <circle cx="10" cy="10" r="6" fill="red"></circle>
-                        <text x="25" y="16">Infected</text>
-                        <circle cx="10" cy="30" r="6" fill="black"></circle>
-                        <text x="25" y="36">Dead</text>
-                        <circle cx="10" cy="50" r="6" fill="blue"></circle>
-                        <text x="25" y="56">Daily GDP</text>
-                    </svg>
-                </div>
-                Weekly Chart<br>
-                <div class="weekly_board">
+                <div class="weekly_chart">
+                    <div class="weekly legend">
+                        <svg>
+                            <circle cx="10" cy="10" r="6" fill="red"></circle>
+                            <text x="25" y="16">Infected</text>
+                            <circle cx="10" cy="30" r="6" fill="black"></circle>
+                            <text x="25" y="36">Dead</text>
+                            <circle cx="10" cy="50" r="6" fill="blue"></circle>
+                            <text x="25" y="56">Daily GDP</text>
+                        </svg>
+                    </div>
+                    Weekly Chart<br>
+                    <div class="weekly_board">
+                    </div>
                 </div>
             </div>
-            <div class="weekly_policy">
+            <div class="weekly age area tab weekly_policy" style="display:none">
                 <div class="panel_policy">
-                    <div class="weekly age tab">
+                    <div class="weekly age tab content">
                         <table>
                             <tr class="table_ages">
                                 <td class="weekly tag column"></td>
@@ -158,18 +177,24 @@
                             </tr>
                         </table>
                     </div>
-                    <div class="weekly area tab">
-                        <div class="area_policy area_blocker">
-                            <input class="area block button upper left" type="button" onclick="toggle_area('upper','left','block')">
-                            <input class="area block button upper right" type="button" onclick="toggle_area('upper','right','block')">
-                            <input class="area block button lower left" type="button" onclick="toggle_area('lower','left','block')">
-                            <input class="area block button lower right" type="button" onclick="toggle_area('lower','right','block')">
-                        </div>
-                        <div class="area_policy area_slower">
-                            <input class="area slow button upper left" type="button" onclick="toggle_area('upper','left','slow')">
-                            <input class="area slow button upper right" type="button" onclick="toggle_area('upper','right','slow')">
-                            <input class="area slow button lower left" type="button" onclick="toggle_area('lower','left','slow')">
-                            <input class="area slow button lower right" type="button" onclick="toggle_area('lower','right','slow')">
+                    <div class="weekly area tab content">
+                        <div>
+                            <svg class="area_policy area_board">
+                                <line x1="0" y1="300" x2="600" y2="300" style="stroke:black;stroke-width:2"/>
+                                <line x1="300" y1="0" x2="300" y2="600" style="stroke:black;stroke-width:2"/>
+                                <rect height="600" width="600" style="stroke:black;fill:none;">
+                                </rect>
+                            </svg>
+                            <div class="area_policy area_blocker">
+                                <input class="area block button upper left" type="button" value="B" onclick="toggle_area('upper','left','block');">
+                                <input class="area block button upper right" type="button" value="B" onclick="toggle_area('upper','right','block')">
+                                <input class="area block button lower left" type="button" value="B" onclick="toggle_area('lower','left','block')">
+                                <input class="area block button lower right" type="button" value="B" onclick="toggle_area('lower','right','block')">
+                                <input class="area slow button upper left" type="button" value="S" onclick="toggle_area('upper','left','slow')">
+                                <input class="area slow button upper right" type="button" value="S" onclick="toggle_area('upper','right','slow')">
+                                <input class="area slow button lower left" type="button" value="S" onclick="toggle_area('lower','left','slow')">
+                                <input class="area slow button lower right" type="button" value="S" onclick="toggle_area('lower','right','slow')">
+                            </div>
                         </div>
                     </div>
                 </div>

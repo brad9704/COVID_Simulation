@@ -341,6 +341,34 @@ svg {
     border-radius: 10px;
 }
 
+input.weekly.tab.switch {
+    margin-right: -10px;
+    font-size: 18px;
+    width: 150px;
+    height: 50px;
+    background-color: white;
+    color: #254488;
+    border: 1px solid black;
+}
+input.weekly.tab.switch:hover {
+    background-color: #b0dcde;
+    color: white;
+}
+input.weekly.tab.switch[active="true"] {
+    background-color: #5260d0;
+    color: white;
+}
+input.weekly.tab.switch.overall {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+input.weekly.tab.switch.age {
+}
+input.weekly.tab.switch.area {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
 #popup_weekly .popBody {
     background-color: rgba(256,256,256,0.5);
     font-size: 20px;
@@ -365,10 +393,19 @@ svg {
     margin: 5px;
 }
 
-div.weekly.tab.age {display: none;
+svg.area_policy.area_board {
+    margin: 10px;
+    width: 600px;
+    height: 600px;
 }
-div.weekly.tab.area {
-    height: 100px;
+
+div.weekly.tab.content.age {
+    display: none;
+    height: auto;
+}
+div.weekly.tab.content.area {
+    display: none;
+    height: auto;
 }
 
 #button_wrapper {
@@ -393,15 +430,11 @@ div.weekly.tab.area {
 div.area_policy {
     position: absolute;
     display: inline-block;
-    width: 80px;
-    height: 80px;
-    top: 10px;
+    width: 600px;
+    height: 600px;
 }
 div.area_blocker {
-    left: 10%;
-}
-div.area_slower {
-    left: 25%;
+    left: 0;
 }
 
 input.area.button {
@@ -410,29 +443,36 @@ input.area.button {
     border-radius: 5px;
     color: #524782;
     background-color: white;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
+    font-size: 200%;
 }
 
-input.area.button.upper {
+input.area.button[active="true"] {
+    background-color: #524782;
+    color: white;
+}
+input.area.button.slow {
+    transform: translate(30px,0);
+    border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+}
+input.area.button.block {
+    transform: translate(-30px,0);
+    border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    top: 0;
+}
+input.area.button.upper {
+    top: 120px;
 }
 input.area.button.lower {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    bottom: 0;
+    bottom: 120px;
 }
 input.area.button.left {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    left: 0;
+    left: 120px;
 }
 input.area.button.right {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    right: 0;
+    right: 120px;
 }
 
 .panel_policy input[type=range] {
