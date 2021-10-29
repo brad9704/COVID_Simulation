@@ -251,8 +251,8 @@
                 <label>Target population number: <input id="node_num_output" type="number" min="1" max="2000" value="1000" step="1" oninput="$('#node_num').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);"> people
                     <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);">
                 </label>
-                <label style="display:none;">Initial patient: <input id="initial_patient_output" type="number" min="1" max="100" value="5" step="1" oninput="$('#initial_patient').val(value);"> people
-                    <input id="initial_patient" type="range" min="1" max="100" value="5" step="1" oninput="$('#initial_patient_output').val(value);">
+                <label style="display:none;">Initial patient: <input id="initial_patient_output" type="number" min="1" max="100" value="1" step="1" oninput="$('#initial_patient').val(value);"> people
+                    <input id="initial_patient" type="range" min="1" max="100" value="1" step="1" oninput="$('#initial_patient_output').val(value);">
                 </label>
                 <label style="display:none;">Initial speed: <input id="speed_output" type="number" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed').val(value);" >
                     <input id="speed" type="range" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed_output').val(value);">

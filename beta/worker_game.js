@@ -217,9 +217,23 @@ function createNodes () {
 }
 
 function apply_policy(policy) {
-    for (let i in policy) {
+    for (let i in policy.age) {
         simulation.nodes()
             .filter(node => node.age === i)
-            .forEach(node => node.speed(policy[i]));
+            .forEach(node => node.speed(policy.age[i]));
     }
+    let temp = simulation.loc.get_surface();
+    if (policy.area.upper_left.block || policy.area.upper_right.block) temp.push({
+        from: {x: param.sim_width / 2, y: 0}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+    });
+    if (policy.area.lower_left.block || policy.area.lower_right.block) temp.push({
+        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height}
+    });
+    if (policy.area.upper_left.block || policy.area.lower_left.block) temp.push({
+        from: {x: 0, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+    });
+    if (policy.area.upper_right.block || policy.area.lower_right.block) temp.push({
+        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width, y: param.sim_height / 2}
+    });
+    simulation.force("surface").surfaces(temp);
 }

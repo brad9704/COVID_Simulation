@@ -336,6 +336,22 @@ function node_init(param, node_data, loc) {
         .style("stroke-width", 1)
         .style("fill", "none");
 
+    sim_board.select("svg").selectAll("line")
+        .data([{name: "upper", x1: param.sim_width / 2, y1: 0, x2: param.sim_width / 2, y2: param.sim_height / 2},
+            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height},
+            {name: "left", x1: 0, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height / 2},
+            {name: "right", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width, y2: param.sim_height / 2}])
+        .enter()
+        .append("line")
+        .attr("class", function(d) {return "sim_board svg_line " + d.name;})
+        .attr("x1", function(d) {return d.x1;})
+        .attr("y1", function(d) {return d.y1;})
+        .attr("x2", function(d) {return d.x2;})
+        .attr("y2", function(d) {return d.y2;})
+        .style("stroke", "#C00000")
+        .style("stroke-width", 1)
+        .style("display", "none");
+
     d3.select("#board").append("img")
         .attr("id", "legend")
         .attr("src", "img/legend.png");
@@ -591,8 +607,9 @@ function pause_simulation() {
 function resume_simulation() {
     if (run !== null) return;
     $(".enable-on-pause").attr("disabled", "disabled");
+    $("input.weekly.tab.switch.overall").click();
     w.postMessage({type: "RESUME", data: {
-        "0": $("#policy_0").val(),
+        age: {"0": $("#policy_0").val(),
             "10": $("#policy_10").val(),
             "20": $("#policy_20").val(),
             "30": $("#policy_30").val(),
@@ -600,10 +617,25 @@ function resume_simulation() {
             "50": $("#policy_50").val(),
             "60": $("#policy_60").val(),
             "70": $("#policy_70").val(),
-            "80": $("#policy_80").val()
-
+            "80": $("#policy_80").val()},
+        area: area
         }});
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
+    d3.selectAll("line.sim_board.svg_line").style("display", function(d) {
+        if (d.name === "upper") {
+            if (area.upper_left.block || area.upper_right.block) return "inline";
+            else return "none";
+        } else if (d.name === "lower") {
+            if (area.lower_left.block || area.lower_right.block) return "inline";
+            else return "none";
+        } else if (d.name === "left") {
+            if (area.upper_left.block || area.lower_left.block) return "inline";
+            else return "none";
+        } else {
+            if (area.upper_right.block || area.lower_right.block) return "inline";
+            else return "none";
+        }
+    });
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
@@ -748,13 +780,13 @@ function weekly_report() {
         .attr("width", "100%")
         .attr("height", "100%");
     let board_svg_size = board_svg.node().getBoundingClientRect();
-    let xScale = d3.scaleLinear()
-        .domain([0, data_to.tick])
-        .range([0, board_svg_size.width - 50]);
+    let xScale = d3.scaleBand()
+        .domain([1,2,3,4,5,6,7])
+        .range([0, board_svg_size.width - 50]).padding(0.4);
     let yScale = d3.scaleLinear()
         .domain([0, w.param.node_num])
         .range([board_svg_size.height - 50, 0]);
-    let xAxis = d3.axisBottom().scale(xScale).tickFormat(d3.format("d"));
+    let xAxis = d3.axisBottom().scale(xScale);
     let yAxis = d3.axisLeft().scale(yScale);
 
     board_svg = board_svg.append("g")
@@ -769,7 +801,7 @@ function weekly_report() {
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
 
-    let data_stacked = d3.stack().keys(["I1","R2"])(chart_data_total);
+    let data_stacked = d3.stack().keys(["I1","R2"])(chart_data_total.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick));
     var v = board_svg.append("g").attr("class","bar");
     v.selectAll("g")
         .data(data_stacked)
@@ -781,12 +813,12 @@ function weekly_report() {
         .data(function(d) {return d;})
         .enter()
         .append("rect")
-        .attr("width", (xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.8)
+        .attr("width", xScale.bandwidth())
         .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
-        .attr("x", function(d) {return xScale(d.data.tick)})
-        .attr("y", function(d) {return yScale(d[1])})
-        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
-    v.selectAll(".line")
+        .attr("x", function(d) {return xScale(d.data.tick % w.param.turnUnit + 1)})
+        .attr("y", function(d) {return yScale(d[1])});
+//        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
+/*    v.selectAll(".line")
         .data(chart_data_)
         .enter()
         .append("path")
@@ -804,6 +836,6 @@ function weekly_report() {
                 })
                 .curve(d3.curveBasis)(e.data);
         })
-
+ */
 
 }
