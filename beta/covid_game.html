@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="sidebar">
-    <div class="Day"><text id="day_text">Day: </text><output id="turn_day"></output></div>
+    <div class="Day"><text id="day_text">Day </text><output id="turn_day"></output></div>
     <div class="speed">
         <div id="speed_output_wrapper">
             <output id="speed_out">1x</output>
@@ -98,7 +98,7 @@
             <div class="weekly age area tab weekly_policy" style="display:none">
                 <div class="panel_policy">
                     <div class="weekly age tab content">
-                        <table>
+                        <table style="display: none">
                             <tr class="table_ages">
                                 <td class="weekly tag column"></td>
                                 <td>0-9</td>
@@ -177,75 +177,113 @@
                                 <td><input id="policy_submit" type="button" value="submit"></td>
                             </tr>
                         </table>
-                        <div class="policy stage confirm">
+                        <div class="policy level confirm">
+                            <p>
+                                Defines how restrict each social distancing level will be.<br>
+                                Changing variables below affects area where each level is applied on.<br>
+                                Applying any level on an area will result in surrounding the area with walls.<br>
+                            </p>
                             <table>
-                                <tr class="policy column">
-                                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                                <tr class="policy info">
+                                    <td>Level</td>
+                                    <td>0-9</td>
+                                    <td>10-19</td>
+                                    <td>20-29</td>
+                                    <td>30-39</td>
+                                    <td>40-49</td>
+                                    <td>50-59</td>
+                                    <td>60-69</td>
+                                    <td>70-79</td>
+                                    <td>80+</td>
                                 </tr>
-                                <tr class="policy stage" data-stage="1">
-                                    <td><input class="policy stage" data-stage="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>                                    <td><input class="policy stage" data-stage="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="30" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="40" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="50" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="60" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="70" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="1" data-age="80" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                <tr class="policy level" data-level="1">
+                                    <td>1</td>
+                                    <td><input class="policy level" data-level="1" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="1" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
-                                <tr class="policy stage" data-stage="2">
-                                    <td><input class="policy stage" data-stage="2" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>                                    <td><input class="policy stage" data-stage="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="30" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="40" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="50" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="60" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="70" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="2" data-age="80" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                <tr class="policy level" data-level="2">
+                                    <td>2</td>
+                                    <td><input class="policy level" data-level="2" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
-                                <tr class="policy stage" data-stage="3">
-                                    <td><input class="policy stage" data-stage="3" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>                                    <td><input class="policy stage" data-stage="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="30" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="40" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="50" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="60" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="70" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="3" data-age="80" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                <tr class="policy level" data-level="3">
+                                    <td>3</td>
+                                    <td><input class="policy level" data-level="3" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
-                                <tr class="policy stage" data-stage="4">
-                                    <td><input class="policy stage" data-stage="4" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>                                    <td><input class="policy stage" data-stage="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="30" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="40" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="50" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="60" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="70" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy stage" data-stage="4" data-age="80" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                <tr class="policy level" data-level="4">
+                                    <td>4</td>
+                                    <td><input class="policy level" data-level="4" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
                             </table>
                         </div>
                     </div>
                     <div class="weekly area tab content">
                         <div>
+                            <p>
+                                Sets social distancing level on each area.<br>
+                                Remember, applying any level on each area (which means, setting level to non-zero) will results in surrounding the area with walls!
+                            </p>
                             <svg class="area_policy area_board">
                                 <line x1="0" y1="300" x2="600" y2="300" style="stroke:black;stroke-width:2"/>
                                 <line x1="300" y1="0" x2="300" y2="600" style="stroke:black;stroke-width:2"/>
                                 <rect height="600" width="600" style="stroke:black;fill:none;">
                                 </rect>
                             </svg>
-                            <div class="area_policy area_blocker">
-                                <input class="area block button upper left" type="button" value="B" onclick="toggle_area('upper','left','block');">
-                                <input class="area block button upper right" type="button" value="B" onclick="toggle_area('upper','right','block')">
-                                <input class="area block button lower left" type="button" value="B" onclick="toggle_area('lower','left','block')">
-                                <input class="area block button lower right" type="button" value="B" onclick="toggle_area('lower','right','block')">
-                                <input class="area slow button upper left" type="button" value="S" onclick="toggle_area('upper','left','slow')">
-                                <input class="area slow button upper right" type="button" value="S" onclick="toggle_area('upper','right','slow')">
-                                <input class="area slow button lower left" type="button" value="S" onclick="toggle_area('lower','left','slow')">
-                                <input class="area slow button lower right" type="button" value="S" onclick="toggle_area('lower','right','slow')">
+                            <div class="area_policy options">
+                                <select class="area_policy option upper left" data-area="upper left">
+                                    <option value="0">Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
+                                <select class="area_policy option upper right" data-area="upper right">
+                                    <option value="0">Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
+                                <select class="area_policy option lower left" data-area="lower left">
+                                    <option value="0">Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
+                                <select class="area_policy option lower right" data-area="lower right">
+                                    <option value="0">Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
                             </div>
                         </div>
                     </div>

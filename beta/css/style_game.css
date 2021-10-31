@@ -433,46 +433,29 @@ div.area_policy {
     width: 600px;
     height: 600px;
 }
-div.area_blocker {
+tr.policy.info td {
+    width: 80px;
+}
+div.area_policy.options {
+    margin: 10px;
     left: 0;
 }
-
-input.area.button {
+select.area_policy.option {
+    font-size: 150%;
+    width: auto;
     position: absolute;
-    border: 1px solid black;
-    border-radius: 5px;
-    color: #524782;
-    background-color: white;
-    width: 60px;
-    height: 60px;
-    font-size: 200%;
 }
-
-input.area.button[active="true"] {
-    background-color: #524782;
-    color: white;
+select.area_policy.option.upper {
+    top: 22%;
 }
-input.area.button.slow {
-    transform: translate(30px,0);
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+select.area_policy.option.lower {
+    bottom: 22%;
 }
-input.area.button.block {
-    transform: translate(-30px,0);
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+select.area_policy.option.left {
+    left: 15%;
 }
-input.area.button.upper {
-    top: 120px;
-}
-input.area.button.lower {
-    bottom: 120px;
-}
-input.area.button.left {
-    left: 120px;
-}
-input.area.button.right {
-    right: 120px;
+select.area_policy.option.right {
+    right: 15%;
 }
 
 .panel_policy input[type=range] {
