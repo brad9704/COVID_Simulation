@@ -1,9 +1,9 @@
 var run, chart_data, running_time, chart_param;
 var stat = {
-    total: 25,
-    stat1: 0,
-    stat2: 0,
-    stat3: 0,
+    total: 7,
+    stat1: 4,
+    stat2: 8,
+    stat3: 6,
     stat4: 0
 };
 var area = {
@@ -811,7 +811,7 @@ function weekly_report() {
         .append("rect")
         .attr("width", xScale.bandwidth())
         .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
-        .attr("x", function(d) {return xScale(d.data.tick % (w.param.turnUnit * 2) + 1)})
+        .attr("x", function(d) {return xScale(d.data.tick - data_to.tick + 14)})
         .attr("y", function(d) {return yScale(d[1])});
 //        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
 /*    v.selectAll(".line")

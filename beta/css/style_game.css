@@ -331,7 +331,7 @@ svg {
 }
 
 #popup_weekly .popInnerBox {
-    background-image: url("../img/report_background.jpg");
+    background-color: white;
     height: auto;
 }
 
@@ -508,6 +508,10 @@ select.area_policy.option.right {
 }
 .panel_status .GDP output {
     color: blue;
+}
+
+div.weekly p {
+    margin: 10px;
 }
 
 .weekly.legend {
