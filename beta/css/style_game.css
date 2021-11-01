@@ -513,7 +513,7 @@ select.area_policy.option.right {
 .weekly.legend {
     position: absolute;
     left: 920px;
-    top: 340px;
+    top: 300px;
 }
 .weekly.legend svg {
     background-color: white;

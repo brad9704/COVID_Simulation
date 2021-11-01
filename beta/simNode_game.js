@@ -262,5 +262,12 @@ class Node {
         }
         this.multiplier = multiplier;
     }
-
+    isIn () {
+        let temp = "_";
+        if (this.y < (this.param.sim_height / 2)) temp = "upper" + temp;
+        else temp = "lower" + temp;
+        if (this.x < (this.param.sim_width / 2)) temp = temp + "left";
+        else temp = temp + "right";
+        return temp;
+    }
 }

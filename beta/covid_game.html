@@ -197,19 +197,19 @@
                                     <td>80+</td>
                                 </tr>
                                 <tr class="policy level" data-level="1">
-                                    <td>1</td>
-                                    <td><input class="policy level" data-level="1" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="1" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td>0</td>
+                                    <td><input class="policy level" data-level="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="20" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="30" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="40" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="50" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="60" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="70" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="80" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
                                 </tr>
                                 <tr class="policy level" data-level="2">
-                                    <td>2</td>
+                                    <td>1</td>
                                     <td><input class="policy level" data-level="2" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="2" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="2" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
@@ -221,7 +221,7 @@
                                     <td><input class="policy level" data-level="2" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
                                 <tr class="policy level" data-level="3">
-                                    <td>3</td>
+                                    <td>2</td>
                                     <td><input class="policy level" data-level="3" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="3" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="3" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
@@ -233,7 +233,7 @@
                                     <td><input class="policy level" data-level="3" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
                                 <tr class="policy level" data-level="4">
-                                    <td>4</td>
+                                    <td>3</td>
                                     <td><input class="policy level" data-level="4" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="4" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="4" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
@@ -260,26 +260,26 @@
                                 </rect>
                             </svg>
                             <div class="area_policy options">
-                                <select class="area_policy option upper left" data-area="upper left">
-                                    <option value="0">Level 0</option>
+                                <select class="area_policy option upper left" data-area="upper left" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
                                     <option value="1">Level 1</option>
                                     <option value="2">Level 2</option>
                                     <option value="3">Level 3</option>
                                 </select>
-                                <select class="area_policy option upper right" data-area="upper right">
-                                    <option value="0">Level 0</option>
+                                <select class="area_policy option upper right" data-area="upper right" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
                                     <option value="1">Level 1</option>
                                     <option value="2">Level 2</option>
                                     <option value="3">Level 3</option>
                                 </select>
-                                <select class="area_policy option lower left" data-area="lower left">
-                                    <option value="0">Level 0</option>
+                                <select class="area_policy option lower left" data-area="lower left" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
                                     <option value="1">Level 1</option>
                                     <option value="2">Level 2</option>
                                     <option value="3">Level 3</option>
                                 </select>
-                                <select class="area_policy option lower right" data-area="lower right">
-                                    <option value="0">Level 0</option>
+                                <select class="area_policy option lower right" data-area="lower right" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
                                     <option value="1">Level 1</option>
                                     <option value="2">Level 2</option>
                                     <option value="3">Level 3</option>
@@ -324,7 +324,7 @@
                     </tr>
                 </table>
             </div>
-            <input type="button" onclick="request_log()" value="Log">
+            <input type="button" onclick="request_log()" value="Log" style="display:none">
             <input id="exit" type="button" value="Exit">
         </div>
         <div class="popFoot">
