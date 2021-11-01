@@ -7,22 +7,10 @@ var stat = {
     stat4: 0
 };
 var area = {
-    upper_left: {
-        block: false,
-        slow: false
-    },
-    upper_right: {
-        block: false,
-        slow: false
-    },
-    lower_left: {
-        block: false,
-        slow: false
-    },
-    lower_right: {
-        block: false,
-        slow: false
-    }
+    upper_left: "0",
+    upper_right: "0",
+    lower_left: "0",
+    lower_right: "0"
 }
 var clicker = 0;
 var init_param = {
@@ -32,10 +20,10 @@ var init_param = {
     fps: 24,
     duration: {
         "E1-E2": [1,2],
-        "E2-I1": [3,4],
-        "I1-I2": [5,6],
+        "E2-I1": [1,2],
+        "I1-I2": [1,2],
         "I1-H1": [99,99],
-        "I1-R1": [20,20],
+        "I1-R1": [16,16],
         "I2-H2": [1,1],
         "I2-R2": [3,3],
         "H2-R1": [24,24]
@@ -609,30 +597,30 @@ function resume_simulation() {
     $(".enable-on-pause").attr("disabled", "disabled");
     $("input.weekly.tab.switch.overall").click();
     w.postMessage({type: "RESUME", data: {
-        age: {"0": $("#policy_0").val(),
-            "10": $("#policy_10").val(),
-            "20": $("#policy_20").val(),
-            "30": $("#policy_30").val(),
-            "40": $("#policy_40").val(),
-            "50": $("#policy_50").val(),
-            "60": $("#policy_60").val(),
-            "70": $("#policy_70").val(),
-            "80": $("#policy_80").val()},
+        age: {"0": $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
+            "10": $("input.policy.level[data-age=10]").map(function() {return this.value;}).get(),
+            "20": $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
+            "30": $("input.policy.level[data-age=30]").map(function() {return this.value;}).get(),
+            "40": $("input.policy.level[data-age=40]").map(function() {return this.value;}).get(),
+            "50": $("input.policy.level[data-age=50]").map(function() {return this.value;}).get(),
+            "60": $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
+            "70": $("input.policy.level[data-age=70]").map(function() {return this.value;}).get(),
+            "80": $("input.policy.level[data-age=80]").map(function() {return this.value;}).get()},
         area: area
         }});
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     d3.selectAll("line.sim_board.svg_line").style("display", function(d) {
         if (d.name === "upper") {
-            if (area.upper_left.block || area.upper_right.block) return "inline";
+            if (area.upper_left !== "0" || area.upper_right !== "0") return "inline";
             else return "none";
         } else if (d.name === "lower") {
-            if (area.lower_left.block || area.lower_right.block) return "inline";
+            if (area.lower_left !== "0" || area.lower_right !== "0") return "inline";
             else return "none";
         } else if (d.name === "left") {
-            if (area.upper_left.block || area.lower_left.block) return "inline";
+            if (area.upper_left !== "0" || area.lower_left !== "0") return "inline";
             else return "none";
         } else {
-            if (area.upper_right.block || area.lower_right.block) return "inline";
+            if (area.upper_right !== "0" || area.lower_right !== "0") return "inline";
             else return "none";
         }
     });
@@ -693,13 +681,11 @@ function change_stat(stat_index, direction) {
     $("output.stat.value.total").text(stat["total"]);
 }
 
-function toggle_area(area_x, area_y, method) {
-    if (area[area_x + "_" + area_y][method]) {
-        $("input.area.button." + area_x + "." + area_y + "." + method).attr("active", "false");
-    } else {
-        $("input.area.button." + area_x + "." + area_y + "." + method).attr("active", "true");
-    }
-    area[area_x + "_" + area_y][method] = !(area[area_x + "_" + area_y][method]);
+function toggle_area() {
+    area["upper_left"] = $("select.area_policy.upper.left.option").val()
+    area["upper_right"] = $("select.area_policy.upper.right.option").val()
+    area["lower_left"] = $("select.area_policy.lower.left.option").val()
+    area["lower_right"] = $("select.area_policy.lower.right.option").val()
 }
 
 function weekly_report() {
@@ -764,6 +750,14 @@ function weekly_report() {
         return prev;
     }, [{type: "GDP", data: [], color: "blue"}]);
 
+    let daily_IR = chart_data_total.reduce((prev, curr, index) => {
+        if (index === 0) return [];
+        prev.push({"tick": curr.tick,
+            "I1": chart_data_total[index - 1]["S"] + chart_data_total[index - 1]["E1"] + chart_data_total[index - 1]["E2"] - (curr["S"]+curr["E1"]+curr["E2"]),
+            "R2": curr["R2"] - chart_data_total[index - 1]["R2"]});
+        return prev;
+    }, []).filter(node => node.tick >= (data_from.tick - w.param.turnUnit) && node.tick <= data_to.tick)
+
     let weekly_pointer = $("#popup_weekly");
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
     weekly_pointer.fadeIn();
@@ -780,11 +774,14 @@ function weekly_report() {
         .attr("width", "100%")
         .attr("height", "100%");
     let board_svg_size = board_svg.node().getBoundingClientRect();
+
+    let data_stacked = d3.stack().keys(["I1","R2"])(daily_IR);
+
     let xScale = d3.scaleBand()
-        .domain([1,2,3,4,5,6,7])
+        .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
         .range([0, board_svg_size.width - 50]).padding(0.4);
     let yScale = d3.scaleLinear()
-        .domain([0, w.param.node_num])
+        .domain([0, d3.max(d3.max(data_stacked, e => d3.max(e))) + 10])
         .range([board_svg_size.height - 50, 0]);
     let xAxis = d3.axisBottom().scale(xScale);
     let yAxis = d3.axisLeft().scale(yScale);
@@ -801,7 +798,6 @@ function weekly_report() {
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
 
-    let data_stacked = d3.stack().keys(["I1","R2"])(chart_data_total.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick));
     var v = board_svg.append("g").attr("class","bar");
     v.selectAll("g")
         .data(data_stacked)
@@ -815,7 +811,7 @@ function weekly_report() {
         .append("rect")
         .attr("width", xScale.bandwidth())
         .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
-        .attr("x", function(d) {return xScale(d.data.tick % w.param.turnUnit + 1)})
+        .attr("x", function(d) {return xScale(d.data.tick % (w.param.turnUnit * 2) + 1)})
         .attr("y", function(d) {return yScale(d[1])});
 //        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
 /*    v.selectAll(".line")
