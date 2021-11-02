@@ -1,8 +1,8 @@
 var run, chart_data, running_time, chart_param;
 var stat = {
-    total: 7,
+    total: 6,
     stat1: 4,
-    stat2: 8,
+    stat2: 9,
     stat3: 6,
     stat4: 0
 };
@@ -596,16 +596,19 @@ function resume_simulation() {
     if (run !== null) return;
     $(".enable-on-pause").attr("disabled", "disabled");
     $("input.weekly.tab.switch.overall").click();
+    let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
+        age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
+        age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get();
     w.postMessage({type: "RESUME", data: {
-        age: {"0": $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
-            "10": $("input.policy.level[data-age=10]").map(function() {return this.value;}).get(),
-            "20": $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
-            "30": $("input.policy.level[data-age=30]").map(function() {return this.value;}).get(),
-            "40": $("input.policy.level[data-age=40]").map(function() {return this.value;}).get(),
-            "50": $("input.policy.level[data-age=50]").map(function() {return this.value;}).get(),
-            "60": $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
-            "70": $("input.policy.level[data-age=70]").map(function() {return this.value;}).get(),
-            "80": $("input.policy.level[data-age=80]").map(function() {return this.value;}).get()},
+        age: {"0": age_0,
+            "10": age_0,
+            "20": age_20,
+            "30": age_20,
+            "40": age_20,
+            "50": age_20,
+            "60": age_60,
+            "70": age_60,
+            "80": age_60},
         area: area
         }});
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
