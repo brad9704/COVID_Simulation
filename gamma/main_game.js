@@ -1,4 +1,5 @@
 var run, chart_data, running_time, chart_param;
+
 var stat = {
     total: 6,
     stat1: 4,
