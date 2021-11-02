@@ -1,0 +1,583 @@
+body {
+    width: 100%;
+    display: flex;
+    margin: 0; padding: 0;
+    font-family: sans-serif;
+    font-size: 75%;
+    background-color: white;
+}
+.controls{
+    padding: 0 5px;
+    justify-content:space-between;
+    flex-direction:column;
+    position:absolute;
+    top:0;
+    left:50%;
+    width:450px;
+    margin:20px 0 0 -230px;
+    text-align:left;
+    border-radius:5px;
+    background-color: #fff;
+    font-size: 90%;
+}
+.controls .control {
+    background-color: #eee;
+    border-radius: 3px;
+    padding: 5px;
+    margin: 5px 0;
+}
+#init_setting input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 430px;
+    height: 10px;
+    background-color: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    border-radius: 5px;
+}
+#init_setting input[type=number] {
+    width: 50px;
+}
+#init_setting input[type=text] {
+    width: 150px;
+}
+#init_setting input:hover {
+    opacity: 1;
+}
+#init_setting input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #04aa6d;
+    cursor: pointer;
+    border-radius: 50%;
+}
+#advanced_setting input {
+    width: 430px;
+}
+
+.controls .control label { display: inline-block; }
+.controls .control p label { margin-right: .5em; font-size: 120%; font-weight: bold;}
+.controls .control p { margin-top: 0;}
+
+.board {
+    position: absolute;
+    border: 1px solid black;
+    width: 1650px;
+    height: 800px;
+    left: 135px;
+}
+.board div {
+    position: relative;
+    width: 800px;
+    height: 800px;
+    display: inline;
+}
+
+.board .svg_wrapper_Outside{
+    float: left;
+}
+.board div span {
+    font-size: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+.control_panel {
+    position: absolute;
+    border: 1px solid black;
+    width: 1650px;
+    height: 160px;
+    left: 135px;
+    top: 800px;
+}
+.panel_button {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 100px;
+}
+.panel_button input {
+    display: block;
+    border: 1px solid black;
+    background-color: rgba(0,0,0,0);
+    color: #4e7070;
+    padding: 5px;
+    font-size: 18px;
+    width: 80px;
+    height: 45px;
+    margin: 0 auto;
+}
+.panel_button input:hover {
+    color: white;
+    background-color: #b0dcde;
+}
+.panel_button #button_stop {
+    color: #254488;
+}
+.panel_button #button_stop:hover {
+    color: white;
+    background-color: #667cb8;
+}
+svg {
+    border:1px solid black;
+}
+.popup {
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+.popBg {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+.popInnerBox {
+    display:flex;
+    justify-content:space-between;
+    flex-direction:column;
+    position:absolute;
+    top: 20px;
+    left: 400px;
+    width:1080px;
+    height:720px;
+    margin: 0 auto;
+    text-align:center;
+    border: 1px solid black;
+    border-radius:5px;
+    background-color: white;
+}
+.popHead {
+    padding:15px;
+    background-color: #606060;
+    color:#fff;
+    font-size:18px;
+    height: 30px;
+}
+.popBody {
+    height: 660px;
+    padding: 30px;
+    box-sizing:border-box;
+    font-size:16px;
+}
+
+#popup_result .popBody .popChart {
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 900px;
+    height: 400px;
+    max-width: 100%;
+    margin: 10px auto;
+}
+#popup_result .popBody input {
+    margin: 15px auto;
+    max-width: 100%;
+    display: block;
+    width: 80px;
+    font-size: 18px;
+    color: #578172;
+    background-color: rgba(0,0,0,0);
+    border: 1px solid black;
+    border-radius: 5px;
+}
+#popup_result .popBody input:hover {
+    color: white;
+    background-color: #578172;
+}
+
+#popup_init #button_start {
+    margin: 15px auto;
+    max-width: 100%;
+    display: block;
+    width: 80px;
+    font-size: 18px;
+    color: #578172;
+    background-color: rgba(0,0,0,0);
+    border: 1px solid black;
+    border-radius: 5px;
+}
+#popup_init #button_start:hover {
+    color: white;
+    background-color: #578172;
+}
+#sim_board circle {
+    stroke: black;
+    stroke-width: 1px;
+}
+
+#sim_board circle[class="node_#000000"] {
+    opacity: 25%;
+    stroke: none;
+}
+
+.sidebar {
+    width: 125px;
+    height: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.sidebar div {
+    border-radius: 5px;
+    background-color: white;
+}
+.sidebar .Day {
+    padding: 5px;
+    margin: 5px;
+    width: 80%;
+    height: 50px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 25px;
+    text-align: left;
+}
+.sidebar .speed {
+    padding: 5px;
+    margin: 5px;
+    width: 80%;
+    height: 50px;
+    top: 70px;
+}
+.sidebar .speed .button {
+    width: 100%;
+}
+.sidebar .speed .button input {
+    width: 49%;
+    margin-top: 3px;
+    padding: 0;
+}
+.sidebar .speed .button #speed_slower {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: -2px;
+}
+.sidebar .speed .button #speed_faster {
+    margin-left: -2.5px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+div.auto {
+    margin: 0 0 0 45px;
+}
+
+#speed_output_wrapper {
+    text-align: center;
+    font-size: 18px;
+    width: 100%;
+    font-weight: bold;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.speed input[type=button] {
+    margin: 1px;
+    display: inline;
+    width: 46.5%;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: #b0dcde;
+    color: black;
+}
+
+.speed input[type=button]:hover {
+    background-color: #254488;
+    color: white;
+}
+
+#legend {
+    position: absolute;
+    display: inline;
+    top: 10px;
+    left: 900px;
+    height: 270px;
+}
+
+.board .legend {
+    position: absolute;
+    top: -80px;
+    left: 675px;
+    width: 110px;
+    height: 70px;
+    font-size: 15px;
+    display: block;
+}
+
+.panel_policy {
+    position: absolute;
+    top: 10px;
+    left: 200px;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 1400px;
+    height: 140px;
+}
+
+#death_board {
+    position: absolute;
+    left: 810px;
+    top: 310px;
+}
+
+#chart_board {
+    position: absolute;
+    left: 810px;
+    top: 555px;
+}
+
+#popup_weekly .popInnerBox {
+    background-color: white;
+    height: auto;
+}
+
+#popup_weekly .popHead {
+    margin: 3px 3px 3px 3px;
+    background-color: rgba(0,0,0,0.9);
+    border-radius: 10px;
+}
+
+input.weekly.tab.switch {
+    margin-right: -10px;
+    font-size: 18px;
+    width: 150px;
+    height: 50px;
+    background-color: white;
+    color: #254488;
+    border: 1px solid black;
+}
+input.weekly.tab.switch:hover {
+    background-color: #b0dcde;
+    color: white;
+}
+input.weekly.tab.switch[active="true"] {
+    background-color: #5260d0;
+    color: white;
+}
+input.weekly.tab.switch.overall {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+input.weekly.tab.switch.age {
+}
+input.weekly.tab.switch.area {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+#popup_weekly .popBody {
+    background-color: rgba(256,256,256,0.5);
+    font-size: 20px;
+    text-align: left;
+    height: auto;
+}
+
+#popup_weekly .weekly_board {
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100%;
+    height: 200px;
+    margin: 10px 0 0 0;
+}
+
+#popup_weekly .panel_policy {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    margin: 5px;
+}
+
+svg.area_policy.area_board {
+    margin: 10px;
+    width: 600px;
+    height: 600px;
+}
+
+div.weekly.tab.content.age {
+    display: none;
+    height: auto;
+}
+div.weekly.tab.content.area {
+    display: none;
+    height: auto;
+}
+
+#button_wrapper {
+    width: 100%;
+    text-align: center;
+}
+
+#button_resume {
+    margin: 5px;
+    padding: 10px 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    font-size: 20px;
+    color: #524782;
+    background-color: white;
+}
+
+#button_resume:hover {
+    color: white;
+    background-color: #524782;
+}
+div.area_policy {
+    position: absolute;
+    display: inline-block;
+    width: 600px;
+    height: 600px;
+}
+tr.policy.info td {
+    width: 80px;
+}
+div.area_policy.options {
+    margin: 10px;
+    left: 0;
+}
+select.area_policy.option {
+    font-size: 150%;
+    width: auto;
+    position: absolute;
+}
+select.area_policy.option.upper {
+    top: 22%;
+}
+select.area_policy.option.lower {
+    bottom: 22%;
+}
+select.area_policy.option.left {
+    left: 15%;
+}
+select.area_policy.option.right {
+    right: 15%;
+}
+
+.panel_policy input[type=range] {
+    -webkit-appearance: slider-vertical;
+    writing-mode: bt-lr;
+    width: 10px;
+    height: 60px;
+}
+.panel_policy input[type=number] {
+    width: 40px;
+}
+
+.panel_policy label {
+    text-align: center;
+    font-size: 17px;
+}
+
+.panel_policy table td {
+    width: 60px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.table_ages td {
+    color: blue;
+    font-weight: bold;
+}
+
+.panel_status {
+    width: 100%;
+}
+
+.panel_status tr td {
+    width: 25%;
+    border: 1px solid #d3d3d3;
+    border-left: none;
+    border-top: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+.panel_status .infectious output {
+    color: #C00000;
+}
+.panel_status .hospital output {
+    color: #5260d0;
+}
+.panel_status .death output {
+    color: #000000;
+}
+.panel_status .GDP output {
+    color: blue;
+}
+
+div.weekly p {
+    margin: 10px;
+}
+
+.weekly.legend {
+    position: absolute;
+    left: 920px;
+    top: 300px;
+}
+.weekly.legend svg {
+    background-color: white;
+    width: 100px;
+    height: 65px;
+    font-size: 15px;
+}
+
+.weekly.tag.column {
+    width: 180px;
+}
+
+#duration_label::after {
+    content: "E1->E2; E2->I1; I1->I2; I1->H1; I1->R1; I2->H2; I2->R2; H2->R1";
+}
+
+.stat input[type="button"] {
+    border: none;
+    background: none;
+    color: black;
+}
+
+.stat input[type="button"]:hover {
+    color: #98E294;
+}
+
+
+
+td.stat.label {
+    padding-left: 10px;
+    padding-right: 10px;
+    border-right: 1px solid black;
+}
+
+text.stat.total {
+    padding-left: 10px;
+}
+
+table.stat {
+    border-collapse: collapse;
+    border: 1px solid black;
+    font-size: 15px;
+    color: black;
+    margin: 10px;
+}
+
+div.stat.left {
+    display: inline-block;
+    position: relative;
+}
+
+.stat.description {
+    display: inline-block;
+    position: absolute;
+    margin: 10px 0 0 0;
+    width: 300px;
+}
+
+div.stat.desc {
+    display: none;
+}

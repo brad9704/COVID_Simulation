@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--🥕-->
+<link rel="shortcut icon" href="favicon.ico">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID Simulation</title>
+    <link rel="stylesheet" href="css/style_game.css">
+</head>
+<body>
+<div class="sidebar">
+    <div class="Day"><text id="day_text">Day </text><output id="turn_day"></output></div>
+    <div class="speed">
+        <div id="speed_output_wrapper">
+            <output id="speed_out">1x</output>
+        </div>
+        <div class="button">
+            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<<">
+            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
+        </div>
+    </div>
+    <div class="auto"><input id="auto_switch" type="range" min="0" max="1" step="1" value="0" oninput="toggle_auto(value)" style="width: 30px;"></div>
+</div>
+<div class="board" id="board"></div>
+<div class="control_panel">
+    <div class="panel_button">
+        <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
+    </div>
+    <div class="panel_policy">
+        <table class="panel_status">
+            <tr class="panel tag">
+                <td class="infectious">Infectious</td>
+                <td class="hospital">ICU</td>
+                <td class="death">Death</td>
+                <td class="GDP">GDP</td>
+            </tr>
+            <tr class="panel unit">
+                <td class="infectious">daily new (current/cumulative)</td>
+                <td class="hospital">current / maximum</td>
+                <td class="death">daily (cumulative)</td>
+                <td class="GDP">daily (compared to pre-COVID)</td>
+            </tr>
+            <tr class="panel var">
+                <td class="infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</td>
+                <td class="hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></td>
+                <td class="death"><output class="death_now">0</output> (<output class="death_total">0</output>)</td>
+                <td class="GDP">$<output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div id="popup_weekly" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox">
+        <div class="popHead">Weekly Report<output></output></div>
+        <div class="popBody">
+            <div class="weekly switch tabs">
+                <input class="weekly tab switch overall" type="button" value="Overall" active="true" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.overall').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.overall').css('display','block');">
+                <input class="weekly tab switch age" type="button" value="Age policy" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.age').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.age').css('display','block');">
+                <input class="weekly tab switch area" type="button" value="Area restrictions" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.area').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.area').css('display','block');">
+            </div>
+            <div class="weekly overall tab content">
+                <div class="weekly_status">
+                For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output> (week <output id="weekly_week">1</output>), there were: <br>
+                - <output id="weekly_new_infect">0</output>(<output id="weekly_change_infect">▲0</output>) new patients were found (Total <output class="weekly infectious" age="90">0</output>).<br>
+                - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
+                - <output id="weekly_death">0</output> people were dead due to insufficient medical service (Total <output class="weekly death" age="90">0</output>). <br>
+                <br>
+                - Local GDP was $<output class="GDP_now">0</output>/day, compared to pre-COVID: <output class="GDP_now_ratio">0</output>%. <br>
+            </div> <br>
+                <div class="weekly_chart">
+                    <div class="weekly legend">
+                        <svg>
+                            <circle cx="10" cy="10" r="6" fill="red"></circle>
+                            <text x="25" y="16">Infected</text>
+                            <circle cx="10" cy="30" r="6" fill="black"></circle>
+                            <text x="25" y="36">Dead</text>
+                            <circle cx="10" cy="50" r="6" fill="blue"></circle>
+                            <text x="25" y="56">Daily GDP</text>
+                        </svg>
+                    </div>
+                    Weekly Chart<br>
+                    <div class="weekly_board">
+                    </div>
+                </div>
+            </div>
+            <div class="weekly age area tab weekly_policy" style="display:none">
+                <div class="panel_policy">
+                    <div class="weekly age tab content">
+                        <table style="display: none">
+                            <tr class="table_ages">
+                                <td class="weekly tag column"></td>
+                                <td>0-9</td>
+                                <td>10-19</td>
+                                <td>20-29</td>
+                                <td>30-39</td>
+                                <td>40-49</td>
+                                <td>50-59</td>
+                                <td>60-69</td>
+                                <td>70-79</td>
+                                <td>80+</td>
+                                <td>Total</td>
+                            </tr>
+                            <tr class="weekly infectious">
+                                <td class="weekly tag column">Infectious</td>
+                                <td><output class="weekly infectious" age="0">0</output></td>
+                                <td><output class="weekly infectious" age="10">0</output></td>
+                                <td><output class="weekly infectious" age="20">0</output></td>
+                                <td><output class="weekly infectious" age="30">0</output></td>
+                                <td><output class="weekly infectious" age="40">0</output></td>
+                                <td><output class="weekly infectious" age="50">0</output></td>
+                                <td><output class="weekly infectious" age="60">0</output></td>
+                                <td><output class="weekly infectious" age="70">0</output></td>
+                                <td><output class="weekly infectious" age="80">0</output></td>
+                                <td><output class="weekly infectious" age="90">0</output></td>
+                            </tr>
+                            <tr class="weekly ICU">
+                                <td class="weekly tag column">ICU</td>
+                                <td><output class="weekly ICU" age="0">0</output></td>
+                                <td><output class="weekly ICU" age="10">0</output></td>
+                                <td><output class="weekly ICU" age="20">0</output></td>
+                                <td><output class="weekly ICU" age="30">0</output></td>
+                                <td><output class="weekly ICU" age="40">0</output></td>
+                                <td><output class="weekly ICU" age="50">0</output></td>
+                                <td><output class="weekly ICU" age="60">0</output></td>
+                                <td><output class="weekly ICU" age="70">0</output></td>
+                                <td><output class="weekly ICU" age="80">0</output></td>
+                                <td><output class="weekly ICU" age="90">0</output></td>
+                            </tr>
+                            <tr class="weekly death">
+                                <td class="weekly tag column">Death</td>
+                                <td><output class="weekly death" age="0">0</output></td>
+                                <td><output class="weekly death" age="10">0</output></td>
+                                <td><output class="weekly death" age="20">0</output></td>
+                                <td><output class="weekly death" age="30">0</output></td>
+                                <td><output class="weekly death" age="40">0</output></td>
+                                <td><output class="weekly death" age="50">0</output></td>
+                                <td><output class="weekly death" age="60">0</output></td>
+                                <td><output class="weekly death" age="70">0</output></td>
+                                <td><output class="weekly death" age="80">0</output></td>
+                                <td><output class="weekly death" age="90">0</output></td>
+                            </tr>
+                            <tr class="table_sliders">
+                                <td class="weekly tag column">Movement setting</td>
+                                <td><input id="policy_0" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_10" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_20" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_30" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_40" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_50" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_60" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_70" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                                <td><input id="policy_80" class="age_policy enable-on-pause" type="range" min="0.1" max="1" step="0.1" value="1" oninput="$('#' + id + '_output').val(parseFloat(value).toFixed(2))"></td>
+                            </tr>
+                            <tr class="table_floats">
+                                <td class="weekly tag column">Movement multiplier</td>
+                                <td><input id="policy_0_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_0').val(value)"></td>
+                                <td><input id="policy_10_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_10').val(value)"></td>
+                                <td><input id="policy_20_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_20').val(value)"></td>
+                                <td><input id="policy_30_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_30').val(value)"></td>
+                                <td><input id="policy_40_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_40').val(value)"></td>
+                                <td><input id="policy_50_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_50').val(value)"></td>
+                                <td><input id="policy_60_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_60').val(value)"></td>
+                                <td><input id="policy_70_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_70').val(value)"></td>
+                                <td><input id="policy_80_output" type="number" max="1.00" min="0.10" step="0.1" value="1.00" oninput="$('#policy_80').val(value)"></td>
+                                <td><input id="policy_submit" type="button" value="submit"></td>
+                            </tr>
+                        </table>
+                        <div class="policy level confirm">
+                            <p>
+                                Defines how restrict each social distancing level will be.<br>
+                                Changing variables below affects area where each level is applied on.<br>
+                                Applying any level on an area will result in surrounding the area with walls.<br>
+                            </p>
+                            <table>
+                                <tr class="policy info">
+                                    <td>Level</td>
+                                    <td>0-9</td>
+                                    <td>10-19</td>
+                                    <td>20-29</td>
+                                    <td>30-39</td>
+                                    <td>40-49</td>
+                                    <td>50-59</td>
+                                    <td>60-69</td>
+                                    <td>70-79</td>
+                                    <td>80+</td>
+                                </tr>
+                                <tr class="policy level" data-level="1">
+                                    <td>0</td>
+                                    <td><input class="policy level" data-level="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="20" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="30" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="40" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="50" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="60" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="70" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="80" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
+                                </tr>
+                                <tr class="policy level" data-level="2">
+                                    <td>1</td>
+                                    <td><input class="policy level" data-level="2" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                </tr>
+                                <tr class="policy level" data-level="3">
+                                    <td>2</td>
+                                    <td><input class="policy level" data-level="3" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="3" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                </tr>
+                                <tr class="policy level" data-level="4">
+                                    <td>3</td>
+                                    <td><input class="policy level" data-level="4" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="4" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="weekly area tab content">
+                        <div>
+                            <p>
+                                Sets social distancing level on each area.<br>
+                                Remember, applying any level on each area (which means, setting level to non-zero) will results in surrounding the area with walls!
+                            </p>
+                            <svg class="area_policy area_board">
+                                <line x1="0" y1="300" x2="600" y2="300" style="stroke:black;stroke-width:2"/>
+                                <line x1="300" y1="0" x2="300" y2="600" style="stroke:black;stroke-width:2"/>
+                                <rect height="600" width="600" style="stroke:black;fill:none;">
+                                </rect>
+                            </svg>
+                            <div class="area_policy options">
+                                <select class="area_policy option upper left" data-area="upper left" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
+                                <select class="area_policy option upper right" data-area="upper right" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
+                                <select class="area_policy option lower left" data-area="lower left" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
+                                <select class="area_policy option lower right" data-area="lower right" onchange="toggle_area()">
+                                    <option value="0" selected>Level 0</option>
+                                    <option value="1">Level 1</option>
+                                    <option value="2">Level 2</option>
+                                    <option value="3">Level 3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div id="button_wrapper">
+                <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="popup_result" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox">
+        <div class="popHead">RESULT</div>
+        <div class="popBody">
+            <div class="popCommonVar">
+                Elapsed time: <output id="resultTime">0</output> days<br>
+            </div>
+            <div class="popChart"></div>
+            <div class="panel_policy_result">
+                <table class="panel_status">
+                    <tr class="panel tag">
+                        <td class="infectious">Infectious</td>
+                        <td class="death">Death</td>
+                        <td class="GDP">GDP</td>
+                    </tr>
+                    <tr class="panel unit">
+                        <td class="infectious">cumulative</td>
+                        <td class="death">cumulative</td>
+                        <td class="GDP">compared to non-COVID scenario</td>
+                    </tr>
+                    <tr class="panel var">
+                        <td class="infectious"><output class="infectious_total">0</output></td>
+                        <td class="death"><output class="death_total">0</output></td>
+                        <td class="GDP"><output class="GDP_total">0</output>%</td>
+                    </tr>
+                </table>
+            </div>
+            <input type="button" onclick="request_log()" value="Log" style="display:none">
+            <input id="exit" type="button" value="Exit">
+        </div>
+        <div class="popFoot">
+        </div>
+    </div>
+</div>
+<div id="popup_init" class="popup">
+    <div class="popBg"></div>
+    <div class="popBody">
+        <div class="controls">
+            <div class="control" id="init_setting">
+                <p><label>Initial setting</label><br>Target population number, initial patient, etc.</p>
+                <label>Student ID: <input id="student_id" type="text"><br>Your name (ENG): <input id="student_name" type="text"></label>
+                <label>Target population number: <input id="node_num_output" type="number" min="1" max="2000" value="1000" step="1" oninput="$('#node_num').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);"> people
+                    <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);">
+                </label>
+                <label style="display:none;">Initial patient: <input id="initial_patient_output" type="number" min="1" max="100" value="1" step="1" oninput="$('#initial_patient').val(value);"> people
+                    <input id="initial_patient" type="range" min="1" max="100" value="1" step="1" oninput="$('#initial_patient_output').val(value);">
+                </label>
+                <label style="display:none;">Initial speed: <input id="speed_output" type="number" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed').val(value);" >
+                    <input id="speed" type="range" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed_output').val(value);">
+                </label>
+                <label style="display:none;">Base transmission factor: <input id="TPC_base_output" type="number" min="0" max="1" value="0.08" step="0.001" oninput="$('#TPC_base').val(value);">
+                    <input id="TPC_base" type="range" min="0" max="1" value="0.08" step="0.001" oninput="$('#TPC_base_output').val(value);">
+                </label>
+                <label>Maximum hospital capacity: <input id="hospital_max_output" type="number" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max').val(value);">
+                    <input id="hospital_max" type="range" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max_output').val(value);">
+                </label>
+            </div>
+            <div class="control" id="advanced_setting" style="display:none;"></div>
+            <div class="stat wrapper">
+            <div class="stat left">
+                <table class="stat def">
+                    <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
+                        <td class="stat label stat1">stat1</td>
+                        <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
+                        <td class="stat value stat1"><output class="stat value stat1">4</output></td>
+                        <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
+                    </tr>
+                    <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
+                        <td class="stat label stat2">stat2</td>
+                        <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
+                        <td class="stat value stat2"><output class="stat value stat2">8</output></td>
+                        <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
+                    </tr>
+                    <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
+                        <td class="stat label stat3">stat3</td>
+                        <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
+                        <td class="stat value stat3"><output class="stat value stat3">6</output></td>
+                        <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
+                    </tr>
+                    <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
+                        <td class="stat label stat4">stat4</td>
+                        <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
+                        <td class="stat value stat4"><output class="stat value stat4">0</output></td>
+                        <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
+                    </tr>
+
+                </table>
+                <text class="stat label total">Remaining stat: <output class="stat value total">7</output></text>
+            </div>
+            <div class="stat description">
+                <div class="stat desc stat1">
+                    This is stat 1.<br>
+                    It increases latent period +1 day for each 2 points.<br>
+                    Maximum latent period added is +12 (1~2 days -> 13~14 days) with 24 points cost. <br>
+                </div>
+                <div class="stat desc stat2">
+                    This is stat 2.<br>
+                    It increases infectious period +1 day for each 3 points.<br>
+                    Maximum infectious period added is +8 (1~2 -> 9~10 days) with 24 points cost. <br>
+                </div>
+                <div class="stat desc stat3">
+                    This is stat 3.<br>
+                    It increases the chance of infection by contact +4% for each 1 point.<br>
+                    Maximum chance of infection is twice of normal with 25 points cost. <br>
+                </div>
+                <div class="stat desc stat4">
+                    This is stat 4.<br>
+                    It increases the chance of transfer from light patient to severe patient +2%p for each 1 point.<br>
+                    Maximum latent period added is +50%p with 25 points cost. <br>
+                </div>
+            </div>
+        </div>
+            <div class="control" id="Simulation">
+                <input id="button_start" type="button" onclick="start_simulation()" value="Start">
+                <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
+<script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="simNode_game.js"></script>
+<script src="main_game.js"></script>
+<script type="text/javascript">$("#popup_init").fadeIn();</script>
+</body>
+</html>
