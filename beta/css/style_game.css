@@ -265,7 +265,9 @@ svg {
     border-bottom-left-radius: 0;
 }
 
-
+div.auto {
+    margin: 0 0 0 45px;
+}
 
 #speed_output_wrapper {
     text-align: center;

@@ -833,5 +833,12 @@ function weekly_report() {
                 .curve(d3.curveBasis)(e.data);
         })
  */
+    if (auto) resume_simulation();
+}
 
+var auto = false;
+
+function toggle_auto(val) {
+    console.log(val);
+    auto = (val === "1");
 }
