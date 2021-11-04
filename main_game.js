@@ -1,4 +1,17 @@
-var run, chart_data, running_time, chart_param, pause_time;
+var run, chart_data, running_time, chart_param;
+var stat = {
+    total: 7,
+    stat1: 4,
+    stat2: 8,
+    stat3: 6,
+    stat4: 0
+};
+var area = {
+    upper_left: "0",
+    upper_right: "0",
+    lower_left: "0",
+    lower_right: "0"
+}
 var clicker = 0;
 var init_param = {
     size: 5,
@@ -7,10 +20,10 @@ var init_param = {
     fps: 24,
     duration: {
         "E1-E2": [1,2],
-        "E2-I1": [3,4],
-        "I1-I2": [5,6],
+        "E2-I1": [1,2],
+        "I1-I2": [1,2],
         "I1-H1": [99,99],
-        "I1-R1": [20,20],
+        "I1-R1": [16,16],
         "I2-H2": [1,1],
         "I2-R2": [3,3],
         "H2-R1": [24,24]
@@ -135,6 +148,17 @@ function get_params() {
     }
     tick = param["timeunit"] / param["fps"];
 
+    param["duration"]["E2-I1"][0] += Math.floor(stat.stat1 / 2);
+    param["duration"]["E2-I1"][1] += Math.floor(stat.stat1 / 2);
+    param["duration"]["I1-I2"][0] += Math.floor(stat.stat2 / 3);
+    param["duration"]["I1-I2"][1] += Math.floor(stat.stat2 / 3);
+    param["duration"]["I1-R1"][0] += Math.floor(stat.stat2 / 3);
+    param["duration"]["I1-R1"][1] += Math.floor(stat.stat2 / 3);
+    param["TPC_base"] *= (1 + stat.stat3 * 0.04);
+    for (const age in param["age_severe"]) {
+        param["age_severe"][age] += stat.stat4 * 0.02;
+    }
+
     param["sim_width"] = 800;
     param["sim_height"] = 800;
 
@@ -246,8 +270,7 @@ function updateSim(param, node_data, time) {
 function show_result(param, node_data) {
     let last_state = chart_data[chart_data.length - 1];
     $("#resultTime").text(last_state["tick"]);
-    $("#resultTotalInfected").text(param.node_num - last_state["S"]);
-    $("#resultMaxQuarantined").text(_.max(chart_data, e => e.H2[9])["H2"][9]);
+    $(".death_rate").val(last_state["R2"][9] / param.node_num);
     let chart_board = $("#chart_board").clone()
         .attr("id", "chart_board_result").appendTo($(".popChart"));
     $("#popup_result").fadeIn();
@@ -300,6 +323,22 @@ function node_init(param, node_data, loc) {
         .style("stroke", "rgb(0,0,0)")
         .style("stroke-width", 1)
         .style("fill", "none");
+
+    sim_board.select("svg").selectAll("line")
+        .data([{name: "upper", x1: param.sim_width / 2, y1: 0, x2: param.sim_width / 2, y2: param.sim_height / 2},
+            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height},
+            {name: "left", x1: 0, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height / 2},
+            {name: "right", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width, y2: param.sim_height / 2}])
+        .enter()
+        .append("line")
+        .attr("class", function(d) {return "sim_board svg_line " + d.name;})
+        .attr("x1", function(d) {return d.x1;})
+        .attr("y1", function(d) {return d.y1;})
+        .attr("x2", function(d) {return d.x2;})
+        .attr("y2", function(d) {return d.y2;})
+        .style("stroke", "#C00000")
+        .style("stroke-width", 1)
+        .style("display", "none");
 
     d3.select("#board").append("img")
         .attr("id", "legend")
@@ -423,7 +462,7 @@ function chart_init(param) {
         .text("Dead");
     death_legend.append("text")
         .attr("x", 25).attr("y", 60)
-        .text("Movement");
+        .text("Daily GDP");
 
     return {x:x, y:y, xAxis:xAxis, yAxis:yAxis, svg:svg, death_svg: death_svg};
 }
@@ -556,19 +595,35 @@ function pause_simulation() {
 function resume_simulation() {
     if (run !== null) return;
     $(".enable-on-pause").attr("disabled", "disabled");
+    $("input.weekly.tab.switch.overall").click();
     w.postMessage({type: "RESUME", data: {
-        "0": $("#policy_0").val(),
-            "10": $("#policy_10").val(),
-            "20": $("#policy_20").val(),
-            "30": $("#policy_30").val(),
-            "40": $("#policy_40").val(),
-            "50": $("#policy_50").val(),
-            "60": $("#policy_60").val(),
-            "70": $("#policy_70").val(),
-            "80": $("#policy_80").val()
-
+        age: {"0": $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
+            "10": $("input.policy.level[data-age=10]").map(function() {return this.value;}).get(),
+            "20": $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
+            "30": $("input.policy.level[data-age=30]").map(function() {return this.value;}).get(),
+            "40": $("input.policy.level[data-age=40]").map(function() {return this.value;}).get(),
+            "50": $("input.policy.level[data-age=50]").map(function() {return this.value;}).get(),
+            "60": $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
+            "70": $("input.policy.level[data-age=70]").map(function() {return this.value;}).get(),
+            "80": $("input.policy.level[data-age=80]").map(function() {return this.value;}).get()},
+        area: area
         }});
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
+    d3.selectAll("line.sim_board.svg_line").style("display", function(d) {
+        if (d.name === "upper") {
+            if (area.upper_left !== "0" || area.upper_right !== "0") return "inline";
+            else return "none";
+        } else if (d.name === "lower") {
+            if (area.lower_left !== "0" || area.lower_right !== "0") return "inline";
+            else return "none";
+        } else if (d.name === "left") {
+            if (area.upper_left !== "0" || area.lower_left !== "0") return "inline";
+            else return "none";
+        } else {
+            if (area.upper_right !== "0" || area.lower_right !== "0") return "inline";
+            else return "none";
+        }
+    });
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
@@ -584,25 +639,15 @@ function request_log() {
 }
 
 function save_log() {
-    let str = "day," +
-        "S(0-9),S(10-19),S(20-29),S(30-39),S(40-49),S(50-59),S(60-69),S(70-79),S(80+),S(Total)," +
-        "E1(0-9),E1(10-19),E1(20-29),E1(30-39),E1(40-49),E1(50-59),E1(60-69),E1(70-79),E1(80+),E1(Total)," +
-        "E2(0-9),E2(10-19),E2(20-29),E2(30-39),E2(40-49),E2(50-59),E2(60-69),E2(70-79),E2(80+),E2(Total)," +
-        "I1(0-9),I1(10-19),I1(20-29),I1(30-39),I1(40-49),I1(50-59),I1(60-69),I1(70-79),I1(80+),I1(Total)," +
-        "I2(0-9),I2(10-19),I2(20-29),I2(30-39),I2(40-49),I2(50-59),I2(60-69),I2(70-79),I2(80+),I2(Total)," +
-        "H1(0-9),H1(10-19),H1(20-29),H1(30-39),H1(40-49),H1(50-59),H1(60-69),H1(70-79),H1(80+),H1(Total)," +
-        "H2(0-9),H2(10-19),H2(20-29),H2(30-39),H2(40-49),H2(50-59),H2(60-69),H2(70-79),H2(80+),H2(Total)," +
-        "R1(0-9),R1(10-19),R1(20-29),R1(30-39),R1(40-49),R1(50-59),R1(60-69),R1(70-79),R1(80+),R1(Total)," +
-        "R2(0-9),R2(10-19),R2(20-29),R2(30-39),R2(40-49),R2(50-59),R2(60-69),R2(70-79),R2(80+),R2(Total)," +
-        "Policy(0-9),Policy(10-19),Policy(20-29),Policy(30-39),Policy(40-49),Policy(50-59),Policy(60-69),Policy(70-79),Policy(80+),GDP\n";
+    let str = "tick,S,E1,E2,I1,I2,H1,H2,R1,R2\n";
     if (chart_data === undefined) return;
     chart_data.forEach(e => {
-        str += e.tick + "," + e.S + "," + e.E1 + "," + e.E2 + "," + e.I1 + "," + e.I2 + "," + e.H1 + "," + e.H2 + "," + e.R1 + "," + e.R2 + "," + e.policy + "," + e.GDP + "\n";
+        str += e.tick + "," + e.S + "," + e.E1 + "," + e.E2 + "," + e.I1 + "," + e.I2 + "," + e.H1 + "," + e.H2 + "," + e.R1 + "," + e.R2 + "\n";
     })
 
     var element = document.createElement("a");
     element.setAttribute("href", "data:application/octet-stream,"+encodeURIComponent(str));
-    element.setAttribute("download", "log_" + $("#student_id").val() + "_" + $("#student_name").val() + ".csv");
+    element.setAttribute("download", "log.csv");
     element.style.display = "none";
     document.body.appendChild(element);
     element.click();
@@ -623,6 +668,24 @@ function change_speed(direction) {
         running_speed /= 2;
     }
     $("#speed_out").val(running_speed.toString() + "x");
+}
+
+function change_stat(stat_index, direction) {
+    if (direction > 0 && stat.total > 0) {
+        stat.total--;
+    } else if (direction < 0 && stat[stat_index] > 0) {
+        stat.total++;
+    } else return;
+    stat[stat_index] += direction;
+    $("output.stat.value." + stat_index).text(stat[stat_index]);
+    $("output.stat.value.total").text(stat["total"]);
+}
+
+function toggle_area() {
+    area["upper_left"] = $("select.area_policy.upper.left.option").val()
+    area["upper_right"] = $("select.area_policy.upper.right.option").val()
+    area["lower_left"] = $("select.area_policy.lower.left.option").val()
+    area["lower_right"] = $("select.area_policy.lower.right.option").val()
 }
 
 function weekly_report() {
@@ -681,13 +744,19 @@ function weekly_report() {
     $("output.weekly.death").each(function(e) {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
-
-    let chart_data_ = chart_data_total.filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick).reduce((prev, curr) => {
-        prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
-        prev[1].data.push([curr.tick, curr.R2]);
-        prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
+    // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
+    let chart_data_ = chart_data_total.reduce((prev, curr) => {
+        prev[0].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
         return prev;
-    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
+    }, [{type: "GDP", data: [], color: "blue"}]);
+
+    let daily_IR = chart_data_total.reduce((prev, curr, index) => {
+        if (index === 0) return [];
+        prev.push({"tick": curr.tick,
+            "I1": chart_data_total[index - 1]["S"] + chart_data_total[index - 1]["E1"] + chart_data_total[index - 1]["E2"] - (curr["S"]+curr["E1"]+curr["E2"]),
+            "R2": curr["R2"] - chart_data_total[index - 1]["R2"]});
+        return prev;
+    }, []).filter(node => node.tick > (data_from.tick - w.param.turnUnit) && node.tick <= data_to.tick)
 
     let weekly_pointer = $("#popup_weekly");
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
@@ -705,11 +774,14 @@ function weekly_report() {
         .attr("width", "100%")
         .attr("height", "100%");
     let board_svg_size = board_svg.node().getBoundingClientRect();
-    let xScale = d3.scaleLinear()
-        .domain([data_from.tick, data_to.tick])
-        .range([0, board_svg_size.width - 50]);
+
+    let data_stacked = d3.stack().keys(["I1","R2"])(daily_IR);
+
+    let xScale = d3.scaleBand()
+        .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
+        .range([0, board_svg_size.width - 50]).padding(0.4);
     let yScale = d3.scaleLinear()
-        .domain([0, w.param.node_num])
+        .domain([0, d3.max(d3.max(data_stacked, e => d3.max(e))) + 10])
         .range([board_svg_size.height - 50, 0]);
     let xAxis = d3.axisBottom().scale(xScale);
     let yAxis = d3.axisLeft().scale(yScale);
@@ -726,9 +798,25 @@ function weekly_report() {
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
 
-    var v = board_svg.selectAll(".line")
-        .data(chart_data_);
-    v.enter()
+    var v = board_svg.append("g").attr("class","bar");
+    v.selectAll("g")
+        .data(data_stacked)
+        .enter()
+        .append("g")
+        .attr("fill",function(d) {return state[d.key];})
+        .attr("stroke","none")
+        .selectAll("rect")
+        .data(function(d) {return d;})
+        .enter()
+        .append("rect")
+        .attr("width", xScale.bandwidth())
+        .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
+        .attr("x", function(d) {return xScale(d.data.tick - data_to.tick + 14)})
+        .attr("y", function(d) {return yScale(d[1])});
+//        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
+/*    v.selectAll(".line")
+        .data(chart_data_)
+        .enter()
         .append("path")
         .attr("class", "line")
         .style("stroke", function(d) {return d.color;})
@@ -743,6 +831,14 @@ function weekly_report() {
                     return yScale(d[1]);
                 })
                 .curve(d3.curveBasis)(e.data);
-        });
+        })
+ */
+    if (auto) resume_simulation();
+}
 
+var auto = false;
+
+function toggle_auto(val) {
+    console.log(val);
+    auto = (val === "1");
 }
