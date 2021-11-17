@@ -297,13 +297,57 @@ div.daily.legend {
     display: inline-block;
     top: 10px;
     left: 900px;
+    height: 270px;
 }
 
 div.daily.legend img {
     height: 270px;
 }
+output.daily.legend {
+    position: absolute;
+    font-size: 15px;
+}
+output.daily.legend.rate {
+}
 
-.board .legend {
+output.daily.legend.duration.E1-E2 {
+    top: 120px;
+    left: 110px;
+}
+output.daily.legend.duration.E2-I1 {
+    top: 160px;
+    left: 170px;
+}
+output.daily.legend.duration.I1-I2 {
+     top: 120px;
+     left: 200px;
+ }
+output.daily.legend.duration.I1-R1 {
+    top: 10px;
+    left: 300px;
+}
+output.daily.legend.duration.I2-H2 {
+    top: 180px;
+    left: 260px;
+}
+output.daily.legend.duration.I2-R2 {
+    top: 210px;
+    left: 350px;
+}
+output.daily.legend.duration.H2-R1 {
+    top: 120px;
+    left: 370px;
+}
+output.daily.legend.rate.infectious {
+    top: 240px;
+    right: 250px;
+}
+output.daily.legend.rate.severity {
+    top: 260px;
+    right: 250px;
+}
+
+.board svg.legend {
     position: absolute;
     top: -80px;
     left: 675px;

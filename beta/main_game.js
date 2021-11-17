@@ -210,7 +210,7 @@ w.onerror = function(event) {
 
 function initSim(param, initial_node_data, loc) {
     turn_end = true;
-    d3.selectAll("#board > div > *").remove()
+    d3.selectAll("#board > div > svg").remove()
     $(".popChart").find("div").remove();
     node_init(param, initial_node_data, loc);
     let init_data = {
@@ -575,7 +575,7 @@ function stop_simulation() {
 }
 function reset_simulation() {
     stop_simulation();
-    d3.selectAll("#board > div > *").remove()
+    d3.selectAll("#board > div > svg").remove()
     chart_data = [];
     $("#popup_init").fadeIn();
 }
