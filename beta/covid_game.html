@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.211117.03-->
+<!--ver.211117.05-->
 <html lang="en">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -25,7 +25,7 @@
 <div class="board" id="board">
     <div id="sim_board"></div>
     <div class="daily legend">
-        <img id="legend" src="img/legend.png">
+        <img src="img/info_panel_md3.svg">
         <output class="daily legend duration E1-E2">1-2</output>
         <output class="daily legend duration E2-I1">1-2</output>
         <output class="daily legend duration I1-I2">1-2</output>
@@ -200,6 +200,7 @@
                                 Defines how restrict each social distancing level will be.<br>
                                 Changing variables below affects area where each level is applied on.<br>
                                 Applying any level on an area will result in surrounding the area with walls.<br>
+                                Wall length: <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5">
                             </p>
                             <table>
                                 <tr class="policy info">
@@ -324,8 +325,8 @@
     <div class="popBody">
         <div class="controls">
             <div class="control" id="init_setting">
-                <p><label>Initial setting</label><br>Target population number, initial patient, etc.</p>
-                <label>Student ID: <input id="student_id" type="text"><br>Your name (ENG): <input id="student_name" type="text"></label>
+                <p><label>Initial setting</label></p>
+                <label>Virus Name? (ENG) <input id="student_name" type="text"></label>
                 <label style="display:none;">Target population number: <input id="node_num_output" type="number" min="1" max="2000" value="1000" step="1" oninput="$('#node_num').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);"> people
                     <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);">
                 </label>
@@ -359,7 +360,7 @@
                             <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
                         </tr>
                         <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
-                            <td class="stat label stat3">Infectious chance</td>
+                            <td class="stat label stat3">Infection chance</td>
                             <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
                             <td class="stat value stat3"><output class="stat value stat3">6</output></td>
                             <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
@@ -386,7 +387,7 @@
                         Maximum infectious period added is +8 (1~2 -> 9~10 days) with 24 points cost. <br>
                     </div>
                     <div class="stat desc stat3">
-                        <b>Infectious chance</b><br>
+                        <b>Infection chance</b><br>
                         It increases the chance of infection by contact +4% for each 1 point.<br>
                         Maximum chance of infection is twice of normal with 25 points cost. <br>
                     </div>
@@ -402,7 +403,7 @@
                 <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
             </div>
             <div class="daily legend">
-                <img src="img/legend.png">
+                <img src="img/info_panel_md3_initial.svg">
                 <output class="daily legend duration E1-E2">1-2</output>
                 <output class="daily legend duration E2-I1">1-2</output>
                 <output class="daily legend duration I1-I2">1-2</output>

@@ -324,11 +324,12 @@ function node_init(param, node_data, loc) {
         .style("stroke-width", 1)
         .style("fill", "none");
 
+    let line_rate = parseFloat($("input.policy.rate").val());
     sim_board.select("svg").selectAll("line")
-        .data([{name: "upper", x1: param.sim_width / 2, y1: 0, x2: param.sim_width / 2, y2: param.sim_height / 2},
-            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height},
-            {name: "left", x1: 0, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height / 2},
-            {name: "right", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width, y2: param.sim_height / 2}])
+        .data([{name: "upper", x1: param.sim_width / 2, y1: param.sim_height * (1 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (1 + line_rate) / 4},
+            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height * (3 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (3 + line_rate) / 4},
+            {name: "left", x1: param.sim_width * (1 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (1 + line_rate) / 4, y2: param.sim_height / 2},
+            {name: "right", x1: param.sim_width * (3 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (3 + line_rate) / 4, y2: param.sim_height / 2}])
         .enter()
         .append("line")
         .attr("class", function(d) {return "sim_board svg_line " + d.name;})
@@ -592,7 +593,8 @@ function resume_simulation() {
     $("input.weekly.tab.switch.overall").click();
     let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
         age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
-        age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get();
+        age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
+        line_rate = parseFloat($("input.policy.rate").val());
     w.postMessage({type: "RESUME", data: {
             age: {"0": age_0,
                 "10": age_0,
@@ -603,10 +605,23 @@ function resume_simulation() {
                 "60": age_60,
                 "70": age_60,
                 "80": age_60},
-            area: area
+            area: area,
+            rate: line_rate
         }});
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
-    d3.selectAll("line.sim_board.svg_line").style("display", function(d) {
+    d3.selectAll("line.sim_board.svg_line")
+        .data([{name: "upper", x1: w.param.sim_width / 2, y1: w.param.sim_height * (1 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (1 + line_rate) / 4},
+            {name: "lower", x1: w.param.sim_width / 2, y1: w.param.sim_height * (3 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (3 + line_rate) / 4},
+            {name: "left", x1: w.param.sim_width * (1 - line_rate) / 4, y1: w.param.sim_height / 2, x2: w.param.sim_width * (1 + line_rate) / 4, y2: w.param.sim_height / 2},
+            {name: "right", x1: w.param.sim_width * (3 - line_rate) / 4, y1: w.param.sim_height / 2, x2: w.param.sim_width * (3 + line_rate) / 4, y2: w.param.sim_height / 2}])
+        .join(enter => enter, update => update
+            .attr("class", function(d) {return "sim_board svg_line " + d.name;})
+            .attr("x1", function(d) {return d.x1;})
+            .attr("y1", function(d) {return d.y1;})
+            .attr("x2", function(d) {return d.x2;})
+            .attr("y2", function(d) {return d.y2;})
+        )
+        .style("display", function(d) {
         if (d.name === "upper") {
             if (area.upper_left !== "0" || area.upper_right !== "0") return "inline";
             else return "none";
@@ -776,13 +791,13 @@ function weekly_report() {
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([0, board_svg_size.width - 50]).padding(0.4);
+        .range([0, board_svg_size.width - 50]).padding(0.7);
     let yScale = d3.scaleLinear()
-        .domain([0, d3.max(d3.max(data_stacked, e => d3.max(e))) + 10])
+        .domain([0, d3.max(d3.max(data_stacked, e => d3.max(e))) + 1])
         .range([board_svg_size.height - 50, 0]);
     let xAxis = d3.axisBottom().scale(xScale);
     let yAxis = d3.axisLeft().scale(yScale);
-
+    yAxis.ticks(5);
     board_svg = board_svg.append("g")
         .attr("transform", "translate(30,20)");
 

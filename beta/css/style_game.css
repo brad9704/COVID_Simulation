@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'KoPubDotumMedium';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/KoPubDotumMedium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     width: 100%;
     display: flex;
@@ -13,8 +20,8 @@ body {
     position:absolute;
     top:0;
     left:50%;
-    width:600px;
-    margin:20px 0 0 -300px;
+    width:800px;
+    margin:20px 0 0 -400px;
     text-align:left;
     border-radius:5px;
     background-color: #fff;
@@ -89,6 +96,7 @@ body {
 .control_panel {
     position: absolute;
     border: 1px solid black;
+    background-image: url("../img/control_panel.svg");
     width: 1650px;
     height: 160px;
     left: 135px;
@@ -115,10 +123,10 @@ body {
     color: white;
     background-color: #b0dcde;
 }
-.panel_button #button_stop {
+.panel_button #button_stop:hover {
     color: #254488;
 }
-.panel_button #button_stop:hover {
+.panel_button #button_stop {
     color: white;
     background-color: #667cb8;
 }
@@ -237,7 +245,7 @@ svg {
     border: 1px solid black;
     border-radius: 5px;
     font-size: 25px;
-    text-align: left;
+    text-align: center;
 }
 .sidebar .speed {
     padding: 5px;
@@ -295,20 +303,28 @@ div.auto {
 #board > div.daily.legend {
     position: absolute;
     display: inline-block;
-    top: 10px;
-    left: 900px;
-    height: 270px;
+    top: 0;
+    left: 810px;
+    height: 300px;
+    padding: 0;
 }
 
 div.daily.legend {
     position: relative;
     display: inline-block;
-    height: 320px;
+    height: 300px;
+}
+
+#board > div.daily.legend img {
+    padding: 0;
+    margin: 0;
+    width: 800px;
 }
 
 div.daily.legend img {
-    height: 270px;
+    height: 300px;
 }
+
 output.daily.legend {
     position: absolute;
     font-size: 15px;
@@ -367,7 +383,7 @@ output.daily.legend.rate.severity {
     position: absolute;
     top: 10px;
     left: 200px;
-    border: 1px solid black;
+    border: none;
     border-radius: 5px;
     width: 1400px;
     height: 140px;
@@ -514,10 +530,7 @@ select.area_policy.option.right {
 }
 
 .panel_policy input[type=range] {
-    -webkit-appearance: slider-vertical;
-    writing-mode: bt-lr;
-    width: 10px;
-    height: 60px;
+    width: 200px;
 }
 .panel_policy input[type=number] {
     width: 40px;
@@ -541,28 +554,23 @@ select.area_policy.option.right {
 
 .panel_status {
     width: 100%;
+    margin: 5px 0 0 0;
 }
 
 .panel_status tr td {
     width: 25%;
-    border: 1px solid #d3d3d3;
-    border-left: none;
-    border-top: none;
+    border: none;
     text-align: center;
     font-weight: bold;
-    font-size: 20px;
+    color: black;
 }
-.panel_status .infectious output {
-    color: #C00000;
+tr.panel.var td{
+    opacity: 100%;
+    font-size: 30px;
 }
-.panel_status .hospital output {
-    color: #5260d0;
-}
-.panel_status .death output {
-    color: #000000;
-}
-.panel_status .GDP output {
-    color: blue;
+tr.panel td {
+    font-size: 23px;
+    opacity: 0;
 }
 
 div.weekly p {

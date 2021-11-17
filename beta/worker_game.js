@@ -224,18 +224,18 @@ function apply_policy(policy) {
                 node.speed(policy.age[i][policy.area[node.isIn()]])
             });
     }
-    let temp = simulation.loc.get_surface();
+    let temp = simulation.loc.get_surface(), line_rate = policy.rate;
     if (policy.area.upper_left !== "0" || policy.area.upper_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: 0}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+        from: {x: param.sim_width / 2, y: param.sim_height * (1 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (1 + line_rate) / 4}
     });
     if (policy.area.lower_left !== "0" || policy.area.lower_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height}
+        from: {x: param.sim_width / 2, y: param.sim_height * (3 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (3 + line_rate) / 4}
     });
     if (policy.area.upper_left !== "0" || policy.area.lower_left !== "0") temp.push({
-        from: {x: 0, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+        from: {x: param.sim_width * (1 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (1 + line_rate) / 4, y: param.sim_height / 2}
     });
     if (policy.area.upper_right !== "0" || policy.area.lower_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width, y: param.sim_height / 2}
+        from: {x: param.sim_width * (3 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (3 + line_rate) / 4, y: param.sim_height / 2}
     });
     simulation.force("surface").surfaces(temp);
 }
