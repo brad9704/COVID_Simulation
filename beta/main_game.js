@@ -393,6 +393,10 @@ function node_update(param, node_data) {
         else d3.select("#hospital_fill_rect").attr("height", 0);
         d3.select("#hospital_text").text("" + node_data.filter(e => e.state === state.H).length + " / " + param["hospitalization_max"]);
     }*/
+
+    Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
+        $("output.daily.legend.num." + stat).text(node_data.filter(e => e.state === state[stat]).length);
+    })
 }
 
 function chart_init(param) {
@@ -691,6 +695,13 @@ function change_stat(stat_index, direction) {
     stat[stat_index] += direction;
     $("output.stat.value." + stat_index).text(stat[stat_index]);
     $("output.stat.value.total").text(stat["total"]);
+    let param = get_params();
+
+    $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"]);
+    $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"]);
+    $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]+"-"+param["duration"]["I1-R1"]);
+    $("output.daily.legend.rate.infectious").text(0.22 * (1 + stat.stat3) * 0.04);
+    $("output.daily.legend.rate.severity").text(0.14 + stat.stat4 * 0.02);
 }
 
 function toggle_area() {

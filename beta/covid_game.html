@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.211117.05-->
+<!--ver.211118.01-->
 <html lang="en">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -26,15 +26,19 @@
     <div id="sim_board"></div>
     <div class="daily legend">
         <img src="img/info_panel_md3.svg">
-        <output class="daily legend duration E1-E2">1-2</output>
         <output class="daily legend duration E2-I1">1-2</output>
         <output class="daily legend duration I1-I2">1-2</output>
         <output class="daily legend duration I1-R1">16-16</output>
-        <output class="daily legend duration I2-H2">1-3</output>
-        <output class="daily legend duration I2-R2">3-3</output>
-        <output class="daily legend duration H2-R1">24-24</output>
-        <output class="daily legend rate infectious">Infectious rate: 0.14</output>
-        <output class="daily legend rate severity">Severity: 0.22</output>
+        <output class="daily legend rate infectious">0.14</output>
+        <output class="daily legend rate severity">0.22</output>
+        <output class="daily legend num S">1000</output>
+        <output class="daily legend num E1">0</output>
+        <output class="daily legend num E2">0</output>
+        <output class="daily legend num I1">0</output>
+        <output class="daily legend num I2">0</output>
+        <output class="daily legend num H2">0</output>
+        <output class="daily legend num R1">0</output>
+        <output class="daily legend num R2">0</output>
     </div>
     <div id="chart_board"></div>
     <div id="death_board"></div>
@@ -43,27 +47,12 @@
     <div class="panel_button">
         <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
     </div>
-    <div class="panel_policy">
-        <table class="panel_status">
-            <tr class="panel tag">
-                <td class="infectious">Infectious</td>
-                <td class="hospital">ICU</td>
-                <td class="death">Death</td>
-                <td class="GDP">GDP</td>
-            </tr>
-            <tr class="panel unit">
-                <td class="infectious">daily new (current/cumulative)</td>
-                <td class="hospital">current / maximum</td>
-                <td class="death">daily (cumulative)</td>
-                <td class="GDP">daily (compared to pre-COVID)</td>
-            </tr>
-            <tr class="panel var">
-                <td class="infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</td>
-                <td class="hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></td>
-                <td class="death"><output class="death_now">0</output> (<output class="death_total">0</output>)</td>
-                <td class="GDP">$<output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</td>
-            </tr>
-        </table>
+    <div class="panel_footer">
+        <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
+        <div class="panel_output hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></div>
+        <div class="panel_output death"><output class="death_now">0</output> (<output class="death_total">0</output>)</div>
+        <div class="panel_output GDP">$<output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</div>
+        <div class="panel_output budget">$<output class="budget_now">0</output></div>
     </div>
 </div>
 <div id="popup_weekly" class="popup">
@@ -200,7 +189,7 @@
                                 Defines how restrict each social distancing level will be.<br>
                                 Changing variables below affects area where each level is applied on.<br>
                                 Applying any level on an area will result in surrounding the area with walls.<br>
-                                Wall length: <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5">
+                                Wall length: short <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5"> long
                             </p>
                             <table>
                                 <tr class="policy info">
@@ -404,15 +393,20 @@
             </div>
             <div class="daily legend">
                 <img src="img/info_panel_md3_initial.svg">
-                <output class="daily legend duration E1-E2">1-2</output>
                 <output class="daily legend duration E2-I1">1-2</output>
                 <output class="daily legend duration I1-I2">1-2</output>
                 <output class="daily legend duration I1-R1">16-16</output>
-                <output class="daily legend duration I2-H2">1-3</output>
-                <output class="daily legend duration I2-R2">3-3</output>
-                <output class="daily legend duration H2-R1">24-24</output>
-                <output class="daily legend rate infectious">Infectious rate: 0.14</output>
-                <output class="daily legend rate severity">Severity: 0.22</output>
+                <output class="daily legend rate infectious">0.14</output>
+                <output class="daily legend rate severity">0.22</output>
+                <output class="daily legend num S">1000</output>
+                <output class="daily legend num E1">0</output>
+                <output class="daily legend num E2">0</output>
+                <output class="daily legend num I1">0</output>
+                <output class="daily legend num I2">0</output>
+                <output class="daily legend num H1" style="display:none;">0</output>
+                <output class="daily legend num H2">0</output>
+                <output class="daily legend num R1">0</output>
+                <output class="daily legend num R2">0</output>
             </div>
         </div>
 
