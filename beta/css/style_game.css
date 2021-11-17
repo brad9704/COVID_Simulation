@@ -292,12 +292,18 @@ div.auto {
     color: white;
 }
 
-div.daily.legend {
+#board > div.daily.legend {
     position: absolute;
     display: inline-block;
     top: 10px;
     left: 900px;
     height: 270px;
+}
+
+div.daily.legend {
+    position: relative;
+    display: inline-block;
+    height: 320px;
 }
 
 div.daily.legend img {
