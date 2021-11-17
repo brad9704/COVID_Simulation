@@ -120,7 +120,7 @@ function ticked() {
     simulation.tick();
     this.nodes().forEach(node1 => {
         this.nodes().forEach(node2 => {
-            if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param.size * 2)
+            if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param.size*2)
                 collision(node1, node2);
         })
     }, this);

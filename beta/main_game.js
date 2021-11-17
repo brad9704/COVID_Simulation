@@ -1,8 +1,9 @@
 var run, chart_data, running_time, chart_param;
+
 var stat = {
-    total: 7,
+    total: 6,
     stat1: 4,
-    stat2: 8,
+    stat2: 9,
     stat3: 6,
     stat4: 0
 };
@@ -209,7 +210,7 @@ w.onerror = function(event) {
 
 function initSim(param, initial_node_data, loc) {
     turn_end = true;
-    d3.select("#board").selectAll("div").remove();
+    d3.selectAll("#board > div > *").remove()
     $(".popChart").find("div").remove();
     node_init(param, initial_node_data, loc);
     let init_data = {
@@ -286,8 +287,7 @@ function show_result(param, node_data) {
 Initializes node canvas
  */
 function node_init(param, node_data, loc) {
-    let sim_board = d3.select("#board").append("div")
-        .attr("id", "sim_board")
+    let sim_board = d3.select("#sim_board")
         .attr("width", param.sim_width)
         .attr("height", param.sim_height);
 
@@ -340,33 +340,30 @@ function node_init(param, node_data, loc) {
         .style("stroke-width", 1)
         .style("display", "none");
 
-    d3.select("#board").append("img")
-        .attr("id", "legend")
-        .attr("src", "img/legend.png");
 
-/*    if (param["flag"].includes("quarantine")) {
-        d3.select("#loc_hospital").style("fill", "rgb(200,200,200)");
+    /*    if (param["flag"].includes("quarantine")) {
+            d3.select("#loc_hospital").style("fill", "rgb(200,200,200)");
 
-        d3.select("#sim_container").append("rect")
-            .attr("id", "hospital_fill_rect")
-            .attr("x", (loc.list[1].xrange[0]))
-            .attr("y", (loc.list[1].yrange[0]))
-            .attr("width", (loc.list[1].width))
-            .attr("height", (loc.list[1].height))
-            .style("fill", "white")
-            .style("stroke", "rgb(0,0,0)")
-            .style("stroke-width", 1);
+            d3.select("#sim_container").append("rect")
+                .attr("id", "hospital_fill_rect")
+                .attr("x", (loc.list[1].xrange[0]))
+                .attr("y", (loc.list[1].yrange[0]))
+                .attr("width", (loc.list[1].width))
+                .attr("height", (loc.list[1].height))
+                .style("fill", "white")
+                .style("stroke", "rgb(0,0,0)")
+                .style("stroke-width", 1);
 
-        d3.select("#sim_container").append("text")
-            .attr("x", (loc.list[1].xrange[1] - loc.list[1].xrange[0]) / 2)
-            .attr("y", (loc.list[1].yrange[1] - loc.list[1].yrange[0]) / 2)
-            .attr("id", "hospital_text")
-            .attr("font-size", "20px")
-            .style("fill", "rgb(100,100,100)")
-            .style("stroke", "rgb(0,0,0)")
-            .style("stroke-width", 1)
-            .attr("text-anchor", "middle");
-    }*/
+            d3.select("#sim_container").append("text")
+                .attr("x", (loc.list[1].xrange[1] - loc.list[1].xrange[0]) / 2)
+                .attr("y", (loc.list[1].yrange[1] - loc.list[1].yrange[0]) / 2)
+                .attr("id", "hospital_text")
+                .attr("font-size", "20px")
+                .style("fill", "rgb(100,100,100)")
+                .style("stroke", "rgb(0,0,0)")
+                .style("stroke-width", 1)
+                .attr("text-anchor", "middle");
+        }*/
 }
 
 function node_update(param, node_data) {
@@ -399,8 +396,7 @@ function node_update(param, node_data) {
 
 function chart_init(param) {
 
-    var chart_board = d3.select("#board").append("div")
-        .attr("id", "chart_board")
+    var chart_board = d3.select("#chart_board")
         .attr("width", param.sim_width)
         .attr("height", param.sim_height * 0.3);
 
@@ -424,8 +420,7 @@ function chart_init(param) {
     svg.append("g")
         .attr("class", "Yaxis");
 
-    var death_board = d3.select("#board").append("div")
-        .attr("id", "death_board")
+    var death_board = d3.select("#death_board")
         .attr("width", param.sim_width)
         .attr("height", param.sim_height * 0.3);
     var death_svg = death_board.append("svg")
@@ -580,8 +575,7 @@ function stop_simulation() {
 }
 function reset_simulation() {
     stop_simulation();
-    d3.select("#board")
-        .selectAll("div").remove();
+    d3.selectAll("#board > div > *").remove()
     chart_data = [];
     $("#popup_init").fadeIn();
 }
@@ -596,17 +590,20 @@ function resume_simulation() {
     if (run !== null) return;
     $(".enable-on-pause").attr("disabled", "disabled");
     $("input.weekly.tab.switch.overall").click();
+    let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
+        age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
+        age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get();
     w.postMessage({type: "RESUME", data: {
-        age: {"0": $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
-            "10": $("input.policy.level[data-age=10]").map(function() {return this.value;}).get(),
-            "20": $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
-            "30": $("input.policy.level[data-age=30]").map(function() {return this.value;}).get(),
-            "40": $("input.policy.level[data-age=40]").map(function() {return this.value;}).get(),
-            "50": $("input.policy.level[data-age=50]").map(function() {return this.value;}).get(),
-            "60": $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
-            "70": $("input.policy.level[data-age=70]").map(function() {return this.value;}).get(),
-            "80": $("input.policy.level[data-age=80]").map(function() {return this.value;}).get()},
-        area: area
+            age: {"0": age_0,
+                "10": age_0,
+                "20": age_20,
+                "30": age_20,
+                "40": age_20,
+                "50": age_20,
+                "60": age_60,
+                "70": age_60,
+                "80": age_60},
+            area: area
         }});
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     d3.selectAll("line.sim_board.svg_line").style("display", function(d) {
@@ -814,25 +811,25 @@ function weekly_report() {
         .attr("x", function(d) {return xScale(d.data.tick - data_to.tick + 14)})
         .attr("y", function(d) {return yScale(d[1])});
 //        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
-/*    v.selectAll(".line")
-        .data(chart_data_)
-        .enter()
-        .append("path")
-        .attr("class", "line")
-        .style("stroke", function(d) {return d.color;})
-        .style("fill", "none")
-        .style("stroke-width", 1.5)
-        .attr("d", function (e) {
-            return d3.line()
-                .x(function (d) {
-                    return xScale(d[0]);
-                })
-                .y(function (d) {
-                    return yScale(d[1]);
-                })
-                .curve(d3.curveBasis)(e.data);
-        })
- */
+    /*    v.selectAll(".line")
+            .data(chart_data_)
+            .enter()
+            .append("path")
+            .attr("class", "line")
+            .style("stroke", function(d) {return d.color;})
+            .style("fill", "none")
+            .style("stroke-width", 1.5)
+            .attr("d", function (e) {
+                return d3.line()
+                    .x(function (d) {
+                        return xScale(d[0]);
+                    })
+                    .y(function (d) {
+                        return yScale(d[1]);
+                    })
+                    .curve(d3.curveBasis)(e.data);
+            })
+     */
     if (auto) resume_simulation();
 }
 
