@@ -277,13 +277,51 @@ function updateSim(param, node_data, time) {
 }
 
 function show_result(param, node_data) {
+    $("td.result, div.panel_policy_result").css("display:none");
     let last_state = chart_data[chart_data.length - 1];
+    let final_budget = parseInt($("output.budget_now").val());
     $("#resultTime").text(last_state["tick"]);
-    $(".death_rate").val(last_state["R2"][9] / param.node_num);
-    let chart_board = $("#chart_board").clone()
-        .attr("id", "chart_board_result").appendTo($(".popChart"));
+    $("output.budget_total").text(final_budget);
+
+    let star_infection, star_death, star_GDP, star_budget;
+    if (last_state["S"][9] > 800) star_infection = 2;
+    else if (last_state["S"][9] > 500) star_infection = 1;
+    else star_infection = 0;
+    if (last_state["R2"][9] < 10) star_death = 4;
+    else if (last_state["R2"][9] < 50) star_death = 3;
+    else if (last_state["R2"][9] < 100) star_death = 2;
+    else if (last_state["R2"][9] < 200) star_death = 1;
+    else star_death = 0;
+    if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.9) star_GDP = 3;
+    else if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.7) star_GDP = 2;
+    else if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.5) star_GDP = 1;
+    else star_GDP = 0;
+    if (final_budget > 0) star_budget = 1;
+    else star_budget = 0;
+
+    $("td.result.star.infection > output").text("★".repeat(star_infection) + "☆".repeat(2-star_infection));
+    $("td.result.star.death > output").text("★".repeat(star_death) + "☆".repeat(4-star_death));
+    $("td.result.star.GDP > output").text("★".repeat(star_GDP) + "☆".repeat(3-star_GDP));
+    $("td.result.star.budget > output").text("★".repeat(star_budget) + "☆".repeat(1-star_budget));
+    $("output.result.total.star").text(star_infection + star_death + star_GDP + star_budget);
+
     $("#popup_result").fadeIn();
-    $(".popBg,#exit").on("click", function() {
+    setTimeout(() => {
+        $("tr.result.infection > td > output").fadeIn();
+    }, 1000)
+    setTimeout(() => {
+        $("tr.result.death > td").fadeIn();
+    }, 2000)
+    setTimeout(() => {
+        $("tr.result.GDP > td").fadeIn();
+    }, 3000)
+    setTimeout(() => {
+        $("tr.result.budget > td").fadeIn();
+    }, 4000)
+    setTimeout(() => {
+        $("div.panel_policy_result").fadeIn();
+    }, 5000)
+    $("#popup_result > div.popBg,#exit").on("click", function() {
         $("#popup_result").fadeOut(200);
         $("#popup_init").fadeIn();
     });
@@ -606,7 +644,11 @@ function resume_simulation() {
     let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
         age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
         age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
-        line_rate = parseFloat($("input.policy.rate").val());
+        line_rate = parseFloat($("input.policy.rate").val()),
+        hospital_max = parseInt($("input.policy.bed").val()),
+        budget = $("output.budget_now");
+
+    budget.val(parseInt(budget.val()) - 2000 * (hospital_max - 10));
     w.postMessage({type: "RESUME", data: {
             age: {"0": age_0,
                 "10": age_0,
@@ -618,8 +660,10 @@ function resume_simulation() {
                 "70": age_60,
                 "80": age_60},
             area: area,
-            rate: line_rate
+            rate: line_rate,
+            hospital_max: hospital_max
         }});
+    w.param.hospital_max = hospital_max;
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     d3.selectAll("line.sim_board.svg_line")
         .data([{name: "upper", x1: w.param.sim_width / 2, y1: w.param.sim_height * (1 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (1 + line_rate) / 4},
@@ -634,22 +678,21 @@ function resume_simulation() {
             .attr("y2", function(d) {return d.y2;})
         )
         .style("display", function(d) {
-            let budget = $("output.budget_now");
         if (d.name === "upper") {
             if (area.upper_left !== "0" || area.upper_right !== "0") {
-                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                budget.val(parseInt(budget.val()) - 10000 * line_rate);
                 return "inline";
             }
             else return "none";
         } else if (d.name === "lower") {
             if (area.lower_left !== "0" || area.lower_right !== "0") {
-                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                budget.val(parseInt(budget.val()) - 10000 * line_rate);
                 return "inline";
             }
             else return "none";
         } else if (d.name === "left") {
             if (area.upper_left !== "0" || area.lower_left !== "0") {
-                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                budget.val(parseInt(budget.val()) - 10000 * line_rate);
                 return "inline";
             }
             else return "none";
@@ -721,8 +764,8 @@ function change_stat(stat_index, direction) {
     $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
     $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
     $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]+"-"+param["duration"]["I1-R1"][1]);
-    $("output.daily.legend.rate.infectious").text(Math.round((0.14 * (1 + stat.stat3 * 0.04)) * 100) / 100);
-    $("output.daily.legend.rate.severity").text(Math.round((0.22 + stat.stat4 * 0.02) * 100) / 100);
+    $("output.daily.legend.rate.infectious").text(Math.round((0.14 * (1 + stat.stat3 * 0.04)) * 100) + "%");
+    $("output.daily.legend.rate.severity").text(Math.round((0.22 + stat.stat4 * 0.02) * 100) + "%");
 }
 
 function toggle_area() {

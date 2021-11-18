@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.211118.02-->
+<!--ver.211118.03-->
 <html lang="en">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -29,8 +29,8 @@
         <output class="daily legend duration E2-I1">1-2</output>
         <output class="daily legend duration I1-I2">1-2</output>
         <output class="daily legend duration I1-R1">16-16</output>
-        <output class="daily legend rate infectious">0.14</output>
-        <output class="daily legend rate severity">0.22</output>
+        <output class="daily legend rate infectious">14%</output>
+        <output class="daily legend rate severity">22%</output>
         <output class="daily legend num S">1000</output>
         <output class="daily legend num E1">0</output>
         <output class="daily legend num E2">0</output>
@@ -189,7 +189,8 @@
                                 Defines how restrict each social distancing level will be.<br>
                                 Changing variables below affects area where each level is applied on.<br>
                                 Applying any level on an area will result in surrounding the area with walls.<br>
-                                Wall length: short <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5"> long
+                                Wall length: short <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5"> long <br>
+                                Increase ICU capacity: 10 <input class="policy bed" type="range" min="10" max="20" step="2" value="10"> 20
                             </p>
                             <table>
                                 <tr class="policy info">
@@ -282,9 +283,38 @@
             <div class="popCommonVar">
                 Elapsed time: <output id="resultTime">0</output> days<br>
             </div>
-            <div class="popChart"></div>
+            <div class="popChart">
+                <table class="result">
+                    <tr class="result label">
+                        <td class="result label">Criteria</td>
+                        <td class="result number">Value</td>
+                        <td class="result base">Star gained</td>
+                    </tr>
+                    <tr class="result infection">
+                        <td class="result infection label">Total infection</td>
+                        <td class="result infection number"><output class="infectious_total">0</output></td>
+                        <td class="result infection star base"><output>☆☆</output></td>
+                    </tr>
+                    <tr class="result death">
+                        <td class="result death label">Total death</td>
+                        <td class="result death number"><output class="death_total">0</output></td>
+                        <td class="result death star base"><output>☆☆☆☆</output></td>
+                    </tr>
+                    <tr class="result GDP">
+                        <td class="result GDP label">Economic functionality</td>
+                        <td class="result GDP number"><output class="GDP_total">0</output>%</td>
+                        <td class="result GDP star base"><output>☆☆☆</output></td>
+                    </tr>
+                    <tr class="result budget">
+                        <td class="result budget label">Spent Budget</td>
+                        <td class="result budget number"><output class="budget_total">0</output></td>
+                        <td class="result budget star"><output>☆</output></td>
+                    </tr>
+                </table>
+            </div>
             <div class="panel_policy_result">
-                <table class="panel_status">
+                Total ★ gained: <output class="result total star"></output>
+                <table class="panel_status" style="display:none">
                     <tr class="panel tag">
                         <td class="infectious">Infectious</td>
                         <td class="death">Death</td>
@@ -396,8 +426,8 @@
                 <output class="daily legend duration E2-I1">1-2</output>
                 <output class="daily legend duration I1-I2">1-2</output>
                 <output class="daily legend duration I1-R1">16-16</output>
-                <output class="daily legend rate infectious">0.14</output>
-                <output class="daily legend rate severity">0.22</output>
+                <output class="daily legend rate infectious">14%</output>
+                <output class="daily legend rate severity">22%</output>
                 <output class="daily legend num S">1000</output>
                 <output class="daily legend num E1">0</output>
                 <output class="daily legend num E2">0</output>

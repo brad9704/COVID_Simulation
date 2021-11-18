@@ -68,7 +68,7 @@ var startSim = function(event_data) {
         .oneWay(false));
 
     //_.sample(simulation.nodes(), Math.floor(param.node_num * param.mask_ratio)).forEach(node => node.mask = true);
-    _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
+    simulation.find(param.sim_width / 2, param.sim_height / 2).infected();
 
     let report_nodes = [];
     simulation.nodes().forEach(node => {
@@ -223,6 +223,9 @@ function apply_policy(policy) {
             .forEach(node => {
                 node.speed(policy.age[i][policy.area[node.isIn()]])
             });
+        simulation.nodes().forEach(node => {
+            node.param.hospital_max = policy.hospital_max;
+        })
     }
     let temp = simulation.loc.get_surface(), line_rate = policy.rate;
     if (policy.area.upper_left !== "0" || policy.area.upper_right !== "0") temp.push({

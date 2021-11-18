@@ -212,6 +212,31 @@ svg {
     max-width: 100%;
     margin: 10px auto;
 }
+#popup_result div.popBody table.result {
+    width: 900px;
+    height: 400px;
+    padding: 10px;
+    font-size: 25px;
+    border-collapse: collapse;
+}
+#popup_result div.popBody table.result tr {
+    height: 80px;
+}
+#popup_result div.popBody table.result tr.label {
+    height: 40px;
+    border-bottom: 1px solid black;
+    font-weight: bold;
+}
+#popup_result div.popBody table.result td {
+
+}
+#popup_result div.popBody table.result td.star {
+    color: black;
+    font-size: 40px;
+}
+div.panel_policy_result {
+    font-size: 40px;
+}
 #popup_result .popBody input {
     margin: 15px auto;
     max-width: 100%;
