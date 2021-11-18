@@ -698,7 +698,7 @@ function resume_simulation() {
             else return "none";
         } else {
             if (area.upper_right !== "0" || area.lower_right !== "0") {
-                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                budget.val(parseInt(budget.val()) - 10000 * line_rate);
                 return "inline";
             }
             else return "none";
