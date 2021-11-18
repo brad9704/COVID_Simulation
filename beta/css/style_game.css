@@ -370,11 +370,11 @@ output.daily.legend.duration.I1-R1 {
 }
 output.daily.legend.rate.infectious {
     top: 73px;
-    right: 55px;
+    right: 205px;
 }
 output.daily.legend.rate.severity {
     top: 73px;
-    right: 205px;
+    right: 55px;
 }
 
 output.daily.legend.num {

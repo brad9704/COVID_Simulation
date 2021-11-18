@@ -14,7 +14,7 @@ var area = {
     lower_right: "0"
 }
 var clicker = 0;
-var init_param = {
+const init_param = {
     size: 5,
     timeunit: 1000,
     turnUnit: 7,
@@ -130,7 +130,15 @@ function get_params() {
     param["hospital_max"] = Math.ceil(param["node_num"] * parseFloat(param["hospital_max"]));
 
     for (const key in init_param) {
-        param[key] = init_param[key];
+        if (key !== "duration") param[key] = init_param[key];
+        else {
+            param["duration"] = {};
+            for (const key in init_param["duration"]) {
+                param["duration"][key] = [];
+                param["duration"][key][0] = init_param["duration"][key][0];
+                param["duration"][key][1] = init_param["duration"][key][1];
+            }
+        }
     }
 
     if (advanced) {
@@ -626,17 +634,30 @@ function resume_simulation() {
             .attr("y2", function(d) {return d.y2;})
         )
         .style("display", function(d) {
+            let budget = $("output.budget_now");
         if (d.name === "upper") {
-            if (area.upper_left !== "0" || area.upper_right !== "0") return "inline";
+            if (area.upper_left !== "0" || area.upper_right !== "0") {
+                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                return "inline";
+            }
             else return "none";
         } else if (d.name === "lower") {
-            if (area.lower_left !== "0" || area.lower_right !== "0") return "inline";
+            if (area.lower_left !== "0" || area.lower_right !== "0") {
+                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                return "inline";
+            }
             else return "none";
         } else if (d.name === "left") {
-            if (area.upper_left !== "0" || area.lower_left !== "0") return "inline";
+            if (area.upper_left !== "0" || area.lower_left !== "0") {
+                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                return "inline";
+            }
             else return "none";
         } else {
-            if (area.upper_right !== "0" || area.lower_right !== "0") return "inline";
+            if (area.upper_right !== "0" || area.lower_right !== "0") {
+                budget.val(parseInt(budget.val()) - 1000 * line_rate);
+                return "inline";
+            }
             else return "none";
         }
     });
@@ -697,11 +718,11 @@ function change_stat(stat_index, direction) {
     $("output.stat.value.total").text(stat["total"]);
     let param = get_params();
 
-    $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"]);
-    $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"]);
-    $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]+"-"+param["duration"]["I1-R1"]);
-    $("output.daily.legend.rate.infectious").text(0.22 * (1 + stat.stat3) * 0.04);
-    $("output.daily.legend.rate.severity").text(0.14 + stat.stat4 * 0.02);
+    $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
+    $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
+    $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]+"-"+param["duration"]["I1-R1"][1]);
+    $("output.daily.legend.rate.infectious").text(Math.round((0.14 * (1 + stat.stat3 * 0.04)) * 100) / 100);
+    $("output.daily.legend.rate.severity").text(Math.round((0.22 + stat.stat4 * 0.02) * 100) / 100);
 }
 
 function toggle_area() {
