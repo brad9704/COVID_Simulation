@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--ver.211118.05-->
 <html lang="en">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -19,34 +20,39 @@
             <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
         </div>
     </div>
-    <div class="auto"><input id="auto_switch" type="range" min="0" max="1" step="1" value="0" oninput="toggle_auto(value)" style="width: 30px;"></div>
+    <div class="auto" style="display:none"><input id="auto_switch" type="range" min="0" max="1" step="1" value="0" oninput="toggle_auto(value)" style="width: 30px;"></div>
 </div>
-<div class="board" id="board"></div>
+<div class="board" id="board">
+    <div id="sim_board"></div>
+    <div class="daily legend">
+        <img src="img/info_panel_md3.svg">
+        <output class="daily legend duration E2-I1">1-2</output>
+        <output class="daily legend duration I1-I2">1-2</output>
+        <output class="daily legend duration I1-R1">16-16</output>
+        <output class="daily legend rate infectious">14%</output>
+        <output class="daily legend rate severity">22%</output>
+        <output class="daily legend num S">1000</output>
+        <output class="daily legend num E1">0</output>
+        <output class="daily legend num E2">0</output>
+        <output class="daily legend num I1">0</output>
+        <output class="daily legend num I2">0</output>
+        <output class="daily legend num H2">0</output>
+        <output class="daily legend num R1">0</output>
+        <output class="daily legend num R2">0</output>
+    </div>
+    <div id="chart_board"></div>
+    <div id="death_board"></div>
+</div>
 <div class="control_panel">
     <div class="panel_button">
         <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
     </div>
-    <div class="panel_policy">
-        <table class="panel_status">
-            <tr class="panel tag">
-                <td class="infectious">Infectious</td>
-                <td class="hospital">ICU</td>
-                <td class="death">Death</td>
-                <td class="GDP">GDP</td>
-            </tr>
-            <tr class="panel unit">
-                <td class="infectious">daily new (current/cumulative)</td>
-                <td class="hospital">current / maximum</td>
-                <td class="death">daily (cumulative)</td>
-                <td class="GDP">daily (compared to pre-COVID)</td>
-            </tr>
-            <tr class="panel var">
-                <td class="infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</td>
-                <td class="hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></td>
-                <td class="death"><output class="death_now">0</output> (<output class="death_total">0</output>)</td>
-                <td class="GDP">$<output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</td>
-            </tr>
-        </table>
+    <div class="panel_footer">
+        <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
+        <div class="panel_output hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></div>
+        <div class="panel_output death"><output class="death_now">0</output> (<output class="death_total">0</output>)</div>
+        <div class="panel_output GDP">$<output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</div>
+        <div class="panel_output budget">$<output class="budget_now">0</output></div>
     </div>
 </div>
 <div id="popup_weekly" class="popup">
@@ -73,13 +79,13 @@
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">
-                For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output> (week <output id="weekly_week">1</output>), there were: <br>
-                - <output id="weekly_new_infect">0</output>(<output id="weekly_change_infect">▲0</output>) new patients were found (Total <output class="weekly infectious" age="90">0</output>).<br>
-                - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
-                - <output id="weekly_death">0</output> people were dead due to insufficient medical service (Total <output class="weekly death" age="90">0</output>). <br>
-                <br>
-                - Local GDP was $<output class="GDP_now">0</output>/day, compared to pre-COVID: <output class="GDP_now_ratio">0</output>%. <br>
-            </div> <br>
+                    For day <output id="weekly_date_from">1</output> to <output id="weekly_date_to">7</output> (week <output id="weekly_week">1</output>), there were: <br>
+                    - <output id="weekly_new_infect">0</output>(<output id="weekly_change_infect">▲0</output>) new patients were found (Total <output class="weekly infectious" age="90">0</output>).<br>
+                    - Total <output id="weekly_hospitalized">0</output> people are hospitalized for severe symptoms.<br>
+                    - <output id="weekly_death">0</output> people were dead due to insufficient medical service (Total <output class="weekly death" age="90">0</output>). <br>
+                    <br>
+                    - Local GDP was $<output class="GDP_now">0</output>/day, compared to pre-COVID: <output class="GDP_now_ratio">0</output>%. <br>
+                </div> <br>
                 <div class="weekly_chart">
                     <div class="weekly legend">
                         <svg>
@@ -183,69 +189,45 @@
                                 Defines how restrict each social distancing level will be.<br>
                                 Changing variables below affects area where each level is applied on.<br>
                                 Applying any level on an area will result in surrounding the area with walls.<br>
+                                You may increase the length of walls below, but using walls cost 5,000~9,000 dollars/week per each wall. <br>
+                                Wall length: short <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5"> long <br>
                             </p>
                             <table>
                                 <tr class="policy info">
                                     <td>Level</td>
-                                    <td>0-9</td>
-                                    <td>10-19</td>
-                                    <td>20-29</td>
-                                    <td>30-39</td>
-                                    <td>40-49</td>
-                                    <td>50-59</td>
-                                    <td>60-69</td>
-                                    <td>70-79</td>
-                                    <td>80+</td>
+                                    <td>0-19</td>
+                                    <td>20-59</td>
+                                    <td>60+</td>
                                 </tr>
                                 <tr class="policy level" data-level="1">
                                     <td>0</td>
                                     <td><input class="policy level" data-level="1" data-age="0" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy level" data-level="1" data-age="10" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
                                     <td><input class="policy level" data-level="1" data-age="20" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy level" data-level="1" data-age="30" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy level" data-level="1" data-age="40" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy level" data-level="1" data-age="50" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
                                     <td><input class="policy level" data-level="1" data-age="60" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy level" data-level="1" data-age="70" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
-                                    <td><input class="policy level" data-level="1" data-age="80" type="number" max="1.00" min="0.10" step="0.1" value="1.00"></td>
                                 </tr>
                                 <tr class="policy level" data-level="2">
                                     <td>1</td>
                                     <td><input class="policy level" data-level="2" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="2" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="2" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="2" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="2" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="2" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="2" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="2" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="2" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
                                 <tr class="policy level" data-level="3">
                                     <td>2</td>
                                     <td><input class="policy level" data-level="3" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="3" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="3" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="3" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="3" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="3" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="3" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="3" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="3" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
                                 <tr class="policy level" data-level="4">
                                     <td>3</td>
                                     <td><input class="policy level" data-level="4" data-age="0" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="4" data-age="10" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="4" data-age="20" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="4" data-age="30" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="4" data-age="40" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="4" data-age="50" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                     <td><input class="policy level" data-level="4" data-age="60" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="4" data-age="70" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
-                                    <td><input class="policy level" data-level="4" data-age="80" type="number" max="0.90" min="0.10" step="0.1" value="0.90"></td>
                                 </tr>
                             </table>
+                            <p>
+                                Increasing ICU capacity will reduce the casualties, but costs 2,000 dollars/week per additional beds. <br>
+                                Increase ICU capacity: 10 <input class="policy bed" type="range" min="10" max="20" step="2" value="10"> 20 <br>
+                            </p>
                         </div>
                     </div>
                     <div class="weekly area tab content">
@@ -305,9 +287,38 @@
             <div class="popCommonVar">
                 Elapsed time: <output id="resultTime">0</output> days<br>
             </div>
-            <div class="popChart"></div>
+            <div class="popChart">
+                <table class="result">
+                    <tr class="result label">
+                        <td class="result label">Criteria</td>
+                        <td class="result number">Value</td>
+                        <td class="result base">Star gained</td>
+                    </tr>
+                    <tr class="result infection">
+                        <td class="result infection label">Total infection</td>
+                        <td class="result infection number"><output class="infectious_total">0</output></td>
+                        <td class="result infection star base"><output>☆☆</output></td>
+                    </tr>
+                    <tr class="result death">
+                        <td class="result death label">Total death</td>
+                        <td class="result death number"><output class="death_total">0</output></td>
+                        <td class="result death star base"><output>☆☆☆☆</output></td>
+                    </tr>
+                    <tr class="result GDP">
+                        <td class="result GDP label">Economic functionality</td>
+                        <td class="result GDP number"><output class="GDP_total">0</output>%</td>
+                        <td class="result GDP star base"><output>☆☆☆</output></td>
+                    </tr>
+                    <tr class="result budget">
+                        <td class="result budget label">Spent Budget</td>
+                        <td class="result budget number"><output class="budget_total">0</output></td>
+                        <td class="result budget star"><output>☆</output></td>
+                    </tr>
+                </table>
+            </div>
             <div class="panel_policy_result">
-                <table class="panel_status">
+                Total ★ gained: <output class="result total star"></output>
+                <table class="panel_status" style="display:none">
                     <tr class="panel tag">
                         <td class="infectious">Infectious</td>
                         <td class="death">Death</td>
@@ -337,9 +348,9 @@
     <div class="popBody">
         <div class="controls">
             <div class="control" id="init_setting">
-                <p><label>Initial setting</label><br>Target population number, initial patient, etc.</p>
-                <label>Student ID: <input id="student_id" type="text"><br>Your name (ENG): <input id="student_name" type="text"></label>
-                <label>Target population number: <input id="node_num_output" type="number" min="1" max="2000" value="1000" step="1" oninput="$('#node_num').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);"> people
+                <p><label>Initial setting</label></p>
+                <label>Virus Name? (ENG) <input id="student_name" type="text"></label>
+                <label style="display:none;">Target population number: <input id="node_num_output" type="number" min="1" max="2000" value="1000" step="1" oninput="$('#node_num').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);"> people
                     <input id="node_num" type="range" min="1" max="2000" value="1000" step="1" oninput="$('#node_num_output').val(value); $('#initial_patient').attr('max',value).val(1); $('#initial_patient_output').attr('max', value).val(1);">
                 </label>
                 <label style="display:none;">Initial patient: <input id="initial_patient_output" type="number" min="1" max="100" value="1" step="1" oninput="$('#initial_patient').val(value);"> people
@@ -348,75 +359,91 @@
                 <label style="display:none;">Initial speed: <input id="speed_output" type="number" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed').val(value);" >
                     <input id="speed" type="range" min="0" max="1" value="0.2" step="0.01" oninput="$('#speed_output').val(value);">
                 </label>
-                <label style="display:none;">Base transmission factor: <input id="TPC_base_output" type="number" min="0" max="1" value="0.08" step="0.001" oninput="$('#TPC_base').val(value);">
-                    <input id="TPC_base" type="range" min="0" max="1" value="0.08" step="0.001" oninput="$('#TPC_base_output').val(value);">
+                <label style="display:none;">Base transmission factor: <input id="TPC_base_output" type="number" min="0" max="1" value="0.04" step="0.001" oninput="$('#TPC_base').val(value);">
+                    <input id="TPC_base" type="range" min="0" max="1" value="0.04" step="0.001" oninput="$('#TPC_base_output').val(value);">
                 </label>
-                <label>Maximum hospital capacity: <input id="hospital_max_output" type="number" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max').val(value);">
+                <label style="display:none;">Maximum hospital capacity: <input id="hospital_max_output" type="number" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max').val(value);">
                     <input id="hospital_max" type="range" min="0" max="1" value="0.01" step="0.001" oninput="$('#hospital_max_output').val(value);">
                 </label>
             </div>
             <div class="control" id="advanced_setting" style="display:none;"></div>
             <div class="stat wrapper">
-            <div class="stat left">
-                <table class="stat def">
-                    <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
-                        <td class="stat label stat1">stat1</td>
-                        <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
-                        <td class="stat value stat1"><output class="stat value stat1">4</output></td>
-                        <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
-                    </tr>
-                    <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
-                        <td class="stat label stat2">stat2</td>
-                        <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
-                        <td class="stat value stat2"><output class="stat value stat2">8</output></td>
-                        <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
-                    </tr>
-                    <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
-                        <td class="stat label stat3">stat3</td>
-                        <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
-                        <td class="stat value stat3"><output class="stat value stat3">6</output></td>
-                        <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
-                    </tr>
-                    <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
-                        <td class="stat label stat4">stat4</td>
-                        <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
-                        <td class="stat value stat4"><output class="stat value stat4">0</output></td>
-                        <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
-                    </tr>
+                <div class="stat left">
+                    <table class="stat def">
+                        <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
+                            <td class="stat label stat1">Latent period</td>
+                            <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
+                            <td class="stat value stat1"><output class="stat value stat1">4</output></td>
+                            <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
+                        </tr>
+                        <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
+                            <td class="stat label stat2">Infectious period</td>
+                            <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
+                            <td class="stat value stat2"><output class="stat value stat2">9</output></td>
+                            <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
+                        </tr>
+                        <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
+                            <td class="stat label stat3">Infection chance</td>
+                            <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
+                            <td class="stat value stat3"><output class="stat value stat3">6</output></td>
+                            <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
+                        </tr>
+                        <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
+                            <td class="stat label stat4">Severity</td>
+                            <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
+                            <td class="stat value stat4"><output class="stat value stat4">0</output></td>
+                            <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
+                        </tr>
 
-                </table>
-                <text class="stat label total">Remaining stat: <output class="stat value total">7</output></text>
+                    </table>
+                    <text class="stat label total">Remaining stat: <output class="stat value total">6</output></text>
+                </div>
+                <div class="stat description">
+                    <div class="stat desc stat1">
+                        <b>Latent period</b><br>
+                        It increases latent period +1 day for each 2 points.<br>
+                        Maximum latent period added is +12 (1~2 days -> 13~14 days) with 24 points cost. <br>
+                    </div>
+                    <div class="stat desc stat2">
+                        <b>Infectious period</b><br>
+                        It increases infectious period +1 day for each 3 points.<br>
+                        Maximum infectious period added is +8 (1~2 -> 9~10 days) with 24 points cost. <br>
+                    </div>
+                    <div class="stat desc stat3">
+                        <b>Infection chance</b><br>
+                        It increases the chance of infection by contact +4% for each 1 point.<br>
+                        Maximum chance of infection is twice of normal with 25 points cost. <br>
+                    </div>
+                    <div class="stat desc stat4">
+                        <b>Severity</b><br>
+                        It increases the chance to advance from light patient to severe patient +2%p for each 1 point.<br>
+                        Maximum severe probability added is +50%p with 25 points cost. <br>
+                    </div>
+                </div>
             </div>
-            <div class="stat description">
-                <div class="stat desc stat1">
-                    This is stat 1.<br>
-                    It increases latent period +1 day for each 2 points.<br>
-                    Maximum latent period added is +12 (1~2 days -> 13~14 days) with 24 points cost. <br>
-                </div>
-                <div class="stat desc stat2">
-                    This is stat 2.<br>
-                    It increases infectious period +1 day for each 3 points.<br>
-                    Maximum infectious period added is +8 (1~2 -> 9~10 days) with 24 points cost. <br>
-                </div>
-                <div class="stat desc stat3">
-                    This is stat 3.<br>
-                    It increases the chance of infection by contact +4% for each 1 point.<br>
-                    Maximum chance of infection is twice of normal with 25 points cost. <br>
-                </div>
-                <div class="stat desc stat4">
-                    This is stat 4.<br>
-                    It increases the chance to advance from light patient to severe patient +2%p for each 1 point.<br>
-                    Maximum severe probability added is +50%p with 25 points cost. <br>
-                </div>
-            </div>
-        </div>
             <div class="control" id="Simulation">
                 <input id="button_start" type="button" onclick="start_simulation()" value="Start">
                 <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
             </div>
-            
+            <div class="daily legend">
+                <img src="img/info_panel_md3_initial.svg">
+                <output class="daily legend duration E2-I1">1-2</output>
+                <output class="daily legend duration I1-I2">1-2</output>
+                <output class="daily legend duration I1-R1">16-16</output>
+                <output class="daily legend rate infectious">14%</output>
+                <output class="daily legend rate severity">22%</output>
+                <output class="daily legend num S">1000</output>
+                <output class="daily legend num E1">0</output>
+                <output class="daily legend num E2">0</output>
+                <output class="daily legend num I1">0</output>
+                <output class="daily legend num I2">0</output>
+                <output class="daily legend num H1" style="display:none;">0</output>
+                <output class="daily legend num H2">0</output>
+                <output class="daily legend num R1">0</output>
+                <output class="daily legend num R2">0</output>
+            </div>
         </div>
-        
+
     </div>
 </div>
 <script src="https://d3js.org/d3.v5.min.js"></script>

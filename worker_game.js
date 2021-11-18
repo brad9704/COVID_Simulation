@@ -68,7 +68,7 @@ var startSim = function(event_data) {
         .oneWay(false));
 
     //_.sample(simulation.nodes(), Math.floor(param.node_num * param.mask_ratio)).forEach(node => node.mask = true);
-    _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
+    simulation.find(param.sim_width / 2, param.sim_height / 2).infected();
 
     let report_nodes = [];
     simulation.nodes().forEach(node => {
@@ -120,7 +120,7 @@ function ticked() {
     simulation.tick();
     this.nodes().forEach(node1 => {
         this.nodes().forEach(node2 => {
-            if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param.size * 2)
+            if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param.size*2)
                 collision(node1, node2);
         })
     }, this);
@@ -223,19 +223,22 @@ function apply_policy(policy) {
             .forEach(node => {
                 node.speed(policy.age[i][policy.area[node.isIn()]])
             });
+        simulation.nodes().forEach(node => {
+            node.param.hospital_max = policy.hospital_max;
+        })
     }
-    let temp = simulation.loc.get_surface();
+    let temp = simulation.loc.get_surface(), line_rate = policy.rate;
     if (policy.area.upper_left !== "0" || policy.area.upper_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: 0}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+        from: {x: param.sim_width / 2, y: param.sim_height * (1 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (1 + line_rate) / 4}
     });
     if (policy.area.lower_left !== "0" || policy.area.lower_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height}
+        from: {x: param.sim_width / 2, y: param.sim_height * (3 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (3 + line_rate) / 4}
     });
     if (policy.area.upper_left !== "0" || policy.area.lower_left !== "0") temp.push({
-        from: {x: 0, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+        from: {x: param.sim_width * (1 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (1 + line_rate) / 4, y: param.sim_height / 2}
     });
     if (policy.area.upper_right !== "0" || policy.area.lower_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width, y: param.sim_height / 2}
+        from: {x: param.sim_width * (3 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (3 + line_rate) / 4, y: param.sim_height / 2}
     });
     simulation.force("surface").surfaces(temp);
 }
