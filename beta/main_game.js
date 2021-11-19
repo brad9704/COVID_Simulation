@@ -354,7 +354,7 @@ function node_init(param, node_data, loc) {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .attr("r", param["size"])
-        .attr("fill", d => d.state);
+        .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state);
 
     sim_board.select("svg")
         .selectAll("rect")
@@ -425,13 +425,13 @@ function node_update(param, node_data) {
                 .attr("r", param["size"])
                 .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
                 .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
-                .attr("fill", d => d.state),
+                .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state),
             update => update
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y)
                 .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
-                .attr("fill", d => d.state)
+                .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state)
         );
     /*if (param["flag"].includes("quarantine")) {
         let hospital_rate = node_data.filter(e => e.state === state.H).length / (param["hospitalization_max"]);
@@ -441,7 +441,13 @@ function node_update(param, node_data) {
     }*/
 
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
-        $("output.daily.legend.num." + stat).text(node_data.filter(e => e.state === state[stat]).length);
+        let temp = node_data.filter(e => e.state === state[stat]).length;
+        if (stat === "S") {
+            temp = node_data.filter(e => e.state === state.S || e.state === state.E1 || e.state === state.E2).length;
+        } else if (stat === "E1" || stat === "E2") {
+            temp = "?"
+        }
+        $("output.daily.legend.num." + stat).text(temp);
     })
 }
 
@@ -763,7 +769,7 @@ function change_stat(stat_index, direction) {
 
     $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
     $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
-    $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]+"-"+param["duration"]["I1-R1"][1]);
+    $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]);
     $("output.daily.legend.rate.infectious").text(Math.round((0.14 * (1 + stat.stat3 * 0.04)) * 100) + "%");
     $("output.daily.legend.rate.severity").text(Math.round((0.22 + stat.stat4 * 0.02) * 100) + "%");
 }

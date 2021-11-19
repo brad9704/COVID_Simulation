@@ -273,7 +273,7 @@ div.panel_policy_result {
     stroke-width: 1px;
 }
 
-#sim_board circle[class="node_#000000"] {
+#sim_board circle.node_#000000 {
     opacity: 25%;
     stroke: none;
 }
@@ -391,7 +391,7 @@ output.daily.legend.duration.I1-I2 {
  }
 output.daily.legend.duration.I1-R1 {
     top: 73px;
-    left: 221px;
+    right: 520px;
 }
 output.daily.legend.rate.infectious {
     top: 73px;
@@ -706,5 +706,9 @@ div.stat.left {
 }
 
 div.stat.desc {
+    display: none;
+}
+
+#nodes circle.node_#000000, #nodes circle.node_#254488 {
     display: none;
 }
