@@ -548,23 +548,21 @@ div.weekly_status table {
     table-layout: fixed;
     border-spacing: 0 20px;
 }
-div.weekly_status #weekly_week {
-    font-size: 90%;
+div.weekly_status p {
+    font-size: 100%;
     position: absolute;
-    top: 152px;
-    right: 786px;
+    top: 140px;
+    left: 220px;
 }
-div.weekly_status #weekly_date_from {
-    font-size: 90%;
-    position: absolute;
-    top: 152px;
-    right: 720px;
+div.weekly_board {
+    background-image: url("../img/wr_weekly_chart_cover.svg");
+    background-position-x: 25px;
+    background-position-y: 10px;
+    background-repeat: no-repeat;
+    background-size: 975px 200px;
 }
-div.weekly_status #weekly_date_to {
-    font-size: 90%;
-    position: absolute;
-    top: 152px;
-    right: 667px;
+div.weekly_board > svg > g > g.xAxis > g.tick {
+    opacity: 0;
 }
 output.weekly.infectious {
     color: white;

@@ -765,7 +765,7 @@ function change_speed(direction) {
         $("#day_text").text("🥕: ");
     }
     if (direction > 0) {
-        if (running_speed === 16) return;
+        if (running_speed === 8) return;
         running_speed *= 2;
     } else {
         if (running_speed === 1) return;
@@ -800,6 +800,8 @@ function toggle_area() {
 }
 
 function weekly_report() {
+    $("p.weekly.alert").css("opacity", "0");
+    let caution = "";
     let chart_data_total = [];
     chart_data.forEach(data => {
         let temp_data = {};
@@ -838,12 +840,6 @@ function weekly_report() {
     $("#weekly_hospitalized").val(data_to.H2[9]);
     $("#weekly_death").val(data_to.R2[9] - data_from.R2[9]);
     let GDP_drop = Math.round((data_to.GDP - data_from.GDP));
-    if (GDP_drop < 0) {
-        $("#weekly_GDP_drop").val("dropped by $" + (-1*GDP_drop));
-
-    } else {
-        $("#weekly_GDP_drop").val("increased by $" + GDP_drop);
-    }
     $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0)));
 
     $("output.weekly.infectious").each(function(e) {
@@ -855,6 +851,12 @@ function weekly_report() {
     $("output.weekly.death").each(function(e) {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
+    if (parseFloat($(".GDP_now_ratio").val()) < 70) {
+        caution += " Local GDP is too low!";
+    }
+    if (data_to.H2[9] === w.param.hospital_max) {
+        caution += " ICU out of beds!";
+    }
     // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
     let chart_data_ = chart_data_total.reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
@@ -944,6 +946,11 @@ function weekly_report() {
                     .curve(d3.curveBasis)(e.data);
             })
      */
+    if (caution.length > 0) {
+        $("p.weekly.alert").css("opacity", "100%");
+        $("p.weekly.alert > output").val(caution);
+    }
+
     if (auto) resume_simulation();
 }
 
