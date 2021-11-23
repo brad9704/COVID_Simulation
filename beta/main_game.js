@@ -815,7 +815,7 @@ function weekly_report() {
     $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0)));
 
     $("output.weekly.infectious").each(function(e) {
-        this.value = (data_to.I1[parseInt(this.getAttribute("age")) / 10] + data_to.I2[parseInt(this.getAttribute("age")) / 10]);
+        this.value = w.param.node_num - (data_to.S[parseInt(this.getAttribute("age")) / 10] + data_to.E1[parseInt(this.getAttribute("age")) / 10] + data_to.E2[parseInt(this.getAttribute("age")) / 10]);
     });
     $("output.weekly.ICU").each(function(e) {
         this.value = (data_to.H2[parseInt(this.getAttribute("age")) / 10]);
@@ -860,7 +860,7 @@ function weekly_report() {
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
         .range([0, board_svg_size.width - 50]).padding(0.7);
     let yScale = d3.scaleLinear()
-        .domain([0, d3.max(d3.max(data_stacked, e => d3.max(e))) + 1])
+        .domain([0, d3.max(d3.max(data_stacked), e => d3.max(e)) + 1])
         .range([board_svg_size.height - 50, 0]);
     let xAxis = d3.axisBottom().scale(xScale);
     let yAxis = d3.axisLeft().scale(yScale);

@@ -551,30 +551,34 @@ div.weekly_status table {
 div.weekly_status #weekly_week {
     font-size: 90%;
     position: absolute;
-    top: 153px;
-    right: 796px;
+    top: 152px;
+    right: 786px;
 }
 div.weekly_status #weekly_date_from {
     font-size: 90%;
     position: absolute;
-    top: 153px;
-    right: 730px;
+    top: 152px;
+    right: 720px;
 }
 div.weekly_status #weekly_date_to {
     font-size: 90%;
     position: absolute;
-    top: 153px;
-    right: 675px;
+    top: 152px;
+    right: 667px;
 }
 output.weekly.infectious {
+    color: white;
+    font-weight: bold;
     position: absolute;
-    top: 358px;
-    right: 750px;
+    top: 356px;
+    right: 630px;
 }
 output.weekly.death {
+    color: white;
+    font-weight: bold;
     position: absolute;
-    top: 358px;
-    right: 320px;
+    top: 356px;
+    right: 220px;
 }
 
 div.weekly.tab.content.age {
@@ -747,6 +751,7 @@ div.weekly p {
     top: 460px;
 }
 .weekly.legend svg {
+    opacity: 80%;
     background-color: white;
     width: 100px;
     height: 42px;
