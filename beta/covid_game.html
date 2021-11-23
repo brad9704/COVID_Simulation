@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.211123.01-->
+<!--ver.211123.02-->
 <html lang="en">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -184,15 +184,15 @@
                         </div>
                     </div>
                     <div class="weekly area tab content">
-                        <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5">
-                        <input class="policy bed" type="range" min="10" max="20" step="1" value="10">
+                        <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5" onchange="toggle_week();">
+                        <input class="policy bed" type="range" min="10" max="20" step="1" value="10" onchange="toggle_week();">
                         <svg class="weekly area lines">
                             <line class="weekly border visible" x1="0" y1="130" x2="340" y2="130"/>
                             <line class="weekly border visible" x1="170" y1="0" x2="170" y2="260"/>
-                            <line class="weekly border invisible" data-click="0" x1="0" y1="130" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0')"/>
-                            <line class="weekly border invisible" data-click="0" x1="170" y1="130" x2="340" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0')"/>
-                            <line class="weekly border invisible" data-click="0" x1="170" y1="0" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0')"/>
-                            <line class="weekly border invisible" data-click="0" x1="170" y1="130" x2="170" y2="260" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0')"/>
+                            <line class="weekly border invisible left" data-click="0" x1="0" y1="130" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible right" data-click="0" x1="170" y1="130" x2="340" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible upper" data-click="0" x1="170" y1="0" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible lower" data-click="0" x1="170" y1="130" x2="170" y2="260" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
                         </svg>
                         <div class="weekly area budget"><output class="weekly budget_next">0</output></div>
                     </div>

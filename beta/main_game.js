@@ -652,7 +652,13 @@ function resume_simulation() {
         age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
         line_rate = parseFloat($("input.policy.rate").val()),
         hospital_max = parseInt($("input.policy.bed").val()),
-        budget = $("output.budget_now");
+        budget = $("output.budget_now"),
+        surface = {
+            "upper": $("line.weekly.border.invisible.upper").attr("data-click"),
+            "lower": $("line.weekly.border.invisible.lower").attr("data-click"),
+            "left": $("line.weekly.border.invisible.left").attr("data-click"),
+            "right": $("line.weekly.border.invisible.right").attr("data-click")
+        };
 
     budget.val(parseInt(budget.val()) - 2000 * (hospital_max - 10));
     w.postMessage({type: "RESUME", data: {
@@ -667,7 +673,8 @@ function resume_simulation() {
                 "80": age_60},
             area: area,
             rate: line_rate,
-            hospital_max: hospital_max
+            hospital_max: hospital_max,
+            surface: surface
         }});
     w.param.hospital_max = hospital_max;
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
@@ -684,31 +691,10 @@ function resume_simulation() {
             .attr("y2", function(d) {return d.y2;})
         )
         .style("display", function(d) {
-        if (d.name === "upper") {
-            if (area.upper_left !== "0" || area.upper_right !== "0") {
+            if (surface[d.name] === "1") {
                 budget.val(parseInt(budget.val()) - 10000 * line_rate);
                 return "inline";
-            }
-            else return "none";
-        } else if (d.name === "lower") {
-            if (area.lower_left !== "0" || area.lower_right !== "0") {
-                budget.val(parseInt(budget.val()) - 10000 * line_rate);
-                return "inline";
-            }
-            else return "none";
-        } else if (d.name === "left") {
-            if (area.upper_left !== "0" || area.lower_left !== "0") {
-                budget.val(parseInt(budget.val()) - 10000 * line_rate);
-                return "inline";
-            }
-            else return "none";
-        } else {
-            if (area.upper_right !== "0" || area.lower_right !== "0") {
-                budget.val(parseInt(budget.val()) - 10000 * line_rate);
-                return "inline";
-            }
-            else return "none";
-        }
+            } else return "none";
     });
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
@@ -747,7 +733,7 @@ function change_speed(direction) {
         $("#day_text").text("🥕: ");
     }
     if (direction > 0) {
-        if (running_speed === 8) return;
+        if (running_speed === 16) return;
         running_speed *= 2;
     } else {
         if (running_speed === 1) return;
@@ -934,4 +920,15 @@ var auto = false;
 function toggle_auto(val) {
     console.log(val);
     auto = (val === "1");
+}
+
+function toggle_week() {
+    let surface = 0;
+    $("line.weekly.border.invisible").each(function() {
+        surface += parseInt(this.dataset.click);
+    });
+    $("output.weekly.budget_next").val(
+        2000 * (parseInt($("input.policy.bed").val()) - 10) +
+        10000 * surface * parseFloat($("input.policy.rate").val())
+    );
 }

@@ -531,7 +531,7 @@ input.weekly.tab.switch.area {
 }
 
 div.weekly.tab.content.overall {
-    background-image: url("../img/weekly_occurrence_status_panel.svg");
+    background-image: url("../img/wr_weekly_occurrence_status_panel.svg");
     background-repeat: no-repeat;
     height: 600px;
 }
@@ -578,7 +578,7 @@ output.weekly.death {
 }
 
 div.weekly.tab.content.age {
-    background-image: url("../img/social_distancing_policy.svg");
+    background-image: url("../img/wr_social_distancing_policy.svg");
     background-repeat: no-repeat;
     display: none;
     height: 600px;
@@ -589,7 +589,7 @@ div.policy.level.confirm table {
     table-layout: fixed;
     width: 640px;
     border-spacing: 0 17px;
-    top: 220px;
+    top: 245px;
     left: 20px;
 }
 div.area_policy, svg.area_policy.area_board {
@@ -598,7 +598,7 @@ div.area_policy, svg.area_policy.area_board {
     width: 330px;
     height: 250px;
     left: 680px;
-    top: 185px;
+    top: 210px;
 }
 select.area_policy.option {
     font-size: 120%;
@@ -620,10 +620,11 @@ select.area_policy.option.right {
 svg.area_policy.area_board {
     width: 330px;
     height: 250px;
+    opacity: 0;
 }
 
 div.weekly.tab.content.area {
-    background-image: url("../img/budget_panel_raw.svg");
+    background-image: url("../img/wr_budget_panel.svg");
     background-repeat: no-repeat;
     display: none;
     height: 600px;
@@ -636,13 +637,13 @@ input.policy.rate {
 }
 input.policy.bed {
     position: absolute;
-    top: 372px;
-    left: 180px;
+    top: 410px;
+    left: 177px;
     width: 430px;
 }
 div.weekly.area.budget{
     position: absolute;
-    top: 405px;
+    top: 443px;
     left: 688px;
     width: 313px;
     height: 45px;
@@ -669,7 +670,7 @@ line.weekly.border.invisible[data-click="1"] {
     cursor: pointer;
 }
 line.weekly.border.visible {
-    stroke: blue;
+    stroke: none;
     stroke-width: 2px;
 }
 
