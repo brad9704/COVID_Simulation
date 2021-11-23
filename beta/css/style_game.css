@@ -96,7 +96,7 @@ body {
 div.control_panel {
     position: absolute;
     border: 1px solid black;
-    background-image: url("../img/control_panel2.svg");
+    background-image: url("../img/control_panel.svg");
     width: 1650px;
     height: 160px;
     left: 135px;
@@ -481,7 +481,7 @@ output.daily.legend.num.R2 {
 input.weekly.tab.switch {
     margin-right: -10px;
     font-size: 18px;
-    width: 150px;
+    width: 340px;
     height: 50px;
     background-color: white;
     color: #254488;
@@ -530,19 +530,147 @@ input.weekly.tab.switch.area {
     margin: 5px;
 }
 
-svg.area_policy.area_board {
-    margin: 10px;
-    width: 600px;
+div.weekly.tab.content.overall {
+    background-image: url("../img/weekly_occurrence_status_panel.svg");
+    background-repeat: no-repeat;
     height: 600px;
+}
+div.weekly_status {
+    width: 1020px;
+    height: 240px;
+}
+div.weekly_status table {
+    position: absolute;
+    text-align: center;
+    top: 235px;
+    left: 10px;
+    width: 1020px;
+    table-layout: fixed;
+    border-spacing: 0 20px;
+}
+div.weekly_status #weekly_week {
+    font-size: 90%;
+    position: absolute;
+    top: 153px;
+    right: 796px;
+}
+div.weekly_status #weekly_date_from {
+    font-size: 90%;
+    position: absolute;
+    top: 153px;
+    right: 730px;
+}
+div.weekly_status #weekly_date_to {
+    font-size: 90%;
+    position: absolute;
+    top: 153px;
+    right: 675px;
+}
+output.weekly.infectious {
+    position: absolute;
+    top: 358px;
+    right: 750px;
+}
+output.weekly.death {
+    position: absolute;
+    top: 358px;
+    right: 320px;
 }
 
 div.weekly.tab.content.age {
+    background-image: url("../img/social_distancing_policy.svg");
+    background-repeat: no-repeat;
     display: none;
-    height: auto;
+    height: 600px;
 }
+
+div.policy.level.confirm table {
+    position: absolute;
+    table-layout: fixed;
+    width: 640px;
+    border-spacing: 0 17px;
+    top: 220px;
+    left: 20px;
+}
+div.area_policy, svg.area_policy.area_board {
+    position: absolute;
+    display: inline-block;
+    width: 330px;
+    height: 250px;
+    left: 680px;
+    top: 185px;
+}
+select.area_policy.option {
+    font-size: 120%;
+    width: auto;
+    position: absolute;
+}
+select.area_policy.option.upper {
+    top: 20%;
+}
+select.area_policy.option.lower {
+    bottom: 20%;
+}
+select.area_policy.option.left {
+    left: 10%;
+}
+select.area_policy.option.right {
+    right: 10%;
+}
+svg.area_policy.area_board {
+    width: 330px;
+    height: 250px;
+}
+
 div.weekly.tab.content.area {
+    background-image: url("../img/budget_panel_raw.svg");
+    background-repeat: no-repeat;
     display: none;
-    height: auto;
+    height: 600px;
+}
+input.policy.rate {
+    position: absolute;
+    top: 140px;
+    left: 210px;
+    width: 330px;
+}
+input.policy.bed {
+    position: absolute;
+    top: 372px;
+    left: 180px;
+    width: 430px;
+}
+div.weekly.area.budget{
+    position: absolute;
+    top: 405px;
+    left: 688px;
+    width: 313px;
+    height: 45px;
+    text-align: center;
+    font-size: 180%;
+}
+svg.weekly.area.lines {
+    position: absolute;
+    width: 340px;
+    height: 260px;
+    right: 10px;
+    top: 10px;
+}
+line.weekly.border.invisible[data-click="0"] {
+    stroke: black;
+    opacity: 0;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"] {
+    stroke: black;
+    opacity: 50%;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+line.weekly.border.visible {
+    stroke: blue;
+    stroke-width: 2px;
 }
 
 #button_wrapper {
@@ -564,40 +692,9 @@ div.weekly.tab.content.area {
     color: white;
     background-color: #524782;
 }
-div.area_policy {
-    position: absolute;
-    display: inline-block;
-    width: 600px;
-    height: 600px;
-}
-tr.policy.info td {
-    width: 80px;
-}
-div.area_policy.options {
-    margin: 10px;
-    left: 0;
-}
-select.area_policy.option {
-    font-size: 150%;
-    width: auto;
-    position: absolute;
-}
-select.area_policy.option.upper {
-    top: 22%;
-}
-select.area_policy.option.lower {
-    bottom: 22%;
-}
-select.area_policy.option.left {
-    left: 15%;
-}
-select.area_policy.option.right {
-    right: 15%;
-}
 
-.panel_policy input[type=range] {
-    width: 200px;
-}
+
+
 .panel_policy input[type=number] {
     width: 40px;
 }
@@ -646,12 +743,12 @@ div.weekly p {
 .weekly.legend {
     position: absolute;
     left: 920px;
-    top: 300px;
+    top: 460px;
 }
 .weekly.legend svg {
     background-color: white;
     width: 100px;
-    height: 65px;
+    height: 42px;
     font-size: 15px;
 }
 
