@@ -385,7 +385,7 @@ function node_init(param, node_data, loc) {
         .attr("y2", function(d) {return d.y2;})
         .style("stroke", "#C00000")
         .style("stroke-width", 1)
-        .style("display", "none");
+        .style("opacity", "30%");
 
 
     /*    if (param["flag"].includes("quarantine")) {
@@ -690,11 +690,11 @@ function resume_simulation() {
             .attr("x2", function(d) {return d.x2;})
             .attr("y2", function(d) {return d.y2;})
         )
-        .style("display", function(d) {
+        .style("opacity", function(d) {
             if (surface[d.name] === "1") {
                 budget.val(parseInt(budget.val()) - 10000 * line_rate);
-                return "inline";
-            } else return "none";
+                return "100%";
+            } else return "30%";
     });
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
