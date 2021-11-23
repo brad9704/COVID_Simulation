@@ -371,7 +371,39 @@ function node_init(param, node_data, loc) {
         .style("fill", "none");
 
     let line_rate = parseFloat($("input.policy.rate").val());
-    sim_board.select("svg").selectAll("line")
+    /*sim_board.select("svg").selectAll("line.svg_line_back")
+        .data([{name: "upper", x1: param.sim_width / 2, y1: 0, x2: param.sim_width / 2, y2: param.sim_height / 2},
+            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height},
+            {name: "left", x1: 0, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height / 2},
+            {name: "right", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width, y2: param.sim_height / 2}])
+        .enter()
+        .append("line")
+        .attr("class", function(d) {return "sim_board svg_line_back " + d.name;})
+        .attr("x1", function(d) {return d.x1;})
+        .attr("y1", function(d) {return d.y1;})
+        .attr("x2", function(d) {return d.x2;})
+        .attr("y2", function(d) {return d.y2;})
+        .style("stroke", "#A0A0A0")
+        .style("stroke-width", 1)
+        .style("opacity", "30%");*/
+    sim_board.select("svg").append("rect")
+        .attr("width", param.sim_width / 2)
+        .attr("height", param.sim_height / 2)
+        .attr("x", 0)
+        .attr("y", 0)
+        .style("stroke", "none")
+        .style("fill", "#A0A0A0")
+        .style("opacity", "15%");
+    sim_board.select("svg").append("rect")
+        .attr("width", param.sim_width / 2)
+        .attr("height", param.sim_height / 2)
+        .attr("x", param.sim_width / 2)
+        .attr("y", param.sim_height / 2)
+        .style("stroke", "none")
+        .style("fill", "#A0A0A0")
+        .style("opacity", "15%");
+
+    sim_board.select("svg").selectAll("line.svg_line")
         .data([{name: "upper", x1: param.sim_width / 2, y1: param.sim_height * (1 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (1 + line_rate) / 4},
             {name: "lower", x1: param.sim_width / 2, y1: param.sim_height * (3 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (3 + line_rate) / 4},
             {name: "left", x1: param.sim_width * (1 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (1 + line_rate) / 4, y2: param.sim_height / 2},
@@ -385,7 +417,7 @@ function node_init(param, node_data, loc) {
         .attr("y2", function(d) {return d.y2;})
         .style("stroke", "#C00000")
         .style("stroke-width", 1)
-        .style("opacity", "30%");
+        .style("opacity", "0");
 
 
     /*    if (param["flag"].includes("quarantine")) {
@@ -694,7 +726,7 @@ function resume_simulation() {
             if (surface[d.name] === "1") {
                 budget.val(parseInt(budget.val()) - 10000 * line_rate);
                 return "100%";
-            } else return "30%";
+            } else return "0";
     });
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
