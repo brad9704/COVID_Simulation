@@ -903,6 +903,7 @@ function weekly_report() {
     let new_infect = $("#weekly_new_infect");
     let prev_new_patient = parseInt(new_infect.val());
     let this_new_patient = (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]);
+    $("#weekly_change_death").val(data_to.R2[9] - data_from.R2[9] - parseInt($("#weekly_death").val()));
     if (prev_new_patient < this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "red");
         $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient));
