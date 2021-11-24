@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.211124.01-->
+<!--ver.211124.02-->
 <html lang="en">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -26,6 +26,7 @@
     <div id="sim_board"></div>
     <div class="daily legend">
         <img src="img/info_panel_md3.svg">
+        <text class="virus name">NAME</text>
         <output class="daily legend duration E2-I1">3-4</output>
         <output class="daily legend duration I1-I2">4-5</output>
         <output class="daily legend duration I1-R1">19</output>
@@ -90,8 +91,8 @@
                         <tr>
                             <td><output id="weekly_change_infect">▲0</output></td>
                             <td></td>
-                            <td><output class="weekly warning ICUs">CAUTION</output></td>
-                            <td><output class="weekly warning GDPs">CAUTION</output></td>
+                            <td class="weekly warning ICUs" data-value="0"></td>
+                            <td class="weekly warning GDPs" data-value="0"></td>
                         </tr>
                     </table>
                     <output class="weekly infectious" age="90">0</output>
@@ -109,7 +110,6 @@
                     <p style="font-weight: bold;">Weekly Chart<br></p>
                     <div class="weekly_board">
                     </div>
-                    <p class="weekly alert" style="color: red; font-weight: bold; text-align: center"> CAUTION:<output></output></p>
                 </div>
             </div>
             <div class="weekly age area tab weekly_policy" style="display:none">
@@ -330,7 +330,6 @@
                             <td class="stat value stat4"><output class="stat value stat4">0</output></td>
                             <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
                         </tr>
-
                     </table>
                     <text class="stat label total">Remaining stat: <output class="stat value total">6</output></text>
                 </div>
@@ -363,6 +362,7 @@
             </div>
             <div class="daily legend">
                 <img src="img/info_panel_md3_initial.svg">
+                <text class="virus name">NAME</text>
                 <output class="daily legend duration E2-I1">3-4</output>
                 <output class="daily legend duration I1-I2">4-5</output>
                 <output class="daily legend duration I1-R1">19</output>

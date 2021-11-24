@@ -882,9 +882,7 @@ function toggle_area() {
 }
 
 function weekly_report() {
-    $("p.weekly.alert").css("opacity", "0");
-    $("output.weekly.warning").parent().css("background-color","");
-    let caution = "";
+    $("td.weekly.warning").attr("data-value", "0");
     let chart_data_total = [];
     chart_data.forEach(data => {
         let temp_data = {};
@@ -935,17 +933,13 @@ function weekly_report() {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
     let GDP_now = parseFloat($(".GDP_now_ratio").val());
-    if (GDP_now < 70) {
-        caution += " Local GDP is too low!";
-    }
     if (GDP_now < 60) {
-        $("output.weekly.warning.GDPs").parent().css("background-color","red");
+        $("td.weekly.warning.GDPs").attr("data-value", "2");
     } else if (GDP_now < 80) {
-        $("output.weekly.warning.GDPs").parent().css("background-color","yellow");
+        $("td.weekly.warning.GDPs").attr("data-value", "1");
     }
     if (data_to.H2[9] === w.param.hospital_max) {
-        caution += " ICU out of beds!";
-        $("output.weekly.warning.ICUs").parent().css("background-color","red");
+        $("td.weekly.warning.ICUs").attr("data-value","2");
     }
     // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
     let chart_data_ = chart_data_total.reduce((prev, curr) => {
@@ -1036,11 +1030,6 @@ function weekly_report() {
                     .curve(d3.curveBasis)(e.data);
             })
      */
-    if (caution.length > 0) {
-        $("p.weekly.alert").css("opacity", "100%");
-        $("p.weekly.alert > output").val(caution);
-    }
-
     if (auto) resume_simulation();
 }
 

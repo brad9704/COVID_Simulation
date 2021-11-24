@@ -394,7 +394,14 @@ div.daily.legend {
 div.daily.legend img {
     height: 300px;
 }
-
+text.virus.name {
+    position: absolute;
+    font-size: 25px;
+    color: white;
+    top: 0;
+    left: 50px;
+    font-weight: bold;
+}
 output.daily.legend {
     position: absolute;
     font-size: 25px;
@@ -568,9 +575,18 @@ div.weekly_status table {
 div.weekly_status table tr td {
     width: 205px;
 }
-output.weekly.warning {
-    color: white;
-    opacity: 0;
+td.weekly.warning {
+    background-repeat: no-repeat;
+    background-position: center;
+}
+td.weekly.warning[data-value="0"] {
+    background-image: url("../img/wr_1_fine.svg");
+}
+td.weekly.warning[data-value="1"] {
+    background-image: url("../img/wr_2_warning.svg");
+}
+td.weekly.warning[data-value="2"] {
+    background-image: url("../img/wr_3_alert.svg");
 }
 
 div.weekly_status p {
