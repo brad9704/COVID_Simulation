@@ -198,29 +198,32 @@ svg {
     height: 30px;
 }
 .popBody {
-    height: 660px;
+    height: 780px;
     padding: 30px;
     box-sizing:border-box;
     font-size:16px;
 }
 
+#popup_result .popInnerBox {
+    height: 800px;
+}
 #popup_result .popBody .popChart {
     border: 1px solid black;
     border-radius: 5px;
     width: 900px;
-    height: 400px;
+    height: 300px;
     max-width: 100%;
     margin: 10px auto;
 }
 #popup_result div.popBody table.result {
     width: 900px;
-    height: 400px;
+    height: 300px;
     padding: 10px;
     font-size: 25px;
     border-collapse: collapse;
 }
 #popup_result div.popBody table.result tr {
-    height: 80px;
+    height: 60px;
 }
 #popup_result div.popBody table.result tr.label {
     height: 40px;
@@ -228,7 +231,6 @@ svg {
     font-weight: bold;
 }
 #popup_result div.popBody table.result td {
-
 }
 #popup_result div.popBody table.result td.star {
     color: black;
@@ -237,6 +239,23 @@ svg {
 div.panel_policy_result {
     font-size: 40px;
 }
+div.result.chart {
+    margin-top: 30px;
+    height: 200px;
+    max-width: 100%;
+}
+svg.result.legend {
+    width: 100px;
+    height: 85px;
+    position: absolute;
+    right: 91px;
+    top: 516px;
+    background-color: white;
+    opacity: 100%;
+    border-right: none;
+    border-top: none;
+}
+
 #popup_result .popBody input {
     margin: 15px auto;
     max-width: 100%;
@@ -273,8 +292,8 @@ div.panel_policy_result {
     stroke-width: 1px;
 }
 
-#sim_board circle.node_#000000 {
-    opacity: 25%;
+#sim_board circle[fill="#000000"] {
+    display: none;
     stroke: none;
 }
 
@@ -543,11 +562,17 @@ div.weekly_status table {
     position: absolute;
     text-align: center;
     top: 235px;
-    left: 10px;
-    width: 1020px;
-    table-layout: fixed;
+    left: 210px;
     border-spacing: 0 20px;
 }
+div.weekly_status table tr td {
+    width: 205px;
+}
+output.weekly.warning {
+    color: white;
+    opacity: 0;
+}
+
 div.weekly_status p {
     font-size: 100%;
     position: absolute;

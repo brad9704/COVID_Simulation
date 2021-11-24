@@ -223,7 +223,8 @@ function initSim(param, initial_node_data, loc) {
     node_init(param, initial_node_data, loc);
     let init_data = {
         "tick": 0,
-        "GDP": initial_node_data.reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9
+        "GDP": initial_node_data.reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9,
+        "budget": parseInt($("output.budget_now").val())
     };
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
         init_data[stat] = [initial_node_data.filter(e => e.state === state[stat] && e.age === "0").length,
@@ -250,7 +251,8 @@ function updateSim(param, node_data, time) {
     if (chart >= param.fps) {
         let temp_data = {
             "tick": Math.round(time / param.fps),
-            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9
+            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9,
+            "budget": parseInt($("output.budget_now").val())
         };
         Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
             temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
@@ -276,7 +278,7 @@ function updateSim(param, node_data, time) {
     }
 }
 
-function show_result(param, node_data) {
+function show_result(param) {
     $("td.result, div.panel_policy_result").css("display:none");
     let last_state = chart_data[chart_data.length - 1];
     let final_budget = parseInt($("output.budget_now").val());
@@ -284,43 +286,121 @@ function show_result(param, node_data) {
     $("output.budget_total").text(final_budget);
 
     let star_infection, star_death, star_GDP, star_budget;
-    if (last_state["S"][9] > 800) star_infection = 2;
-    else if (last_state["S"][9] > 500) star_infection = 1;
+    if (last_state["S"][9] > 500) star_infection = 1;
     else star_infection = 0;
-    if (last_state["R2"][9] < 10) star_death = 4;
-    else if (last_state["R2"][9] < 50) star_death = 3;
-    else if (last_state["R2"][9] < 100) star_death = 2;
-    else if (last_state["R2"][9] < 200) star_death = 1;
+    if (last_state["R2"][9] < 70) star_death = 4;
+    else if (last_state["R2"][9] < 82) star_death = 3;
+    else if (last_state["R2"][9] < 94) star_death = 2;
+    else if (last_state["R2"][9] < 106) star_death = 1;
     else star_death = 0;
-    if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.9) star_GDP = 3;
+    if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.8) star_GDP = 3;
     else if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.7) star_GDP = 2;
-    else if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.5) star_GDP = 1;
+    else if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.6) star_GDP = 1;
     else star_GDP = 0;
-    if (final_budget > 0) star_budget = 1;
+    if (final_budget > 50000) star_budget = 2;
+    else if (final_budget > 0) star_budget = 1;
     else star_budget = 0;
 
-    $("td.result.star.infection > output").text("★".repeat(star_infection) + "☆".repeat(2-star_infection));
+    $("td.result.star.infection > output").text("★".repeat(star_infection) + "☆".repeat(1-star_infection));
     $("td.result.star.death > output").text("★".repeat(star_death) + "☆".repeat(4-star_death));
     $("td.result.star.GDP > output").text("★".repeat(star_GDP) + "☆".repeat(3-star_GDP));
-    $("td.result.star.budget > output").text("★".repeat(star_budget) + "☆".repeat(1-star_budget));
+    $("td.result.star.budget > output").text("★".repeat(star_budget) + "☆".repeat(2-star_budget));
     $("output.result.total.star").text(star_infection + star_death + star_GDP + star_budget);
 
+    var margin = {top:20, right: 150, bottom: 30, left: 50},
+        width = 700,
+        height = 150;
+    var x = d3.scaleLinear().range([0,width]),
+        y = d3.scaleLinear().range([height,0]),
+        z = d3.scaleLinear().range([height,0]);
+    var xAxis = d3.axisBottom().scale(x),
+        yAxis = d3.axisLeft().scale(y),
+        zAxis = d3.axisRight().scale(z);
+
+    var svg = d3.select("div.result.chart").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append("g")
+        .attr("transform", "translate(0," + height + ")")
+        .attr("class", "Xaxis");
+    svg.append("g")
+        .attr("class", "Yaxis");
+    svg.append("g")
+        .attr("transform", "translate(" + width + ",0)")
+        .attr("class", "Zaxis")
+
+    let chart_data_total = [];
+    chart_data.forEach(data => {
+        let temp_data = {};
+        for (const prob in data) {
+            if (prob === "tick" || prob === "GDP" || prob === "budget") {
+                temp_data[prob] = data[prob];
+            } else {
+                temp_data[prob] = data[prob][9];
+            }
+        }
+        chart_data_total.push(temp_data);
+    })
+    x.domain([0, d3.max(chart_data_total, function(d) {
+        return d["tick"];
+    })]);
+    svg.selectAll(".Xaxis")
+        .call(xAxis);
+
+    y.domain([0, param.node_num]);
+    svg.selectAll(".Yaxis")
+        .call(yAxis);
+
+    z.domain([d3.min(chart_data_total, function(d) {
+        return d["budget"];
+    }), d3.max(chart_data_total, function(d) {
+        return d["budget"];
+    })]);
+    svg.selectAll(".Zaxis")
+        .call(zAxis);
+
+    let chart_data_ = chart_data_total.reduce((prev, curr) => {
+        prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
+        prev[1].data.push([curr.tick, curr.R2]);
+        prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]),
+        prev[3].data.push([curr.tick, curr.budget]);
+        return prev;
+    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}, {type: "budget", data: [], color: "purple"}]);
+
+    var v = svg.selectAll(".line")
+        .data(chart_data_);
+    v.enter()
+        .append("path")
+        .attr("class", "line")
+        .merge(v)
+        .style("stroke", function(d) {return d.color;})
+        .style("fill", "none")
+        .style("stroke-width", 1.5)
+        .attr("d", function (e) {
+            if (e.type === "budget") {
+                return d3.line()
+                    .x(function (d) {
+                        return x(d[0]);
+                    })
+                    .y(function (d) {
+                        return z(d[1]);
+                    })
+                    .curve(d3.curveBasis)(e.data);
+            } else return d3.line()
+                .x(function (d) {
+                    return x(d[0]);
+                })
+                .y(function (d) {
+                    return y(d[1]);
+                })
+                .curve(d3.curveBasis)(e.data);
+        });
+
+
     $("#popup_result").fadeIn();
-    setTimeout(() => {
-        $("tr.result.infection > td > output").fadeIn();
-    }, 1000)
-    setTimeout(() => {
-        $("tr.result.death > td").fadeIn();
-    }, 2000)
-    setTimeout(() => {
-        $("tr.result.GDP > td").fadeIn();
-    }, 3000)
-    setTimeout(() => {
-        $("tr.result.budget > td").fadeIn();
-    }, 4000)
-    setTimeout(() => {
-        $("div.panel_policy_result").fadeIn();
-    }, 5000)
     $("#popup_result > div.popBg,#exit").on("click", function() {
         $("#popup_result").fadeOut(200);
         $("#popup_init").fadeIn();
@@ -606,7 +686,7 @@ function chart_update(param, chart_param, chart_data) {
         .append("path")
         .attr("class", "line")
         .merge(v)
-        .style("fill", function(d) {return state[d.key];})
+        .style("fill", function(d) { if (d.key === "E1" || d.key === "E2") {return state.S;} else return state[d.key];})
         .attr("d", d3.area()
             .x(function(d,i) {return x(d.data.tick);})
             .y0(function(d) {return y(d[0]);})
@@ -652,9 +732,10 @@ function start_simulation() {
     chart_data = [];
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
+    $("output.budget_now").val(200000);
     let param = get_params();
     w.param = param;
-    w.postMessage({type: "START", main: param});
+    w.postMessage({type: "START", main: param, budget: 200000});
 }
 function stop_simulation() {
     clearInterval(run);
@@ -706,7 +787,8 @@ function resume_simulation() {
             area: area,
             rate: line_rate,
             hospital_max: hospital_max,
-            surface: surface
+            surface: surface,
+            budget: parseInt(budget.val())
         }});
     w.param.hospital_max = hospital_max;
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
@@ -801,6 +883,7 @@ function toggle_area() {
 
 function weekly_report() {
     $("p.weekly.alert").css("opacity", "0");
+    $("output.weekly.warning").parent().css("background-color","");
     let caution = "";
     let chart_data_total = [];
     chart_data.forEach(data => {
@@ -851,11 +934,18 @@ function weekly_report() {
     $("output.weekly.death").each(function(e) {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
-    if (parseFloat($(".GDP_now_ratio").val()) < 70) {
+    let GDP_now = parseFloat($(".GDP_now_ratio").val());
+    if (GDP_now < 70) {
         caution += " Local GDP is too low!";
+    }
+    if (GDP_now < 60) {
+        $("output.weekly.warning.GDPs").parent().css("background-color","red");
+    } else if (GDP_now < 80) {
+        $("output.weekly.warning.GDPs").parent().css("background-color","yellow");
     }
     if (data_to.H2[9] === w.param.hospital_max) {
         caution += " ICU out of beds!";
+        $("output.weekly.warning.ICUs").parent().css("background-color","red");
     }
     // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
     let chart_data_ = chart_data_total.reduce((prev, curr) => {
