@@ -903,7 +903,6 @@ function weekly_report() {
     let new_infect = $("#weekly_new_infect");
     let prev_new_patient = parseInt(new_infect.val());
     let this_new_patient = (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]);
-    $("#weekly_change_death").val(data_to.R2[9] - data_from.R2[9] - parseInt($("#weekly_death").val()));
     if (prev_new_patient < this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "red");
         $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient));
@@ -914,12 +913,24 @@ function weekly_report() {
         d3.select("#weekly_change_infect").style("color", "black");
         $("#weekly_change_infect").val("▲0");
     }
+    // noinspection JSJQueryEfficiency
+    let weekly_change_death = data_to.R2[9] - data_from.R2[9] - parseInt($("#weekly_death").val());
+
+    if (weekly_change_death > 0) {
+        $("#weekly_change_death").val("▲" + weekly_change_death).css("color","red");
+    } else if (weekly_change_death < 0) {
+        $("#weekly_change_death").val("▼" + weekly_change_death).css("color","blue");
+    } else {
+        $("#weekly_change_death").val("▲" + weekly_change_death).css("color","black");
+    }
+
 
     $("#weekly_date_from").val(data_from.tick + 1);
     $("#weekly_date_to").val(data_to.tick + 1);
     $("#weekly_week").text(Math.round((data_to.tick + 1) / w.param.turnUnit));
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
+    // noinspection JSJQueryEfficiency
     $("#weekly_death").val(data_to.R2[9] - data_from.R2[9]);
     let GDP_drop = Math.round((data_to.GDP - data_from.GDP));
     $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0)));
