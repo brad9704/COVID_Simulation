@@ -7,10 +7,12 @@ var running_time;
 var simulation;
 var param;
 var chart_data;
+var budget;
 
 onmessage = function(event){
     switch (event.data.type) {
         case "START":
+            budget = event.data.budget;
             postMessage(startSim(event.data.main));
             break;
         case "PAUSE":
@@ -130,7 +132,8 @@ function ticked() {
         let node_data = simulation.nodes();
         let temp_data = {
             "tick": running_time / param.fps,
-            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2
+            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2,
+            "budget": budget
         };
         Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
             temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
@@ -228,16 +231,16 @@ function apply_policy(policy) {
         })
     }
     let temp = simulation.loc.get_surface(), line_rate = policy.rate;
-    if (policy.area.upper_left !== "0" || policy.area.upper_right !== "0") temp.push({
+    if (policy.surface.upper === "1") temp.push({
         from: {x: param.sim_width / 2, y: param.sim_height * (1 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (1 + line_rate) / 4}
     });
-    if (policy.area.lower_left !== "0" || policy.area.lower_right !== "0") temp.push({
+    if (policy.surface.lower === "1") temp.push({
         from: {x: param.sim_width / 2, y: param.sim_height * (3 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (3 + line_rate) / 4}
     });
-    if (policy.area.upper_left !== "0" || policy.area.lower_left !== "0") temp.push({
+    if (policy.surface.left === "1") temp.push({
         from: {x: param.sim_width * (1 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (1 + line_rate) / 4, y: param.sim_height / 2}
     });
-    if (policy.area.upper_right !== "0" || policy.area.lower_right !== "0") temp.push({
+    if (policy.surface.right === "1") temp.push({
         from: {x: param.sim_width * (3 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (3 + line_rate) / 4, y: param.sim_height / 2}
     });
     simulation.force("surface").surfaces(temp);

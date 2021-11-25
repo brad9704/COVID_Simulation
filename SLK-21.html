@@ -26,7 +26,7 @@
     <div id="sim_board"></div>
     <div class="daily legend">
         <img src="img/info_panel_md3.svg">
-        <div class="virus name"><text class="virus name">NAME</text></div>
+        <div class="virus name"><text class="virus name">SLK-21</text></div>
         <output class="daily legend duration E2-I1">3-4</output>
         <output class="daily legend duration I1-I2">4-5</output>
         <output class="daily legend duration I1-R1">19</output>
@@ -362,7 +362,7 @@
             </div>
             <div class="daily legend">
                 <img src="img/info_panel_md3_initial.svg">
-                <div class="virus name"><text class="virus name">NAME</text></div>
+                <div class="virus name"><text class="virus name">SLK-21</text></div>
                 <output class="daily legend duration E2-I1">3-4</output>
                 <output class="daily legend duration I1-I2">4-5</output>
                 <output class="daily legend duration I1-R1">19</output>
@@ -388,6 +388,18 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
-<script type="text/javascript">$("input.stat").attr("disabled","disabled").css("opacity","0"); $("#popup_init").fadeIn();</script>
+<script type="text/javascript">
+    $("input.stat").attr("disabled","disabled").css("opacity","0");
+    for (let stat2 = 9; stat2 !== 3; stat2--) {
+        change_stat("stat2",-1);
+    }
+    for (let stat4 = 0; stat4 !== 2; stat4++) {
+        change_stat("stat4",1);
+    }
+    for (let stat1 = 4; stat1 !== 14; stat1++) {
+        change_stat("stat1",1);
+    }
+    $("#popup_init").fadeIn();
+</script>
 </body>
 </html>

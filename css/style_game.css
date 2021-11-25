@@ -96,7 +96,7 @@ body {
 div.control_panel {
     position: absolute;
     border: 1px solid black;
-    background-image: url("../img/control_panel2.svg");
+    background-image: url("../img/control_panel.svg");
     width: 1650px;
     height: 160px;
     left: 135px;
@@ -198,29 +198,32 @@ svg {
     height: 30px;
 }
 .popBody {
-    height: 660px;
+    height: 780px;
     padding: 30px;
     box-sizing:border-box;
     font-size:16px;
 }
 
+#popup_result .popInnerBox {
+    height: 800px;
+}
 #popup_result .popBody .popChart {
     border: 1px solid black;
     border-radius: 5px;
     width: 900px;
-    height: 400px;
+    height: 300px;
     max-width: 100%;
     margin: 10px auto;
 }
 #popup_result div.popBody table.result {
     width: 900px;
-    height: 400px;
+    height: 300px;
     padding: 10px;
     font-size: 25px;
     border-collapse: collapse;
 }
 #popup_result div.popBody table.result tr {
-    height: 80px;
+    height: 60px;
 }
 #popup_result div.popBody table.result tr.label {
     height: 40px;
@@ -228,7 +231,6 @@ svg {
     font-weight: bold;
 }
 #popup_result div.popBody table.result td {
-
 }
 #popup_result div.popBody table.result td.star {
     color: black;
@@ -237,6 +239,23 @@ svg {
 div.panel_policy_result {
     font-size: 40px;
 }
+div.result.chart {
+    margin-top: 30px;
+    height: 200px;
+    max-width: 100%;
+}
+svg.result.legend {
+    width: 100px;
+    height: 85px;
+    position: absolute;
+    right: 91px;
+    top: 516px;
+    background-color: white;
+    opacity: 100%;
+    border-right: none;
+    border-top: none;
+}
+
 #popup_result .popBody input {
     margin: 15px auto;
     max-width: 100%;
@@ -273,8 +292,8 @@ div.panel_policy_result {
     stroke-width: 1px;
 }
 
-#sim_board circle[class="node_#000000"] {
-    opacity: 25%;
+#sim_board circle[fill="#000000"] {
+    display: none;
     stroke: none;
 }
 
@@ -375,7 +394,21 @@ div.daily.legend {
 div.daily.legend img {
     height: 300px;
 }
-
+div.virus.name {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 338px;
+    height: 35px;
+    text-align: center;
+}
+text.virus.name {
+    font-weight: bold;
+    color: white;
+    font-size: 30px;
+    font-family: "chiller";
+    letter-spacing: 2px;
+}
 output.daily.legend {
     position: absolute;
     font-size: 25px;
@@ -391,7 +424,7 @@ output.daily.legend.duration.I1-I2 {
  }
 output.daily.legend.duration.I1-R1 {
     top: 73px;
-    left: 221px;
+    right: 520px;
 }
 output.daily.legend.rate.infectious {
     top: 73px;
@@ -481,7 +514,7 @@ output.daily.legend.num.R2 {
 input.weekly.tab.switch {
     margin-right: -10px;
     font-size: 18px;
-    width: 150px;
+    width: 340px;
     height: 50px;
     background-color: white;
     color: #254488;
@@ -530,19 +563,165 @@ input.weekly.tab.switch.area {
     margin: 5px;
 }
 
-svg.area_policy.area_board {
-    margin: 10px;
-    width: 600px;
+div.weekly.tab.content.overall {
+    background-image: url("../img/wr_weekly_occurrence_status_panel.svg");
+    background-repeat: no-repeat;
     height: 600px;
+}
+div.weekly_status {
+    width: 1020px;
+    height: 240px;
+}
+div.weekly_status table {
+    position: absolute;
+    text-align: center;
+    top: 235px;
+    left: 210px;
+    border-spacing: 0 20px;
+}
+div.weekly_status table tr td {
+    width: 205px;
+}
+td.weekly.warning {
+    background-repeat: no-repeat;
+    background-position: center;
+}
+td.weekly.warning[data-value="0"] {
+    background-image: url("../img/wr_1_fine.svg");
+}
+td.weekly.warning[data-value="1"] {
+    background-image: url("../img/wr_2_warning.svg");
+}
+td.weekly.warning[data-value="2"] {
+    background-image: url("../img/wr_3_alert.svg");
+}
+
+div.weekly_status p {
+    font-size: 100%;
+    position: absolute;
+    top: 140px;
+    left: 220px;
+}
+div.weekly_board {
+    background-image: url("../img/wr_weekly_chart_cover.svg");
+    background-position-x: 25px;
+    background-position-y: 10px;
+    background-repeat: no-repeat;
+    background-size: 975px 200px;
+}
+div.weekly_board > svg > g > g.xAxis > g.tick {
+    opacity: 0;
+}
+output.weekly.infectious {
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 356px;
+    right: 630px;
+}
+output.weekly.death {
+    color: white;
+    font-weight: bold;
+    position: absolute;
+    top: 356px;
+    right: 220px;
 }
 
 div.weekly.tab.content.age {
+    background-image: url("../img/wr_social_distancing_policy.svg");
+    background-repeat: no-repeat;
     display: none;
-    height: auto;
+    height: 600px;
 }
+
+div.policy.level.confirm table {
+    position: absolute;
+    table-layout: fixed;
+    width: 640px;
+    border-spacing: 0 17px;
+    top: 245px;
+    left: 20px;
+}
+div.area_policy, svg.area_policy.area_board {
+    position: absolute;
+    display: inline-block;
+    width: 330px;
+    height: 250px;
+    left: 680px;
+    top: 210px;
+}
+select.area_policy.option {
+    font-size: 120%;
+    width: auto;
+    position: absolute;
+}
+select.area_policy.option.upper {
+    top: 20%;
+}
+select.area_policy.option.lower {
+    bottom: 20%;
+}
+select.area_policy.option.left {
+    left: 10%;
+}
+select.area_policy.option.right {
+    right: 10%;
+}
+svg.area_policy.area_board {
+    width: 330px;
+    height: 250px;
+    opacity: 0;
+}
+
 div.weekly.tab.content.area {
+    background-image: url("../img/wr_budget_panel.svg");
+    background-repeat: no-repeat;
     display: none;
-    height: auto;
+    height: 600px;
+}
+input.policy.rate {
+    position: absolute;
+    top: 140px;
+    left: 210px;
+    width: 330px;
+}
+input.policy.bed {
+    position: absolute;
+    top: 410px;
+    left: 177px;
+    width: 430px;
+}
+div.weekly.area.budget{
+    position: absolute;
+    top: 443px;
+    left: 688px;
+    width: 313px;
+    height: 45px;
+    text-align: center;
+    font-size: 180%;
+}
+svg.weekly.area.lines {
+    position: absolute;
+    width: 340px;
+    height: 260px;
+    right: 10px;
+    top: 10px;
+}
+line.weekly.border.invisible[data-click="0"] {
+    stroke: black;
+    opacity: 0;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"] {
+    stroke: black;
+    opacity: 50%;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+line.weekly.border.visible {
+    stroke: none;
+    stroke-width: 2px;
 }
 
 #button_wrapper {
@@ -564,40 +743,9 @@ div.weekly.tab.content.area {
     color: white;
     background-color: #524782;
 }
-div.area_policy {
-    position: absolute;
-    display: inline-block;
-    width: 600px;
-    height: 600px;
-}
-tr.policy.info td {
-    width: 80px;
-}
-div.area_policy.options {
-    margin: 10px;
-    left: 0;
-}
-select.area_policy.option {
-    font-size: 150%;
-    width: auto;
-    position: absolute;
-}
-select.area_policy.option.upper {
-    top: 22%;
-}
-select.area_policy.option.lower {
-    bottom: 22%;
-}
-select.area_policy.option.left {
-    left: 15%;
-}
-select.area_policy.option.right {
-    right: 15%;
-}
 
-.panel_policy input[type=range] {
-    width: 200px;
-}
+
+
 .panel_policy input[type=number] {
     width: 40px;
 }
@@ -646,12 +794,13 @@ div.weekly p {
 .weekly.legend {
     position: absolute;
     left: 920px;
-    top: 300px;
+    top: 460px;
 }
 .weekly.legend svg {
+    opacity: 80%;
     background-color: white;
     width: 100px;
-    height: 65px;
+    height: 42px;
     font-size: 15px;
 }
 
@@ -706,5 +855,9 @@ div.stat.left {
 }
 
 div.stat.desc {
+    display: none;
+}
+
+#nodes circle.node_#000000, #nodes circle.node_#254488 {
     display: none;
 }
