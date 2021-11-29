@@ -730,7 +730,7 @@ function chart_update(param, chart_param, chart_data) {
 
 function start_simulation() {
     chart_data = [];
-    $("div.result.chart").remove("svg");
+    $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     $("output.budget_now").val(200000);
