@@ -293,8 +293,7 @@ svg.result.legend {
 }
 
 #sim_board circle[fill="#000000"] {
-    display: none;
-    stroke: none;
+    opacity: 0.2;
 }
 
 .sidebar {
@@ -855,9 +854,5 @@ div.stat.left {
 }
 
 div.stat.desc {
-    display: none;
-}
-
-#nodes circle.node_#000000, #nodes circle.node_#254488 {
     display: none;
 }
