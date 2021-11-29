@@ -223,7 +223,7 @@ function initSim(param, initial_node_data, loc) {
     node_init(param, initial_node_data, loc);
     let init_data = {
         "tick": 0,
-        "GDP": initial_node_data.reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9,
+        "GDP": initial_node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 0.2 * 0.9,
         "budget": parseInt($("output.budget_now").val())
     };
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
@@ -251,7 +251,7 @@ function updateSim(param, node_data, time) {
     if (chart >= param.fps) {
         let temp_data = {
             "tick": Math.round(time / param.fps),
-            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / param.speed * 0.9,
+            "GDP": node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 0.2 * 0.9,
             "budget": parseInt($("output.budget_now").val())
         };
         Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
@@ -434,7 +434,7 @@ function node_init(param, node_data, loc) {
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .attr("r", param["size"])
-        .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state);
+        .attr("fill", d => d.state);
 
     sim_board.select("svg")
         .selectAll("rect")
@@ -537,6 +537,26 @@ function node_update(param, node_data) {
                 .attr("r", param["size"])
                 .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
                 .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
+                .attr("fill", d => d.state),
+            update => update
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
+                .attr("fill", d => d.state)
+        );
+    /*
+    d3.select(".nodes")
+        .selectAll("circle")
+        .data(node_data)
+        .join(
+            enter => enter.append("circle")
+                .attr("id", d => "node_" + d.index)
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("r", param["size"])
+                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
                 .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state),
             update => update
                 .attr("cx", d => d.x)
@@ -545,12 +565,7 @@ function node_update(param, node_data) {
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
                 .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state)
         );
-    /*if (param["flag"].includes("quarantine")) {
-        let hospital_rate = node_data.filter(e => e.state === state.H).length / (param["hospitalization_max"]);
-        if (hospital_rate < 1) d3.select("#hospital_fill_rect").attr("height", param["sim_height"] * 0.2 * (1 - hospital_rate));
-        else d3.select("#hospital_fill_rect").attr("height", 0);
-        d3.select("#hospital_text").text("" + node_data.filter(e => e.state === state.H).length + " / " + param["hospitalization_max"]);
-    }*/
+        */
 
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
         let temp = node_data.filter(e => e.state === state[stat]).length;
@@ -730,6 +745,7 @@ function chart_update(param, chart_param, chart_data) {
 
 function start_simulation() {
     chart_data = [];
+    $("div.result.chart").remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     $("output.budget_now").val(200000);
