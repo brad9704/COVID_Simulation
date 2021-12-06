@@ -909,7 +909,7 @@ function weekly_report() {
         $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient));
     } else if (prev_new_patient > this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "blue");
-        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient));
+        $("#weekly_change_infect").val("▼" + (this_new_patient - prev_new_patient));
     } else {
         d3.select("#weekly_change_infect").style("color", "black");
         $("#weekly_change_infect").val("▲0");
