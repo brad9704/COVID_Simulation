@@ -972,7 +972,7 @@ function weekly_report() {
     if (weekly_change_death > 0) {
         $("#weekly_change_death").val("▲" + weekly_change_death).css("color","red");
     } else if (weekly_change_death < 0) {
-        $("#weekly_change_death").val("▼" + weekly_change_death).css("color","blue");
+        $("#weekly_change_death").val("▼" + Math.abs(weekly_change_death)).css("color","blue");
     } else {
         $("#weekly_change_death").val("▲" + weekly_change_death).css("color","black");
     }
