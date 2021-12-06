@@ -909,7 +909,7 @@ function weekly_report() {
         $("#weekly_change_infect").val("▲" + (this_new_patient - prev_new_patient));
     } else if (prev_new_patient > this_new_patient) {
         d3.select("#weekly_change_infect").style("color", "blue");
-        $("#weekly_change_infect").val("▼" + (this_new_patient - prev_new_patient));
+        $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient));
     } else {
         d3.select("#weekly_change_infect").style("color", "black");
         $("#weekly_change_infect").val("▲0");
@@ -920,7 +920,7 @@ function weekly_report() {
     if (weekly_change_death > 0) {
         $("#weekly_change_death").val("▲" + weekly_change_death).css("color","red");
     } else if (weekly_change_death < 0) {
-        $("#weekly_change_death").val("▼" + weekly_change_death).css("color","blue");
+        $("#weekly_change_death").val("▼" + Math.abs(weekly_change_death)).css("color","blue");
     } else {
         $("#weekly_change_death").val("▲" + weekly_change_death).css("color","black");
     }
