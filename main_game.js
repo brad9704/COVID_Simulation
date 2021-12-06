@@ -733,10 +733,10 @@ function start_simulation() {
     $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
-    $("output.budget_now").val(200000);
+    $("output.budget_now").val(400000);
     let param = get_params();
     w.param = param;
-    w.postMessage({type: "START", main: param, budget: 200000});
+    w.postMessage({type: "START", main: param, budget: 400000});
 }
 function stop_simulation() {
     clearInterval(run);
