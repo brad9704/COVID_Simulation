@@ -273,7 +273,7 @@ function updateSim(param, node_data, time) {
 //    if (time % (param.turnUnit * param.fps) === 0) pause_simulation();
     if (node_data.filter(e => e.state === state.S || e.state === state.R1 || e.state === state.R2).length === node_data.length &&
         node_data.filter(e => e.state === state.R1 || e.state === state.R2).length > 0) {
-        while (chart_data.length < 730) {
+        while (chart_data.length < 365) {
             let temp_data = {
                 "tick": Math.round(time / param.fps),
                 "GDP": node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + w.param.age_speed[curr.age] * w.param.speed, 0) / 0.2 * 0.9,
@@ -295,7 +295,7 @@ function updateSim(param, node_data, time) {
         }
         show_result(param, node_data);
         stop_simulation();
-    }   else if (chart_data.length >= 730) {
+    }   else if (chart_data.length >= 365) {
         show_result(param, node_data);
         stop_simulation();
     }
