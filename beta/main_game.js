@@ -273,6 +273,29 @@ function updateSim(param, node_data, time) {
 //    if (time % (param.turnUnit * param.fps) === 0) pause_simulation();
     if (node_data.filter(e => e.state === state.S || e.state === state.R1 || e.state === state.R2).length === node_data.length &&
         node_data.filter(e => e.state === state.R1 || e.state === state.R2).length > 0) {
+        while (chart_data.length < 730) {
+            let temp_data = {
+                "tick": Math.round(time / param.fps),
+                "GDP": node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + w.param.age_speed[curr.age] * w.param.speed, 0) / 0.2 * 0.9,
+                "budget": parseInt($("output.budget_now").val())
+            };
+            Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
+                temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "10").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "20").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "30").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "40").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "50").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "60").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "70").length,
+                    node_data.filter(e => e.state === state[stat] && e.age === "80").length,
+                    node_data.filter(e => e.state === state[stat]).length];
+            })
+            chart_data.push(temp_data);
+        }
+        show_result(param, node_data);
+        stop_simulation();
+    }   else if (chart_data.length >= 730) {
         show_result(param, node_data);
         stop_simulation();
     }
@@ -748,10 +771,10 @@ function start_simulation() {
     $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
-    $("output.budget_now").val(200000);
+    $("output.budget_now").val(400000);
     let param = get_params();
     w.param = param;
-    w.postMessage({type: "START", main: param, budget: 200000});
+    w.postMessage({type: "START", main: param, budget: 400000});
 }
 function stop_simulation() {
     clearInterval(run);
@@ -858,18 +881,28 @@ function save_log() {
 
 
 function change_speed(direction) {
+    let speed_addr = $("#speed_out");
     clicker += 1;
     if (clicker > 30) {
         $("#day_text").text("🥕: ");
     }
     if (direction > 0) {
-        if (running_speed === 8) return;
+        if (running_speed === 8) {
+            toggle_auto("1");
+            speed_addr.val("AUTO");
+            return;
+        }
         running_speed *= 2;
     } else {
         if (running_speed === 1) return;
+        else if (running_speed === 8 && auto) {
+            toggle_auto("0");
+            speed_addr.val(running_speed.toString() + "x");
+            return;
+        }
         running_speed /= 2;
     }
-    $("#speed_out").val(running_speed.toString() + "x");
+    speed_addr.val(running_speed.toString() + "x");
 }
 
 function change_stat(stat_index, direction) {
@@ -900,6 +933,10 @@ function toggle_area() {
 function weekly_report() {
     $("td.weekly.warning").attr("data-value", "0");
     let chart_data_total = [];
+    if (auto) {
+        resume_simulation();
+        return;
+    }
     chart_data.forEach(data => {
         let temp_data = {};
         for (const prob in data) {
@@ -986,12 +1023,12 @@ function weekly_report() {
     let weekly_pointer = $("#popup_weekly");
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
     weekly_pointer.fadeIn();
-    weekly_inner_pointer.on("mouseleave", function() {
-        weekly_pointer.fadeTo(200,0.2);
+    weekly_inner_pointer.on("mouseleave", function () {
+        weekly_pointer.fadeTo(200, 0.2);
     });
-    weekly_inner_pointer.on("mouseenter", function() {
+    weekly_inner_pointer.on("mouseenter", function () {
         weekly_pointer.fadeTo(200, 1);
-    })
+    });
 
     let board = d3.select(".weekly_board");
     board.selectAll("svg").remove();
@@ -1064,7 +1101,6 @@ function weekly_report() {
 var auto = false;
 
 function toggle_auto(val) {
-    console.log(val);
     auto = (val === "1");
 }
 
