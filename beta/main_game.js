@@ -811,8 +811,9 @@ function resume_simulation() {
             "left": $("line.weekly.border.invisible.left").attr("data-click"),
             "right": $("line.weekly.border.invisible.right").attr("data-click")
         };
-
-    budget.val(parseInt(budget.val()) - 2000 * (hospital_max - 10));
+    let new_budget = parseInt(budget.val()) - 2000 * (hospital_max - 10);
+    if (new_budget < 0) return;
+    budget.val(new_budget);
     w.postMessage({type: "RESUME", data: {
             age: {"0": age_0,
                 "10": age_0,

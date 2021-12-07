@@ -123,7 +123,7 @@ function ticked() {
     this.nodes().forEach(node1 => {
         this.nodes().forEach(node2 => {
             let a = (node1.x - node2.x), b = node1.y - node2.y;
-            if (Math.sqrt(a*a+b*b) < param.size*2)
+            if (a*a+b*b < param.size*param.size*4)
                 collision(node1, node2);
         })
     }, this);
