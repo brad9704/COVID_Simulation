@@ -112,8 +112,8 @@ div.control_panel {
 div.panel_output {
     position: absolute;
     font-size: 25px;
-    width: 300px;
-    top: 90px;
+    width: 315px;
+    top: 100px;
     text-align: center;
     font-weight: bold;
 }
@@ -319,8 +319,9 @@ svg.result.legend {
     height: 50px;
     border: 1px solid black;
     border-radius: 5px;
-    font-size: 25px;
+    font-size: 17px;
     text-align: center;
+    line-height: 50px;
 }
 .sidebar .speed {
     padding: 5px;
@@ -421,28 +422,28 @@ output.daily.legend {
 }
 output.daily.legend.duration.E2-I1 {
     top: 79px;
-    left: 60px;
+    right: 687px;
 }
 output.daily.legend.duration.I1-I2 {
-     top: 73px;
-     left: 395px;
+     top: 79px;
+     right: 355px;
  }
 output.daily.legend.duration.I1-R1 {
-    top: 73px;
-    right: 520px;
+    top: 79px;
+    right: 504px;
 }
 output.daily.legend.rate.infectious {
-    top: 73px;
-    right: 205px;
+    top: 79px;
+    right: 207px;
 }
 output.daily.legend.rate.severity {
-    top: 73px;
+    top: 79px;
     right: 55px;
 }
 
 output.daily.legend.num {
     color: black;
-    top: 153px;
+    top: 158px;
 }
 output.daily.legend.num.S {
     right: 710px;
@@ -457,18 +458,18 @@ output.daily.legend.num.I1 {
     right: 371px;
 }
 output.daily.legend.num.I2 {
-    top: 188px;
+    top: 193px;
     right: 260px;
 }
 output.daily.legend.num.H2 {
-    top: 188px;
+    top: 193px;
     right: 142px;
 }
 output.daily.legend.num.R1 {
     right: 22px;
 }
 output.daily.legend.num.R2 {
-    top: 231px;
+    top: 237px;
     right: 22px;
 }
 
@@ -573,6 +574,21 @@ div.weekly.tab.content.overall {
     background-repeat: no-repeat;
     height: 600px;
 }
+output.weekly_week {
+    position: absolute;
+    right: 889px;
+    top: 155px;
+}
+output.weekly_date_from {
+    position: absolute;
+    right: 828px;
+    top: 155px;
+}
+output.weekly_date_to {
+    position: absolute;
+    right: 770px;
+    top: 155px;
+}
 div.weekly_status {
     width: 1020px;
     height: 240px;
@@ -580,9 +596,9 @@ div.weekly_status {
 div.weekly_status table {
     position: absolute;
     text-align: center;
-    top: 235px;
-    left: 210px;
-    border-spacing: 0 20px;
+    top: 240px;
+    left: 213px;
+    border-spacing: 0 21px;
 }
 div.weekly_status table tr td {
     width: 205px;
@@ -621,14 +637,14 @@ output.weekly.infectious {
     color: white;
     font-weight: bold;
     position: absolute;
-    top: 356px;
+    top: 360px;
     right: 630px;
 }
 output.weekly.death {
     color: white;
     font-weight: bold;
     position: absolute;
-    top: 356px;
+    top: 360px;
     right: 220px;
 }
 

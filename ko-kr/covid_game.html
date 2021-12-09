@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="sidebar">
-    <div class="Day"><output class="weekly_week">1</output> 주의 <output id="turn_day">0</output><text id="day_text"> 일차</text></div>
+    <div class="Day"><output class="weekly_week">0</output>주의 <output id="turn_day">0</output><text id="day_text">일차</text></div>
     <div class="speed">
         <div id="speed_output_wrapper">
             <output id="speed_out">1x</output>
@@ -80,7 +80,7 @@
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">
-                    <p>(Week <output class="weekly_week">1</output>: Day <output id="weekly_date_from">1</output> ~ <output id="weekly_date_to">7</output>)</p>
+                    <output class="weekly_week">1</output><output class="weekly_date_from">1</output><output class="weekly_date_to">7</output>
                     <table>
                         <tr>
                             <td><output id="weekly_new_infect">0</output></td>
@@ -304,6 +304,8 @@
             </div>
             <div class="control" id="advanced_setting" style="display:none;"></div>
             <div class="stat wrapper">
+                <div class="virus selection">
+                </div>
                 <div class="stat left">
                     <table class="stat def">
                         <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
@@ -368,7 +370,7 @@
                 <output class="daily legend duration E2-I1">0-0</output>
                 <output class="daily legend duration I1-I2">0-0</output>
                 <output class="daily legend duration I1-R1">0</output>
-                <output class="daily legend rate infectious">0%</output>
+                <output class="daily legend rate infectious">0</output>
                 <output class="daily legend rate severity">0%</output>
                 <output class="daily legend num S">1000</output>
                 <output class="daily legend num E1">0</output>

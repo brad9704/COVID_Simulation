@@ -920,7 +920,7 @@ function change_stat(stat_index, direction) {
     $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
     $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
     $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]);
-    $("output.daily.legend.rate.infectious").text(Math.round((0.14 * (1 + stat.stat3 * 0.04)) * 100) + "%");
+    $("output.daily.legend.rate.infectious").text(Math.round((0.14 * (1 + stat.stat3 * 0.04)) * 100) / 100);
     $("output.daily.legend.rate.severity").text(Math.round((0.22 + stat.stat4 * 0.02) * 100) + "%");
 }
 
@@ -979,9 +979,9 @@ function weekly_report() {
     }
 
 
-    $("#weekly_date_from").val(data_from.tick + 1);
-    $("#weekly_date_to").val(data_to.tick + 1);
-    $("output.weekly_week").text(Math.round((data_to.tick + 1) / w.param.turnUnit));
+    $("output.weekly_date_from").val(data_from.tick + 1);
+    $("output.weekly_date_to").val(data_to.tick + 1);
+    $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
     // noinspection JSJQueryEfficiency
