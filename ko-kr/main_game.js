@@ -873,8 +873,8 @@ function weekly_report() {
     $("output.weekly_date_to").val(data_to.tick + 1);
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) $("output.budget_now").val(parseInt($("output.budget_now").val()) + 40000);
+    toggle_week();
     if (auto) {
-        toggle_week();
         if ($("#button_resume").is(":enabled")) {
             resume_simulation();
             return;
