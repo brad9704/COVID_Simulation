@@ -644,7 +644,7 @@ div.policy.level.confirm table {
     table-layout: fixed;
     width: 640px;
     border-spacing: 0 17px;
-    top: 245px;
+    top: 247px;
     left: 20px;
 }
 div.area_policy, svg.area_policy.area_board {
@@ -686,19 +686,19 @@ div.weekly.tab.content.area {
 }
 input.policy.rate {
     position: absolute;
-    top: 140px;
+    top: 165px;
     left: 210px;
     width: 330px;
 }
 input.policy.bed {
     position: absolute;
-    top: 410px;
-    left: 177px;
-    width: 430px;
+    top: 415px;
+    left: 175px;
+    width: 434px;
 }
 div.weekly.area.budget{
     position: absolute;
-    top: 443px;
+    top: 455px;
     left: 688px;
     width: 313px;
     height: 45px;
@@ -762,7 +762,7 @@ line.weekly.border.visible {
 
 .panel_policy table td {
     width: 60px;
-    font-size: 16px;
+    font-size: 20px;
     text-align: center;
 }
 
