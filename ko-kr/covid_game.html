@@ -396,8 +396,8 @@
     request.onload = function () {
         let response = JSON.parse(request.response);
         let stat = response.data.find(virus => virus.name === "COVID-19");
+        $("#popup_init").fadeIn();
     }
-    $("#popup_init").fadeIn();
 </script>
 </body>
 </html>
