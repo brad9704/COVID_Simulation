@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="sidebar">
-    <div class="Day"><output id="turn_day">0</output><text id="day_text"> 일차</text></div>
+    <div class="Day"><output class="weekly_week">1</output> 주의 <output id="turn_day">0</output><text id="day_text"> 일차</text></div>
     <div class="speed">
         <div id="speed_output_wrapper">
             <output id="speed_out">1x</output>
@@ -80,7 +80,7 @@
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">
-                    <p>(Week <output id="weekly_week">1</output>: Day <output id="weekly_date_from">1</output> ~ <output id="weekly_date_to">7</output>)</p>
+                    <p>(Week <output class="weekly_week">1</output>: Day <output id="weekly_date_from">1</output> ~ <output id="weekly_date_to">7</output>)</p>
                     <table>
                         <tr>
                             <td><output id="weekly_new_infect">0</output></td>
@@ -335,18 +335,18 @@
                 </div>
                 <div class="stat description">
                     <div class="stat desc stat1">
-                        <b>Latent period</b><br>
-                        It increases latent period +1 day for each 2 points.<br>
-                        Maximum latent period added is +12 (1~2 days -> 13~14 days) with 24 points cost. <br>
+                        <b>잠복기</b><br>
+                        감염 증상이 더 오랜 시간 후에 나타나게 하여 방역책임자들을 혼란스럽게 합니다.<br>
+                        매 <b>2 포인트</b>마다 잠복기 (E2)가 하루씩 길어집니다.<br>
                     </div>
                     <div class="stat desc stat2">
-                        <b>Infectious period</b><br>
-                        It increases infectious period +1 day for each 3 points.<br>
-                        Maximum infectious period added is +8 (1~2 -> 9~10 days) with 24 points cost. <br>
+                        <b>감염 기간</b><br>
+                        가벼운 증상이 길어지게 하여 감염자가 더 오래 바이러스를 퍼트리고 다니게 합니다.<br>
+                        매 <b>3 포인트</b>마다 감염기간 (I1, I2)가 각 하루씩 길어집니다.<br>
                     </div>
                     <div class="stat desc stat3">
-                        <b>Infection chance</b><br>
-                        It increases the chance of infection by contact +4% for each 1 point.<br>
+                        <b>감염 확률</b><br>
+                        바이러스가 다른 숙주에게 더 잘 퍼지도록 하여 <br>
                         Maximum chance of infection is twice of normal with 25 points cost. <br>
                     </div>
                     <div class="stat desc stat4">

@@ -981,7 +981,7 @@ function weekly_report() {
 
     $("#weekly_date_from").val(data_from.tick + 1);
     $("#weekly_date_to").val(data_to.tick + 1);
-    $("#weekly_week").text(Math.round((data_to.tick + 1) / w.param.turnUnit));
+    $("output.weekly_week").text(Math.round((data_to.tick + 1) / w.param.turnUnit));
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
     // noinspection JSJQueryEfficiency
