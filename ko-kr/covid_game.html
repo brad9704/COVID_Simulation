@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2112009.01-->
+<!--ver.2112009.02-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -307,25 +307,25 @@
                 <div class="stat left">
                     <table class="stat def">
                         <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
-                            <td class="stat label stat1">Latent period</td>
+                            <td class="stat label stat1">잠복기</td>
                             <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
                             <td class="stat value stat1"><output class="stat value stat1">0</output></td>
                             <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
                         </tr>
                         <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
-                            <td class="stat label stat2">Infectious period</td>
+                            <td class="stat label stat2">감염 기간</td>
                             <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
                             <td class="stat value stat2"><output class="stat value stat2">0</output></td>
                             <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
                         </tr>
                         <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
-                            <td class="stat label stat3">Infection chance</td>
+                            <td class="stat label stat3">전염성</td>
                             <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
                             <td class="stat value stat3"><output class="stat value stat3">0</output></td>
                             <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
                         </tr>
                         <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
-                            <td class="stat label stat4">Severity</td>
+                            <td class="stat label stat4">중증이환률</td>
                             <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
                             <td class="stat value stat4"><output class="stat value stat4">0</output></td>
                             <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
@@ -345,14 +345,16 @@
                         매 <b>3 포인트</b>마다 감염기간 (I1, I2)가 각 하루씩 길어집니다.<br>
                     </div>
                     <div class="stat desc stat3">
-                        <b>감염 확률</b><br>
-                        바이러스가 다른 숙주에게 더 잘 퍼지도록 하여 <br>
-                        Maximum chance of infection is twice of normal with 25 points cost. <br>
+                        <b>전염성</b><br>
+                        바이러스가 다른 숙주에게 더 잘 퍼지도록 합니다.<br>
+                        접촉 시 전염성을 매 <b>1 포인트</b>마다 1%씩 증가시킵니다.<br>
+                        전염성은 감염자와 접촉 시 매 프레임마다 감염 여부를 결정합니다.<br>
                     </div>
                     <div class="stat desc stat4">
-                        <b>Severity</b><br>
-                        It increases the chance to advance from light patient to severe patient +2%p for each 1 point.<br>
-                        Maximum severe probability added is +50%p with 25 points cost. <br>
+                        <b>중증이환률</b><br>
+                        감염병을 더 치명적으로 만들어 중증 환자의 비율을 증가시킵니다.<br>
+                        매 <b>1 포인트</b>마다 감염자가 중증으로 악화될 확률이 2% 증가하고,<br>
+                        매 <b>2 포인트</b>마다 중증 환자의 회복에 필요한 기간(H)이 하루씩 증가합니다.<br>
                     </div>
                 </div>
             </div>

@@ -834,6 +834,9 @@ td.stat.label {
     padding-right: 10px;
     border-right: 1px solid black;
 }
+td.stat.value {
+    text-align: center;
+}
 
 text.stat.total {
     padding-left: 10px;
