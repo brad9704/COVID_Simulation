@@ -59,20 +59,20 @@
 <div id="popup_weekly" class="popup">
     <div class="popBg"></div>
     <div class="popInnerBox">
-        <div class="popHead">Weekly Report<output></output></div>
+        <div class="popHead">주간 보고<output></output></div>
         <div class="popBody">
             <div class="weekly switch tabs">
-                <input class="weekly tab switch overall" type="button" value="Weekly Occurrence" active="true" onclick="
+                <input class="weekly tab switch overall" type="button" value="주간 발생 동향" active="true" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('input.weekly.tab.switch.overall').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.overall').css('display','block');">
-                <input class="weekly tab switch age" type="button" value="Social Distancing" onclick="
+                <input class="weekly tab switch age" type="button" value="사회적 거리두기" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('input.weekly.tab.switch.age').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.age').css('display','block');">
-                <input class="weekly tab switch area" type="button" value="Budget Panel" onclick="
+                <input class="weekly tab switch area" type="button" value="예산 분배" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('input.weekly.tab.switch.area').attr('active','true');
                 $('div.weekly.tab').css('display','none');
@@ -107,7 +107,7 @@
                             <text x="25" y="36">Dead</text>
                         </svg>
                     </div>
-                    <p style="font-weight: bold;">Weekly Chart<br></p>
+                    <p style="font-weight: bold;">주간 확진 및 사망 추이<br></p>
                     <div class="weekly_board">
                     </div>
                 </div>
@@ -156,28 +156,28 @@
                             </svg>
                             <div class="area_policy options">
                                 <select class="area_policy option upper left" data-area="upper left" onchange="toggle_area()">
-                                    <option value="0" selected>Level 0</option>
-                                    <option value="1">Level 1</option>
-                                    <option value="2">Level 2</option>
-                                    <option value="3">Level 3</option>
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
                                 </select>
                                 <select class="area_policy option upper right" data-area="upper right" onchange="toggle_area()">
-                                    <option value="0" selected>Level 0</option>
-                                    <option value="1">Level 1</option>
-                                    <option value="2">Level 2</option>
-                                    <option value="3">Level 3</option>
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
                                 </select>
                                 <select class="area_policy option lower left" data-area="lower left" onchange="toggle_area()">
-                                    <option value="0" selected>Level 0</option>
-                                    <option value="1">Level 1</option>
-                                    <option value="2">Level 2</option>
-                                    <option value="3">Level 3</option>
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
                                 </select>
                                 <select class="area_policy option lower right" data-area="lower right" onchange="toggle_area()">
-                                    <option value="0" selected>Level 0</option>
-                                    <option value="1">Level 1</option>
-                                    <option value="2">Level 2</option>
-                                    <option value="3">Level 3</option>
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
                                 </select>
                             </div>
                         </div>

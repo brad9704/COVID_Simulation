@@ -703,22 +703,6 @@ function resume_simulation() {
             "right": $("line.weekly.border.invisible.right").attr("data-click")
         };
     let new_budget = parseInt(budget.val()) - 2000 * (hospital_max - 10);
-    w.postMessage({type: "RESUME", data: {
-            age: {"0": age_0,
-                "10": age_0,
-                "20": age_20,
-                "30": age_20,
-                "40": age_20,
-                "50": age_20,
-                "60": age_60,
-                "70": age_60,
-                "80": age_60},
-            area: area,
-            rate: line_rate,
-            hospital_max: hospital_max,
-            surface: surface,
-            budget: parseInt(budget.val())
-        }});
     d3.selectAll("line.sim_board.svg_line")
         .data([{name: "upper", x1: w.param.sim_width / 2, y1: w.param.sim_height * (1 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (1 + line_rate) / 4},
             {name: "lower", x1: w.param.sim_width / 2, y1: w.param.sim_height * (3 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (3 + line_rate) / 4},
@@ -737,11 +721,28 @@ function resume_simulation() {
                 return "100%";
             } else return "0";
     });
-
-
-    if (new_budget < 0) return;
+    if (new_budget < 0) {
+        $("input.weekly.tab.switch.area").click();
+        alert("예산 초과됨! 예산 초과됨! 예산 초과됨!");
+        return;
+    }
     budget.val(new_budget);
-
+    w.postMessage({type: "RESUME", data: {
+            age: {"0": age_0,
+                "10": age_0,
+                "20": age_20,
+                "30": age_20,
+                "40": age_20,
+                "50": age_20,
+                "60": age_60,
+                "70": age_60,
+                "80": age_60},
+            area: area,
+            rate: line_rate,
+            hospital_max: hospital_max,
+            surface: surface,
+            budget: parseInt(budget.val())
+        }});
     w.param.hospital_max = hospital_max;
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     $("#popup_weekly").fadeOut();
