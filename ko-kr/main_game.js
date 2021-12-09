@@ -662,10 +662,10 @@ function start_simulation() {
     $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
-    $("output.budget_now").val(400000);
+    $("output.budget_now").val(0);
     let param = get_params();
     w.param = param;
-    w.postMessage({type: "START", main: param, budget: 400000});
+    w.postMessage({type: "START", main: param, budget: 0});
 }
 function stop_simulation() {
     clearInterval(run);
@@ -703,8 +703,6 @@ function resume_simulation() {
             "right": $("line.weekly.border.invisible.right").attr("data-click")
         };
     let new_budget = parseInt(budget.val()) - 2000 * (hospital_max - 10);
-    if (new_budget < 0) return;
-    budget.val(new_budget);
     w.postMessage({type: "RESUME", data: {
             age: {"0": age_0,
                 "10": age_0,
@@ -721,8 +719,6 @@ function resume_simulation() {
             surface: surface,
             budget: parseInt(budget.val())
         }});
-    w.param.hospital_max = hospital_max;
-    $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     d3.selectAll("line.sim_board.svg_line")
         .data([{name: "upper", x1: w.param.sim_width / 2, y1: w.param.sim_height * (1 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (1 + line_rate) / 4},
             {name: "lower", x1: w.param.sim_width / 2, y1: w.param.sim_height * (3 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (3 + line_rate) / 4},
@@ -737,10 +733,17 @@ function resume_simulation() {
         )
         .style("opacity", function(d) {
             if (surface[d.name] === "1") {
-                budget.val(parseInt(budget.val()) - 10000 * line_rate);
+                new_budget -= 10000 * line_rate;
                 return "100%";
             } else return "0";
     });
+
+
+    if (new_budget < 0) return;
+    budget.val(new_budget);
+
+    w.param.hospital_max = hospital_max;
+    $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     $("#popup_weekly").fadeOut();
     run = setInterval(() => {
         if (receive) {
@@ -812,7 +815,7 @@ function change_stat(stat_index, direction) {
     $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
     $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]);
     $("output.daily.legend.rate.infectious").text((Math.round((0.01 + stat.stat3 * 0.003) * 100 * 24) / 100).toFixed(2));
-    $("output.daily.legend.rate.severity").text(Math.round((0.22 + stat.stat4 * 0.02) * 100) + "%");
+    $("output.daily.legend.rate.severity").text(Math.round((0.10 + stat.stat4 * 0.02) * 100) + "%");
 }
 
 function toggle_area() {
@@ -870,7 +873,7 @@ function weekly_report() {
     $("output.weekly_date_from").val(data_from.tick + 1);
     $("output.weekly_date_to").val(data_to.tick + 1);
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
-
+    if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) $("output.budget_now").val(parseInt($("output.budget_now").val()) + 40000);
     if (auto) {
         resume_simulation();
         return;
