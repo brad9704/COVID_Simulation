@@ -15,6 +15,11 @@ var area = {
 }
 var clicker = 0;
 const init_param = {
+    node_num: 1000,
+    initial_patient: 1,
+    speed: 0.2,
+    TPC_base: 0.02,
+    hospital_max: 0.01,
     size: 5,
     timeunit: 1000,
     turnUnit: 7,
@@ -80,49 +85,12 @@ var running_speed = 1;
 var tick = 1000 / 60;
 var w;
 var receive = false, receive_time = 0;
-var advanced = false;
 w = new Worker("worker_game.js");
-
-function advanced_setting() {
-    advanced = true;
-    $("#advanced_button").attr("disabled","true");
-    d3.select("#advanced_setting").selectAll("label")
-        .data(d3.keys(init_param))
-        .enter()
-        .append("label")
-        .attr("id", d => d + "_label")
-        .text(d => d + ": ")
-        .append("input")
-        .attr("id", d => d)
-        .attr("type", function(d) {
-            if (typeof init_param[d] === "number") {
-                return "number";
-            } else {
-                return "string";
-            }
-        })
-        .attr("value", d => {
-            if (typeof init_param[d] === "number") {
-                return init_param[d];
-            } else {
-                if (d === "duration") {
-                    return _.values(_.mapObject(init_param[d], function(val, key) {
-                        return val.join(",");
-                    })).join("; ");
-                } else return _.values(init_param[d]).join("; ");
-            }
-        });
-}
-
 /*
 Sets param values with retrieved data from input
  */
 function get_params() {
     let param = {};
-
-    $.each($("#init_setting input[type='range']"), (i,e) => {
-        param[e.id] = e.value;
-    })
     param["node_num"] = parseInt(param["node_num"]);
     param["initial_patient"] = parseInt(param["initial_patient"]);
     param["speed"] = parseFloat(param["speed"]);
@@ -140,30 +108,16 @@ function get_params() {
             }
         }
     }
-
-    if (advanced) {
-        $.each($("#advanced_setting input[type='number']"), (i, e) => {
-            if (e.id !== "size" && e.id !== "mask_factor" && e.id !== "lockdown_factor" && e.id !== "curfew_factor" && e.id !== "online_factor") {
-                param[e.id] = parseInt(e.value);
-            } else param[e.id] = parseFloat(e.value);
-        })
-        $.each($("#advanced_setting input[type='string']"), (i, e) => {
-            if (e.id !== "duration") {
-                param[e.id] = _.object(d3.keys(init_param[e.id]), _.map(e.value.split(";"), e => parseFloat(e)));
-            } else {
-                param[e.id] = _.object(d3.keys(init_param[e.id]), _.map(e.value.split(";"), e => _.map(e.split(","), f => parseInt(f))));
-            }
-        })
-    }
     tick = param["timeunit"] / param["fps"];
 
     param["duration"]["E2-I1"][0] += Math.floor(stat.stat1 / 2);
     param["duration"]["E2-I1"][1] += Math.floor(stat.stat1 / 2);
     param["duration"]["I1-I2"][0] += Math.floor(stat.stat2 / 3);
     param["duration"]["I1-I2"][1] += Math.floor(stat.stat2 / 3);
+    param["duration"]["H2-R1"][1] += Math.floor(stat.stat4 / 2);
     param["duration"]["I1-R1"][0] += Math.floor(stat.stat2 / 3);
     param["duration"]["I1-R1"][1] += Math.floor(stat.stat2 / 3);
-    param["TPC_base"] *= (1 + stat.stat3 * 0.04);
+    param["TPC_base"] += stat.stat3 * 0.02;
     for (const age in param["age_severe"]) {
         param["age_severe"][age] += stat.stat4 * 0.02;
     }
@@ -388,7 +342,7 @@ function show_result(param) {
     let chart_data_ = chart_data_total.reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
         prev[1].data.push([curr.tick, curr.R2]);
-        prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]),
+        prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
         prev[3].data.push([curr.tick, curr.budget]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}, {type: "budget", data: [], color: "purple"}]);
@@ -726,7 +680,7 @@ function chart_update(param, chart_param, chart_data) {
         .merge(v)
         .style("fill", function(d) { if (d.key === "E1" || d.key === "E2") {return state.S;} else return state[d.key];})
         .attr("d", d3.area()
-            .x(function(d,i) {return x(d.data.tick);})
+            .x(function(d) {return x(d.data.tick);})
             .y0(function(d) {return y(d[0]);})
             .y1(function(d) {return y(d[1]);})
             .curve(d3.curveBasis));
@@ -986,16 +940,15 @@ function weekly_report() {
     $("#weekly_hospitalized").val(data_to.H2[9]);
     // noinspection JSJQueryEfficiency
     $("#weekly_death").val(data_to.R2[9] - data_from.R2[9]);
-    let GDP_drop = Math.round((data_to.GDP - data_from.GDP));
     $("#weekly_GDP_total").val(Math.round(chart_data.reduce((prev, curr) => prev + curr.GDP - chart_data[0].GDP, 0)));
 
-    $("output.weekly.infectious").each(function(e) {
+    $("output.weekly.infectious").each(function() {
         this.value = w.param.node_num - (data_to.S[parseInt(this.getAttribute("age")) / 10] + data_to.E1[parseInt(this.getAttribute("age")) / 10] + data_to.E2[parseInt(this.getAttribute("age")) / 10]);
     });
-    $("output.weekly.ICU").each(function(e) {
+    $("output.weekly.ICU").each(function() {
         this.value = (data_to.H2[parseInt(this.getAttribute("age")) / 10]);
     });
-    $("output.weekly.death").each(function(e) {
+    $("output.weekly.death").each(function() {
         this.value = (data_to.R2[parseInt(this.getAttribute("age")) / 10]);
     })
     let GDP_now = parseFloat($(".GDP_now_ratio").val());
@@ -1008,10 +961,6 @@ function weekly_report() {
         $("td.weekly.warning.ICUs").attr("data-value","2");
     }
     // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
-    let chart_data_ = chart_data_total.reduce((prev, curr) => {
-        prev[0].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
-        return prev;
-    }, [{type: "GDP", data: [], color: "blue"}]);
 
     let daily_IR = chart_data_total.reduce((prev, curr, index) => {
         if (index === 0) return [];
@@ -1023,9 +972,9 @@ function weekly_report() {
 
     let weekly_pointer = $("#popup_weekly");
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
-    weekly_pointer.fadeIn();
+    weekly_pointer.fadeIn(0.1);
     weekly_inner_pointer.on("mouseleave", function () {
-        weekly_pointer.fadeTo(200, 0.2);
+        weekly_pointer.fadeTo(200, 0.1);
     });
     weekly_inner_pointer.on("mouseenter", function () {
         weekly_pointer.fadeTo(200, 1);
