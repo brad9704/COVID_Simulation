@@ -1,10 +1,10 @@
 var run, chart_data, running_time, chart_param;
 
 var stat = {
-    total: 6,
-    stat1: 4,
-    stat2: 9,
-    stat3: 6,
+    total: 25,
+    stat1: 0,
+    stat2: 0,
+    stat3: 0,
     stat4: 0
 };
 var area = {

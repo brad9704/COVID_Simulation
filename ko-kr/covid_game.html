@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="sidebar">
-    <div class="Day"><output id="turn_day"></output><text id="day_text">일차</text></div>
+    <div class="Day"><output id="turn_day">0</output><text id="day_text"> 일차</text></div>
     <div class="speed">
         <div id="speed_output_wrapper">
             <output id="speed_out">1x</output>
@@ -25,7 +25,7 @@
 <div class="board" id="board">
     <div id="sim_board"></div>
     <div class="daily legend">
-        <img src="img/info_panel_md3.svg">
+        <img src="img/info_panel.svg">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
         <output class="daily legend duration E2-I1">0-0</output>
         <output class="daily legend duration I1-I2">0-0</output>
@@ -309,19 +309,19 @@
                         <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
                             <td class="stat label stat1">Latent period</td>
                             <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
-                            <td class="stat value stat1"><output class="stat value stat1">4</output></td>
+                            <td class="stat value stat1"><output class="stat value stat1">0</output></td>
                             <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
                         </tr>
                         <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
                             <td class="stat label stat2">Infectious period</td>
                             <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
-                            <td class="stat value stat2"><output class="stat value stat2">9</output></td>
+                            <td class="stat value stat2"><output class="stat value stat2">0</output></td>
                             <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
                         </tr>
                         <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
                             <td class="stat label stat3">Infection chance</td>
                             <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
-                            <td class="stat value stat3"><output class="stat value stat3">6</output></td>
+                            <td class="stat value stat3"><output class="stat value stat3">0</output></td>
                             <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
                         </tr>
                         <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
@@ -331,7 +331,7 @@
                             <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
                         </tr>
                     </table>
-                    <text class="stat label total">Remaining stat: <output class="stat value total">6</output></text>
+                    <text class="stat label total">Remaining stat: <output class="stat value total">25</output></text>
                 </div>
                 <div class="stat description">
                     <div class="stat desc stat1">
@@ -361,7 +361,7 @@
                 <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
             </div>
             <div class="daily legend">
-                <img src="img/info_panel_md3_initial.svg">
+                <img src="img/info_panel_init.svg">
                 <div class="virus name"><text class="virus name">COVID-19</text></div>
                 <output class="daily legend duration E2-I1">0-0</output>
                 <output class="daily legend duration I1-I2">0-0</output>
@@ -390,12 +390,19 @@
 <script src="main_game.js"></script>
 <script type="text/javascript">
     var request = new XMLHttpRequest();
+    var name = "SLK-21";
     request.open("GET", "virus_info.json");
     request.responseType = "text";
     request.send();
     request.onload = function () {
         let response = JSON.parse(request.response);
-        let stat = response.data.find(virus => virus.name === "COVID-19");
+        let stat = response.data.find(virus => virus.name === name)["stat"];
+        ["stat1","stat2","stat3","stat4"].forEach(e => {
+            for (let i=0;i<stat[e];i++) {
+                change_stat(e,1);
+            }
+        })
+        $("text.virus.name").text(name);
         $("#popup_init").fadeIn();
     }
 </script>
