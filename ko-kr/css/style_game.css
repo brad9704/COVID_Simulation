@@ -574,7 +574,7 @@ div.weekly.tab.content.overall {
     background-repeat: no-repeat;
     height: 600px;
 }
-output.weekly_week {
+div.weekly_status output.weekly_week {
     position: absolute;
     right: 889px;
     top: 155px;

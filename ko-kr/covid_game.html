@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="sidebar">
-    <div class="Day"><output class="weekly_week">0</output>주의 <output id="turn_day">0</output><text id="day_text">일차</text></div>
+    <div class="Day"><output class="weekly_week">0</output>주 / <output id="turn_day">0</output><text id="day_text">일</text></div>
     <div class="speed">
         <div id="speed_output_wrapper">
             <output id="speed_out">1x</output>
@@ -331,7 +331,7 @@
                     <div class="stat desc stat3">
                         <b>전염성</b><br>
                         바이러스가 다른 숙주에게 더 잘 퍼지도록 합니다.<br>
-                        접촉 시 전염성을 매 <b>1 포인트</b>마다 2%씩 증가시킵니다.<br>
+                        접촉 시 전염성이 매 <b>1 포인트</b>마다 증가합니다.<br>
                         전염성은 감염자와 접촉 시 매 프레임마다 감염 여부를 결정합니다.<br>
                     </div>
                     <div class="stat desc stat4">
@@ -375,21 +375,31 @@
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
 <script type="text/javascript">
-    var request = new XMLHttpRequest();
-    var name = "SLK-21";
-    request.open("GET", "virus_info.json");
-    request.responseType = "text";
-    request.send();
-    request.onload = function () {
-        let response = JSON.parse(request.response);
-        let stat = response.data.find(virus => virus.name === name)["stat"];
+    var virus_request = new XMLHttpRequest();
+    var setting_request = new XMLHttpRequest();
+    var virus_response, setting_response;
+    virus_request.open("GET", "virus_info.json");
+    setting_request.open("GET", "initial_setting.json");
+    virus_request.responseType = "text";
+    setting_request.responseType = "text";
+    virus_request.send();
+    virus_request.onload = function () {
+        virus_response = JSON.parse(virus_request.response);
+        setting_request.send();
+        setting_request.onload = function () {
+            setting_response = JSON.parse(setting_request.response);
+            new_virus("SLK-21");
+            $("#popup_init").fadeIn();
+        };
+    };
+    function new_virus (name) {
+        let stat = virus_response.data.find(virus => virus.name === name)["stat"];
         ["stat1","stat2","stat3","stat4"].forEach(e => {
             for (let i=0;i<stat[e];i++) {
                 change_stat(e,1);
             }
         })
         $("text.virus.name").text(name);
-        $("#popup_init").fadeIn();
     }
 </script>
 </body>

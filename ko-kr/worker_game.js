@@ -78,7 +78,7 @@ var startSim = function(event_data) {
             index: node.index,
             x: node.x,
             y: node.y,
-            v: Math.hypot(node.vx, node.vy),
+            v: Math.sqrt(node.vx * node.vx + node.vy * node.vy),
             state: node.state,
             age: node.age,
             mask: node.mask,
@@ -95,14 +95,12 @@ var startSim = function(event_data) {
  */
 function collision (node1, node2) {
     // Collision event
-    if (node1.state === state.S && (node2.state === state.E2 || node2.state === state.I1 || node2.state === state.H1)) {
-        if (Math.random() < TPC(node1,node2)) {
+    if (node1.state === state.S && (node2.state === state.E2 || node2.state === state.I1)) {
+        if (Math.random() < TPC(node1)) {
+            postMessage({type: "CONSOLE_LOG", data: "Infected"});
             node1.infected();
-        }
-    }
-    else if ((node1.state === state.E2 || node1.state === state.I1 || node1.state === state.H1) && node2.state === state.S) {
-        if (Math.random() < TPC(node1,node2)) {
-            node2.infected();
+        } else {
+            postMessage({type: "CONSOLE_LOG", data: "Not infected"});
         }
     }
 }
@@ -110,11 +108,8 @@ function collision (node1, node2) {
 /*
 Transmission probability per contact
  */
-const TPC = function(node1, node2) {
-    let tpc = param.TPC_base;
-    tpc *= param.age_infect[node1.age.toString()]
-    tpc *= 0.8; // Stat point adjustment for balancing
-    return tpc;
+function TPC (node1) {
+    return param.TPC_base * param.age_infect[node1.age.toString()];
 }
 
 function ticked() {

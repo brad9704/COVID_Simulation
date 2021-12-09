@@ -1,5 +1,8 @@
 var run, chart_data, running_time, chart_param;
-
+var collision_statistics = {
+    "Not infected": 0,
+    "Infected": 0
+}
 var stat = {
     total: 25,
     stat1: 0,
@@ -14,71 +17,7 @@ var area = {
     lower_right: "0"
 }
 var clicker = 0;
-const init_param = {
-    node_num: 1000,
-    initial_patient: 1,
-    speed: 0.2,
-    TPC_base: 0.02,
-    hospital_max: 0.01,
-    size: 5,
-    timeunit: 1000,
-    turnUnit: 7,
-    fps: 24,
-    duration: {
-        "E1-E2": [1,2],
-        "E2-I1": [1,2],
-        "I1-I2": [1,2],
-        "I1-H1": [99,99],
-        "I1-R1": [16,16],
-        "I2-H2": [1,1],
-        "I2-R2": [3,3],
-        "H2-R1": [24,24]
-    },
-    age_dist: {
-        "0": 94865,
-        "10": 110623,
-        "20": 141167,
-        "30": 147880,
-        "40": 185339,
-        "50": 206852,
-        "60": 151599,
-        "70": 61411,
-        "80": 26633
-    },
-    age_infect: {
-        "0": 2.19,
-        "10": 2.89,
-        "20": 4.44,
-        "30": 3.86,
-        "40": 3.46,
-        "50": 3.80,
-        "60": 3.49,
-        "70": 2.89,
-        "80": 2.95
-    },
-    age_severe: {
-        "0": 0.045,
-        "10": 0.045,
-        "20": 0.045,
-        "30": 0.045,
-        "40": 0.045,
-        "50": 0.249,
-        "60": 0.513,
-        "70": 1,
-        "80": 1
-    },
-    age_speed: {
-        "0": 1,
-        "10": 2,
-        "20": 2,
-        "30": 3,
-        "40": 3,
-        "50": 2,
-        "60": 1,
-        "70": 1,
-        "80": 1
-    }
-};
+var init_param;
 var turn_end = true;
 var chart = 0;
 var running_speed = 1;
@@ -90,13 +29,8 @@ w = new Worker("worker_game.js");
 Sets param values with retrieved data from input
  */
 function get_params() {
+    init_param = setting_response;
     let param = {};
-    param["node_num"] = parseInt(param["node_num"]);
-    param["initial_patient"] = parseInt(param["initial_patient"]);
-    param["speed"] = parseFloat(param["speed"]);
-    param["TPC_base"] = parseFloat(param["TPC_base"]);
-    param["hospital_max"] = Math.ceil(param["node_num"] * parseFloat(param["hospital_max"]));
-
     for (const key in init_param) {
         if (key !== "duration") param[key] = init_param[key];
         else {
@@ -117,7 +51,7 @@ function get_params() {
     param["duration"]["H2-R1"][1] += Math.floor(stat.stat4 / 2);
     param["duration"]["I1-R1"][0] += Math.floor(stat.stat2 / 3);
     param["duration"]["I1-R1"][1] += Math.floor(stat.stat2 / 3);
-    param["TPC_base"] += stat.stat3 * 0.02;
+    param["TPC_base"] += stat.stat3 * 0.003;
     for (const age in param["age_severe"]) {
         param["age_severe"][age] += stat.stat4 * 0.02;
     }
@@ -160,6 +94,9 @@ w.onmessage = function(event) {
         case "PAUSE":
             pause_simulation();
             weekly_report();
+            break;
+        case "CONSOLE_LOG":
+            collision_statistics[event.data.data] += 1;
             break;
         default:
             console.log("Worker message error: " + event.data.type);
@@ -874,7 +811,7 @@ function change_stat(stat_index, direction) {
     $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
     $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
     $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]);
-    $("output.daily.legend.rate.infectious").text(Math.round((0.14 * (1 + stat.stat3 * 0.04)) * 100) / 100);
+    $("output.daily.legend.rate.infectious").text((Math.round((0.01 + stat.stat3 * 0.003) * 100 * 24) / 100).toFixed(2));
     $("output.daily.legend.rate.severity").text(Math.round((0.22 + stat.stat4 * 0.02) * 100) + "%");
 }
 
@@ -888,10 +825,7 @@ function toggle_area() {
 function weekly_report() {
     $("td.weekly.warning").attr("data-value", "0");
     let chart_data_total = [];
-    if (auto) {
-        resume_simulation();
-        return;
-    }
+
     chart_data.forEach(data => {
         let temp_data = {};
         for (const prob in data) {
@@ -936,6 +870,12 @@ function weekly_report() {
     $("output.weekly_date_from").val(data_from.tick + 1);
     $("output.weekly_date_to").val(data_to.tick + 1);
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
+
+    if (auto) {
+        resume_simulation();
+        return;
+    }
+
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
     // noinspection JSJQueryEfficiency
@@ -972,9 +912,9 @@ function weekly_report() {
 
     let weekly_pointer = $("#popup_weekly");
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
-    weekly_pointer.fadeIn(0.1);
+    weekly_pointer.fadeIn();
     weekly_inner_pointer.on("mouseleave", function () {
-        weekly_pointer.fadeTo(200, 0.1);
+        weekly_pointer.fadeTo(200, 0.05);
     });
     weekly_inner_pointer.on("mouseenter", function () {
         weekly_pointer.fadeTo(200, 1);
@@ -1045,7 +985,6 @@ function weekly_report() {
                     .curve(d3.curveBasis)(e.data);
             })
      */
-    if (auto) resume_simulation();
 }
 
 var auto = false;
