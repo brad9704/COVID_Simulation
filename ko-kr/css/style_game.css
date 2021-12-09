@@ -722,6 +722,17 @@ div.weekly.area.budget{
     text-align: center;
     font-size: 180%;
 }
+div.weekly.area.caution {
+    position: absolute;
+    top: 570px;
+    width: 1000px;
+    text-align: center;
+    opacity: 0;
+}
+div.weekly.area.caution p {
+    color: red;
+    font-weight: bold;
+}
 svg.weekly.area.lines {
     position: absolute;
     width: 340px;
@@ -760,12 +771,14 @@ line.weekly.border.visible {
     color: #524782;
     background-color: white;
 }
-
 #button_resume:hover {
     color: white;
     background-color: #524782;
 }
-
+#button_resume:disabled {
+    color: white;
+    background-color: #C00000;
+}
 
 
 .panel_policy input[type=number] {

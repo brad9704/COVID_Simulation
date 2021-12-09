@@ -43,7 +43,7 @@ function get_params() {
         }
     }
     tick = param["timeunit"] / param["fps"];
-
+    param["hospital_max"] = Math.floor(param["node_num"] * param["hospital_max"]);
     param["duration"]["E2-I1"][0] += Math.floor(stat.stat1 / 2);
     param["duration"]["E2-I1"][1] += Math.floor(stat.stat1 / 2);
     param["duration"]["I1-I2"][0] += Math.floor(stat.stat2 / 3);
@@ -702,7 +702,7 @@ function resume_simulation() {
             "left": $("line.weekly.border.invisible.left").attr("data-click"),
             "right": $("line.weekly.border.invisible.right").attr("data-click")
         };
-    let new_budget = parseInt(budget.val()) - 2000 * (hospital_max - 10);
+    let new_budget = parseInt(budget.val()) - 10000 * (hospital_max - w.param.hospital_max);
     d3.selectAll("line.sim_board.svg_line")
         .data([{name: "upper", x1: w.param.sim_width / 2, y1: w.param.sim_height * (1 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (1 + line_rate) / 4},
             {name: "lower", x1: w.param.sim_width / 2, y1: w.param.sim_height * (3 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (3 + line_rate) / 4},
@@ -722,8 +722,6 @@ function resume_simulation() {
             } else return "0";
     });
     if (new_budget < 0) {
-        $("input.weekly.tab.switch.area").click();
-        alert("예산 초과됨! 예산 초과됨! 예산 초과됨!");
         return;
     }
     budget.val(new_budget);
@@ -876,8 +874,11 @@ function weekly_report() {
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) $("output.budget_now").val(parseInt($("output.budget_now").val()) + 40000);
     if (auto) {
-        resume_simulation();
-        return;
+        toggle_week();
+        if ($("#button_resume").is(":enabled")) {
+            resume_simulation();
+            return;
+        }
     }
 
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
@@ -1002,8 +1003,18 @@ function toggle_week() {
     $("line.weekly.border.invisible").each(function() {
         surface += parseInt(this.dataset.click);
     });
-    $("output.weekly.budget_next").val(
-        2000 * (parseInt($("input.policy.bed").val()) - 10) +
+    let bed = $("input.policy.bed");
+    if (parseInt(bed.val()) < w.param.hospital_max) {
+        bed.val(w.param.hospital_max);
+    }
+    let new_budget = 10000 * (parseInt(bed.val()) - w.param.hospital_max) +
         10000 * surface * parseFloat($("input.policy.rate").val())
-    );
+    $("output.weekly.budget_next").val(new_budget);
+    if (new_budget > parseInt($("output.budget_now").val())) {
+        $("div.weekly.area.caution").css("opacity","100%");
+        $("#button_resume").attr("disabled","true");
+    } else {
+        $("div.weekly.area.caution").css("opacity","0");
+        $("#button_resume").attr("disabled",null);
+    }
 }
