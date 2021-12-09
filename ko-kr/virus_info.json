@@ -1,0 +1,30 @@
+{
+	"data": [{
+		"name": "COVID-19",
+		"stat": {
+				"stat1": 4,
+				"stat2": 9,
+				"stat3": 6,
+				"stat4": 0
+			}
+		},
+		{
+		"name": "SLK-21",
+		"stat": {
+				"stat1": 14,
+				"stat2": 3,
+				"stat3": 6,
+				"stat4": 2
+			}
+		},
+		{
+		"name": "13-Weeks-War",
+		"stat": {
+				"stat1": 1,
+				"stat2": 13,
+				"stat3": 10,
+				"stat4": 1
+			}
+		}
+	]
+}
