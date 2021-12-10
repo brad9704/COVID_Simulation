@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.10.01-->
+<!--ver.2021.12.10.02-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -414,7 +414,7 @@
         });
         if (name === "Attack") {
             role = "Attack";
-            $("input.virus.name").attr("disabled",null);
+            $("input.virus.name").attr("disabled",null).val("Click here for name");
         } else {
             role = "Defense";
             $("text.virus.name").text(name);
