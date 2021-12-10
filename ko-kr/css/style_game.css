@@ -743,13 +743,24 @@ div.weekly.area.budget{
 }
 div.weekly.area.caution {
     position: absolute;
-    top: 570px;
+    top: 700px;
     width: 1000px;
     text-align: center;
     opacity: 0;
 }
 div.weekly.area.caution p {
     color: red;
+    font-weight: bold;
+}
+div.weekly.budget.update {
+    position: absolute;
+    top: 670px;
+    width: 1000px;
+    text-align: center;
+    opacity: 0;
+}
+div.weekly.budget.update p {
+    color: blue;
     font-weight: bold;
 }
 svg.weekly.area.lines {

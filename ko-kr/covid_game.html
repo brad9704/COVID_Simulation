@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.10.04-->
+<!--ver.2021.12.10.05-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -194,11 +194,12 @@
                             <line class="weekly border invisible lower" data-click="0" x1="170" y1="130" x2="170" y2="260" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
                         </svg>
                         <div class="weekly area budget"><output class="weekly budget_next">0</output></div>
-                        <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
                     </div>
                 </div>
             </div>
             <div id="button_wrapper">
+                <div class="weekly budget update"><p>1달치 예산 $40,000이 입금되었습니다!</p></div>
+                <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
                 <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
             </div>
         </div>
