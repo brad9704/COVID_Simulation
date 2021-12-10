@@ -317,7 +317,7 @@ function show_result(param) {
     $("#popup_result").fadeIn();
     $("#popup_result > div.popBg,#exit").on("click", function() {
         $("#popup_result").fadeOut(200);
-        $("#popup_init").fadeIn();
+        reset_simulation();
     });
 }
 
@@ -618,6 +618,16 @@ function reset_simulation() {
     stop_simulation();
     d3.selectAll("#board > div > svg").remove()
     chart_data = [];
+    w.param = get_params();
+    $("line.weekly.border.invisible").attr("data-click", "0");
+    $("input.policy.rate").val("0.5");
+    $("input.policy.bed").val("10");
+    $("input.policy.level[data-level=1]").val((1.00).toFixed(2));
+    $("input.policy.level[data-level=2]").val((0.90).toFixed(2));
+    $("input.policy.level[data-level=3]").val((0.60).toFixed(2));
+    $("input.policy.level[data-level=4]").val((0.30).toFixed(2));
+    $("select.area_policy.option").val(0);
+    toggle_week();
     $("#popup_init").fadeIn();
 }
 function pause_simulation() {
