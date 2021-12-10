@@ -344,11 +344,11 @@ function node_init(param, node_data, loc) {
         .attr("id", function (d) {
             return "node_" + d.index;
         })
-        .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+        .attr("class", d => (d.mask) ? "node_" + d.state + " mask" : "node_" + d.state)
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
         .attr("r", param["size"])
-        .attr("fill", d => d.state);
+        .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state);
 
     sim_board.select("svg")
         .selectAll("rect")
@@ -365,21 +365,7 @@ function node_init(param, node_data, loc) {
         .style("fill", "none");
 
     let line_rate = parseFloat($("input.policy.rate").val());
-    /*sim_board.select("svg").selectAll("line.svg_line_back")
-        .data([{name: "upper", x1: param.sim_width / 2, y1: 0, x2: param.sim_width / 2, y2: param.sim_height / 2},
-            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height},
-            {name: "left", x1: 0, y1: param.sim_height / 2, x2: param.sim_width / 2, y2: param.sim_height / 2},
-            {name: "right", x1: param.sim_width / 2, y1: param.sim_height / 2, x2: param.sim_width, y2: param.sim_height / 2}])
-        .enter()
-        .append("line")
-        .attr("class", function(d) {return "sim_board svg_line_back " + d.name;})
-        .attr("x1", function(d) {return d.x1;})
-        .attr("y1", function(d) {return d.y1;})
-        .attr("x2", function(d) {return d.x2;})
-        .attr("y2", function(d) {return d.y2;})
-        .style("stroke", "#A0A0A0")
-        .style("stroke-width", 1)
-        .style("opacity", "30%");*/
+
     sim_board.select("svg").append("rect")
         .attr("width", param.sim_width / 2)
         .attr("height", param.sim_height / 2)
@@ -413,30 +399,6 @@ function node_init(param, node_data, loc) {
         .style("stroke-width", 1)
         .style("opacity", "0");
 
-
-    /*    if (param["flag"].includes("quarantine")) {
-            d3.select("#loc_hospital").style("fill", "rgb(200,200,200)");
-
-            d3.select("#sim_container").append("rect")
-                .attr("id", "hospital_fill_rect")
-                .attr("x", (loc.list[1].xrange[0]))
-                .attr("y", (loc.list[1].yrange[0]))
-                .attr("width", (loc.list[1].width))
-                .attr("height", (loc.list[1].height))
-                .style("fill", "white")
-                .style("stroke", "rgb(0,0,0)")
-                .style("stroke-width", 1);
-
-            d3.select("#sim_container").append("text")
-                .attr("x", (loc.list[1].xrange[1] - loc.list[1].xrange[0]) / 2)
-                .attr("y", (loc.list[1].yrange[1] - loc.list[1].yrange[0]) / 2)
-                .attr("id", "hospital_text")
-                .attr("font-size", "20px")
-                .style("fill", "rgb(100,100,100)")
-                .style("stroke", "rgb(0,0,0)")
-                .style("stroke-width", 1)
-                .attr("text-anchor", "middle");
-        }*/
 }
 
 function node_update(param, node_data) {
@@ -449,43 +411,22 @@ function node_update(param, node_data) {
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y)
                 .attr("r", param["size"])
-                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("class", d => (d.mask) ? "node_" + d.state + " mask" : "node_" + d.state)
                 .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
-                .attr("fill", d => d.state),
+                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state),
             update => update
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y)
-                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
+                .attr("class", d => (d.mask) ? "node_" + d.state + " mask" : "node_" + d.state)
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
-                .attr("fill", d => d.state)
+                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
         );
-    /*
-    d3.select(".nodes")
-        .selectAll("circle")
-        .data(node_data)
-        .join(
-            enter => enter.append("circle")
-                .attr("id", d => "node_" + d.index)
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
-                .attr("r", param["size"])
-                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
-                .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
-                .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state),
-            update => update
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
-                .attr("class", d => (d.mask) ? "node_" + d.state + "_mask" : "node_" + d.state)
-                .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
-                .attr("fill", d => (d.state === state.E1 || d.state === state.E2) ? state.S : d.state)
-        );
-        */
 
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
         let temp = node_data.filter(e => e.state === state[stat]).length;
-        if (stat === "S") {
+        if (stat === "S" && role === "Defense") {
             temp = node_data.filter(e => e.state === state.S || e.state === state.E1 || e.state === state.E2).length;
-        } else if (stat === "E1" || stat === "E2") {
+        } else if ((stat === "E1" || stat === "E2") && role === "Defense") {
             temp = "?"
         }
         $("output.daily.legend.num." + stat).text(temp);

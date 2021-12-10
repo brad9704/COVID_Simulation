@@ -408,13 +408,20 @@ div.virus.name {
     height: 35px;
     text-align: center;
 }
-text.virus.name {
+text.virus.name, input.virus.name {
     font-weight: bold;
     color: white;
     font-size: 30px;
-    font-family: "chiller";
+    font-family: "chiller", sans-serif;
     letter-spacing: 2px;
 }
+input.virus.name {
+    background: none;
+    border: none;
+    text-align: center;
+    width: 338px;
+}
+
 output.daily.legend {
     position: absolute;
     font-size: 22px;

@@ -1,5 +1,14 @@
 {
 	"data": [{
+		"name": "Attack",
+		"stat": {
+			"stat1": 0,
+			"stat2": 0,
+			"stat3": 0,
+			"stat4": 0
+			}
+		},
+		{
 		"name": "COVID-19",
 		"stat": {
 				"stat1": 4,

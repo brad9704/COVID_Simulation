@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2112009.05-->
+<!--ver.2021.12.10.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -287,6 +287,8 @@
         <div class="controls">
             <div class="stat wrapper">
                 <div class="virus selection">
+                    <select class="virus selection" onchange="new_virus(value)">
+                    </select>
                 </div>
                 <div class="stat left">
                     <table class="stat def">
@@ -348,7 +350,7 @@
             </div>
             <div class="daily legend">
                 <img src="img/info_panel_init.svg">
-                <div class="virus name"><text class="virus name">COVID-19</text></div>
+                <div class="virus name"><input type="text" class="virus name" value="COVID-19" onchange="$('text.virus.name').text(this.value)"></div>
                 <output class="daily legend duration E2-I1">0-0</output>
                 <output class="daily legend duration I1-I2">0-0</output>
                 <output class="daily legend duration I1-R1">0</output>
@@ -377,7 +379,7 @@
 <script type="text/javascript">
     var virus_request = new XMLHttpRequest();
     var setting_request = new XMLHttpRequest();
-    var virus_response, setting_response;
+    var virus_response, setting_response, role;
     virus_request.open("GET", "virus_info.json");
     setting_request.open("GET", "initial_setting.json");
     virus_request.responseType = "text";
@@ -388,18 +390,36 @@
         setting_request.send();
         setting_request.onload = function () {
             setting_response = JSON.parse(setting_request.response);
-            new_virus("SLK-21");
+            d3.select("select.virus.selection").selectAll("option")
+                .data(virus_response.data)
+                .enter()
+                    .append("option")
+                    .attr("value",function(e) {return e.name;})
+                    .text(function(e) {if (e.name === "Attack") {return e.name;} else {return "Defense: " + e.name;}});
+            new_virus(virus_response.data[0].name);
             $("#popup_init").fadeIn();
         };
     };
     function new_virus (name) {
         let stat = virus_response.data.find(virus => virus.name === name)["stat"];
         ["stat1","stat2","stat3","stat4"].forEach(e => {
+            for (let i=0;i<25;i++) {
+                change_stat(e,-1);
+            }
+        });
+        ["stat1","stat2","stat3","stat4"].forEach(e => {
             for (let i=0;i<stat[e];i++) {
                 change_stat(e,1);
             }
-        })
-        $("text.virus.name").text(name);
+        });
+        if (name === "Attack") {
+            role = "Attack";
+            $("input.virus.name").attr("disabled",null);
+        } else {
+            role = "Defense";
+            $("text.virus.name").text(name);
+            $("input.virus.name").val(name).attr("disabled", "true");
+        }
     }
 </script>
 </body>
