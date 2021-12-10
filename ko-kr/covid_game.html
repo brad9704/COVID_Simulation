@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.10.02-->
+<!--ver.2021.12.10.03-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -184,7 +184,7 @@
                     </div>
                     <div class="weekly area tab content">
                         <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5" onchange="toggle_week();">
-                        <input class="policy bed" type="range" min="10" max="20" step="1" value="10" onchange="toggle_week();">
+                        <input class="policy bed" type="range" min="10" max="30" step="2" value="10" onchange="toggle_week();">
                         <svg class="weekly area lines">
                             <line class="weekly border visible" x1="0" y1="130" x2="340" y2="130"/>
                             <line class="weekly border visible" x1="170" y1="0" x2="170" y2="260"/>
@@ -415,10 +415,12 @@
         if (name === "Attack") {
             role = "Attack";
             $("input.virus.name").attr("disabled",null).val("Click here for name");
+            $("input.stat").attr("disabled",null);
         } else {
             role = "Defense";
             $("text.virus.name").text(name);
             $("input.virus.name").val(name).attr("disabled", "true");
+            $("input.stat").attr("disabled","true");
         }
     }
 </script>
