@@ -626,6 +626,7 @@ div.weekly_status table tr td {
 td.weekly.warning {
     background-repeat: no-repeat;
     background-position: center;
+    background-size: 40%;
 }
 td.weekly.warning[data-value="0"] {
     background-image: url("../img/wr_1_fine.svg");
