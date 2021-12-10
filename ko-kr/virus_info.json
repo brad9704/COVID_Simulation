@@ -34,6 +34,15 @@
 				"stat3": 10,
 				"stat4": 1
 			}
+		},
+		{
+		"name": "Test",
+		"stat": {
+				"stat1": 1,
+				"stat2": 1,
+				"stat3": 1,
+				"stat4": 1
+			}
 		}
 	]
 }
