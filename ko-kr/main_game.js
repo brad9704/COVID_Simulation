@@ -743,10 +743,11 @@ function change_speed(direction) {
 function change_stat(stat_index, direction) {
     if (direction > 0 && stat.total > 0) {
         stat.total--;
+        stat[stat_index] += direction;
     } else if (direction < 0 && stat[stat_index] > 0) {
         stat.total++;
-    } else return;
-    stat[stat_index] += direction;
+        stat[stat_index] += direction;
+    }
     $("output.stat.value." + stat_index).text(stat[stat_index]);
     $("output.stat.value.total").text(stat["total"]);
     let param = get_params();
