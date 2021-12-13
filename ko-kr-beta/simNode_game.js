@@ -160,6 +160,8 @@ class Node {
             case "E2-I1":
                 if (this.state !== state.E2) return;
                 this.state = state.I1;
+                this.vx *= 0.9;
+                this.vy *= 0.9;
                 if (Math.random() < this.param.age_severe[this.age.toString()]) {
                     this.queue.push({
                         time: d3.randomUniform(...this.param.duration["I1-I2"])() * this.param.fps + this.curTime,
@@ -199,6 +201,8 @@ class Node {
             case "I1-R1":
                 if (this.state !== state.I1 && this.state !== state.H1) return;
                 this.state = state.R1;
+                this.vx *= 1.11;
+                this.vy *= 1.11;
                 break;
             case "I2-H2":
                 if (this.state !== state.I2) return;
@@ -231,8 +235,8 @@ class Node {
             case "H2-R1":
                 if (this.state !== state.H2) return;
                 this.state = state.R1;
-                this.vx = this._vx;
-                this.vy = this._vy;
+                this.vx = this._vx * 1.11;
+                this.vy = this._vy * 1.11;
                 this._vx = null;
                 this._vy = null;
                 break;

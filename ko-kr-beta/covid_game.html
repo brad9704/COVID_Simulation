@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<!--ver.2021.12.10.05-->
+<html lang="ko">
+<!--🥕-->
+<link rel="shortcut icon" href="favicon.ico">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID Simulation</title>
+    <link rel="stylesheet" href="css/style_game.css">
+</head>
+<body>
+<div class="sidebar">
+    <div class="Day"><output class="weekly_week">0</output>주 / <output id="turn_day">0</output><text id="day_text">일</text></div>
+    <div class="speed">
+        <div id="speed_output_wrapper">
+            <output id="speed_out">1x</output>
+        </div>
+        <div class="button">
+            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<<">
+            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
+        </div>
+    </div>
+    <div class="auto" style="display:none"><input id="auto_switch" type="range" min="0" max="1" step="1" value="0" oninput="toggle_auto(value)" style="width: 30px;"></div>
+</div>
+<div class="board" id="board">
+    <div id="sim_board"></div>
+    <div class="daily legend">
+        <img src="img/info_panel.svg">
+        <div class="virus name"><text class="virus name">COVID-19</text></div>
+        <output class="daily legend duration E2-I1">0-0</output>
+        <output class="daily legend duration I1-I2">0-0</output>
+        <output class="daily legend duration I1-R1">0</output>
+        <output class="daily legend rate infectious">0%</output>
+        <output class="daily legend rate severity">0%</output>
+        <output class="daily legend num S">1000</output>
+        <output class="daily legend num E1">0</output>
+        <output class="daily legend num E2">0</output>
+        <output class="daily legend num I1">0</output>
+        <output class="daily legend num I2">0</output>
+        <output class="daily legend num H2">0</output>
+        <output class="daily legend num R1">0</output>
+        <output class="daily legend num R2">0</output>
+    </div>
+    <div id="chart_board"></div>
+    <div id="death_board"></div>
+</div>
+<div class="control_panel">
+    <div class="panel_button">
+        <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
+    </div>
+    <div class="panel_footer">
+        <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
+        <div class="panel_output hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></div>
+        <div class="panel_output death"><output class="death_now">0</output> (<output class="death_total">0</output>)</div>
+        <div class="panel_output GDP">$<output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</div>
+        <div class="panel_output budget">$<output class="budget_now">0</output></div>
+    </div>
+</div>
+<div id="popup_weekly" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox">
+        <div class="popHead">주간 보고<output></output></div>
+        <div class="popBody">
+            <div class="weekly switch tabs">
+                <input class="weekly tab switch overall" type="button" value="주간 발생 동향" active="true" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.overall').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.overall').css('display','block');">
+                <input class="weekly tab switch age" type="button" value="사회적 거리두기" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.age').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.age').css('display','block');">
+                <input class="weekly tab switch area" type="button" value="예산 분배" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('input.weekly.tab.switch.area').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.area').css('display','block');">
+            </div>
+            <div class="weekly overall tab content">
+                <div class="weekly_status">
+                    <output class="weekly_week">1</output><output class="weekly_date_from">1</output><output class="weekly_date_to">7</output>
+                    <table>
+                        <tr>
+                            <td><output id="weekly_new_infect">0</output></td>
+                            <td><output id="weekly_death">0</output></td>
+                            <td><output id="weekly_hospitalized">0</output></td>
+                            <td><output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</td>
+                        </tr>
+                        <tr>
+                            <td><output id="weekly_change_infect">▲0</output></td>
+                            <td><output id="weekly_change_death">0</output></td>
+                            <td class="weekly warning ICUs" data-value="0"></td>
+                            <td class="weekly warning GDPs" data-value="0"></td>
+                        </tr>
+                    </table>
+                    <output class="weekly infectious" age="90">0</output>
+                    <output class="weekly death" age="90">0</output>
+                </div> <br>
+                <div class="weekly_chart">
+                    <div class="weekly legend">
+                        <svg>
+                            <circle cx="10" cy="10" r="6" fill="red"></circle>
+                            <text x="25" y="16">Infected</text>
+                            <circle cx="10" cy="30" r="6" fill="black"></circle>
+                            <text x="25" y="36">Dead</text>
+                        </svg>
+                    </div>
+                    <p style="font-weight: bold;">주간 확진 및 사망 추이<br></p>
+                    <div class="weekly_board">
+                    </div>
+                </div>
+            </div>
+            <div class="weekly age area tab weekly_policy" style="display:none">
+                <div class="panel_policy">
+                    <div class="weekly age tab content">
+                        <div class="policy level confirm">
+                            <table>
+                                <tr class="policy info" style="opacity: 0;">
+                                    <td>Level</td>
+                                    <td>0-19</td>
+                                    <td>20-59</td>
+                                    <td>60+</td>
+                                </tr>
+                                <tr class="policy level" data-level="1">
+                                    <td style="opacity: 0;">0</td>
+                                    <td><input class="policy level" data-level="1" data-age="0" type="number" max="1.00" min="0.30" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="20" type="number" max="1.00" min="0.30" step="0.1" value="1.00"></td>
+                                    <td><input class="policy level" data-level="1" data-age="60" type="number" max="1.00" min="0.30" step="0.1" value="1.00"></td>
+                                </tr>
+                                <tr class="policy level" data-level="2">
+                                    <td style="opacity: 0;">1</td>
+                                    <td><input class="policy level" data-level="2" data-age="0" type="number" max="0.90" min="0.30" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="20" type="number" max="0.90" min="0.30" step="0.1" value="0.90"></td>
+                                    <td><input class="policy level" data-level="2" data-age="60" type="number" max="0.90" min="0.30" step="0.1" value="0.90"></td>
+                                </tr>
+                                <tr class="policy level" data-level="3">
+                                    <td style="opacity: 0;">2</td>
+                                    <td><input class="policy level" data-level="3" data-age="0" type="number" max="0.90" min="0.30" step="0.1" value="0.60"></td>
+                                    <td><input class="policy level" data-level="3" data-age="20" type="number" max="0.90" min="0.30" step="0.1" value="0.60"></td>
+                                    <td><input class="policy level" data-level="3" data-age="60" type="number" max="0.90" min="0.30" step="0.1" value="0.60"></td>
+                                </tr>
+                                <tr class="policy level" data-level="4">
+                                    <td style="opacity: 0;">3</td>
+                                    <td><input class="policy level" data-level="4" data-age="0" type="number" max="0.90" min="0.30" step="0.1" value="0.30"></td>
+                                    <td><input class="policy level" data-level="4" data-age="20" type="number" max="0.90" min="0.30" step="0.1" value="0.30"></td>
+                                    <td><input class="policy level" data-level="4" data-age="60" type="number" max="0.90" min="0.30" step="0.1" value="0.30"></td>
+                                </tr>
+                            </table>
+                            <svg class="area_policy area_board">
+                                <line x1="0" y1="125" x2="330" y2="125" style="stroke:black;stroke-width:2"/>
+                                <line x1="165" y1="0" x2="165" y2="250" style="stroke:black;stroke-width:2"/>
+                                <rect height="250" width="330" style="stroke:black;fill:none;">
+                                </rect>
+                            </svg>
+                            <div class="area_policy options">
+                                <select class="area_policy option upper left" data-area="upper left" onchange="toggle_area()">
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
+                                </select>
+                                <select class="area_policy option upper right" data-area="upper right" onchange="toggle_area()">
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
+                                </select>
+                                <select class="area_policy option lower left" data-area="lower left" onchange="toggle_area()">
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
+                                </select>
+                                <select class="area_policy option lower right" data-area="lower right" onchange="toggle_area()">
+                                    <option value="0" selected>0단계</option>
+                                    <option value="1">1단계</option>
+                                    <option value="2">2단계</option>
+                                    <option value="3">3단계</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weekly area tab content">
+                        <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5" onchange="toggle_week();">
+                        <input class="policy bed" type="range" min="10" max="30" step="2" value="10" onchange="toggle_week();">
+                        <svg class="weekly area lines">
+                            <line class="weekly border visible" x1="0" y1="130" x2="340" y2="130"/>
+                            <line class="weekly border visible" x1="170" y1="0" x2="170" y2="260"/>
+                            <line class="weekly border invisible left" data-click="0" x1="0" y1="130" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible right" data-click="0" x1="170" y1="130" x2="340" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible upper" data-click="0" x1="170" y1="0" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible lower" data-click="0" x1="170" y1="130" x2="170" y2="260" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                        </svg>
+                        <div class="weekly area budget"><output class="weekly budget_next">0</output></div>
+                    </div>
+                </div>
+            </div>
+            <div id="button_wrapper">
+                <div class="weekly budget update"><p>1달치 예산 $40,000이 입금되었습니다!</p></div>
+                <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
+                <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="popup_result" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox result">
+        <div class="popHead">RESULT</div>
+        <div class="popBody">
+            <div class="popCommonVar">
+                Elapsed time: <output id="resultTime">0</output> days<br>
+            </div>
+            <div class="popChart">
+                <table class="result">
+                    <tr class="result label">
+                        <td class="result label">Criteria</td>
+                        <td class="result number">Value</td>
+                        <td class="result base">Star gained</td>
+                    </tr>
+                    <tr class="result infection">
+                        <td class="result infection label">Total infection</td>
+                        <td class="result infection number"><output class="infectious_total">0</output></td>
+                        <td class="result infection star base"><output>☆</output></td>
+                    </tr>
+                    <tr class="result death">
+                        <td class="result death label">Total death</td>
+                        <td class="result death number"><output class="death_total">0</output></td>
+                        <td class="result death star base"><output>☆☆☆☆</output></td>
+                    </tr>
+                    <tr class="result GDP">
+                        <td class="result GDP label">Economic functionality</td>
+                        <td class="result GDP number"><output class="GDP_total">0</output>%</td>
+                        <td class="result GDP star base"><output>☆☆☆</output></td>
+                    </tr>
+                    <tr class="result budget">
+                        <td class="result budget label">Spent Budget</td>
+                        <td class="result budget number"><output class="budget_total">0</output></td>
+                        <td class="result budget star"><output>☆☆</output></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel_policy_result">
+                Total ★ gained: <output class="result total star"></output>
+                <table class="panel_status" style="display:none">
+                    <tr class="panel tag">
+                        <td class="infectious">Infectious</td>
+                        <td class="death">Death</td>
+                        <td class="GDP">GDP</td>
+                    </tr>
+                    <tr class="panel unit">
+                        <td class="infectious">cumulative</td>
+                        <td class="death">cumulative</td>
+                        <td class="GDP">compared to non-COVID scenario</td>
+                    </tr>
+                    <tr class="panel var">
+                        <td class="infectious"><output class="infectious_total">0</output></td>
+                        <td class="death"><output class="death_total">0</output></td>
+                        <td class="GDP"><output class="GDP_total">0</output>%</td>
+                    </tr>
+                </table>
+            </div>
+            <svg class="result legend">
+                <circle cx="10" cy="10" r="6" fill="red"></circle>
+                <text x="25" y="16">Infected</text>
+                <circle cx="10" cy="30" r="6" fill="black"></circle>
+                <text x="25" y="36">Dead</text>
+                <circle cx="10" cy="50" r="6" fill="blue"></circle>
+                <text x="25" y="56">Daily GDP</text>
+                <circle cx="10" cy="70" r="6" fill="purple"></circle>
+                <text x="25" y="76">Budget</text>
+            </svg>
+            <div class="result chart">
+            </div>
+
+            <input type="button" onclick="request_log()" value="Log" style="display:none">
+            <input id="exit" type="button" value="Exit">
+        </div>
+        <div class="popFoot">
+        </div>
+    </div>
+</div>
+<div id="popup_init" class="popup">
+    <div class="popBg"></div>
+    <div class="popBody">
+        <div class="controls">
+            <div class="stat wrapper">
+                <div class="virus selection">
+                    <select class="virus selection" onchange="new_virus(value)">
+                    </select>
+                </div>
+                <div class="stat left">
+                    <table class="stat def">
+                        <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
+                            <td class="stat label stat1">잠복기</td>
+                            <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
+                            <td class="stat value stat1"><output class="stat value stat1">0</output></td>
+                            <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
+                        </tr>
+                        <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
+                            <td class="stat label stat2">감염 기간</td>
+                            <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
+                            <td class="stat value stat2"><output class="stat value stat2">0</output></td>
+                            <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
+                        </tr>
+                        <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
+                            <td class="stat label stat3">전염성</td>
+                            <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
+                            <td class="stat value stat3"><output class="stat value stat3">0</output></td>
+                            <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
+                        </tr>
+                        <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
+                            <td class="stat label stat4">중증이환률</td>
+                            <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
+                            <td class="stat value stat4"><output class="stat value stat4">0</output></td>
+                            <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
+                        </tr>
+                    </table>
+                    <text class="stat label total">남은 포인트: <output class="stat value total">25</output></text>
+                </div>
+                <div class="stat description">
+                    <div class="stat desc stat1">
+                        <b>잠복기</b><br>
+                        감염 증상이 더 오랜 시간 후에 나타나게 하여 방역책임자들을 혼란스럽게 합니다.<br>
+                        매 <b>2 포인트</b>마다 잠복기 (E2)가 하루씩 길어집니다.<br>
+                    </div>
+                    <div class="stat desc stat2">
+                        <b>감염 기간</b><br>
+                        가벼운 증상이 길어지게 하여 감염자가 더 오래 바이러스를 퍼트리고 다니게 합니다.<br>
+                        매 <b>3 포인트</b>마다 감염기간 (I1, I2)가 각 하루씩 길어집니다.<br>
+                    </div>
+                    <div class="stat desc stat3">
+                        <b>전염성</b><br>
+                        바이러스가 다른 숙주에게 더 잘 퍼지도록 합니다.<br>
+                        접촉 시 전염성이 매 <b>1 포인트</b>마다 증가합니다.<br>
+                        전염성은 감염자와 접촉 시 매 프레임마다 감염 여부를 결정합니다.<br>
+                    </div>
+                    <div class="stat desc stat4">
+                        <b>중증이환률</b><br>
+                        감염병을 더 치명적으로 만들어 중증 환자의 비율을 증가시킵니다.<br>
+                        매 <b>1 포인트</b>마다 감염자가 중증으로 악화될 확률이 2% 증가하고,<br>
+                        매 <b>2 포인트</b>마다 중증 환자의 회복에 필요한 기간(H)이 하루씩 증가합니다.<br>
+                    </div>
+                </div>
+            </div>
+            <div class="control" id="Simulation">
+                <input id="button_start" type="button" onclick="start_simulation()" value="Start">
+                <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
+            </div>
+            <div class="daily legend">
+                <img src="img/info_panel_init.svg">
+                <div class="virus name"><input type="text" class="virus name" value="COVID-19" onchange="$('text.virus.name').text(this.value)"></div>
+                <output class="daily legend duration E2-I1">0-0</output>
+                <output class="daily legend duration I1-I2">0-0</output>
+                <output class="daily legend duration I1-R1">0</output>
+                <output class="daily legend rate infectious">0</output>
+                <output class="daily legend rate severity">0%</output>
+                <output class="daily legend num S">1000</output>
+                <output class="daily legend num E1">0</output>
+                <output class="daily legend num E2">0</output>
+                <output class="daily legend num I1">0</output>
+                <output class="daily legend num I2">0</output>
+                <output class="daily legend num H1" style="display:none;">0</output>
+                <output class="daily legend num H2">0</output>
+                <output class="daily legend num R1">0</output>
+                <output class="daily legend num R2">0</output>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
+<script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+<script src="simNode_game.js"></script>
+<script src="main_game.js"></script>
+<script type="text/javascript">
+    var virus_request = new XMLHttpRequest();
+    var setting_request = new XMLHttpRequest();
+    var virus_response, setting_response, role;
+    virus_request.open("GET", "virus_info.json");
+    setting_request.open("GET", "initial_setting.json");
+    virus_request.responseType = "text";
+    setting_request.responseType = "text";
+    virus_request.send();
+    virus_request.onload = function () {
+        virus_response = JSON.parse(virus_request.response);
+        setting_request.send();
+        setting_request.onload = function () {
+            setting_response = JSON.parse(setting_request.response);
+            d3.select("select.virus.selection").selectAll("option")
+                .data(virus_response.data)
+                .enter()
+                    .append("option")
+                    .attr("value",function(e) {return e.name;})
+                    .text(function(e) {if (e.name === "Attack") {return e.name;} else {return "Defense: " + e.name;}});
+            new_virus(virus_response.data[0].name);
+            $("#popup_init").fadeIn();
+        };
+    };
+    function new_virus (name) {
+        let stat = virus_response.data.find(virus => virus.name === name)["stat"];
+        ["stat1","stat2","stat3","stat4"].forEach(e => {
+            for (let i=0;i<25;i++) {
+                change_stat(e,-1);
+            }
+        });
+        ["stat1","stat2","stat3","stat4"].forEach(e => {
+            for (let i=0;i<stat[e];i++) {
+                change_stat(e,1);
+            }
+        });
+        if (name === "Attack") {
+            role = "Attack";
+            $("input.virus.name").attr("disabled",null).val("Click here for name");
+            $("input.stat").attr("disabled",null);
+        } else {
+            role = "Defense";
+            $("text.virus.name").text(name);
+            $("input.virus.name").val(name).attr("disabled", "true");
+            $("input.stat").attr("disabled","true");
+        }
+    }
+</script>
+</body>
+</html>

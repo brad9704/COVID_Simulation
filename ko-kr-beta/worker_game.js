@@ -7,10 +7,12 @@ var running_time;
 var simulation;
 var param;
 var chart_data;
+var budget;
 
 onmessage = function(event){
     switch (event.data.type) {
         case "START":
+            budget = event.data.budget;
             postMessage(startSim(event.data.main));
             break;
         case "PAUSE":
@@ -68,7 +70,7 @@ var startSim = function(event_data) {
         .oneWay(false));
 
     //_.sample(simulation.nodes(), Math.floor(param.node_num * param.mask_ratio)).forEach(node => node.mask = true);
-    _.sample(simulation.nodes(), param.initial_patient).forEach(node => node.infected());
+    simulation.find(param.sim_width / 2, param.sim_height / 2).infected();
 
     let report_nodes = [];
     simulation.nodes().forEach(node => {
@@ -76,7 +78,7 @@ var startSim = function(event_data) {
             index: node.index,
             x: node.x,
             y: node.y,
-            v: Math.hypot(node.vx, node.vy),
+            v: Math.sqrt(node.vx * node.vx + node.vy * node.vy),
             state: node.state,
             age: node.age,
             mask: node.mask,
@@ -93,14 +95,12 @@ var startSim = function(event_data) {
  */
 function collision (node1, node2) {
     // Collision event
-    if (node1.state === state.S && (node2.state === state.E2 || node2.state === state.I1 || node2.state === state.H1)) {
-        if (Math.random() < TPC(node1,node2)) {
+    if (node1.state === state.S && (node2.state === state.E2 || node2.state === state.I1)) {
+        if (Math.random() < TPC(node1)) {
+            postMessage({type: "CONSOLE_LOG", data: "Infected"});
             node1.infected();
-        }
-    }
-    else if ((node1.state === state.E2 || node1.state === state.I1 || node1.state === state.H1) && node2.state === state.S) {
-        if (Math.random() < TPC(node1,node2)) {
-            node2.infected();
+        } else {
+            postMessage({type: "CONSOLE_LOG", data: "Not infected"});
         }
     }
 }
@@ -108,11 +108,8 @@ function collision (node1, node2) {
 /*
 Transmission probability per contact
  */
-const TPC = function(node1, node2) {
-    let tpc = param.TPC_base;
-    tpc *= param.age_infect[node1.age.toString()]
-    tpc *= 0.8; // Stat point adjustment for balancing
-    return tpc;
+function TPC (node1) {
+    return param.TPC_base * param.age_infect[node1.age.toString()];
 }
 
 function ticked() {
@@ -120,7 +117,8 @@ function ticked() {
     simulation.tick();
     this.nodes().forEach(node1 => {
         this.nodes().forEach(node2 => {
-            if (Math.hypot(node1.x - node2.x, node1.y - node2.y) < param.size*2)
+            let a = (node1.x - node2.x), b = node1.y - node2.y;
+            if (a*a+b*b < param.size*param.size*4)
                 collision(node1, node2);
         })
     }, this);
@@ -130,7 +128,8 @@ function ticked() {
         let node_data = simulation.nodes();
         let temp_data = {
             "tick": running_time / param.fps,
-            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2
+            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2,
+            "budget": budget
         };
         Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
             temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
@@ -223,19 +222,22 @@ function apply_policy(policy) {
             .forEach(node => {
                 node.speed(policy.age[i][policy.area[node.isIn()]])
             });
+        simulation.nodes().forEach(node => {
+            node.param.hospital_max = policy.hospital_max;
+        })
     }
-    let temp = simulation.loc.get_surface();
-    if (policy.area.upper_left !== "0" || policy.area.upper_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: 0}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+    let temp = simulation.loc.get_surface(), line_rate = policy.rate;
+    if (policy.surface.upper === "1") temp.push({
+        from: {x: param.sim_width / 2, y: param.sim_height * (1 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (1 + line_rate) / 4}
     });
-    if (policy.area.lower_left !== "0" || policy.area.lower_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height}
+    if (policy.surface.lower === "1") temp.push({
+        from: {x: param.sim_width / 2, y: param.sim_height * (3 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (3 + line_rate) / 4}
     });
-    if (policy.area.upper_left !== "0" || policy.area.lower_left !== "0") temp.push({
-        from: {x: 0, y: param.sim_height / 2}, to: {x: param.sim_width / 2, y: param.sim_height / 2}
+    if (policy.surface.left === "1") temp.push({
+        from: {x: param.sim_width * (1 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (1 + line_rate) / 4, y: param.sim_height / 2}
     });
-    if (policy.area.upper_right !== "0" || policy.area.lower_right !== "0") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height / 2}, to: {x: param.sim_width, y: param.sim_height / 2}
+    if (policy.surface.right === "1") temp.push({
+        from: {x: param.sim_width * (3 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (3 + line_rate) / 4, y: param.sim_height / 2}
     });
     simulation.force("surface").surfaces(temp);
 }
