@@ -334,37 +334,7 @@ function node_init(param, node_data, loc) {
     sim_board.append("svg")
         .attr("id", "sim_container")
         .attr("width", param.sim_width)
-        .attr("height", param.sim_height)
-        .append("g")
-        .attr("id", "nodes")
-        .attr("class", "nodes")
-        .selectAll("circle")
-        .data(node_data)
-        .enter().append("circle")
-        .attr("id", function (d) {
-            return "node_" + d.index;
-        })
-        .attr("class", d => (d.mask) ? "node_" + d.state + " mask" : "node_" + d.state)
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .attr("r", param["size"])
-        .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state);
-
-    sim_board.select("svg")
-        .selectAll("rect")
-        .data(loc.list)
-        .enter().append("rect")
-        .attr("class", "locations")
-        .attr("id", d => "loc_" + d.name)
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-        .attr("width", d => d.width)
-        .attr("height", d => d.height)
-        .style("stroke", "rgb(0,0,0)")
-        .style("stroke-width", 1)
-        .style("fill", "none");
-
-    let line_rate = parseFloat($("input.policy.rate").val());
+        .attr("height", param.sim_height);
 
     sim_board.select("svg").append("rect")
         .attr("width", param.sim_width / 2)
@@ -382,6 +352,53 @@ function node_init(param, node_data, loc) {
         .style("stroke", "none")
         .style("fill", "#A0A0A0")
         .style("opacity", "15%");
+
+    sim_board.select("svg")
+        .append("g")
+        .attr("id", "nodes")
+        .attr("class", "nodes")
+        .selectAll("circle")
+        .data(node_data)
+        .enter().append("circle")
+        .attr("id", function (d) {
+            return "node_" + d.index;
+        })
+        .attr("class", d => (d.mask) ? "node_" + d.state + " mask" : "node_" + d.state)
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y)
+        .attr("r", param["size"])
+        .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
+        .on("mouseover", function(d) {
+            d3.select("output.node.age").text(d.age);
+            d3.select("output.node.corr_x").text(Math.round(d.x));
+            d3.select("output.node.corr_y").text(Math.round(d.y));
+            d3.select("output.node.loc").text(d.loc.name);
+            d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
+            d3.select("output.node.mask").text(d.mask);
+            d3.select("output.node.vaccine").text(d.vaccine);
+            d3.select("div.popBody.node").style("transform", "translate(0,0)");
+            d3.select("#node_" + d.index).attr("r", param.size * 2);
+        })
+        .on("mouseleave", function(d) {
+            d3.select("div.popBody.node").style("transform","translate(100%,0)");
+            d3.select("#node_" + d.index).attr("r", param.size);
+        });
+
+    sim_board.select("svg")
+        .selectAll("rect")
+        .data(loc.list)
+        .enter().append("rect")
+        .attr("class", "locations")
+        .attr("id", d => "loc_" + d.name)
+        .attr("x", d => d.x)
+        .attr("y", d => d.y)
+        .attr("width", d => d.width)
+        .attr("height", d => d.height)
+        .style("stroke", "rgb(0,0,0)")
+        .style("stroke-width", 1)
+        .style("fill", "none");
+
+    let line_rate = parseFloat($("input.policy.rate").val());
 
     sim_board.select("svg").selectAll("line.svg_line")
         .data([{name: "upper", x1: param.sim_width / 2, y1: param.sim_height * (1 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (1 + line_rate) / 4},
@@ -413,7 +430,22 @@ function node_update(param, node_data) {
                 .attr("r", param["size"])
                 .attr("class", d => (d.mask) ? "node_" + d.state + " mask" : "node_" + d.state)
                 .attr("style", d => (d.flag.includes("dead") ? "display:none" : ""))
-                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state),
+                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
+                .on("mouseover", function(d) {
+                    d3.select("output.node.age").text(d.age);
+                    d3.select("output.node.corr_x").text(Math.round(d.x));
+                    d3.select("output.node.corr_y").text(Math.round(d.y));
+                    d3.select("output.node.loc").text(d.loc.name);
+                    d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
+                    d3.select("output.node.mask").text(d.mask);
+                    d3.select("output.node.vaccine").text(d.vaccine);
+                    d3.select("div.popBody.node").style("transform", "translate(0,0)");
+                    d3.select("#node_" + d.index).attr("r", param.size * 2);
+                })
+                .on("mouseleave", function(d) {
+                    d3.select("div.popBody.node").style("transform","translate(100%,0)");
+                    d3.select("#node_" + d.index).attr("r", param.size);
+                }),
             update => update
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y)
@@ -421,7 +453,6 @@ function node_update(param, node_data) {
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
         );
-
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
         let temp = node_data.filter(e => e.state === state[stat]).length;
         if (stat === "S" && role === "Defense") {
@@ -635,6 +666,23 @@ function pause_simulation() {
     $(".enable-on-pause").removeAttr("disabled");
     clearInterval(run);
     run = null;
+}
+
+function toggle_run() {
+    if (run === null) {
+        d3.select("input.panel_button.resume").attr("class", "panel_button pause").attr("value","Pause");
+        run = setInterval(() => {
+            if (receive) {
+                w.postMessage({type: "REPORT", data: running_speed});
+                receive = false;
+                receive_time += running_speed;
+            }
+        }, tick);
+    } else {
+        clearInterval(run);
+        run = null;
+        d3.select("input.panel_button.pause").attr("class", "panel_button resume").attr("value","Resume");
+    }
 }
 
 function resume_simulation() {

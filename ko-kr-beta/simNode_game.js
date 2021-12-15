@@ -83,6 +83,7 @@ class Node {
         this.state = state.S;
         this.age = age;
         this.mask = false;
+        this.vaccine = false;
         this.loc = "World";
         this.flag = [];
         this.param = param;

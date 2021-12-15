@@ -45,7 +45,8 @@
 </div>
 <div class="control_panel">
     <div class="panel_button">
-        <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
+        <input id="button_stop" class="panel_button stop" type="button" onclick="reset_simulation()" value="Stop">
+        <input id="button_pause" class="panel_button pause" type="button" onclick="toggle_run()" value="Pause">
     </div>
     <div class="panel_footer">
         <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
@@ -370,12 +371,27 @@
 
     </div>
 </div>
+<div class="popBody node">
+    <div class="node char basic">
+        <p>
+            Age: <output class="node age">00</output><br>
+            Position: (<output class="node corr_x">0</output>,<output class="node corr_y">0</output>)<br>
+            Location: <output class="node loc">Outside</output><br>
+            Income: <output class="node income">0</output>$<br>
+        </p>
+    </div>
+    <div class="node char state">
+        <p>
+            Stage: <output class="node stage"></output><br>
+            Mask: <output class="node mask"></output><br>
+            Vaccine: <output class="node vaccine"></output><br>
+        </p>
+    </div>
+</div>
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
 <script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
 <script type="text/javascript">

@@ -133,13 +133,13 @@ div.panel_output.budget {
     left: 1315px;
 }
 
-.panel_button {
+div.panel_button {
     position: absolute;
     top: 15px;
     left: 15px;
     width: 100px;
 }
-.panel_button input {
+input.panel_button {
     display: block;
     border: 1px solid black;
     background-color: rgba(0,0,0,0);
@@ -150,18 +150,31 @@ div.panel_output.budget {
     height: 45px;
     margin: 0 auto;
 }
-.panel_button input:hover {
+input.panel_button {
     color: white;
-    background-color: #b0dcde;
+    background-color: #4e7070;
 }
-.panel_button #button_stop:hover {
+input.panel_button:hover {
+    color: #4e7070;
+    background-color: white;
+}
+input.panel_button.stop:hover {
     color: #254488;
     background-color: white;
 }
-.panel_button #button_stop {
+input.panel_button.stop {
     color: white;
     background-color: #667cb8;
 }
+input.panel_button.resume {
+    color: #4e7070;
+    background-color: white;
+}
+input.panel_button.resume:hover {
+    color: white;
+    background-color: #4e7070;
+}
+
 svg {
     border:1px solid black;
 }
@@ -925,4 +938,13 @@ div.stat.left {
 
 div.stat.desc {
     display: none;
+}
+
+div.popBody.node {
+    position: absolute;
+    width: 15%;
+    height: 100%;
+    background-color: white;
+    right: 0;
+    transform: translate(100%,0);
 }

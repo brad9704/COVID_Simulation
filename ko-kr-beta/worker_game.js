@@ -170,6 +170,7 @@ var reportSim = function(iter) {
             state: node.state,
             age: node.age,
             mask: node.mask,
+            vaccine: node.vaccine,
             loc: node.loc,
             flag: node.flag,
             queue: node.queue.length,
