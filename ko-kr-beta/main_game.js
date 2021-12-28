@@ -315,7 +315,7 @@ function show_result(param) {
 
 
     $("#popup_result").fadeIn();
-    $("#popup_result > div.popBg,#exit").on("click", function() {
+    $("#popup_result > #exit").on("click", function() {
         $("#popup_result").fadeOut(200);
         reset_simulation();
     });
@@ -376,10 +376,19 @@ function node_init(param, node_data, loc) {
             d3.select("output.node.vaccine").text(d.vaccine);
             d3.select("div.popBody.node").style("transform", "translate(0,0)");
             d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
+            clearInterval(run);
+            run = null;
         })
         .on("mouseleave", function(d) {
             d3.select("div.popBody.node").style("transform","translate(100%,0)");
             d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "auto");
+            run = setInterval(() => {
+                if (receive) {
+                    w.postMessage({type: "REPORT", data: running_speed});
+                    receive = false;
+                    receive_time += running_speed;
+                }
+            }, tick);
         });
 
     sim_board.select("svg")
@@ -439,10 +448,19 @@ function node_update(param, node_data) {
                     d3.select("output.node.vaccine").text(d.vaccine);
                     d3.select("div.popBody.node").style("transform", "translate(0,0)");
                     d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
+                    clearInterval(run);
+                    run = null;
                 })
                 .on("mouseleave", function(d) {
                     d3.select("div.popBody.node").style("transform","translate(100%,0)");
                     d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "auto");
+                    run = setInterval(() => {
+                        if (receive) {
+                            w.postMessage({type: "REPORT", data: running_speed});
+                            receive = false;
+                            receive_time += running_speed;
+                        }
+                    }, tick);
                 }),
             update => update
                 .attr("cx", d => d.x)
