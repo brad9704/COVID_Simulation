@@ -374,13 +374,13 @@ function node_init(param, node_data, loc) {
             d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
             d3.select("output.node.mask").text(d.mask);
             d3.select("output.node.vaccine").text(d.vaccine);
-            d3.select("div.popBody.node").style("transform", "translate(0,0)");
+            d3.select("div.popBody.node").style("opacity","1");
             d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
             clearInterval(run);
             run = null;
         })
         .on("mouseleave", function(d) {
-            d3.select("div.popBody.node").style("transform","translate(100%,0)");
+            d3.select("div.popBody.node").style("opacity","0");
             d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "auto");
             run = setInterval(() => {
                 if (receive) {
@@ -446,13 +446,13 @@ function node_update(param, node_data) {
                     d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
                     d3.select("output.node.mask").text(d.mask);
                     d3.select("output.node.vaccine").text(d.vaccine);
-                    d3.select("div.popBody.node").style("transform", "translate(0,0)");
+                    d3.select("div.popBody.node").style("opacity","1");
                     d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
                     clearInterval(run);
                     run = null;
                 })
                 .on("mouseleave", function(d) {
-                    d3.select("div.popBody.node").style("transform","translate(100%,0)");
+                    d3.select("div.popBody.node").style("opacity","0");
                     d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "auto");
                     run = setInterval(() => {
                         if (receive) {
