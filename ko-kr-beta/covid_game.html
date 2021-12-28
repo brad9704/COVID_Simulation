@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.10.05-->
+<!--ver.2021.12.28.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -16,15 +16,14 @@
             <output id="speed_out">1x</output>
         </div>
         <div class="button">
-            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<<">
-            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
+            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<">
+            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">">
         </div>
     </div>
 </div>
 <div class="board" id="board">
     <div id="sim_board"></div>
     <div class="daily legend">
-        <img src="img/info_panel.svg">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
         <output class="daily legend duration E2-I1">0-0</output>
         <output class="daily legend duration I1-I2">0-0</output>
@@ -40,13 +39,13 @@
         <output class="daily legend num R1">0</output>
         <output class="daily legend num R2">0</output>
     </div>
-    <div id="chart_board"></div>
-    <div id="death_board"></div>
+    <div id="chart_board" class="graph"></div>
+    <div id="death_board" class="graph"></div>
 </div>
 <div class="control_panel">
     <div class="panel_button">
-        <input id="button_stop" class="panel_button stop" type="button" onclick="reset_simulation()" value="Stop">
-        <input id="button_pause" class="panel_button pause" type="button" onclick="toggle_run()" value="Pause">
+        <input id="button_stop" class="panel_button stop" type="button" onclick="reset_simulation()">
+        <input id="button_pause" class="panel_button pause" style="display:none;" type="button" onclick="toggle_run()">
     </div>
     <div class="panel_footer">
         <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
@@ -294,33 +293,29 @@
                 <div class="stat left">
                     <table class="stat def">
                         <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
-                            <td class="stat label stat1">잠복기</td>
                             <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
                             <td class="stat value stat1"><output class="stat value stat1">0</output></td>
                             <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
                         </tr>
                         <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
-                            <td class="stat label stat2">감염 기간</td>
                             <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
                             <td class="stat value stat2"><output class="stat value stat2">0</output></td>
                             <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
                         </tr>
                         <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
-                            <td class="stat label stat3">전염성</td>
                             <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
                             <td class="stat value stat3"><output class="stat value stat3">0</output></td>
                             <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
                         </tr>
                         <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
-                            <td class="stat label stat4">중증이환률</td>
                             <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
                             <td class="stat value stat4"><output class="stat value stat4">0</output></td>
                             <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
                         </tr>
                     </table>
-                    <text class="stat label total">남은 포인트: <output class="stat value total">25</output></text>
+                    <text><output class="stat value total">25</output></text>
                 </div>
-                <div class="stat description">
+                <div class="stat description" style="display:none">
                     <div class="stat desc stat1">
                         <b>잠복기</b><br>
                         감염 증상이 더 오랜 시간 후에 나타나게 하여 방역책임자들을 혼란스럽게 합니다.<br>
@@ -346,11 +341,9 @@
                 </div>
             </div>
             <div class="control" id="Simulation">
-                <input id="button_start" type="button" onclick="start_simulation()" value="Start">
-                <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
+                <input id="button_start" type="button" onclick="start_simulation()">
             </div>
             <div class="daily legend">
-                <img src="img/info_panel_init.svg">
                 <div class="virus name"><input type="text" class="virus name" value="COVID-19" onchange="$('text.virus.name').text(this.value)"></div>
                 <output class="daily legend duration E2-I1">0-0</output>
                 <output class="daily legend duration I1-I2">0-0</output>
@@ -385,6 +378,11 @@
             Stage: <output class="node stage"></output><br>
             Mask: <output class="node mask"></output><br>
             Vaccine: <output class="node vaccine"></output><br>
+        </p>
+    </div>
+    <div class="node char etc">
+        <p>
+            <output class="node etc"></output>
         </p>
     </div>
 </div>

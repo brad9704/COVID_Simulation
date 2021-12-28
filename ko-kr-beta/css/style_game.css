@@ -1,13 +1,21 @@
 @font-face {
     font-family: 'KoPubDotumMedium';
-    src: url('KoPubDotumMedium.woff') format('woff');
+    src: url('fonts/KoPubDotumMedium.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 @font-face {
     font-family: 'KoPubDotumBold';
-    src: url('KoPubDotumMedium.woff') format('woff');
+    src: url('fonts/KoPubDotumMedium.woff') format('woff');
     font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ONEMobilePOPRegular';
+    src:url('fonts/ONEMobilePOP.eot?#iefix') format('embedded-opentype'),
+    url('fonts/ONEMobilePOP.woff') format('woff'),
+    url('fonts/ONEMobilePOP.ttf') format('truetype');
+    font-weight: normal;
     font-style: normal;
 }
 
@@ -15,30 +23,51 @@ body {
     width: 100%;
     display: flex;
     margin: 0; padding: 0;
-    font-family: KoPubDotumMedium, sans-serif;
+    font-family: ONEMobilePOPRegular, sans-serif;
     font-size: 75%;
-    background-color: white;
+    background-image: url("../img/배경.png");
+    background-repeat: no-repeat;
 }
-.controls{
-    padding: 0 5px;
+div.controls{
+    background-image: url("../img/시작화면 - 배경.png");
+    background-repeat: no-repeat;
+    padding: 0;
     justify-content:space-between;
     flex-direction:column;
     position:absolute;
-    top:0;
-    left:50%;
-    width:800px;
-    margin:20px 0 0 -400px;
+    top: 10%;
+    left: 25%;
+    width: 952px;
+    height: 708px;
     text-align:left;
-    border-radius:5px;
-    background-color: #fff;
-    font-size: 90%;
 }
-.controls .control {
-    background-color: #eee;
-    border-radius: 3px;
-    padding: 5px;
-    margin: 5px 0;
+div.controls div,img,input {
+    margin: 0;
+    padding: 0;
+    border: none;
 }
+div.controls > div.stat.wrapper > div.stat.left {
+    background-image: url("../img/시작화면 - 스탯창.png");
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 250px;
+    right: 70px;
+    width: 258px;
+    height: 243px;
+}
+div.controls > div.control > input[type=button] {
+    background-image: url("../img/시작화면 - 버튼.png");
+    background-repeat: no-repeat;
+    position: absolute;
+    right: 70px;
+    top: 490px;
+    width: 258px;
+    height: 157px;
+}
+div.controls > div.control > input[type=button]:hover {
+    filter: hue-rotate(45deg);
+}
+
 #init_setting input[type=range] {
     -webkit-appearance: none;
     appearance: none;
@@ -77,20 +106,6 @@ body {
 .controls .control p label { margin-right: .5em; font-size: 120%; font-weight: bold;}
 .controls .control p { margin-top: 0;}
 
-.board {
-    position: absolute;
-    border: 1px solid black;
-    width: 1650px;
-    height: 800px;
-    left: 135px;
-}
-.board div {
-    position: absolute;
-    width: 800px;
-    height: 800px;
-    display: inline;
-}
-
 .board .svg_wrapper_Outside{
     float: left;
 }
@@ -99,14 +114,14 @@ body {
     text-align: center;
     font-weight: bold;
 }
-div.control_panel {
+div.panel_footer {
     position: absolute;
-    border: 1px solid black;
-    background-image: url("../img/control_panel.svg");
-    width: 1650px;
-    height: 160px;
-    left: 135px;
-    top: 800px;
+    background-image: url("../img/메인 - 하단 패널.png");
+    background-repeat: no-repeat;
+    top: 760px;
+    left: 345px;
+    width: 1045px;
+    height: 158px;
 }
 
 div.panel_output {
@@ -118,66 +133,21 @@ div.panel_output {
     font-weight: bold;
 }
 div.panel_output.infectious {
-    left: 115px;
+    left: 122px;
 }
 div.panel_output.hospital {
-    left: 415px;
+    left: 277px;
 }
 div.panel_output.death {
-    left: 715px;
+    left: 425px;
 }
 div.panel_output.GDP {
-    left: 1015px;
+    left: 608px;
 }
 div.panel_output.budget {
-    left: 1315px;
+    left: 795px;
 }
 
-div.panel_button {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    width: 100px;
-}
-input.panel_button {
-    display: block;
-    border: 1px solid black;
-    background-color: rgba(0,0,0,0);
-    color: #4e7070;
-    padding: 5px;
-    font-size: 18px;
-    width: 80px;
-    height: 45px;
-    margin: 0 auto;
-}
-input.panel_button {
-    color: white;
-    background-color: #4e7070;
-}
-input.panel_button:hover {
-    color: #4e7070;
-    background-color: white;
-}
-input.panel_button.stop:hover {
-    color: #254488;
-    background-color: white;
-}
-input.panel_button.stop {
-    color: white;
-    background-color: #667cb8;
-}
-input.panel_button.resume {
-    color: #4e7070;
-    background-color: white;
-}
-input.panel_button.resume:hover {
-    color: white;
-    background-color: #4e7070;
-}
-
-svg {
-    border:1px solid black;
-}
 .popup {
     display:none;
     position:fixed;
@@ -290,128 +260,105 @@ svg.result.legend {
     color: white;
     background-color: #578172;
 }
-
-#popup_init #button_start {
-    margin: 15px auto;
-    max-width: 100%;
-    display: block;
-    width: 80px;
-    font-size: 18px;
-    color: #578172;
-    background-color: rgba(0,0,0,0);
-    border: 1px solid black;
-    border-radius: 5px;
+#sim_board {
+    background-image: url("../img/시뮬레이션_배경.png");
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 67px;
+    left: 234px;
+    width: 883px;
+    height: 620px;
 }
-#popup_init #button_start:hover {
-    color: white;
-    background-color: #578172;
+#sim_board svg {
+    position: absolute;
+    bottom: 0;
+    left: 41px;
 }
 #sim_board circle {
-    stroke: black;
-    stroke-width: 1px;
+    stroke: none;
 }
 
 #sim_board circle[fill="#000000"] {
     opacity: 0.2;
 }
 
-.sidebar {
-    width: 125px;
-    height: 100%;
-    border: 1px solid black;
-    border-radius: 5px;
+div.sidebar {
+    position: absolute;
+    top: 760px;
+    left: 192px;
+    width: 140px;
+    height: 154px;
+    background-image: url("../img/메인 - 날짜 및 배속.png");
+    background-repeat: no-repeat;
 }
-.sidebar div {
-    border-radius: 5px;
-    background-color: white;
-}
-.sidebar .Day {
-    padding: 5px;
-    margin: 5px;
-    width: 80%;
-    height: 50px;
-    border: 1px solid black;
-    border-radius: 5px;
-    font-size: 17px;
+div.sidebar div.Day {
+    font-size: 25px;
+    position: absolute;
+    top: 30px;
     text-align: center;
-    line-height: 50px;
+    width: 140px;
 }
-.sidebar .speed {
-    padding: 5px;
-    margin: 5px;
-    width: 80%;
-    height: 50px;
-    top: 70px;
-}
-.sidebar .speed .button {
-    width: 100%;
-}
-.sidebar .speed .button input {
-    width: 49%;
-    margin-top: 3px;
-    padding: 0;
-}
-.sidebar .speed .button #speed_slower {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    margin-right: -2px;
-}
-.sidebar .speed .button #speed_faster {
-    margin-left: -2.5px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-div.auto {
-    margin: 0 0 0 45px;
-}
-
-#speed_output_wrapper {
+div.sidebar div.speed {
+    position: absolute;
+    top: 105px;
+    width: 140px;
+    height: 28px;
+    font-size: 25px;
     text-align: center;
-    font-size: 18px;
-    width: 100%;
-    font-weight: bold;
-    border: 1px solid black;
-    border-radius: 5px;
 }
-.speed input[type=button] {
-    margin: 1px;
-    display: inline;
-    width: 46.5%;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: #b0dcde;
-    color: black;
+div.sidebar div.button input {
+    background: none;
+    position: absolute;
+    top: 0;
+    font-size: 30px;
+    opacity: 0;
+    cursor: pointer;
+}
+#speed_faster {
+    right: 20px;
+}
+#speed_slower {
+    left: 15px;
 }
 
-.speed input[type=button]:hover {
-    background-color: #254488;
-    color: white;
+div.control_panel div.panel_button {
+    position: absolute;
+    top: 760px;
+    left: 1400px;
+    width: 328px;
+    height: 158px;
+}
+
+input.panel_button {
+    display: block;
+    background-image: url("../img/메인 - STOP 아이콘.png");
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    width: 328px;
+    height: 158px;
+}
+input.panel_button:hover {
+    transform: scale(1.05);
+    filter: hue-rotate(90deg);
+    box-shadow: 5px 5px rgba(0,0,0,0.2);
 }
 
 #board > div.daily.legend {
     position: absolute;
     display: inline-block;
-    top: 0;
-    left: 810px;
-    height: 300px;
+    top: 48px;
+    left: 1150px;
     padding: 0;
 }
 
 div.daily.legend {
-    position: relative;
+    background-image: url("../img/시작화면 - 정보패널.png");
+    position: absolute;
+    top: 250px;
     display: inline-block;
-    height: 300px;
-}
-
-#board > div.daily.legend img {
-    padding: 0;
-    margin: 0;
-    width: 800px;
-}
-
-div.daily.legend img {
-    height: 300px;
+    width: 571px;
+    height: 398px;
+    left: 52px;
 }
 
 select.virus.selection {
@@ -419,7 +366,7 @@ select.virus.selection {
     top: 10px;
     right: 20px;
     font-size: 21px;
-    font-family: KoPubDotumMedium, sans-serif;
+    font-family: ONEMobilePOPRegular, sans-serif;
 }
 select.virus.selection option {
     text-align: left;
@@ -427,82 +374,88 @@ select.virus.selection option {
 
 div.virus.name {
     position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 338px;
-    height: 35px;
+    top: 5px;
+    left: 5px;
+    width: 283px;
+    height: 50px;
     text-align: center;
 }
 text.virus.name, input.virus.name {
-    font-weight: bold;
     color: white;
-    font-size: 30px;
-    font-family: "chiller", sans-serif;
-    letter-spacing: 2px;
+    font-size: 20px;
+    font-family: ONEMobilePOPRegular, sans-serif;
 }
 input.virus.name {
     background: none;
     border: none;
     text-align: center;
-    width: 338px;
+    width: 283px;
+    height: 50px;
+}
+text.virus.name {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    text-align: center;
+    width: 283px;
+    height: 20px;
 }
 
 output.daily.legend {
     position: absolute;
-    font-size: 22px;
+    font-size: 18px;
     color: white;
 }
+
+div.daily.legend > output.duration, output.rate {
+    top: 107px;
+}
 output.daily.legend.duration.E2-I1 {
-    top: 79px;
-    right: 687px;
+    right: 495px;
 }
 output.daily.legend.duration.I1-I2 {
-     top: 79px;
-     right: 355px;
+     right: 308px;
  }
 output.daily.legend.duration.I1-R1 {
-    top: 79px;
-    right: 504px;
+    right: 403px;
 }
 output.daily.legend.rate.infectious {
-    top: 79px;
-    right: 207px;
+    right: 175px;
 }
 output.daily.legend.rate.severity {
-    top: 79px;
-    right: 55px;
+    right: 65px;
 }
 
 output.daily.legend.num {
     color: black;
-    top: 158px;
+    top: 230px;
 }
 output.daily.legend.num.S {
-    right: 710px;
+    right: 502px;
 }
 output.daily.legend.num.E1 {
-    right: 600px;
+    right: 440px;
 }
 output.daily.legend.num.E2 {
-    right: 485px;
+    right: 360px;
 }
 output.daily.legend.num.I1 {
-    right: 371px;
+    right: 280px;
 }
 output.daily.legend.num.I2 {
-    top: 193px;
-    right: 260px;
+    top: 280px;
+    right: 200px;
 }
 output.daily.legend.num.H2 {
-    top: 193px;
-    right: 142px;
+    top: 280px;
+    right: 120px;
 }
 output.daily.legend.num.R1 {
-    right: 22px;
+    right: 40px;
 }
 output.daily.legend.num.R2 {
-    top: 237px;
-    right: 22px;
+    top: 340px;
+    right: 40px;
 }
 
 .board svg.legend {
@@ -526,16 +479,28 @@ output.daily.legend.num.R2 {
     height: 140px;
 }
 
-#death_board {
+div.graph {
     position: absolute;
-    left: 810px;
-    top: 310px;
+    background-image: url("../img/메인 - 그래프 패널.png");
+    left: 1150px;
+    top: 458px;
+    width: 573px;
+    height: 232px;
+    color: black;
+}
+div.graph g.tick text {
+    font: 80% ONEMobilePOPRegular, sans-serif;
+    transform: translateY(-3px);
+}
+div.graph g.Yaxis {
+    display: none;
+}
+div.graph g.Xaxis path {
+    display: none;
 }
 
 #chart_board {
-    position: absolute;
-    left: 810px;
-    top: 555px;
+    display: none;
 }
 
 #popup_weekly .popInnerBox {
@@ -552,7 +517,7 @@ output.daily.legend.num.R2 {
 input.weekly.tab.switch {
     margin-right: -10px;
     font-size: 22px;
-    font-family: KoPubDotumMedium, sans-serif;
+    font-family: ONEMobilePOPRegular, sans-serif;
     width: 340px;
     height: 50px;
     background-color: white;
@@ -824,7 +789,6 @@ line.weekly.border.visible {
     background-color: #C00000;
 }
 
-
 .panel_policy input[type=number] {
     width: 40px;
 }
@@ -902,31 +866,31 @@ div.weekly p {
 }
 
 
-
-td.stat.label {
-    padding-left: 10px;
-    padding-right: 10px;
-    border-right: 1px solid black;
-}
-td.stat.value {
-    text-align: center;
-}
-
-text.stat.total {
-    padding-left: 10px;
-}
-
 table.stat {
     border-collapse: collapse;
-    border: 1px solid black;
-    font-size: 15px;
+    font-size: 18px;
     color: black;
-    margin: 10px;
+    position: absolute;
+    top: 60px;
+    left: 169px;
+    width: 68px;
 }
-
-div.stat.left {
-    display: inline-block;
-    position: relative;
+table.stat td {
+    height: 22px;
+}
+table.stat td.stat.value {
+    text-align: center;
+    width: 40px;
+}
+table.stat input {
+    cursor: pointer;
+}
+div.stat.left text {
+    position: absolute;
+    top: 165px;
+    left: 183px;
+    width: 40px;
+    text-align: center;
 }
 
 .stat.description {
@@ -947,4 +911,5 @@ div.popBody.node {
     background-color: white;
     right: 0;
     transform: translate(100%,0);
+    font-size: 22px;
 }

@@ -57,7 +57,7 @@ function get_params() {
     }
 
     param["sim_width"] = 800;
-    param["sim_height"] = 800;
+    param["sim_height"] = 580;
 
     return param;
 }
@@ -327,9 +327,7 @@ function show_result(param) {
 Initializes node canvas
  */
 function node_init(param, node_data, loc) {
-    let sim_board = d3.select("#sim_board")
-        .attr("width", param.sim_width)
-        .attr("height", param.sim_height);
+    let sim_board = d3.select("#sim_board");
 
     sim_board.append("svg")
         .attr("id", "sim_container")
@@ -377,11 +375,11 @@ function node_init(param, node_data, loc) {
             d3.select("output.node.mask").text(d.mask);
             d3.select("output.node.vaccine").text(d.vaccine);
             d3.select("div.popBody.node").style("transform", "translate(0,0)");
-            d3.select("#node_" + d.index).attr("r", param.size * 2);
+            d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
         })
         .on("mouseleave", function(d) {
             d3.select("div.popBody.node").style("transform","translate(100%,0)");
-            d3.select("#node_" + d.index).attr("r", param.size);
+            d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "auto");
         });
 
     sim_board.select("svg")
@@ -440,18 +438,19 @@ function node_update(param, node_data) {
                     d3.select("output.node.mask").text(d.mask);
                     d3.select("output.node.vaccine").text(d.vaccine);
                     d3.select("div.popBody.node").style("transform", "translate(0,0)");
-                    d3.select("#node_" + d.index).attr("r", param.size * 2);
+                    d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
                 })
                 .on("mouseleave", function(d) {
                     d3.select("div.popBody.node").style("transform","translate(100%,0)");
-                    d3.select("#node_" + d.index).attr("r", param.size);
+                    d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "auto");
                 }),
             update => update
                 .attr("cx", d => d.x)
                 .attr("cy", d => d.y)
                 .attr("class", d => (d.mask) ? "node_" + d.state + " mask" : "node_" + d.state)
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
-                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
+                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state),
+            exit => exit.remove()
         );
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
         let temp = node_data.filter(e => e.state === state[stat]).length;
@@ -466,17 +465,15 @@ function node_update(param, node_data) {
 
 function chart_init(param) {
 
-    var chart_board = d3.select("#chart_board")
-        .attr("width", param.sim_width)
-        .attr("height", param.sim_height * 0.3);
+    var chart_board = d3.select("#chart_board");
 
-    var margin = {top:20, right: 80, bottom: 30, left: 50},
-        width = param.sim_width - margin.left - margin.right,
-        height = param.sim_height * 0.3 - margin.top - margin.bottom;
-    var x = d3.scaleLinear().range([0,width]),
-        y = d3.scaleLinear().range([height,0]);
-    var xAxis = d3.axisBottom().scale(x),
-        yAxis = d3.axisLeft().scale(y);
+    var margin = {top:20, right: 20, bottom: 15, left: 58},
+        width = chart_board.node().getBoundingClientRect().width - margin.left - margin.right,
+        height = chart_board.node().getBoundingClientRect().height - margin.top - margin.bottom;
+    var x1 = d3.scaleLinear().range([0,width]),
+        y1 = d3.scaleLinear().range([height,0]);
+    var xAxis1 = d3.axisBottom().scale(x1),
+        yAxis1 = d3.axisLeft().scale(y1);
 
     var svg = chart_board.append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -490,9 +487,15 @@ function chart_init(param) {
     svg.append("g")
         .attr("class", "Yaxis");
 
-    var death_board = d3.select("#death_board")
-        .attr("width", param.sim_width)
-        .attr("height", param.sim_height * 0.3);
+    var death_board = d3.select("#death_board");
+    width = death_board.node().getBoundingClientRect().width - margin.left - margin.right;
+    height = death_board.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+    var x2 = d3.scaleLinear().range([0,width]),
+        y2 = d3.scaleLinear().range([height,0]);
+    var xAxis2 = d3.axisBottom().scale(x2),
+        yAxis2 = d3.axisLeft().scale(y2);
+    
     var death_svg = death_board.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -505,7 +508,7 @@ function chart_init(param) {
     death_svg.append("g")
         .attr("class", "Yaxis");
 
-    var death_legend = death_board.append("svg")
+/*    var death_legend = death_board.append("svg")
         .attr("class", "legend");
     death_legend.append("circle")
         .attr("cx", 10).attr("cy", 15)
@@ -527,18 +530,22 @@ function chart_init(param) {
         .text("Dead");
     death_legend.append("text")
         .attr("x", 25).attr("y", 60)
-        .text("Daily GDP");
+        .text("Daily GDP");*/
 
-    return {x:x, y:y, xAxis:xAxis, yAxis:yAxis, svg:svg, death_svg: death_svg};
+    return {x1:x1, y1:y1, x2:x2, y2:y2, xAxis1:xAxis1, yAxis1:yAxis1, xAxis2:xAxis2, yAxis2:yAxis2, svg:svg, death_svg: death_svg};
 }
 
 function chart_update(param, chart_param, chart_data) {
-    let x = chart_param.x,
-        y = chart_param.y,
-        xAxis = chart_param.xAxis,
-        yAxis = chart_param.yAxis,
-        svg = chart_param.svg,
-        death_svg = chart_param.death_svg;
+    let x1 = chart_param.x1,
+        y1 = chart_param.y1,
+        x2 = chart_param.x2,
+        y2 = chart_param.y2,
+        xAxis1 = chart_param.xAxis1,
+        yAxis1 = chart_param.yAxis1,
+        xAxis2 = chart_param.xAxis2,
+        yAxis2 = chart_param.yAxis2,
+        svg1 = chart_param.svg,
+        svg2 = chart_param.death_svg;
 
     let chart_data_total = [];
     chart_data.forEach(data => {
@@ -565,22 +572,22 @@ function chart_update(param, chart_param, chart_data) {
     $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 10000) / 100);
     $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 10000) / 100);
 
-    x.domain([0, d3.max(chart_data_total, function(d) {
+    x1.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
     })]);
-    svg.selectAll(".Xaxis")
-        .call(xAxis);
+    svg1.selectAll(".Xaxis")
+        .call(xAxis1);
 
-    y.domain([0, param.node_num]);
-    svg.selectAll(".Yaxis")
-        .call(yAxis);
+    y1.domain([0, param.node_num]);
+    svg1.selectAll(".Yaxis")
+        .call(yAxis1);
 
 
     var stack = d3.stack()
         .keys(["R2","R1","H2","H1","I2","I1","E2","E1","S"]);
     var series = stack(chart_data_total);
 
-    var v = svg.selectAll(".line")
+    var v = svg1.selectAll(".line")
         .data(series);
     v
         .enter()
@@ -589,16 +596,10 @@ function chart_update(param, chart_param, chart_data) {
         .merge(v)
         .style("fill", function(d) { if (d.key === "E1" || d.key === "E2") {return state.S;} else return state[d.key];})
         .attr("d", d3.area()
-            .x(function(d) {return x(d.data.tick);})
-            .y0(function(d) {return y(d[0]);})
-            .y1(function(d) {return y(d[1]);})
+            .x(function(d) {return x1(d.data.tick);})
+            .y0(function(d) {return y1(d[0]);})
+            .y1(function(d) {return y1(d[1]);})
             .curve(d3.curveBasis));
-
-    death_svg.selectAll(".Xaxis")
-        .call(xAxis);
-    death_svg.selectAll(".Yaxis")
-        .call(yAxis);
-
 
     let chart_data_ = chart_data_total.reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
@@ -607,7 +608,17 @@ function chart_update(param, chart_param, chart_data) {
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
 
-    var v2 = death_svg.selectAll(".line")
+    x2.domain([0, d3.max(chart_data_total, function(d) {
+        return d["tick"];
+    })]);
+    svg2.selectAll(".Xaxis")
+        .call(xAxis2);
+
+    y2.domain([0, param.node_num]);
+    svg2.selectAll(".Yaxis")
+        .call(yAxis2);
+
+    var v2 = svg2.selectAll(".line")
         .data(chart_data_);
     v2.enter()
         .append("path")
@@ -619,10 +630,10 @@ function chart_update(param, chart_param, chart_data) {
         .attr("d", function (e) {
             return d3.line()
                 .x(function (d) {
-                    return x(d[0]);
+                    return x2(d[0]);
                 })
                 .y(function (d) {
-                    return y(d[1]);
+                    return y2(d[1]);
                 })
                 .curve(d3.curveBasis)(e.data);
         });
