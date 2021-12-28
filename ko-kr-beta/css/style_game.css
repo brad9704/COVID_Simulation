@@ -7,7 +7,7 @@
 @font-face {
     font-family: 'KoPubDotumBold';
     src: url('fonts/KoPubDotumMedium.woff') format('woff');
-    font-weight: bold;
+    
     font-style: normal;
 }
 @font-face {
@@ -103,7 +103,7 @@ div.controls > div.control > input[type=button]:hover {
 }
 
 .controls .control label { display: inline-block; }
-.controls .control p label { margin-right: .5em; font-size: 120%; font-weight: bold;}
+.controls .control p label { margin-right: .5em; font-size: 120%;}
 .controls .control p { margin-top: 0;}
 
 .board .svg_wrapper_Outside{
@@ -112,7 +112,6 @@ div.controls > div.control > input[type=button]:hover {
 .board div span {
     font-size: 10px;
     text-align: center;
-    font-weight: bold;
 }
 div.panel_footer {
     position: absolute;
@@ -130,7 +129,6 @@ div.panel_output {
     width: 315px;
     top: 100px;
     text-align: center;
-    font-weight: bold;
 }
 div.panel_output.infectious {
     left: 122px;
@@ -217,7 +215,6 @@ div.panel_output.budget {
 #popup_result div.popBody table.result tr.label {
     height: 40px;
     border-bottom: 1px solid black;
-    font-weight: bold;
 }
 #popup_result div.popBody table.result td {
 }
@@ -634,14 +631,14 @@ div.weekly_board > svg > g > g.xAxis > g.tick {
 }
 output.weekly.infectious {
     color: white;
-    font-weight: bold;
+    
     position: absolute;
     top: 360px;
     right: 630px;
 }
 output.weekly.death {
     color: white;
-    font-weight: bold;
+    
     position: absolute;
     top: 360px;
     right: 220px;
@@ -729,7 +726,7 @@ div.weekly.area.caution {
 }
 div.weekly.area.caution p {
     color: red;
-    font-weight: bold;
+    
 }
 div.weekly.budget.update {
     position: absolute;
@@ -740,7 +737,7 @@ div.weekly.budget.update {
 }
 div.weekly.budget.update p {
     color: blue;
-    font-weight: bold;
+    
 }
 svg.weekly.area.lines {
     position: absolute;
@@ -806,7 +803,6 @@ line.weekly.border.visible {
 
 .table_ages td {
     color: blue;
-    font-weight: bold;
 }
 
 .panel_status {
@@ -818,7 +814,6 @@ line.weekly.border.visible {
     width: 25%;
     border: none;
     text-align: center;
-    font-weight: bold;
     color: black;
 }
 tr.panel.var td{
