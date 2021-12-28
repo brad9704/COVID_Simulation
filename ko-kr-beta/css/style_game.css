@@ -300,7 +300,7 @@ div.sidebar div.speed {
     top: 105px;
     width: 140px;
     height: 28px;
-    font-size: 25px;
+    font-size: 23px;
     text-align: center;
 }
 div.sidebar div.button input {
@@ -398,61 +398,67 @@ text.virus.name {
     height: 20px;
 }
 
-output.daily.legend {
+div.daily.duration, div.daily.rate, div.daily.num {
     position: absolute;
     font-size: 18px;
     color: white;
+    text-align: center;
+    width: 50px;
 }
 
-div.daily.legend > output.duration, output.rate {
+div.daily > output {
+    text-align: center;
+}
+
+div.daily.legend > div.duration, div.rate {
     top: 107px;
 }
-output.daily.legend.duration.E2-I1 {
-    right: 495px;
+div.daily.duration.E2-I1 {
+    right: 483px;
 }
-output.daily.legend.duration.I1-I2 {
-     right: 308px;
+div.daily.duration.I1-I2 {
+     right: 298px;
  }
-output.daily.legend.duration.I1-R1 {
-    right: 403px;
+div.daily.duration.I1-R1 {
+    right: 389px;
 }
-output.daily.legend.rate.infectious {
-    right: 175px;
+div.daily.rate.infectious {
+    right: 172px;
 }
-output.daily.legend.rate.severity {
-    right: 65px;
+div.daily.rate.severity {
+    right: 60px;
 }
 
-output.daily.legend.num {
+div.daily.num {
     color: black;
     top: 230px;
 }
-output.daily.legend.num.S {
-    right: 502px;
+div.daily.num.S {
+    right: 500px;
 }
-output.daily.legend.num.E1 {
-    right: 440px;
+div.daily.num.E1 {
+    right: 420px;
 }
-output.daily.legend.num.E2 {
-    right: 360px;
+div.daily.num.E2 {
+    right: 340px;
 }
-output.daily.legend.num.I1 {
-    right: 280px;
+div.daily.num.I1 {
+    right: 260px;
 }
-output.daily.legend.num.I2 {
+div.daily.num.I2 {
     top: 280px;
-    right: 200px;
+    right: 180px;
 }
-output.daily.legend.num.H2 {
+div.daily.num.H2 {
     top: 280px;
-    right: 120px;
+    right: 100px;
 }
-output.daily.legend.num.R1 {
-    right: 40px;
+div.daily.num.R1 {
+    right: 20px;
 }
-output.daily.legend.num.R2 {
+div.daily.num.R2 {
     top: 340px;
-    right: 40px;
+    right: 20px;
 }
 
 .board svg.legend {

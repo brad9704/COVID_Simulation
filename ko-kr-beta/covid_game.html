@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.28.03-->
+<!--ver.2021.12.28.04-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -25,19 +25,19 @@
     <div id="sim_board"></div>
     <div class="daily legend">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
-        <output class="daily legend duration E2-I1">0-0</output>
-        <output class="daily legend duration I1-I2">0-0</output>
-        <output class="daily legend duration I1-R1">0</output>
-        <output class="daily legend rate infectious">0%</output>
-        <output class="daily legend rate severity">0%</output>
-        <output class="daily legend num S">1000</output>
-        <output class="daily legend num E1">0</output>
-        <output class="daily legend num E2">0</output>
-        <output class="daily legend num I1">0</output>
-        <output class="daily legend num I2">0</output>
-        <output class="daily legend num H2">0</output>
-        <output class="daily legend num R1">0</output>
-        <output class="daily legend num R2">0</output>
+        <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
+        <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
+        <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
+        <div class="daily rate infectious"><output class="daily legend rate infectious">0%</output></div>
+        <div class="daily rate severity"><output class="daily legend rate severity">0%</output></div>
+        <div class="daily num S"><output class="daily legend num S">1000</output></div>
+        <div class="daily num E1"><output class="daily legend num E1">0</output></div>
+        <div class="daily num E2"><output class="daily legend num E2">0</output></div>
+        <div class="daily num I1"><output class="daily legend num I1">0</output></div>
+        <div class="daily num I2"><output class="daily legend num I2">0</output></div>
+        <div class="daily num H2"><output class="daily legend num H2">0</output></div>
+        <div class="daily num R1"><output class="daily legend num R1">0</output></div>
+        <div class="daily num R2"><output class="daily legend num R2">0</output></div>
     </div>
     <div id="chart_board" class="graph"></div>
     <div id="death_board" class="graph"></div>
@@ -344,21 +344,20 @@
                 <input id="button_start" type="button" onclick="start_simulation()">
             </div>
             <div class="daily legend">
-                <div class="virus name"><input type="text" class="virus name" value="COVID-19" onchange="$('text.virus.name').text(this.value)"></div>
-                <output class="daily legend duration E2-I1">0-0</output>
-                <output class="daily legend duration I1-I2">0-0</output>
-                <output class="daily legend duration I1-R1">0</output>
-                <output class="daily legend rate infectious">0</output>
-                <output class="daily legend rate severity">0%</output>
-                <output class="daily legend num S">1000</output>
-                <output class="daily legend num E1">0</output>
-                <output class="daily legend num E2">0</output>
-                <output class="daily legend num I1">0</output>
-                <output class="daily legend num I2">0</output>
-                <output class="daily legend num H1" style="display:none;">0</output>
-                <output class="daily legend num H2">0</output>
-                <output class="daily legend num R1">0</output>
-                <output class="daily legend num R2">0</output>
+                <div class="virus name"><text class="virus name">COVID-19</text></div>
+                <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
+                <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
+                <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
+                <div class="daily rate infectious"><output class="daily legend rate infectious">0%</output></div>
+                <div class="daily rate severity"><output class="daily legend rate severity">0%</output></div>
+                <div class="daily num S"><output class="daily legend num S">1000</output></div>
+                <div class="daily num E1"><output class="daily legend num E1">0</output></div>
+                <div class="daily num E2"><output class="daily legend num E2">0</output></div>
+                <div class="daily num I1"><output class="daily legend num I1">0</output></div>
+                <div class="daily num I2"><output class="daily legend num I2">0</output></div>
+                <div class="daily num H2"><output class="daily legend num H2">0</output></div>
+                <div class="daily num R1"><output class="daily legend num R1">0</output></div>
+                <div class="daily num R2"><output class="daily legend num R2">0</output></div>
             </div>
         </div>
 
