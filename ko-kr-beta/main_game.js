@@ -491,7 +491,7 @@ function chart_init(param) {
 
     var chart_board = d3.select("#chart_board");
 
-    var margin = {top:20, right: 20, bottom: 15, left: 58},
+    var margin = {top:20, right: 80, bottom: 15, left: 58},
         width = chart_board.node().getBoundingClientRect().width - margin.left - margin.right,
         height = chart_board.node().getBoundingClientRect().height - margin.top - margin.bottom;
     var x1 = d3.scaleLinear().range([0,width]),
@@ -630,7 +630,7 @@ function chart_update(param, chart_param, chart_data) {
         prev[1].data.push([curr.tick, curr.R2]);
         prev[2].data.push([curr.tick, curr.GDP / chart_data_total[0].GDP * w.param.node_num]);
         return prev;
-    }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}]);
+    }, [{type: "infected", data: [], color: "#2c2680"}, {type: "dead", data: [], color: "#4dd6a5"}, {type: "GDP", data: [], color: "#f5a6b7"}]);
 
     x2.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
