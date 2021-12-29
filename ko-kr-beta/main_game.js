@@ -367,6 +367,12 @@ function node_init(param, node_data, loc) {
         .attr("r", param["size"])
         .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
         .on("mouseover", function(d) {
+            d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
+        })
+        .on("mouseleave", function(d) {
+            if (run !== null) d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "1");
+        })
+        .on("click", function(d) {
             d3.select("output.node.age").text(d.age);
             d3.select("output.node.corr_x").text(Math.round(d.x));
             d3.select("output.node.corr_y").text(Math.round(d.y));
@@ -374,21 +380,21 @@ function node_init(param, node_data, loc) {
             d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
             d3.select("output.node.mask").text(d.mask);
             d3.select("output.node.vaccine").text(d.vaccine);
-            d3.select("div.popBody.node").style("opacity","1");
-            d3.select("#node_" + d.index).attr("r", param.size * 3).style("z-index", "2");
+            $("#popup_node").fadeIn(1);
+            d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + d.y) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + d.x) + "px");
+            d3.select("#popup_node > div.popBg").on("click", function() {
+                $("#popup_node").fadeOut(1);
+                d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "1");
+                run = setInterval(() => {
+                    if (receive) {
+                        w.postMessage({type: "REPORT", data: running_speed});
+                        receive = false;
+                        receive_time += running_speed;
+                    }
+                }, tick);
+            })
             clearInterval(run);
             run = null;
-        })
-        .on("mouseleave", function(d) {
-            d3.select("div.popBody.node").style("opacity","0");
-            d3.select("#node_" + d.index).attr("r", param.size).style("z-index", "auto");
-            run = setInterval(() => {
-                if (receive) {
-                    w.postMessage({type: "REPORT", data: running_speed});
-                    receive = false;
-                    receive_time += running_speed;
-                }
-            }, tick);
         });
 
     sim_board.select("svg")

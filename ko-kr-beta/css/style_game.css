@@ -270,8 +270,10 @@ svg.result.legend {
     position: absolute;
     bottom: 0;
     left: 41px;
+    z-index: 0;
 }
 #sim_board circle {
+    z-index: 1;
     stroke: none;
 }
 
@@ -907,10 +909,14 @@ div.stat.desc {
 
 div.popBody.node {
     position: absolute;
-    width: 15%;
-    height: 1080px;
+    width: auto;
+    height: auto;
     background-color: white;
-    right: 0;
-    opacity: 0;
-    font-size: 22px;
+    top: 0;
+    left: 0;
+    padding: 0 10px;
+    font-size: 18px;
+}
+#popup_node div.popBg {
+    background:rgba(0,0,0,0);
 }
