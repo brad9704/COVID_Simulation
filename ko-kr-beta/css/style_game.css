@@ -141,6 +141,7 @@ div.panel_output.death {
 }
 div.panel_output.GDP {
     left: 608px;
+    font-size: 23px;
 }
 div.panel_output.budget {
     left: 795px;
@@ -273,11 +274,10 @@ svg.result.legend {
     z-index: 0;
 }
 #sim_board circle {
-    z-index: 1;
     stroke: none;
 }
 
-#sim_board circle[fill="#000000"] {
+#sim_board circle.node.R2 {
     opacity: 0.2;
 }
 
@@ -338,7 +338,7 @@ input.panel_button {
 }
 input.panel_button:hover {
     transform: scale(1.05);
-    filter: hue-rotate(90deg);
+    filter: hue-rotate(45deg);
     box-shadow: 5px 5px rgba(0,0,0,0.2);
 }
 
@@ -919,4 +919,8 @@ div.popBody.node {
 }
 #popup_node div.popBg {
     background:rgba(0,0,0,0);
+}
+
+g.nodes {
+    z-index: 0;
 }

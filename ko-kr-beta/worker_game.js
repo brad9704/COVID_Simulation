@@ -6,7 +6,6 @@ importScripts("https://d3js.org/d3.v5.min.js",
 var running_time;
 var simulation;
 var param;
-var chart_data;
 var budget;
 
 onmessage = function(event){
@@ -26,9 +25,6 @@ onmessage = function(event){
         case "REPORT":
             postMessage(reportSim(event.data.data));
             break;
-        case "LOG":
-            postMessage({type: "LOG", data: chart_data});
-            break;
     }
 }
 
@@ -45,7 +41,6 @@ var startSim = function(event_data) {
     }
     assertion(event_data);
     param = event_data;
-    chart_data = [];
     running_time = 0;
     simulation = null;
 
@@ -79,6 +74,7 @@ var startSim = function(event_data) {
             x: node.x,
             y: node.y,
             v: Math.sqrt(node.vx * node.vx + node.vy * node.vy),
+            income: node.income,
             state: node.state,
             age: node.age,
             mask: node.mask,
@@ -123,28 +119,6 @@ function ticked() {
         })
     }, this);
     simulation.nodes().forEach(node => node.dispatch.call("tick", this));
-
-    if (running_time % param.fps === 0) {
-        let node_data = simulation.nodes();
-        let temp_data = {
-            "tick": running_time / param.fps,
-            "GDP": node_data.filter(e => e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v, 0) / 2,
-            "budget": budget
-        };
-        Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
-            temp_data[stat] = [node_data.filter(e => e.state === state[stat] && e.age === "0").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "10").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "20").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "30").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "40").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "50").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "60").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "70").length,
-                node_data.filter(e => e.state === state[stat] && e.age === "80").length,
-                node_data.filter(e => e.state === state[stat]).length];
-        });
-        chart_data.push(temp_data);
-    }
     if (Math.ceil(running_time / (param.fps * param.turnUnit)) !== Math.ceil((running_time + 1) / (param.fps * param.turnUnit))) {
         postMessage({type:"PAUSE"});
     }
@@ -166,7 +140,8 @@ var reportSim = function(iter) {
             index: node.index,
             x: node.x,
             y: node.y,
-            v: Math.hypot(node.vx, node.vy),
+            v: Math.sqrt(node.vx * node.vx + node.vy * node.vy),
+            income: node.income,
             state: node.state,
             age: node.age,
             mask: node.mask,
