@@ -380,8 +380,8 @@ function node_init(param, node_data, loc) {
             d3.select("output.node.loc").text(d.loc.name);
             d3.select("output.node.income").text(d.income);
             d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
-            d3.select("output.node.mask").text(d.mask);
-            d3.select("output.node.vaccine").text(d.vaccine);
+            d3.select("output.node.mask").text(d.mask ? "착용" : "미착용");
+            d3.select("output.node.vaccine").text(d.vaccine ? "1차" : "미접종");
             $("#popup_node").fadeIn(1);
             d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + d.y) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + d.x) + "px");
             d3.select("#popup_node > div.popBg").on("click", function() {
