@@ -269,8 +269,8 @@ svg.result.legend {
 }
 #sim_board svg {
     position: absolute;
-    bottom: 0;
-    left: 41px;
+    bottom: 50px;
+    left: 61px;
     z-index: 0;
 }
 #sim_board circle {

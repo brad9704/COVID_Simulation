@@ -57,8 +57,8 @@ function get_params() {
         param["age_severe"][age] += stat.stat4 * 0.02;
     }
 
-    param["sim_width"] = 800;
-    param["sim_height"] = 580;
+    param["sim_width"] = 760;
+    param["sim_height"] = 480;
 
     return param;
 }
