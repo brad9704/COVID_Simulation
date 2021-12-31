@@ -82,6 +82,7 @@ class Node {
 
         this.state = state.S;
         this.age = age;
+        this.detail_age = Math.floor(Math.random()) * 9 + parseInt(age) + 1;
         this.mask = false;
         this.vaccine = false;
         this.income = 100;

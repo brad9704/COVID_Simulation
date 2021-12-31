@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.29.03-->
+<!--ver.2021.12.31.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -13,7 +13,7 @@
     <div class="Day"><output class="weekly_week">0</output>주 / <output id="turn_day">0</output><text id="day_text">일</text></div>
     <div class="speed">
         <div id="speed_output_wrapper">
-            <output id="speed_out">1x</output>
+            <output id="speed_out">X 1</output>
         </div>
         <div class="button">
             <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<">
@@ -22,7 +22,8 @@
     </div>
 </div>
 <div class="board" id="board">
-    <div id="sim_board"></div>
+    <div id="sim_board">
+    </div>
     <div class="daily legend">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
         <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
@@ -44,8 +45,6 @@
 </div>
 <div class="control_panel">
     <div class="panel_button">
-        <input id="button_stop" class="panel_button stop" type="button" onclick="reset_simulation()">
-        <input id="button_pause" class="panel_button pause" style="display:none;" type="button" onclick="toggle_run()">
     </div>
     <div class="panel_footer">
         <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
@@ -289,55 +288,61 @@
                 <div class="virus selection">
                     <select class="virus selection" onchange="new_virus(value)">
                     </select>
+                    <span class="icoArrow"><img src="img/cursor.png" alt=""></span>
                 </div>
                 <div class="stat left">
                     <table class="stat def">
-                        <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
+                        <tr class="stat group stat1">
+                            <td class="stat info stat1" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');"></td>
+                            <td class="stat block stat1"></td>
                             <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
                             <td class="stat value stat1"><output class="stat value stat1">0</output></td>
                             <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
                         </tr>
-                        <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
+                        <tr class="stat group stat2">
+                            <td class="stat info stat2" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');"></td>
+                            <td class="stat block stat2"></td>
                             <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
                             <td class="stat value stat2"><output class="stat value stat2">0</output></td>
                             <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
                         </tr>
-                        <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
+                        <tr class="stat group stat3">
+                            <td class="stat info stat3" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');"></td>
+                            <td class="stat block stat3"></td>
                             <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
                             <td class="stat value stat3"><output class="stat value stat3">0</output></td>
                             <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
                         </tr>
-                        <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
+                        <tr class="stat group stat4">
+                            <td class="stat info stat4" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');"></td>
+                            <td class="stat block stat4"></td>
                             <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
                             <td class="stat value stat4"><output class="stat value stat4">0</output></td>
                             <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
                         </tr>
                     </table>
                     <text><output class="stat value total">25</output></text>
+                    <div class="stat button clear" onclick="if (role === 'Attack') {
+                        ['stat1','stat2','stat3','stat4'].forEach(e => {
+                            for (let i=0;i<25;i++) {
+                                change_stat(e,-1);
+                            }
+                        });}"></div>
                 </div>
-                <div class="stat description" style="display:none">
+                <div class="stat description">
                     <div class="stat desc stat1">
-                        <b>잠복기</b><br>
-                        감염 증상이 더 오랜 시간 후에 나타나게 하여 방역책임자들을 혼란스럽게 합니다.<br>
-                        매 <b>2 포인트</b>마다 잠복기 (E2)가 하루씩 길어집니다.<br>
+                        <img src="img/잠복기.png" alt="">
                     </div>
                     <div class="stat desc stat2">
-                        <b>감염 기간</b><br>
-                        가벼운 증상이 길어지게 하여 감염자가 더 오래 바이러스를 퍼트리고 다니게 합니다.<br>
-                        매 <b>3 포인트</b>마다 감염기간 (I1, I2)가 각 하루씩 길어집니다.<br>
+                        <img src="img/감염기간.png" alt="">
                     </div>
                     <div class="stat desc stat3">
-                        <b>전염성</b><br>
-                        바이러스가 다른 숙주에게 더 잘 퍼지도록 합니다.<br>
-                        접촉 시 전염성이 매 <b>1 포인트</b>마다 증가합니다.<br>
-                        전염성은 감염자와 접촉 시 매 프레임마다 감염 여부를 결정합니다.<br>
+                        <img src="img/전염성.png" alt="">
                     </div>
                     <div class="stat desc stat4">
-                        <b>중증이환률</b><br>
-                        감염병을 더 치명적으로 만들어 중증 환자의 비율을 증가시킵니다.<br>
-                        매 <b>1 포인트</b>마다 감염자가 중증으로 악화될 확률이 2% 증가하고,<br>
-                        매 <b>2 포인트</b>마다 중증 환자의 회복에 필요한 기간(H)이 하루씩 증가합니다.<br>
+                        <img src="img/중증이환률.png" alt="">
                     </div>
+                    <img class="close_btn" src="img/스탯설명_닫기버튼.png" alt="" onclick="$('div.stat.description').css('display','none');">
                 </div>
             </div>
             <div class="control" id="Simulation">
@@ -366,26 +371,6 @@
 <div id="popup_node" class="popup">
     <div class="popBg">
         <div class="popBody node">
-            <div class="node char basic">
-                <p>
-                    연령 구분: <output class="node age">00</output>대<br>
-                    위치 좌표: (<output class="node corr_x">0</output>,<output class="node corr_y">0</output>)<br>
-                    장소: <output class="node loc">Outside</output><br>
-                    수입: <output class="node income">0</output>$<br>
-                </p>
-            </div>
-            <div class="node char state">
-                <p>
-                    감염병 단계: <output class="node stage"></output><br>
-                    마스크 착용: <output class="node mask"></output><br>
-                    백신 여부: <output class="node vaccine"></output><br>
-                </p>
-            </div>
-            <div class="node char etc">
-                <p>
-                    <output class="node etc"></output>
-                </p>
-            </div>
         </div>
     </div>
 </div>
@@ -396,6 +381,20 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
+<script type="text/javascript">
+    d3.xml("img/node_info.svg").then(data => {
+        d3.select("div.popBody.node").node().append(data.documentElement)
+    });
+    d3.xml("img/STOP_active.svg").then(data => {
+        d3.select("div.panel_button").node().append(data.documentElement)
+    });
+    d3.xml("img/STOP_inactive.svg").then(data => {
+        d3.select("div.panel_button").node().append(data.documentElement)
+    });
+    d3.xml("img/sidebar.svg").then(data => {
+        d3.select("div.sidebar").node().append(data.documentElement)
+    });
+</script>
 <script type="text/javascript">
     var virus_request = new XMLHttpRequest();
     var setting_request = new XMLHttpRequest();

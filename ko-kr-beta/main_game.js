@@ -110,6 +110,7 @@ w.onerror = function(event) {
 
 function initSim(param, initial_node_data, loc) {
     turn_end = true;
+    d3.selectAll("div.panel_button svg").attr("onclick","reset_simulation();");
     d3.selectAll("#board > div > svg").remove()
     $(".popChart").find("div").remove();
     node_init(param, initial_node_data, loc);
@@ -327,13 +328,19 @@ Initializes node canvas
  */
 function node_init(param, node_data, loc) {
     let sim_board = d3.select("#sim_board");
+    d3.xml("img/background.svg")
+        .then(data => {
+            d3.select("#sim_board").append("div")
+                .attr("id", "sim_title")
+                .node().append(data.documentElement)
+        });
 
-    sim_board.append("svg")
+    let sim_cont = sim_board.append("svg")
         .attr("id", "sim_container")
         .attr("width", param.sim_width)
         .attr("height", param.sim_height);
 
-    sim_board.select("svg").append("rect")
+    sim_cont.append("rect")
         .attr("width", param.sim_width / 2)
         .attr("height", param.sim_height / 2)
         .attr("x", 0)
@@ -341,7 +348,7 @@ function node_init(param, node_data, loc) {
         .style("stroke", "none")
         .style("fill", "#A0A0A0")
         .style("opacity", "15%");
-    sim_board.select("svg").append("rect")
+    sim_cont.append("rect")
         .attr("width", param.sim_width / 2)
         .attr("height", param.sim_height / 2)
         .attr("x", param.sim_width / 2)
@@ -350,8 +357,7 @@ function node_init(param, node_data, loc) {
         .style("fill", "#A0A0A0")
         .style("opacity", "15%");
 
-    sim_board.select("svg")
-        .append("g")
+    sim_cont.append("g")
         .attr("id", "nodes")
         .attr("class", "nodes")
         .selectAll("circle")
@@ -374,14 +380,14 @@ function node_init(param, node_data, loc) {
         })
         .on("click", function(d) {
             if (run === null) return;
-            d3.select("output.node.age").text(d.age);
-            d3.select("output.node.corr_x").text(Math.round(d.x));
-            d3.select("output.node.corr_y").text(Math.round(d.y));
-            d3.select("output.node.loc").text(d.loc.name);
-            d3.select("output.node.income").text(d.income);
-            d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
-            d3.select("output.node.mask").text(d.mask ? "착용" : "미착용");
-            d3.select("output.node.vaccine").text(d.vaccine ? "1차" : "미접종");
+            d3.select("tspan.node.age").text(d.detail_age);
+            d3.select("tspan.node.corr_x").text(Math.round(d.x));
+            d3.select("tspan.node.corr_y").text(Math.round(d.y));
+            d3.select("tspan.node.loc").text(d.loc.name);
+            d3.select("tspan.node.income").text(d.income);
+            d3.select("tspan.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
+            d3.select("tspan.node.mask").text(d.mask ? "착용" : "미착용");
+            d3.select("tspan.node.vaccine").text(d.vaccine ? "1차" : "미접종");
             $("#popup_node").fadeIn(1);
             d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + d.y) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + d.x) + "px");
             d3.select("#popup_node > div.popBg").on("click", function() {
@@ -399,8 +405,7 @@ function node_init(param, node_data, loc) {
             run = null;
         });
 
-    sim_board.select("svg")
-        .selectAll("rect")
+    sim_cont.selectAll("rect")
         .data(loc.list)
         .enter().append("rect")
         .attr("class", "locations")
@@ -415,7 +420,7 @@ function node_init(param, node_data, loc) {
 
     let line_rate = parseFloat($("input.policy.rate").val());
 
-    sim_board.select("svg").selectAll("line.svg_line")
+    sim_cont.selectAll("line.svg_line")
         .data([{name: "upper", x1: param.sim_width / 2, y1: param.sim_height * (1 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (1 + line_rate) / 4},
             {name: "lower", x1: param.sim_width / 2, y1: param.sim_height * (3 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (3 + line_rate) / 4},
             {name: "left", x1: param.sim_width * (1 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (1 + line_rate) / 4, y2: param.sim_height / 2},
@@ -456,14 +461,14 @@ function node_update(param, node_data) {
                 })
                 .on("click", function(d) {
                     if (run === null) return;
-                    d3.select("output.node.age").text(d.age);
-                    d3.select("output.node.corr_x").text(Math.round(d.x));
-                    d3.select("output.node.corr_y").text(Math.round(d.y));
-                    d3.select("output.node.loc").text(d.loc.name);
-                    d3.select("output.node.income").text(d.income);
-                    d3.select("output.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
-                    d3.select("output.node.mask").text(d.mask);
-                    d3.select("output.node.vaccine").text(d.vaccine);
+                    d3.select("tspan.node.age").text(d.age);
+                    d3.select("tspan.node.corr_x").text(Math.round(d.x));
+                    d3.select("tspan.node.corr_y").text(Math.round(d.y));
+                    d3.select("tspan.node.loc").text(d.loc.name);
+                    d3.select("tspan.node.income").text(d.income);
+                    d3.select("tspan.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
+                    d3.select("tspan.node.mask").text(d.mask);
+                    d3.select("tspan.node.vaccine").text(d.vaccine);
                     $("#popup_node").fadeIn(1);
                     d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + d.y) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + d.x) + "px");
                     d3.select("#popup_node > div.popBg").on("click", function() {
@@ -503,7 +508,7 @@ function chart_init(param) {
 
     var chart_board = d3.select("#chart_board");
 
-    var margin = {top:20, right: 80, bottom: 15, left: 58},
+    var margin = {top:30, right: 80, bottom: 30, left: 58},
         width = chart_board.node().getBoundingClientRect().width - margin.left - margin.right,
         height = chart_board.node().getBoundingClientRect().height - margin.top - margin.bottom;
     var x1 = d3.scaleLinear().range([0,width]),
@@ -531,7 +536,7 @@ function chart_init(param) {
         y2 = d3.scaleLinear().range([height,0]);
     var xAxis2 = d3.axisBottom().scale(x2),
         yAxis2 = d3.axisLeft().scale(y2);
-    
+
     var death_svg = death_board.append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -543,31 +548,6 @@ function chart_init(param) {
         .attr("class", "Xaxis");
     death_svg.append("g")
         .attr("class", "Yaxis");
-
-/*    var death_legend = death_board.append("svg")
-        .attr("class", "legend");
-    death_legend.append("circle")
-        .attr("cx", 10).attr("cy", 15)
-        .attr("r", 5)
-        .attr("fill", "red");
-    death_legend.append("circle")
-        .attr("cx", 10).attr("cy", 35)
-        .attr("r", 5)
-        .attr("fill", "black");
-    death_legend.append("circle")
-        .attr("cx", 10).attr("cy", 55)
-        .attr("r", 5)
-        .attr("fill", "blue");
-    death_legend.append("text")
-        .attr("x", 25).attr("y", 20)
-        .text("Infected");
-    death_legend.append("text")
-        .attr("x", 25).attr("y", 40)
-        .text("Dead");
-    death_legend.append("text")
-        .attr("x", 25).attr("y", 60)
-        .text("Daily GDP");*/
-
     return {x1:x1, y1:y1, x2:x2, y2:y2, xAxis1:xAxis1, yAxis1:yAxis1, xAxis2:xAxis2, yAxis2:yAxis2, svg:svg, death_svg: death_svg};
 }
 
@@ -840,12 +820,12 @@ function change_speed(direction) {
         if (running_speed === 1) return;
         else if (running_speed === 8 && auto) {
             toggle_auto("0");
-            speed_addr.val(running_speed.toString() + "x");
+            speed_addr.val("X " + running_speed.toString());
             return;
         }
         running_speed /= 2;
     }
-    speed_addr.val(running_speed.toString() + "x");
+    speed_addr.val("X " + running_speed.toString());
 }
 
 function change_stat(stat_index, direction) {

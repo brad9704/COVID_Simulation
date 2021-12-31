@@ -18,6 +18,21 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'ONEMobileTitle';
+    src:url('fonts/ONE Mobile Title.eot?#iefix') format('embedded-opentype'),
+    url('fonts/ONE Mobile Title.woff') format('woff'),
+    url('fonts/ONE Mobile Title.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Silkscreen';
+    src: url('fonts/slkscr.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 body {
     width: 100%;
@@ -47,25 +62,26 @@ div.controls div,img,input {
     border: none;
 }
 div.controls > div.stat.wrapper > div.stat.left {
-    background-image: url("../img/시작화면 - 스탯창.png");
+    background-image: url("../img/stat_setting.png");
     background-repeat: no-repeat;
     position: absolute;
-    top: 250px;
+    top: 307px;
     right: 70px;
     width: 258px;
     height: 243px;
 }
 div.controls > div.control > input[type=button] {
-    background-image: url("../img/시작화면 - 버튼.png");
+    background-image: url("../img/START_inactive.png");
     background-repeat: no-repeat;
     position: absolute;
     right: 70px;
-    top: 490px;
+    top: 549px;
     width: 258px;
-    height: 157px;
+    height: 99px;
+    cursor: pointer;
 }
 div.controls > div.control > input[type=button]:hover {
-    filter: hue-rotate(45deg);
+    background-image: url("../img/START_active.png");
 }
 
 #init_setting input[type=range] {
@@ -259,51 +275,52 @@ svg.result.legend {
     background-color: #578172;
 }
 #sim_board {
-    background-image: url("../img/시뮬레이션_배경.png");
-    background-repeat: no-repeat;
     position: absolute;
     top: 67px;
     left: 234px;
     width: 883px;
     height: 620px;
 }
-#sim_board svg {
+#sim_container {
     position: absolute;
     bottom: 50px;
     left: 61px;
     z-index: 0;
 }
-#sim_board circle {
+#sim_container circle {
     stroke: none;
 }
 
-#sim_board circle.node.R2 {
+#sim_container circle.node.R2 {
     opacity: 0.2;
 }
 
 div.sidebar {
     position: absolute;
-    top: 760px;
-    left: 192px;
-    width: 140px;
-    height: 154px;
-    background-image: url("../img/메인 - 날짜 및 배속.png");
-    background-repeat: no-repeat;
+    top: 754px;
+    left: 185px;
+    width: 156px;
+    height: 170px;
 }
 div.sidebar div.Day {
     font-size: 25px;
     position: absolute;
-    top: 30px;
+    top: 40px;
     text-align: center;
-    width: 140px;
+    width: 100%;
+    color: #2E2886;
 }
 div.sidebar div.speed {
     position: absolute;
-    top: 105px;
-    width: 140px;
+    top: 113px;
+    width: 100%;
     height: 28px;
     font-size: 23px;
     text-align: center;
+    color: #483021;
+}
+div.sidebar div.speed div.button {
+    transform: translateY(-29px);
 }
 div.sidebar div.button input {
     background: none;
@@ -314,32 +331,32 @@ div.sidebar div.button input {
     cursor: pointer;
 }
 #speed_faster {
-    right: 20px;
+    right: 28px;
 }
 #speed_slower {
-    left: 15px;
+    left: 23px;
 }
 
 div.control_panel div.panel_button {
     position: absolute;
-    top: 760px;
+    top: 754px;
     left: 1400px;
-    width: 328px;
-    height: 158px;
+    cursor: pointer;
 }
 
-input.panel_button {
-    display: block;
-    background-image: url("../img/메인 - STOP 아이콘.png");
-    background-repeat: no-repeat;
-    border-radius: 5px;
-    width: 328px;
-    height: 158px;
+div.panel_button svg.active {
+    position: absolute;
+    visibility: hidden;
 }
-input.panel_button:hover {
-    transform: scale(1.05);
-    filter: hue-rotate(45deg);
-    box-shadow: 5px 5px rgba(0,0,0,0.2);
+div.panel_button:hover svg.active {
+    visibility: visible;
+}
+div.panel_button svg.inactive {
+    position: absolute;
+    visibility: visible;
+}
+div.panel_button:hover svg.inactive{
+    visibility: hidden;
 }
 
 #board > div.daily.legend {
@@ -360,15 +377,52 @@ div.daily.legend {
     left: 52px;
 }
 
+div.virus.selection {
+    position: absolute;
+    top: 250px;
+    right: 70px;
+    z-index: 1;
+}
+
 select.virus.selection {
     position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 21px;
+    top: 0;
     font-family: ONEMobilePOPRegular, sans-serif;
+    appearance: none;
+    -o-apperance: none;
+    -webkit-appearance: none;
+    -moz-apperance: none;
+    background-color: #f9e3d9;
+    color: #2e2886;
+    padding: 8px;
+    font-size: 17px;
+    border: 5px solid white;
+    border-radius: 5px;
+    right: 0;
+    width: 258px;
+    height: 60px;
+    cursor: pointer;
 }
 select.virus.selection option {
     text-align: left;
+    border: none;
+    border-radius: 5px;
+}
+
+div.virus.selection span.icoArrow {
+    position: absolute;
+    top: 25px;
+    right: 10px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+div.virus.selection span.icoArrow img {
+    transition: .3s;
+}
+div.virus.selection select:focus + span.icoArrow img {
+    transform: rotate(180deg);
 }
 
 div.virus.name {
@@ -493,15 +547,11 @@ div.graph {
     height: 232px;
     color: black;
 }
+div.graph g.Xaxis, g.Yaxis path {
+    stroke-width: 2;
+}
 div.graph g.tick text {
-    font: 80% ONEMobilePOPRegular, sans-serif;
-    transform: translateY(-3px);
-}
-div.graph g.Yaxis {
-    display: none;
-}
-div.graph g.Xaxis path {
-    display: none;
+    font-family: ONEMobilePOPRegular, sans-serif;
 }
 
 #chart_board {
@@ -861,61 +911,86 @@ div.weekly p {
 .stat input[type="button"] {
     border: none;
     background: none;
-    color: black;
+    color: rgba(0,0,0,0);
 }
-
-.stat input[type="button"]:hover {
-    color: #98E294;
-}
-
-
 table.stat {
     border-collapse: collapse;
     font-size: 18px;
     color: black;
     position: absolute;
     top: 60px;
-    left: 169px;
-    width: 68px;
+    left: 69px;
 }
 table.stat td {
     height: 22px;
 }
+table.stat td.stat.info {
+    width: 14px;
+    cursor: pointer;
+}
+table.stat td.stat.info.stat2 {
+    transform: translateX(16px);
+}
+table.stat td.stat.info.stat4 {
+    transform: translateX(27px);
+}
+table.stat td.stat.block {
+    width: 83px;
+}
 table.stat td.stat.value {
     text-align: center;
-    width: 40px;
+    width: 33px;
 }
 table.stat input {
     cursor: pointer;
 }
 div.stat.left text {
     position: absolute;
-    top: 165px;
-    left: 183px;
+    top: 169px;
+    left: 143px;
     width: 40px;
     text-align: center;
+    color: #f33e66;
+}
+div.stat.button.clear {
+    position: absolute;
+    top: 206px;
+    left: 175px;
+    width: 60px;
+    height: 30px;
+    cursor: pointer;
 }
 
 .stat.description {
-    display: inline-block;
+    display: none;
     position: absolute;
-    margin: 10px 0 0 0;
-    width: 300px;
+    width: 578px;
+    height: 169px;
+    top: 255px;
+    left: 57px;
+    z-index: 3;
 }
 
 div.stat.desc {
     display: none;
 }
 
+div.stat.description img.close_btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    cursor: pointer;
+}
+
 div.popBody.node {
     position: absolute;
     width: auto;
     height: auto;
-    background-color: white;
     top: 0;
     left: 0;
     padding: 0 10px;
     font-size: 18px;
+    transform: translate(-126px, 7px);
 }
 #popup_node div.popBg {
     background:rgba(0,0,0,0);

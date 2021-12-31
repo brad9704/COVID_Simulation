@@ -77,6 +77,7 @@ var startSim = function(event_data) {
             income: node.income,
             state: node.state,
             age: node.age,
+            detail_age: node.detail_age,
             mask: node.mask,
             loc: node.loc,
             flag: node.flag
@@ -144,6 +145,7 @@ var reportSim = function(iter) {
             income: node.income,
             state: node.state,
             age: node.age,
+            detail_age: node.detail_age,
             mask: node.mask,
             vaccine: node.vaccine,
             loc: node.loc,
