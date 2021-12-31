@@ -349,7 +349,7 @@
                 <input id="button_start" type="button" onclick="start_simulation()">
             </div>
             <div class="daily legend">
-                <div class="virus name"><input class="virus name"></div>
+                <div class="virus name"><input class="virus name" onchange="$('text.virus.name').text(this.value)"></div>
                 <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
                 <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
                 <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
