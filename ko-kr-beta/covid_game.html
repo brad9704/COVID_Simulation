@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.31.01-->
+<!--ver.2022.01.03.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -293,28 +293,40 @@
                 <div class="stat left">
                     <table class="stat def">
                         <tr class="stat group stat1">
-                            <td class="stat info stat1" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');"></td>
+                            <td class="stat info stat1" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat1').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
                             <td class="stat block stat1"></td>
                             <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
                             <td class="stat value stat1"><output class="stat value stat1">0</output></td>
                             <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
                         </tr>
                         <tr class="stat group stat2">
-                            <td class="stat info stat2" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');"></td>
+                            <td class="stat info stat2" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat2').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
                             <td class="stat block stat2"></td>
                             <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
                             <td class="stat value stat2"><output class="stat value stat2">0</output></td>
                             <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
                         </tr>
                         <tr class="stat group stat3">
-                            <td class="stat info stat3" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');"></td>
+                            <td class="stat info stat3" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat3').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
                             <td class="stat block stat3"></td>
                             <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
                             <td class="stat value stat3"><output class="stat value stat3">0</output></td>
                             <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
                         </tr>
                         <tr class="stat group stat4">
-                            <td class="stat info stat4" onclick="$('div.stat.description').css('display','inline-block'); $('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');"></td>
+                            <td class="stat info stat4" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat4').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
                             <td class="stat block stat4"></td>
                             <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
                             <td class="stat value stat4"><output class="stat value stat4">0</output></td>
@@ -435,11 +447,13 @@
             role = "Attack";
             $("input.virus.name").attr("disabled",null).val("Click here for name");
             $("input.stat").attr("disabled",null);
+            d3.selectAll("input.stat").style("color","rgba(0,0,0,0)").style("background","none");
         } else {
             role = "Defense";
             $("text.virus.name").text(name);
             $("input.virus.name").val(name).attr("disabled", "true");
             $("input.stat").attr("disabled","true");
+            d3.selectAll("input.stat").style("color","#f9e3d9").style("background-color","#f9e3d9");
         }
     }
 </script>

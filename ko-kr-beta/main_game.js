@@ -380,12 +380,13 @@ function node_init(param, node_data, loc) {
         })
         .on("click", function(d) {
             if (run === null) return;
+            let temp_stat = Object.entries(state).find(e => e[1] === d.state)[0];
             d3.select("tspan.node.age").text(d.detail_age);
             d3.select("tspan.node.corr_x").text(Math.round(d.x));
             d3.select("tspan.node.corr_y").text(Math.round(d.y));
             d3.select("tspan.node.loc").text(d.loc.name);
             d3.select("tspan.node.income").text(d.income);
-            d3.select("tspan.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
+            d3.select("tspan.node.stage").text(role === "Defense" && (temp_stat === "E1" || temp_stat === "E2") ? "S" : temp_stat);
             d3.select("tspan.node.mask").text(d.mask ? "착용" : "미착용");
             d3.select("tspan.node.vaccine").text(d.vaccine ? "1차" : "미접종");
             $("#popup_node").fadeIn(1);
@@ -461,12 +462,13 @@ function node_update(param, node_data) {
                 })
                 .on("click", function(d) {
                     if (run === null) return;
+                    let temp_stat = Object.entries(state).find(e => e[1] === d.state)[0];
                     d3.select("tspan.node.age").text(d.age);
                     d3.select("tspan.node.corr_x").text(Math.round(d.x));
                     d3.select("tspan.node.corr_y").text(Math.round(d.y));
                     d3.select("tspan.node.loc").text(d.loc.name);
                     d3.select("tspan.node.income").text(d.income);
-                    d3.select("tspan.node.stage").text(Object.entries(state).find(e => e[1] === d.state)[0]);
+                    d3.select("tspan.node.stage").text(role === "Defense" && (temp_stat === "E1" || temp_stat === "E2") ? "S" : temp_stat);
                     d3.select("tspan.node.mask").text(d.mask);
                     d3.select("tspan.node.vaccine").text(d.vaccine);
                     $("#popup_node").fadeIn(1);
