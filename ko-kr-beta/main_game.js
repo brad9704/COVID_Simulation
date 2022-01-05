@@ -57,8 +57,8 @@ function get_params() {
         param["age_severe"][age] += stat.stat4 * 0.02;
     }
 
-    param["sim_width"] = 760;
-    param["sim_height"] = 480;
+    param["sim_width"] = 800;
+    param["sim_height"] = 520;
 
     return param;
 }
@@ -328,17 +328,18 @@ Initializes node canvas
  */
 function node_init(param, node_data, loc) {
     let sim_board = d3.select("#sim_board");
+
+    let sim_cont = sim_board.append("svg")
+        .attr("id", "sim_container")
+        .attr("width", param.sim_width)
+        .attr("height", param.sim_height);
+
     d3.xml("img/background.svg")
         .then(data => {
             d3.select("#sim_board").append("div")
                 .attr("id", "sim_title")
                 .node().append(data.documentElement)
         });
-
-    let sim_cont = sim_board.append("svg")
-        .attr("id", "sim_container")
-        .attr("width", param.sim_width)
-        .attr("height", param.sim_height);
 
     sim_cont.append("rect")
         .attr("width", param.sim_width / 2)

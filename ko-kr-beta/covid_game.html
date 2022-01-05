@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2022.01.03.01-->
+<!--ver.2022.01.05.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/style_game.css">
 </head>
 <body>
+<img id="background" src="img/배경.png" alt="">
 <div class="sidebar">
     <div class="Day"><output class="weekly_week">0</output>주 / <output id="turn_day">0</output><text id="day_text">일</text></div>
     <div class="speed">
@@ -406,6 +407,17 @@
     d3.xml("img/sidebar.svg").then(data => {
         d3.select("div.sidebar").node().append(data.documentElement)
     });
+
+    window.onload = function() {
+        let scale = this.innerWidth / 1920;
+        let translate = (1 - 1920 / this.innerWidth) * 50;
+        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
+    }
+    window.onresize = function() {
+        let scale = this.innerWidth / 1920;
+        let translate = (1 - 1920 / this.innerWidth) * 50;
+        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
+    }
 </script>
 <script type="text/javascript">
     var virus_request = new XMLHttpRequest();
