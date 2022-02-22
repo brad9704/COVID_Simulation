@@ -61,8 +61,6 @@ div.controls div,img,input {
     border: none;
 }
 div.controls > div.stat.wrapper > div.stat.left {
-    background-image: url("../img/stat_setting.png");
-    background-repeat: no-repeat;
     position: absolute;
     top: 307px;
     right: 70px;
@@ -70,8 +68,7 @@ div.controls > div.stat.wrapper > div.stat.left {
     height: 243px;
 }
 div.controls > div.control > input[type=button] {
-    background-image: url("../img/START_inactive.png");
-    background-repeat: no-repeat;
+    background: none;
     position: absolute;
     right: 70px;
     top: 549px;
@@ -79,8 +76,10 @@ div.controls > div.control > input[type=button] {
     height: 99px;
     cursor: pointer;
 }
-div.controls > div.control > input[type=button]:hover {
-    background-image: url("../img/START_active.png");
+div.controls > div.control > img {
+    position: absolute;
+    right: 70px;
+    top: 549px;
 }
 
 #init_setting input[type=range] {
@@ -189,9 +188,9 @@ div.panel_output.budget {
     height:720px;
     margin: 0 auto;
     text-align:center;
-    border: 1px solid black;
+    border: 1px solid rgba(0,0,0,0);
     border-radius:5px;
-    background-color: white;
+    background-color: rgba(0,0,0,0);
 }
 .popHead {
     padding:15px;
@@ -365,13 +364,17 @@ div.panel_button:hover svg.inactive{
 }
 
 div.daily.legend {
-    background-image: url("../img/시작화면 - 정보패널.png");
     position: absolute;
     top: 250px;
     display: inline-block;
     width: 571px;
     height: 398px;
     left: 52px;
+}
+
+div.daily.legend img.background {
+    position: absolute;
+    top: 173px;
 }
 
 div.virus.selection {
@@ -389,27 +392,30 @@ select.virus.selection {
     -o-apperance: none;
     -webkit-appearance: none;
     -moz-apperance: none;
-    background-color: #f9e3d9;
-    color: #2e2886;
-    padding: 8px;
+    /*background-color: #f9e3d9;*/
+    /*color: #2e2886;*/
+    background: none;
+    padding: 17px;
     font-size: 17px;
-    border: 5px solid white;
-    border-radius: 5px;
+    border: none;
     right: 0;
-    width: 258px;
+    width: 260px;
     height: 60px;
     cursor: pointer;
 }
 select.virus.selection option {
+    position: absolute;
     text-align: left;
     border: none;
     border-radius: 5px;
+    background-color: #f9e3d9;
+    color: #2e2886;
 }
 
 div.virus.selection span.icoArrow {
     position: absolute;
-    top: 25px;
-    right: 10px;
+    top: 26px;
+    right: 23px;
     z-index: 1;
     display: flex;
     justify-content: center;
@@ -484,10 +490,10 @@ div.daily.rate.severity {
 
 div.daily.num {
     color: black;
-    top: 230px;
+    top: 224px;
 }
 div.daily.num.S {
-    right: 500px;
+    right: 497px;
 }
 div.daily.num.E1 {
     right: 420px;
@@ -499,18 +505,18 @@ div.daily.num.I1 {
     right: 260px;
 }
 div.daily.num.I2 {
-    top: 280px;
+    top: 276px;
     right: 180px;
 }
 div.daily.num.H2 {
-    top: 280px;
+    top: 276px;
     right: 100px;
 }
 div.daily.num.R1 {
     right: 20px;
 }
 div.daily.num.R2 {
-    top: 340px;
+    top: 337px;
     right: 20px;
 }
 
@@ -556,7 +562,6 @@ div.graph g.tick text {
 }
 
 #popup_weekly .popInnerBox {
-    background-color: white;
     height: auto;
 }
 
@@ -566,48 +571,48 @@ div.graph g.tick text {
     border-radius: 10px;
 }
 
+#popup_weekly .popBody img {
+    position: absolute;
+}
+
 input.weekly.tab.switch {
-    margin-right: -10px;
-    font-size: 22px;
-    font-family: ONEMobilePOPRegular, sans-serif;
-    width: 340px;
+    margin-right: 70px;
+    width: 110px;
     height: 50px;
-    background-color: white;
-    color: #254488;
-    border: 1px solid black;
+    border: none;
+    background-color: rgba(0,0,0,0);
 }
 input.weekly.tab.switch:hover {
-    background-color: #b0dcde;
-    color: white;
+    border: 1px solid white;
 }
-input.weekly.tab.switch[active="true"] {
-    background-color: #5260d0;
-    color: white;
-}
+
 input.weekly.tab.switch.overall {
-    border-top-left-radius: 2px;
-    border-bottom-left-radius: 2px;
+
 }
 input.weekly.tab.switch.age {
 }
 input.weekly.tab.switch.area {
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
+    width: 75px;
+}
+
+div.weekly.switch.tabs {
+    position: absolute;
+    top: 121px;
+    left: 515px;
+}
+
+div.weekly.tab.content img {
+    position: absolute;
+}
+img.weekly.tab.back {
+    top: 138px;
+    left: 150px;
 }
 
 #popup_weekly .popBody {
-    background-color: rgba(256,256,256,0.5);
     font-size: 20px;
     text-align: left;
     height: auto;
-}
-
-#popup_weekly .weekly_board {
-    border: 1px solid black;
-    border-radius: 5px;
-    width: 100%;
-    height: 200px;
-    margin: 10px 0 0 0;
 }
 
 #popup_weekly .panel_policy {
@@ -619,39 +624,32 @@ input.weekly.tab.switch.area {
     margin: 5px;
 }
 
-div.weekly.tab.content.overall {
-    background-image: url("../img/wr_weekly_occurrence_status_panel.svg");
-    background-repeat: no-repeat;
-    height: 600px;
-}
-div.weekly_status output.weekly_week {
+div.weekly.tab.content {
     position: absolute;
-    right: 889px;
-    top: 155px;
+    top: 200px;
+
 }
-output.weekly_date_from {
-    position: absolute;
-    right: 828px;
-    top: 155px;
-}
-output.weekly_date_to {
-    position: absolute;
-    right: 770px;
-    top: 155px;
-}
+
 div.weekly_status {
     width: 1020px;
     height: 240px;
 }
+
+div.weekly_status div.weekly.date {
+    position: absolute;
+    color: white;
+    left: 126px;
+}
+
 div.weekly_status table {
     position: absolute;
     text-align: center;
-    top: 240px;
-    left: 213px;
-    border-spacing: 0 21px;
+    top: 68px;
+    left: 283px;
+    border-spacing: 0 5px;
 }
 div.weekly_status table tr td {
-    width: 205px;
+    width: 163px;
 }
 td.weekly.warning {
     background-repeat: no-repeat;
@@ -675,33 +673,31 @@ div.weekly_status p {
     left: 220px;
 }
 div.weekly_board {
-    background-image: url("../img/wr_weekly_chart_cover.svg");
-    background-position-x: 25px;
-    background-position-y: 10px;
-    background-repeat: no-repeat;
-    background-size: 975px 200px;
+    position: absolute;
+    border: 1px solid white;
+    top: 260px;
+    left: 100px;
+    width: 870px;
+    height: 200px;
 }
 div.weekly_board > svg > g > g.xAxis > g.tick {
     opacity: 0;
 }
 output.weekly.infectious {
-    color: white;
-    
+    color: black;
     position: absolute;
-    top: 360px;
-    right: 630px;
+    top: 165px;
+    right: 565px;
 }
 output.weekly.death {
-    color: white;
-    
+    color: black;
     position: absolute;
-    top: 360px;
-    right: 220px;
+    top: 165px;
+    right: 235px;
 }
 
 div.weekly.tab.content.age {
-    background-image: url("../img/wr_social_distancing_policy.svg");
-    background-repeat: no-repeat;
+
     display: none;
     height: 600px;
 }
@@ -746,8 +742,7 @@ svg.area_policy.area_board {
 }
 
 div.weekly.tab.content.area {
-    background-image: url("../img/wr_budget_panel.svg");
-    background-repeat: no-repeat;
+
     display: none;
     height: 600px;
 }
@@ -772,27 +767,23 @@ div.weekly.area.budget{
     text-align: center;
     font-size: 180%;
 }
-div.weekly.area.caution {
+
+#button_wrapper img {
     position: absolute;
-    top: 700px;
+    top: 50px;
+    left: 460px;
+}
+
+div.weekly.area.caution {
     width: 1000px;
     text-align: center;
     opacity: 0;
 }
 div.weekly.area.caution p {
     color: red;
-    
-}
-div.weekly.budget.update {
-    position: absolute;
-    top: 670px;
-    width: 1000px;
-    text-align: center;
-    opacity: 0;
 }
 div.weekly.budget.update p {
     color: blue;
-    
 }
 svg.weekly.area.lines {
     position: absolute;
@@ -819,26 +810,23 @@ line.weekly.border.visible {
 }
 
 #button_wrapper {
+    position: absolute;
+    top: 645px;
     width: 100%;
     text-align: center;
+    font-size: 15px;
 }
 
 #button_resume {
-    margin: 5px;
-    padding: 10px 100px;
-    border: 1px solid black;
+    transform: translateY(-15px);
+    border: none;
+    background-color: rgba(0,0,0,0);
     border-radius: 5px;
-    font-size: 20px;
-    color: #524782;
-    background-color: white;
+    width: 170px;
+    height: 68px;
 }
 #button_resume:hover {
-    color: white;
-    background-color: #524782;
-}
-#button_resume:disabled {
-    color: white;
-    background-color: #C00000;
+    border: 1px solid white;
 }
 
 .panel_policy input[type=number] {

@@ -26,6 +26,8 @@
     <div id="sim_board">
     </div>
     <div class="daily legend">
+        <img class="daily" src="img/감염병 정보 패널.png" alt="">
+        <img class="daily background" src="img/감염병 단계별 인구분포.png" alt="">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
         <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
         <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
@@ -58,28 +60,37 @@
 <div id="popup_weekly" class="popup">
     <div class="popBg"></div>
     <div class="popInnerBox">
-        <div class="popHead">주간 보고<output></output></div>
         <div class="popBody">
+            <img src="img/주간보고_틀.png" alt="">
+            <img class="weekly tab back overall" src="img/주간보고_01.png" alt="">
+            <img class="weekly tab back age" src="img/주간보고_02.png" alt="" style="display:none">
+            <img class="weekly tab back area" src="img/주간보고_03.png" alt="" style="display:none">
             <div class="weekly switch tabs">
-                <input class="weekly tab switch overall" type="button" value="주간 발생 동향" active="true" onclick="
+                <input class="weekly tab switch overall" type="button" value="" active="true" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.overall').css('display','block');
                 $('input.weekly.tab.switch.overall').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.overall').css('display','block');">
-                <input class="weekly tab switch age" type="button" value="사회적 거리두기" onclick="
+                <input class="weekly tab switch age" type="button" value="" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.age').css('display','block');
                 $('input.weekly.tab.switch.age').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.age').css('display','block');">
-                <input class="weekly tab switch area" type="button" value="예산 분배" onclick="
+                <input class="weekly tab switch area" type="button" value="" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.area').css('display','block');
                 $('input.weekly.tab.switch.area').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.area').css('display','block');">
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">
-                    <output class="weekly_week">1</output><output class="weekly_date_from">1</output><output class="weekly_date_to">7</output>
+                    <div class="weekly date"><output class="weekly_week">1</output>주: <output class="weekly_date_from">1</output>~<output class="weekly_date_to">7</output>일차</div>
                     <table>
                         <tr>
                             <td><output id="weekly_new_infect">0</output></td>
@@ -106,7 +117,6 @@
                             <text x="25" y="36">Dead</text>
                         </svg>
                     </div>
-                    <p style="font-weight: bold;">주간 확진 및 사망 추이<br></p>
                     <div class="weekly_board">
                     </div>
                 </div>
@@ -197,9 +207,10 @@
                 </div>
             </div>
             <div id="button_wrapper">
+                <img src="img/주간보고_버튼.png" alt="">
                 <div class="weekly budget update"><p>1달치 예산 $40,000이 입금되었습니다!</p></div>
                 <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
-                <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
+                <input id="button_resume" type="button" onclick="resume_simulation()" value="">
             </div>
         </div>
     </div>
@@ -285,13 +296,16 @@
     <div class="popBg"></div>
     <div class="popBody">
         <div class="controls">
+            <img src="img/시작화면 - 배경.png" alt="">
             <div class="stat wrapper">
                 <div class="virus selection">
+                    <img src="img/셀렉트박스.png" alt="">
                     <select class="virus selection" onchange="new_virus(value)">
                     </select>
                     <span class="icoArrow"><img src="img/cursor.png" alt=""></span>
                 </div>
                 <div class="stat left">
+                    <img src="img/시작화면 - 스탯창.png" alt="">
                     <table class="stat def">
                         <tr class="stat group stat1">
                             <td class="stat info stat1" onmouseover="
@@ -359,9 +373,12 @@
                 </div>
             </div>
             <div class="control" id="Simulation">
+                <img src="img/시작화면 - 버튼.png" alt="">
                 <input id="button_start" type="button" onclick="start_simulation()">
             </div>
             <div class="daily legend">
+                <img class="daily" src="img/감염병 정보 패널.png" alt="">
+                <img class="daily background" src="img/감염병 단계별 인구분포.png" alt="">
                 <div class="virus name"><input class="virus name" onchange="$('text.virus.name').text(this.value)"></div>
                 <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
                 <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
@@ -378,7 +395,6 @@
                 <div class="daily num R2"><output class="daily legend num R2">0</output></div>
             </div>
         </div>
-
     </div>
 </div>
 <div id="popup_node" class="popup">
