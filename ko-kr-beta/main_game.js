@@ -512,8 +512,8 @@ function chart_init(param) {
     var chart_board = d3.select("#chart_board");
 
     var margin = {top:30, right: 80, bottom: 30, left: 58},
-        width = chart_board.node().getBoundingClientRect().width - margin.left - margin.right,
-        height = chart_board.node().getBoundingClientRect().height - margin.top - margin.bottom;
+        width = 573 - margin.left - margin.right,
+        height = 232 - margin.top - margin.bottom;
     var x1 = d3.scaleLinear().range([0,width]),
         y1 = d3.scaleLinear().range([height,0]);
     var xAxis1 = d3.axisBottom().scale(x1),
@@ -532,8 +532,8 @@ function chart_init(param) {
         .attr("class", "Yaxis");
 
     var death_board = d3.select("#death_board");
-    width = death_board.node().getBoundingClientRect().width - margin.left - margin.right;
-    height = death_board.node().getBoundingClientRect().height - margin.top - margin.bottom;
+    width = 573 - margin.left - margin.right;
+    height = 232 - margin.top - margin.bottom;
 
     var x2 = d3.scaleLinear().range([0,width]),
         y2 = d3.scaleLinear().range([height,0]);
@@ -975,7 +975,7 @@ function weekly_report() {
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([0, board_svg_size.width - 50]).padding(0.7);
+        .range([30, board_svg_size.width - 290]).padding(0.7);
     let yScale = d3.scaleLinear()
         .domain([0, d3.max(d3.max(data_stacked), e => d3.max(e)) + 1])
         .range([board_svg_size.height - 50, 0]);
@@ -983,7 +983,7 @@ function weekly_report() {
     let yAxis = d3.axisLeft().scale(yScale);
     yAxis.ticks(5);
     board_svg = board_svg.append("g")
-        .attr("transform", "translate(30,20)");
+        .attr("transform", "translate(40,-40)");
 
     board_svg.append("g")
         .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")")
