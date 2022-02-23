@@ -645,6 +645,7 @@ div.weekly_status div.weekly.date {
 }
 
 div.weekly_status table {
+    color: #2e2886;
     position: absolute;
     text-align: center;
     top: 76px;
@@ -678,6 +679,7 @@ td.weekly.warning[data-value="2"] {
 }
 
 div.weekly_status p {
+    color: #2e2886;
     font-size: 100%;
     position: absolute;
     top: 140px;
@@ -691,11 +693,21 @@ div.weekly_board {
     height: 185px;
 }
 
-div.weekly_board > svg > g > g.xAxis, g.yAxis {
+div.weekly_board > svg > g > g.xAxis {
     visibility: hidden;
 }
+
+div.weekly_board > svg > g > g.yAxis text {
+    color: white;
+    font-family: ONEMobilePOPRegular, sans-serif;
+}
+
+div.weekly_board > svg > g > g.yAxis line {
+    color: #f33e66;
+}
+
 div.weekly.infectious {
-    color: black;
+    color: #2e2886;
     position: absolute;
     top: 164px;
     right: 420px;
@@ -703,7 +715,7 @@ div.weekly.infectious {
     text-align: center;
 }
 div.weekly.death {
-    color: black;
+    color: #2e2886;
     position: absolute;
     top: 164px;
     right: 90px;
@@ -731,6 +743,8 @@ div.policy.level.confirm input {
     height: 24px;
     background: none;
     text-align: center;
+    font-family: ONEMobilePOPRegular, sans-serif;
+    color: #2e2886;
     border: 1px solid rgba(0,0,0,0);
 }
 div.policy.level.confirm input:hover {
@@ -740,10 +754,10 @@ div.policy.level.confirm input:hover {
 div.area_policy, svg.area_policy.area_board {
     position: absolute;
     display: inline-block;
-    width: 294px;
-    height: 185px;
-    left: 640px;
-    top: 210px;
+    width: 293px;
+    height: 179px;
+    left: 641px;
+    top: 213px;
 }
 select.area_policy.option {
     font-size: 120%;
@@ -819,9 +833,8 @@ div.weekly.budget.update p {
 }
 svg.weekly.area.lines {
     position: absolute;
-    border: 1px solid white;
-    width: 290px;
-    height: 245px;
+    width: 294px;
+    height: 250px;
     left: 640px;
     top: 0;
     transform: translateY(-20px);

@@ -898,7 +898,7 @@ function weekly_report() {
     } else if (weekly_change_death < 0) {
         $("#weekly_change_death").val("▼" + Math.abs(weekly_change_death)).css("color","blue");
     } else {
-        $("#weekly_change_death").val("▲" + weekly_change_death).css("color","black");
+        $("#weekly_change_death").val(weekly_change_death).css("color","#2e2886;");
     }
 
 
@@ -969,13 +969,13 @@ function weekly_report() {
     let board_svg = board.append("svg")
         .attr("width", "100%")
         .attr("height", "100%");
-    let board_svg_size = board_svg.node().getBoundingClientRect();
+    let board_svg_size = {'height': 185, 'width': 790};
 
     let data_stacked = d3.stack().keys(["I1","R2"])(daily_IR);
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([30, board_svg_size.width - 290]).padding(0.7);
+        .range([30, board_svg_size.width - 25]).padding(0.7);
     let yScale = d3.scaleLinear()
         .domain([0, d3.max(d3.max(data_stacked), e => d3.max(e)) + 1])
         .range([board_svg_size.height - 50, 0]);
@@ -983,7 +983,7 @@ function weekly_report() {
     let yAxis = d3.axisLeft().scale(yScale);
     yAxis.ticks(5);
     board_svg = board_svg.append("g")
-        .attr("transform", "translate(40,-40)");
+        .attr("transform", "translate(40,20)");
 
     board_svg.append("g")
         .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")")
@@ -999,7 +999,7 @@ function weekly_report() {
         .data(data_stacked)
         .enter()
         .append("g")
-        .attr("fill",function(d) {return state[d.key];})
+        .attr("fill",function(d) {return d.key === "I1" ? "#f33e66" : "#3d3d3d";})
         .attr("stroke","none")
         .selectAll("rect")
         .data(function(d) {return d;})
