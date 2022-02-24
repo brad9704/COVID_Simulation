@@ -11,10 +11,10 @@ var stat = {
     stat4: 0
 };
 var area = {
-    upper_left: "0",
-    upper_right: "0",
-    lower_left: "0",
-    lower_right: "0"
+    upper_left: 0,
+    upper_right: 0,
+    lower_left: 0,
+    lower_right: 0
 }
 var budget = 0;
 var clicker = 0;
@@ -850,11 +850,14 @@ function change_stat(stat_index, direction) {
     $("output.daily.legend.rate.severity").text(Math.round((0.10 + stat.stat4 * 0.02) * 100) + "%");
 }
 
-function toggle_area() {
-    area["upper_left"] = $("select.area_policy.upper.left.option").val()
-    area["upper_right"] = $("select.area_policy.upper.right.option").val()
-    area["lower_left"] = $("select.area_policy.lower.left.option").val()
-    area["lower_right"] = $("select.area_policy.lower.right.option").val()
+function toggle_area(pos_x, pos_y, dir) {
+    if (dir > 0 && area[pos_x + "_" + pos_y] < 3) {
+        area[pos_x + "_" + pos_y] += 1;
+        $("output.area_policy.option." + pos_x + "." + pos_y).val(area[pos_x + "_" + pos_y]);
+    } else if (dir < 0 && area[pos_x + "_" + pos_y] > 0) {
+        area[pos_x + "_" + pos_y] -= 1;
+        $("output.area_policy.option." + pos_x + "." + pos_y).val(area[pos_x + "_" + pos_y]);
+    }
 }
 
 function weekly_report() {
@@ -973,6 +976,7 @@ function weekly_report() {
 
     let data_stacked = d3.stack().keys(["I1","R2"])(daily_IR);
 
+    /*
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
         .range([30, board_svg_size.width - 25]).padding(0.7);
@@ -982,6 +986,23 @@ function weekly_report() {
     let xAxis = d3.axisBottom().scale(xScale);
     let yAxis = d3.axisLeft().scale(yScale);
     yAxis.ticks(5);
+
+ */
+    let xScale = d3.scaleBand()
+        .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
+        .range([30, board_svg_size.width - 25]).padding(0.7);
+    let yScale = d3.scaleLinear()
+        .domain([0, d3.max(daily_IR, e => e.I1) + 1])
+        .range([board_svg_size.height - 50, 0]);
+    let zScale = d3.scaleLinear()
+        .domain([0, d3.max(daily_IR, e => e.R2) + 1])
+        .range([board_svg_size.height - 50, 0]);
+    let xAxis = d3.axisBottom().scale(xScale);
+    let yAxis = d3.axisLeft().scale(yScale);
+    let zAxis = d3.axisRight().scale(zScale);
+    yAxis.ticks(5);
+    zAxis.ticks(5);
+
     board_svg = board_svg.append("g")
         .attr("transform", "translate(40,20)");
 
@@ -990,12 +1011,43 @@ function weekly_report() {
         .attr("class", "xAxis");
     board_svg.append("g")
         .attr("class", "yAxis");
+    board_svg.append("g")
+        .attr("class", "zAxis")
+        .attr("transform", "translate(790,0)");
 
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
+    board_svg.selectAll(".zAxis").call(zAxis);
 
     var v = board_svg.append("g").attr("class","bar");
-    v.selectAll("g")
+
+    v.selectAll("rect")
+        .data(daily_IR)
+        .enter()
+        .append("rect")
+        .attr("fill", "#f33e66")
+        .attr("stroke","none")
+        .attr("width", xScale.bandwidth())
+        .attr("height", function(d) {return yScale(0) - yScale(d.I1);})
+        .attr("x", function(d) {return xScale(d.tick - data_to.tick + 14)})
+        .attr("y", function(d) {return yScale(d.I1);});
+
+    var v2 = board_svg.append("g").attr("class", "line");
+
+    v2.append("path")
+        .attr("fill", "none")
+        .style("stroke", "#3d3d3d")
+        .style("stroke-width", 3.5)
+        .attr("transform", "translate(7,0)")
+        .attr("d", d3.line()
+                .x(function(e) {
+                    return xScale(e.tick - data_to.tick + 14)
+                })
+                .y(function(e) {
+                    return zScale(e.R2)
+        })(daily_IR));
+
+/*    v.selectAll("g")
         .data(data_stacked)
         .enter()
         .append("g")
@@ -1008,27 +1060,7 @@ function weekly_report() {
         .attr("width", xScale.bandwidth())
         .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
         .attr("x", function(d) {return xScale(d.data.tick - data_to.tick + 14)})
-        .attr("y", function(d) {return yScale(d[1])});
-//        .attr("transform","translate(" + ((xScale.range()[1] - xScale.range()[0]) / data_to.tick * 0.4) + ", 0)");
-    /*    v.selectAll(".line")
-            .data(chart_data_)
-            .enter()
-            .append("path")
-            .attr("class", "line")
-            .style("stroke", function(d) {return d.color;})
-            .style("fill", "none")
-            .style("stroke-width", 1.5)
-            .attr("d", function (e) {
-                return d3.line()
-                    .x(function (d) {
-                        return xScale(d[0]);
-                    })
-                    .y(function (d) {
-                        return yScale(d[1]);
-                    })
-                    .curve(d3.curveBasis)(e.data);
-            })
-     */
+        .attr("y", function(d) {return yScale(d[1])});*/
 }
 
 var auto = false;

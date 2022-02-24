@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2022.02.23.03-->
+<!--ver.2022.02.24.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -156,30 +156,18 @@
                                 </rect>
                             </svg>
                             <div class="area_policy options">
-                                <select class="area_policy option upper left" data-area="upper left" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
-                                <select class="area_policy option upper right" data-area="upper right" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
-                                <select class="area_policy option lower left" data-area="lower left" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
-                                <select class="area_policy option lower right" data-area="lower right" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
+                                <div class="area_policy option upper left" data-area="upper left">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('upper','left',-1)"> <output class="area_policy option upper left">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('upper','left',1)">
+                                </div>
+                                <div class="area_policy option upper right" data-area="upper right">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('upper','right',-1)"> <output class="area_policy option upper right">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('upper','right',1)">
+                                </div>
+                                <div class="area_policy option lower left" data-area="lower left">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('lower','left',-1)"> <output class="area_policy option lower left">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('lower','left',1)">
+                                </div>
+                                <div class="area_policy option lower right" data-area="lower right">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('lower','right',-1)"> <output class="area_policy option lower right">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('lower','right',1)">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -199,10 +187,9 @@
                 </div>
             </div>
             <div id="button_wrapper">
-                <img src="img/주간보고_버튼.png" alt="">
                 <div class="weekly budget update"><p>1달치 예산 $40,000이 입금되었습니다!</p></div>
                 <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
-                <input id="button_resume" type="button" onclick="resume_simulation()" value="">
+                <img src="img/주간보고_버튼.png" id="button_resume" onclick="resume_simulation()">
             </div>
         </div>
     </div>
