@@ -1,4 +1,4 @@
-/*ver.2022.03.07.01*/
+/*ver.2022.03.07.02*/
 importScripts("https://d3js.org/d3.v5.min.js",
     "//unpkg.com/d3-force-bounce/dist/d3-force-bounce.min.js",
     "//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js",
@@ -42,6 +42,8 @@ var startSim = function(event_data) {
     }
     assertion(event_data);
     param = event_data;
+    param.sim_height = param["sim_size"];
+    param.sim_width = param["sim_size"];
     running_time = 0;
     simulation = null;
 

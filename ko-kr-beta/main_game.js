@@ -1,4 +1,4 @@
-/*ver.2022.03.07.01*/
+/*ver.2022.03.07.02*/
 var run, chart_data, running_time, chart_param;
 var collision_statistics = {
     "Not infected": 0,
@@ -58,8 +58,8 @@ function get_params() {
         param["age_severe"][age] += stat.stat4 * 0.02;
     }
 
-    param["sim_width"] = 800;
-    param["sim_height"] = 520;
+    param["sim_width"] = 870;
+    param["sim_height"] = 555;
 
     return param;
 }
@@ -334,6 +334,9 @@ function node_init(param, node_data, loc) {
         .attr("id", "sim_container")
         .attr("width", param.sim_width)
         .attr("height", param.sim_height);
+    let xScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_width"]]),
+        yScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_height"]]);
+
 
     d3.xml("img/background.svg")
         .then(data => {
@@ -369,8 +372,8 @@ function node_init(param, node_data, loc) {
             return "node_" + d.index;
         })
         .attr("class", d => (d.mask) ? "node " + _.findKey(state,e => e === d.state) + " mask" : "node " + _.findKey(state,e => e === d.state))
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
+        .attr("cx", d => xScale(d.x))
+        .attr("cy", d => yScale(d.y))
         .attr("r", param["size"])
         .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
         .on("mouseenter", function(d) {
@@ -442,6 +445,13 @@ function node_init(param, node_data, loc) {
 }
 
 function node_update(param, node_data) {
+    let xScale = d3.scaleLinear()
+            .domain([0,param["sim_size"]])
+            .range([0,param["sim_width"]]),
+        yScale = d3.scaleLinear()
+            .domain([0,param["sim_size"]])
+            .range([0,param["sim_height"]]);
+
     d3.select(".nodes")
         .selectAll("circle")
         .data(node_data, function(d) {return d ? "#node_" + d.index : this.id})
@@ -451,8 +461,8 @@ function node_update(param, node_data) {
                     return "node_" + d.index;
                 })
                 .attr("class", d => (d.mask) ? "node " + _.findKey(state,e => e === d.state) + " mask" : "node " + _.findKey(state,e => e === d.state))
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
+                .attr("cx", d => xScale(d.x))
+                .attr("cy", d => yScale(d.y))
                 .attr("r", param["size"])
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
                 .on("mouseover", function(d) {
@@ -490,8 +500,8 @@ function node_update(param, node_data) {
                     run = null;
                 }),
             update => update
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
+                .attr("cx", d => xScale(d.x))
+                .attr("cy", d => yScale(d.y))
                 .attr("class", d => (d.mask) ? "node " + _.findKey(state,e => e === d.state) + " mask" : "node " + _.findKey(state,e => e === d.state))
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state),

@@ -5,6 +5,7 @@
   "TPC_base": 0.01,
   "hospital_max": 0.01,
   "size": 4,
+  "sim_size": 1000,
   "timeunit": 1000,
   "turnUnit": 7,
   "fps": 24,
