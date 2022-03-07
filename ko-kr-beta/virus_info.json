@@ -18,8 +18,44 @@
 			}
 		},
 		{
-		"name": "SLK-21",
-		"stat": {
+			"name": "Delta variant",
+			"stat": {
+				"stat1": 4,
+				"stat2": 9,
+				"stat3": 37,
+				"stat4": 1
+			}
+		},
+		{
+			"name": "Omicron variant",
+			"stat": {
+				"stat1": 4,
+				"stat2": 9,
+				"stat3": 180,
+				"stat4": -4
+			}
+		},
+		{
+			"name": "Ebola",
+			"stat": {
+				"stat1": 0,
+				"stat2": 7,
+				"stat3": 4,
+				"stat4": 20
+			}
+		},
+		{
+			"name": "Measles",
+			"stat": {
+				"stat1": 4,
+				"stat2": 5,
+				"stat3": 52,
+				"stat4": -5
+			}
+		},
+		{
+			"name": "SLK-21",
+			"stat": {
 				"stat1": 14,
 				"stat2": 3,
 				"stat3": 6,
@@ -27,8 +63,8 @@
 			}
 		},
 		{
-		"name": "13-Weeks-War",
-		"stat": {
+			"name": "13-Weeks-War",
+			"stat": {
 				"stat1": 1,
 				"stat2": 12,
 				"stat3": 10,

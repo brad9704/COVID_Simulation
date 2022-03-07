@@ -484,7 +484,7 @@ function node_update(param, node_data) {
                     d3.select("tspan.node.mask").text(d.mask);
                     d3.select("tspan.node.vaccine").text(d.vaccine);
                     $("#popup_node").fadeIn(1);
-                    d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + yScale(d.y)) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + xScale(d.x)) + "px");
+                    d3.select("div.popBody.node").style("top",(120 + yScale(d.y)) + "px").style("left",(240 + xScale(d.x)) + "px");
                     d3.select("#popup_node > div.popBg").on("click", function() {
                         $("#popup_node").fadeOut(1);
                         d3.select("#node_" + d.index).attr("r", param.size);
@@ -842,14 +842,33 @@ function change_speed(direction) {
     speed_addr.val("X " + running_speed.toString());
 }
 
-function change_stat(stat_index, direction) {
-    if (direction > 0 && stat.total > 0) {
-        stat.total--;
-        stat[stat_index] += direction;
-    } else if (direction < 0 && stat[stat_index] > 0) {
-        stat.total++;
+function reset_stat() {
+    stat = {
+        total: 25,
+        stat1: 0,
+        stat2: 0,
+        stat3: 0,
+        stat4: 0
+    };
+    for (let i=1;i<5;i++) {
+        $("output.stat.value." + "stat" + i).text(stat["stat" + i]);
+        $("output.stat.value.total").text(stat["total"]);
+    }
+}
+
+function change_stat(stat_index, direction, FLAG_IGNORE=false) {
+    if (!FLAG_IGNORE) {
+        if (direction > 0 && stat.total > 0) {
+            stat.total--;
+            stat[stat_index] += direction;
+        } else if (direction < 0 && stat[stat_index] > 0) {
+            stat.total++;
+            stat[stat_index] += direction;
+        }
+    } else {
         stat[stat_index] += direction;
     }
+
     $("output.stat.value." + stat_index).text(stat[stat_index]);
     $("output.stat.value.total").text(stat["total"]);
     let param = get_params();

@@ -439,17 +439,22 @@
     function new_virus (name) {
         let stat = virus_response.data.find(virus => virus.name === name)["stat"];
         ["stat1","stat2","stat3","stat4"].forEach(e => {
-            for (let i=0;i<25;i++) {
-                change_stat(e,-1);
-            }
+            reset_stat();
         });
         ["stat1","stat2","stat3","stat4"].forEach(e => {
-            for (let i=0;i<stat[e];i++) {
-                change_stat(e,1);
+            if (stat[e] > 0) {
+                for (let i = 0; i < stat[e]; i++) {
+                    change_stat(e, 1, true);
+                }
+            } else {
+                for (let i = stat[e]; i < 0; i++) {
+                    change_stat(e, -1, true);
+                }
             }
         });
         if (name === "Attack") {
             role = "Attack";
+            reset_stat();
             $("input.virus.name").attr("disabled",null).val("Click here for name");
             $("input.stat").attr("disabled",null);
             d3.selectAll("input.stat").style("color","rgba(0,0,0,0)").style("background","none");
