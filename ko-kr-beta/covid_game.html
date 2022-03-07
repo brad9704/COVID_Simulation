@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2022.03.07.01-->
+<!--ver.2022.03.07.02-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -348,7 +348,6 @@
                     <div class="stat desc stat4">
                         <img src="img/중증이환률.png" alt="">
                     </div>
-                    <img class="close_btn" src="img/스탯설명_닫기버튼.png" alt="" onclick="$('div.stat.description').css('display','none');">
                 </div>
             </div>
             <div class="control" id="Simulation">
@@ -458,8 +457,8 @@
             role = "Defense";
             $("text.virus.name").text(name);
             $("input.virus.name").val(name).attr("disabled", "true");
-            $("input.stat").attr("disabled","true");
-            d3.selectAll("input.stat").style("color","#f9e3d9").style("background-color","#f9e3d9");
+            $("input.stat").attr("disabled","true").css("cursor", "default");
+            d3.selectAll("input.stat").style("color","#ffe349").style("background-color","#ffe349");
         }
     }
 </script>

@@ -395,7 +395,7 @@ function node_init(param, node_data, loc) {
             d3.select("tspan.node.mask").text(d.mask ? "착용" : "미착용");
             d3.select("tspan.node.vaccine").text(d.vaccine ? "1차" : "미접종");
             $("#popup_node").fadeIn(1);
-            d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + d.y) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + d.x) + "px");
+            d3.select("div.popBody.node").style("top",(120 + yScale(d.y)) + "px").style("left", (240 + xScale(d.x)) + "px");
             d3.select("#popup_node > div.popBg").on("click", function() {
                 $("#popup_node").fadeOut(1);
                 d3.select("#node_" + d.index).attr("r", param.size).classed("hovered",false);
@@ -484,7 +484,7 @@ function node_update(param, node_data) {
                     d3.select("tspan.node.mask").text(d.mask);
                     d3.select("tspan.node.vaccine").text(d.vaccine);
                     $("#popup_node").fadeIn(1);
-                    d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + d.y) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + d.x) + "px");
+                    d3.select("div.popBody.node").style("top",(d3.select("#sim_container").node().getBoundingClientRect().top + yScale(d.y)) + "px").style("left",(d3.select("#sim_container").node().getBoundingClientRect().left + xScale(d.x)) + "px");
                     d3.select("#popup_node > div.popBg").on("click", function() {
                         $("#popup_node").fadeOut(1);
                         d3.select("#node_" + d.index).attr("r", param.size);
