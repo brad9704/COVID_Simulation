@@ -1,3 +1,4 @@
+/*ver.2022.03.07.01*/
 const state = {
     S: "#79ccae", // Susceptible
     E1: "#dfc574", // Exposed, non_infectious

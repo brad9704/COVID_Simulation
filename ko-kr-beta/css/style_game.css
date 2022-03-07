@@ -1,3 +1,5 @@
+/*ver.2022.03.07.01*/
+
 @font-face {
     font-family: 'KoPubDotumMedium';
     src: url('fonts/KoPubDotumMedium.woff') format('woff');
@@ -40,6 +42,8 @@ body {
     padding: 0;
     font-family: ONEMobilePOPRegular, sans-serif;
     font-size: 75%;
+    width: 1920px;
+    background-color: black;
 }
 
 div.controls{
@@ -67,7 +71,7 @@ div.controls > div.stat.wrapper > div.stat.left {
     width: 258px;
     height: 243px;
 }
-div.controls > div.control > input[type=button] {
+#button_start {
     background: none;
     position: absolute;
     right: 70px;
@@ -76,6 +80,10 @@ div.controls > div.control > input[type=button] {
     height: 99px;
     cursor: pointer;
 }
+#button_start:hover {
+    filter: brightness(150%);
+}
+
 div.controls > div.control > img {
     position: absolute;
     right: 70px;
@@ -167,7 +175,7 @@ div.panel_output.budget {
     top:0;
     left:0;
     width:1920px;
-    height:1080px;
+    height:935px;
 }
 .popBg {
     position:absolute;
@@ -587,6 +595,13 @@ input.weekly.tab.switch:hover {
     border-radius: 5px;
 }
 
+.weekly.tab.age {
+    transform: translate(-1.5px,0);
+}
+.weekly.tab.area {
+    transform: translate(1.5px,0);
+}
+
 input.weekly.tab.switch.overall {
     width: 100px;
     transform: translate(6px,0);
@@ -886,6 +901,7 @@ line.weekly.border.visible {
     height: 68px;
     position: absolute;
     left: 454px;
+    cursor: pointer;
 }
 #button_resume:hover {
     filter: brightness(150%);

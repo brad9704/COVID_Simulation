@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2022.02.24.01-->
+<!--ver.2022.03.07.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -352,8 +352,7 @@
                 </div>
             </div>
             <div class="control" id="Simulation">
-                <img src="img/시작화면 - 버튼.png" alt="">
-                <input id="button_start" type="button" onclick="start_simulation()">
+                <img id="button_start" src="img/시작화면 - 버튼.png" alt="" onclick="start_simulation()">
             </div>
             <div class="daily legend">
                 <img class="daily" src="img/감염병 정보 패널.png" alt="">
@@ -406,12 +405,12 @@
     window.onload = function() {
         let scale = this.innerWidth / 1920;
         let translate = (1 - 1920 / this.innerWidth) * 50;
-        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
+        d3.select("body").style("transform","scale(" + scale + ") translate(0," + translate + "%)");
     }
     window.onresize = function() {
         let scale = this.innerWidth / 1920;
         let translate = (1 - 1920 / this.innerWidth) * 50;
-        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
+        d3.select("body").style("transform","scale(" + scale + ") translate(0%," + translate + "%)");
     }
 </script>
 <script type="text/javascript">

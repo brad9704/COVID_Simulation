@@ -1,3 +1,4 @@
+/*ver.2022.03.07.01*/
 var run, chart_data, running_time, chart_param;
 var collision_statistics = {
     "Not infected": 0,

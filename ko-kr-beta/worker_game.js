@@ -1,3 +1,4 @@
+/*ver.2022.03.07.01*/
 importScripts("https://d3js.org/d3.v5.min.js",
     "//unpkg.com/d3-force-bounce/dist/d3-force-bounce.min.js",
     "//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js",
