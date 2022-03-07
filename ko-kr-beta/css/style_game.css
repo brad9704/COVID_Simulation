@@ -498,7 +498,7 @@ div.daily.rate.severity {
 
 div.daily.num {
     color: black;
-    top: 224px;
+    top: 220px;
 }
 div.daily.num.S {
     right: 497px;
@@ -513,19 +513,19 @@ div.daily.num.I1 {
     right: 260px;
 }
 div.daily.num.I2 {
-    top: 276px;
+    top: 273px;
     right: 180px;
 }
 div.daily.num.H2 {
-    top: 276px;
+    top: 273px;
     right: 100px;
 }
 div.daily.num.R1 {
-    right: 20px;
+    right: 18px;
 }
 div.daily.num.R2 {
-    top: 337px;
-    right: 20px;
+    top: 333px;
+    right: 18px;
 }
 
 .board svg.legend {
