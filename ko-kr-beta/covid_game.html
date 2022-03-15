@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2022.03.07.02-->
+<!--ver.2022.03.15.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -178,7 +178,7 @@
                             <line class="weekly border visible" x1="0" y1="125" x2="292" y2="125"/>
                             <line class="weekly border visible" x1="146" y1="0" x2="146" y2="245"/>
                             <line class="weekly border invisible left" data-click="0" x1="0" y1="123" x2="146" y2="123" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                            <line class="weekly border invisible right" data-click="0" x1="146" y1="123" x2="292" y2="123" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible right" data-click="0" x1="146" y1="123" x2="294" y2="123" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
                             <line class="weekly border invisible upper" data-click="0" x1="149" y1="0" x2="149" y2="125" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
                             <line class="weekly border invisible lower" data-click="0" x1="149" y1="125" x2="149" y2="248" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
                         </svg>
@@ -265,7 +265,7 @@
             </div>
 
             <input type="button" onclick="request_log()" value="Log" style="display:none">
-            <input id="exit" type="button" value="Exit">
+            <input id="exit" type="button" value="Exit" onclick="reset_simulation()">
         </div>
         <div class="popFoot">
         </div>

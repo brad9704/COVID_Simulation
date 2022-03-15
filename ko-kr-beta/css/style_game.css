@@ -1,4 +1,4 @@
-/*ver.2022.03.07.02*/
+/*ver.2022.03.15.01*/
 
 @font-face {
     font-family: 'KoPubDotumMedium';
@@ -860,9 +860,9 @@ div.weekly.budget.update p {
 }
 svg.weekly.area.lines {
     position: absolute;
-    width: 294px;
+    width: 296px;
     height: 250px;
-    left: 640px;
+    left: 638px;
     top: 0;
     transform: translateY(-20px);
 }

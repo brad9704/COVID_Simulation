@@ -1,4 +1,4 @@
-/*ver.2022.03.07.02*/
+/*ver.2022.03.15.01*/
 var run, chart_data, running_time, chart_param;
 var collision_statistics = {
     "Not infected": 0,
@@ -727,8 +727,8 @@ function toggle_run() {
     }
 }
 
-function resume_simulation() {
-    if (run !== null) return;
+function resume_simulation () {
+    if (run !== null) return -2;
     $(".enable-on-pause").attr("disabled", "disabled");
     $("input.weekly.tab.switch.overall").click();
     let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
@@ -763,7 +763,7 @@ function resume_simulation() {
             } else return "0";
     });
     if (new_budget < 0) {
-        return;
+        return -1;
     }
     budget = new_budget;
     budget_output.val(new_budget);
@@ -794,6 +794,7 @@ function resume_simulation() {
             receive_time += running_speed;
         }
     }, tick);
+    return 0;
 }
 
 function request_log() {
@@ -947,10 +948,8 @@ function weekly_report() {
     }
     toggle_week();
     if (auto) {
-        if ($("#button_resume").is(":enabled")) {
-            resume_simulation();
-            return;
-        }
+        let res = resume_simulation();
+        if (res === 0) return;
     }
 
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
@@ -1077,20 +1076,6 @@ function weekly_report() {
                     return zScale(e.R2)
         })(daily_IR));
 
-/*    v.selectAll("g")
-        .data(data_stacked)
-        .enter()
-        .append("g")
-        .attr("fill",function(d) {return d.key === "I1" ? "#f33e66" : "#3d3d3d";})
-        .attr("stroke","none")
-        .selectAll("rect")
-        .data(function(d) {return d;})
-        .enter()
-        .append("rect")
-        .attr("width", xScale.bandwidth())
-        .attr("height",function(d) {return yScale(d[0]) - yScale(d[1])})
-        .attr("x", function(d) {return xScale(d.data.tick - data_to.tick + 14)})
-        .attr("y", function(d) {return yScale(d[1])});*/
 }
 
 var auto = false;
