@@ -1,12 +1,13 @@
+/*ver.2022.03.07.01*/
 const state = {
-    S: "#98E294", // Susceptible
-    E1: "#FFE054", // Exposed, non_infectious
-    E2: "#FF9900", // Exposed, infectious
-    I1: "#C00000", // Infectious, mild
-    I2: "#FF00FF", // Infectious, severe
+    S: "#79ccae", // Susceptible
+    E1: "#dfc574", // Exposed, non_infectious
+    E2: "#e17f64", // Exposed, infectious
+    I1: "#d94c90", // Infectious, mild
+    I2: "#d2b4be", // Infectious, severe
     H1: "#C0C0C0", // Self-quarantine
-    H2: "#5260d0", // Hospitalized
-    R1: "#254488", // Recovered
+    H2: "#535353", // Hospitalized
+    R1: "#7d91bf", // Recovered
     R2: "#000000" // Dead
 };
 
@@ -82,7 +83,10 @@ class Node {
 
         this.state = state.S;
         this.age = age;
+        this.detail_age = Math.floor(Math.random()) * 9 + parseInt(age) + 1;
         this.mask = false;
+        this.vaccine = false;
+        this.income = 100;
         this.loc = "World";
         this.flag = [];
         this.param = param;

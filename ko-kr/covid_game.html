@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2021.12.10.05-->
+<!--ver.2022.03.15.01-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -9,78 +9,88 @@
     <link rel="stylesheet" href="css/style_game.css">
 </head>
 <body>
+<img id="background" src="img/배경.png" alt="">
 <div class="sidebar">
     <div class="Day"><output class="weekly_week">0</output>주 / <output id="turn_day">0</output><text id="day_text">일</text></div>
     <div class="speed">
         <div id="speed_output_wrapper">
-            <output id="speed_out">1x</output>
+            <output id="speed_out">X 1</output>
         </div>
         <div class="button">
-            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<<">
-            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">>">
+            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<">
+            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">">
         </div>
     </div>
-    <div class="auto" style="display:none"><input id="auto_switch" type="range" min="0" max="1" step="1" value="0" oninput="toggle_auto(value)" style="width: 30px;"></div>
 </div>
 <div class="board" id="board">
-    <div id="sim_board"></div>
-    <div class="daily legend">
-        <img src="img/info_panel.svg">
-        <div class="virus name"><text class="virus name">COVID-19</text></div>
-        <output class="daily legend duration E2-I1">0-0</output>
-        <output class="daily legend duration I1-I2">0-0</output>
-        <output class="daily legend duration I1-R1">0</output>
-        <output class="daily legend rate infectious">0%</output>
-        <output class="daily legend rate severity">0%</output>
-        <output class="daily legend num S">1000</output>
-        <output class="daily legend num E1">0</output>
-        <output class="daily legend num E2">0</output>
-        <output class="daily legend num I1">0</output>
-        <output class="daily legend num I2">0</output>
-        <output class="daily legend num H2">0</output>
-        <output class="daily legend num R1">0</output>
-        <output class="daily legend num R2">0</output>
+    <div id="sim_board">
     </div>
-    <div id="chart_board"></div>
-    <div id="death_board"></div>
+    <div class="daily legend">
+        <img class="daily" src="img/감염병 정보 패널.png" alt="">
+        <img class="daily background" src="img/감염병 단계별 인구분포.png" alt="">
+        <div class="virus name"><text class="virus name">COVID-19</text></div>
+        <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
+        <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
+        <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
+        <div class="daily rate infectious"><output class="daily legend rate infectious">0%</output></div>
+        <div class="daily rate severity"><output class="daily legend rate severity">0%</output></div>
+        <div class="daily num S"><output class="daily legend num S">1000</output></div>
+        <div class="daily num E1"><output class="daily legend num E1">0</output></div>
+        <div class="daily num E2"><output class="daily legend num E2">0</output></div>
+        <div class="daily num I1"><output class="daily legend num I1">0</output></div>
+        <div class="daily num I2"><output class="daily legend num I2">0</output></div>
+        <div class="daily num H2"><output class="daily legend num H2">0</output></div>
+        <div class="daily num R1"><output class="daily legend num R1">0</output></div>
+        <div class="daily num R2"><output class="daily legend num R2">0</output></div>
+    </div>
+    <div id="chart_board" class="graph"></div>
+    <div id="death_board" class="graph"></div>
 </div>
 <div class="control_panel">
     <div class="panel_button">
-        <input id="button_stop" type="button" onclick="reset_simulation()" value="Stop">
     </div>
     <div class="panel_footer">
         <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
         <div class="panel_output hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></div>
         <div class="panel_output death"><output class="death_now">0</output> (<output class="death_total">0</output>)</div>
-        <div class="panel_output GDP">$<output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</div>
+        <div class="panel_output GDP"><output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</div>
         <div class="panel_output budget">$<output class="budget_now">0</output></div>
     </div>
 </div>
 <div id="popup_weekly" class="popup">
     <div class="popBg"></div>
     <div class="popInnerBox">
-        <div class="popHead">주간 보고<output></output></div>
         <div class="popBody">
+            <img src="img/주간보고_틀.png" alt="">
+            <img class="weekly tab back overall" src="img/주간보고_01.png" alt="">
+            <img class="weekly tab back age" src="img/주간보고_02.png" alt="" style="display:none">
+            <img class="weekly tab back area" src="img/주간보고_03.png" alt="" style="display:none">
             <div class="weekly switch tabs">
-                <input class="weekly tab switch overall" type="button" value="주간 발생 동향" active="true" onclick="
+                <input class="weekly tab switch overall" type="button" value="" active="true" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.overall').css('display','block');
                 $('input.weekly.tab.switch.overall').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.overall').css('display','block');">
-                <input class="weekly tab switch age" type="button" value="사회적 거리두기" onclick="
+                <input class="weekly tab switch age" type="button" value="" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.age').css('display','block');
                 $('input.weekly.tab.switch.age').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.age').css('display','block');">
-                <input class="weekly tab switch area" type="button" value="예산 분배" onclick="
+                <input class="weekly tab switch area" type="button" value="" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.area').css('display','block');
                 $('input.weekly.tab.switch.area').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.area').css('display','block');">
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">
-                    <output class="weekly_week">1</output><output class="weekly_date_from">1</output><output class="weekly_date_to">7</output>
+                    <div class="weekly date"><output class="weekly_week">1</output>주: <output class="weekly_date_from">1</output>~<output class="weekly_date_to">7</output>일차</div>
                     <table>
                         <tr>
                             <td><output id="weekly_new_infect">0</output></td>
@@ -95,19 +105,10 @@
                             <td class="weekly warning GDPs" data-value="0"></td>
                         </tr>
                     </table>
-                    <output class="weekly infectious" age="90">0</output>
-                    <output class="weekly death" age="90">0</output>
+                    <div class="weekly infectious">누적 확진자 <output class="weekly infectious" age="90">0</output>명</div>
+                    <div class="weekly death">누적 사망자 <output class="weekly death" age="90">0</output>명</div>
                 </div> <br>
                 <div class="weekly_chart">
-                    <div class="weekly legend">
-                        <svg>
-                            <circle cx="10" cy="10" r="6" fill="red"></circle>
-                            <text x="25" y="16">Infected</text>
-                            <circle cx="10" cy="30" r="6" fill="black"></circle>
-                            <text x="25" y="36">Dead</text>
-                        </svg>
-                    </div>
-                    <p style="font-weight: bold;">주간 확진 및 사망 추이<br></p>
                     <div class="weekly_board">
                     </div>
                 </div>
@@ -155,30 +156,18 @@
                                 </rect>
                             </svg>
                             <div class="area_policy options">
-                                <select class="area_policy option upper left" data-area="upper left" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
-                                <select class="area_policy option upper right" data-area="upper right" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
-                                <select class="area_policy option lower left" data-area="lower left" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
-                                <select class="area_policy option lower right" data-area="lower right" onchange="toggle_area()">
-                                    <option value="0" selected>0단계</option>
-                                    <option value="1">1단계</option>
-                                    <option value="2">2단계</option>
-                                    <option value="3">3단계</option>
-                                </select>
+                                <div class="area_policy option upper left" data-area="upper left">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('upper','left',-1)"> <output class="area_policy option upper left">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('upper','left',1)">
+                                </div>
+                                <div class="area_policy option upper right" data-area="upper right">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('upper','right',-1)"> <output class="area_policy option upper right">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('upper','right',1)">
+                                </div>
+                                <div class="area_policy option lower left" data-area="lower left">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('lower','left',-1)"> <output class="area_policy option lower left">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('lower','left',1)">
+                                </div>
+                                <div class="area_policy option lower right" data-area="lower right">
+                                    <input class="area_policy option" type="button" value="▼" onclick="toggle_area('lower','right',-1)"> <output class="area_policy option lower right">0</output>단계 <input class="area_policy option" type="button" value="▲" onclick="toggle_area('lower','right',1)">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -186,12 +175,12 @@
                         <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5" onchange="toggle_week();">
                         <input class="policy bed" type="range" min="10" max="30" step="2" value="10" onchange="toggle_week();">
                         <svg class="weekly area lines">
-                            <line class="weekly border visible" x1="0" y1="130" x2="340" y2="130"/>
-                            <line class="weekly border visible" x1="170" y1="0" x2="170" y2="260"/>
-                            <line class="weekly border invisible left" data-click="0" x1="0" y1="130" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                            <line class="weekly border invisible right" data-click="0" x1="170" y1="130" x2="340" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                            <line class="weekly border invisible upper" data-click="0" x1="170" y1="0" x2="170" y2="130" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                            <line class="weekly border invisible lower" data-click="0" x1="170" y1="130" x2="170" y2="260" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border visible" x1="0" y1="125" x2="292" y2="125"/>
+                            <line class="weekly border visible" x1="146" y1="0" x2="146" y2="245"/>
+                            <line class="weekly border invisible left" data-click="0" x1="0" y1="123" x2="146" y2="123" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible right" data-click="0" x1="146" y1="123" x2="294" y2="123" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible upper" data-click="0" x1="149" y1="0" x2="149" y2="125" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible lower" data-click="0" x1="149" y1="125" x2="149" y2="248" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
                         </svg>
                         <div class="weekly area budget"><output class="weekly budget_next">0</output></div>
                     </div>
@@ -200,7 +189,7 @@
             <div id="button_wrapper">
                 <div class="weekly budget update"><p>1달치 예산 $40,000이 입금되었습니다!</p></div>
                 <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
-                <input id="button_resume" type="button" onclick="resume_simulation()" value="Resume">
+                <img src="img/주간보고_버튼.png" id="button_resume" onclick="resume_simulation()">
             </div>
         </div>
     </div>
@@ -276,7 +265,7 @@
             </div>
 
             <input type="button" onclick="request_log()" value="Log" style="display:none">
-            <input id="exit" type="button" value="Exit">
+            <input id="exit" type="button" value="Exit" onclick="reset_simulation()">
         </div>
         <div class="popFoot">
         </div>
@@ -286,97 +275,143 @@
     <div class="popBg"></div>
     <div class="popBody">
         <div class="controls">
+            <img src="img/시작화면 - 배경.png" alt="">
             <div class="stat wrapper">
                 <div class="virus selection">
+                    <img src="img/셀렉트박스.png" alt="">
                     <select class="virus selection" onchange="new_virus(value)">
                     </select>
+                    <span class="icoArrow"><img src="img/cursor.png" alt=""></span>
                 </div>
                 <div class="stat left">
+                    <img src="img/시작화면 - 스탯창.png" alt="">
                     <table class="stat def">
-                        <tr class="stat group stat1" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat1').css('display','block');">
-                            <td class="stat label stat1">잠복기</td>
+                        <tr class="stat group stat1">
+                            <td class="stat info stat1" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat1').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
+                            <td class="stat block stat1"></td>
                             <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
                             <td class="stat value stat1"><output class="stat value stat1">0</output></td>
                             <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
                         </tr>
-                        <tr class="stat group stat2" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat2').css('display','block');">
-                            <td class="stat label stat2">감염 기간</td>
+                        <tr class="stat group stat2">
+                            <td class="stat info stat2" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat2').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
+                            <td class="stat block stat2"></td>
                             <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
                             <td class="stat value stat2"><output class="stat value stat2">0</output></td>
                             <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
                         </tr>
-                        <tr class="stat group stat3" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat3').css('display','block');">
-                            <td class="stat label stat3">전염성</td>
+                        <tr class="stat group stat3">
+                            <td class="stat info stat3" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat3').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
+                            <td class="stat block stat3"></td>
                             <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
                             <td class="stat value stat3"><output class="stat value stat3">0</output></td>
                             <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
                         </tr>
-                        <tr class="stat group stat4" onmouseenter="$('div.stat.desc').css('display','none'); $('div.stat.desc.stat4').css('display','block');">
-                            <td class="stat label stat4">중증이환률</td>
+                        <tr class="stat group stat4">
+                            <td class="stat info stat4" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat4').css('display','block');" onmouseout="$('div.stat.desc').css('display','none');"></td>
+                            <td class="stat block stat4"></td>
                             <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
                             <td class="stat value stat4"><output class="stat value stat4">0</output></td>
                             <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
                         </tr>
                     </table>
-                    <text class="stat label total">남은 포인트: <output class="stat value total">25</output></text>
+                    <text><output class="stat value total">25</output></text>
+                    <div class="stat button clear" onclick="if (role === 'Attack') {
+                        ['stat1','stat2','stat3','stat4'].forEach(e => {
+                            for (let i=0;i<25;i++) {
+                                change_stat(e,-1);
+                            }
+                        });}"></div>
                 </div>
                 <div class="stat description">
                     <div class="stat desc stat1">
-                        <b>잠복기</b><br>
-                        감염 증상이 더 오랜 시간 후에 나타나게 하여 방역책임자들을 혼란스럽게 합니다.<br>
-                        매 <b>2 포인트</b>마다 잠복기 (E2)가 하루씩 길어집니다.<br>
+                        <img src="img/잠복기.png" alt="">
                     </div>
                     <div class="stat desc stat2">
-                        <b>감염 기간</b><br>
-                        가벼운 증상이 길어지게 하여 감염자가 더 오래 바이러스를 퍼트리고 다니게 합니다.<br>
-                        매 <b>3 포인트</b>마다 감염기간 (I1, I2)가 각 하루씩 길어집니다.<br>
+                        <img src="img/감염기간.png" alt="">
                     </div>
                     <div class="stat desc stat3">
-                        <b>전염성</b><br>
-                        바이러스가 다른 숙주에게 더 잘 퍼지도록 합니다.<br>
-                        접촉 시 전염성이 매 <b>1 포인트</b>마다 증가합니다.<br>
-                        전염성은 감염자와 접촉 시 매 프레임마다 감염 여부를 결정합니다.<br>
+                        <img src="img/전염성.png" alt="">
                     </div>
                     <div class="stat desc stat4">
-                        <b>중증이환률</b><br>
-                        감염병을 더 치명적으로 만들어 중증 환자의 비율을 증가시킵니다.<br>
-                        매 <b>1 포인트</b>마다 감염자가 중증으로 악화될 확률이 2% 증가하고,<br>
-                        매 <b>2 포인트</b>마다 중증 환자의 회복에 필요한 기간(H)이 하루씩 증가합니다.<br>
+                        <img src="img/중증이환률.png" alt="">
                     </div>
                 </div>
             </div>
             <div class="control" id="Simulation">
-                <input id="button_start" type="button" onclick="start_simulation()" value="Start">
-                <input id="advanced_button" type="button" onclick="advanced_setting()" value="Advanced setting" style="display:none;">
+                <img id="button_start" src="img/시작화면 - 버튼.png" alt="" onclick="start_simulation()">
             </div>
             <div class="daily legend">
-                <img src="img/info_panel_init.svg">
-                <div class="virus name"><input type="text" class="virus name" value="COVID-19" onchange="$('text.virus.name').text(this.value)"></div>
-                <output class="daily legend duration E2-I1">0-0</output>
-                <output class="daily legend duration I1-I2">0-0</output>
-                <output class="daily legend duration I1-R1">0</output>
-                <output class="daily legend rate infectious">0</output>
-                <output class="daily legend rate severity">0%</output>
-                <output class="daily legend num S">1000</output>
-                <output class="daily legend num E1">0</output>
-                <output class="daily legend num E2">0</output>
-                <output class="daily legend num I1">0</output>
-                <output class="daily legend num I2">0</output>
-                <output class="daily legend num H1" style="display:none;">0</output>
-                <output class="daily legend num H2">0</output>
-                <output class="daily legend num R1">0</output>
-                <output class="daily legend num R2">0</output>
+                <img class="daily" src="img/감염병 정보 패널.png" alt="">
+                <img class="daily background" src="img/감염병 단계별 인구분포.png" alt="">
+                <div class="virus name"><input class="virus name" onchange="$('text.virus.name').text(this.value)"></div>
+                <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
+                <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
+                <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
+                <div class="daily rate infectious"><output class="daily legend rate infectious">0%</output></div>
+                <div class="daily rate severity"><output class="daily legend rate severity">0%</output></div>
+                <div class="daily num S"><output class="daily legend num S">1000</output></div>
+                <div class="daily num E1"><output class="daily legend num E1">0</output></div>
+                <div class="daily num E2"><output class="daily legend num E2">0</output></div>
+                <div class="daily num I1"><output class="daily legend num I1">0</output></div>
+                <div class="daily num I2"><output class="daily legend num I2">0</output></div>
+                <div class="daily num H2"><output class="daily legend num H2">0</output></div>
+                <div class="daily num R1"><output class="daily legend num R1">0</output></div>
+                <div class="daily num R2"><output class="daily legend num R2">0</output></div>
             </div>
         </div>
-
     </div>
 </div>
+<div id="popup_node" class="popup">
+    <div class="popBg">
+        <div class="popBody node">
+        </div>
+    </div>
+</div>
+
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
 <script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
+<script type="text/javascript">
+    d3.xml("img/node_info.svg").then(data => {
+        d3.select("div.popBody.node").node().append(data.documentElement)
+    });
+    d3.xml("img/STOP_active.svg").then(data => {
+        d3.select("div.panel_button").node().append(data.documentElement)
+    });
+    d3.xml("img/STOP_inactive.svg").then(data => {
+        d3.select("div.panel_button").node().append(data.documentElement)
+    });
+    d3.xml("img/sidebar.svg").then(data => {
+        d3.select("div.sidebar").node().append(data.documentElement)
+    });
+
+    window.onload = function() {
+        let scale = this.innerWidth / 1920;
+        let translate = (1 - 1920 / this.innerWidth) * 50;
+        d3.select("body").style("transform","scale(" + scale + ") translate(0," + translate + "%)");
+    }
+    window.onresize = function() {
+        let scale = this.innerWidth / 1920;
+        let translate = (1 - 1920 / this.innerWidth) * 50;
+        d3.select("body").style("transform","scale(" + scale + ") translate(0%," + translate + "%)");
+    }
+</script>
 <script type="text/javascript">
     var virus_request = new XMLHttpRequest();
     var setting_request = new XMLHttpRequest();
@@ -404,24 +439,31 @@
     function new_virus (name) {
         let stat = virus_response.data.find(virus => virus.name === name)["stat"];
         ["stat1","stat2","stat3","stat4"].forEach(e => {
-            for (let i=0;i<25;i++) {
-                change_stat(e,-1);
-            }
+            reset_stat();
         });
         ["stat1","stat2","stat3","stat4"].forEach(e => {
-            for (let i=0;i<stat[e];i++) {
-                change_stat(e,1);
+            if (stat[e] > 0) {
+                for (let i = 0; i < stat[e]; i++) {
+                    change_stat(e, 1, true);
+                }
+            } else {
+                for (let i = stat[e]; i < 0; i++) {
+                    change_stat(e, -1, true);
+                }
             }
         });
         if (name === "Attack") {
             role = "Attack";
+            reset_stat();
             $("input.virus.name").attr("disabled",null).val("Click here for name");
             $("input.stat").attr("disabled",null);
+            d3.selectAll("input.stat").style("color","rgba(0,0,0,0)").style("background","none");
         } else {
             role = "Defense";
             $("text.virus.name").text(name);
             $("input.virus.name").val(name).attr("disabled", "true");
-            $("input.stat").attr("disabled","true");
+            $("input.stat").attr("disabled","true").css("cursor", "default");
+            d3.selectAll("input.stat").style("color","#ffe349").style("background-color","#ffe349");
         }
     }
 </script>
