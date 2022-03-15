@@ -216,6 +216,7 @@ div.panel_output.budget {
 
 #popup_result .popInnerBox {
     height: 800px;
+    background-color: white;
 }
 #popup_result .popBody .popChart {
     border: 1px solid black;
@@ -244,6 +245,7 @@ div.panel_output.budget {
 #popup_result div.popBody table.result td.star {
     color: black;
     font-size: 40px;
+    display: none;
 }
 div.panel_policy_result {
     font-size: 40px;
