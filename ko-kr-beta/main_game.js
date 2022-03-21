@@ -689,7 +689,8 @@ function stop_simulation() {
 }
 function reset_simulation() {
     stop_simulation();
-    d3.selectAll("#board > div > svg").remove()
+    d3.selectAll("#board > div > svg").remove();
+    $("#sim_title").remove();
     chart_data = [];
     w.param = get_params();
     $("line.weekly.border.invisible").attr("data-click", "0");
@@ -763,6 +764,7 @@ function resume_simulation () {
             } else return "0";
     });
     if (new_budget < 0) {
+        triggerInnerPopup("budget.over");
         return -1;
     }
     budget = new_budget;
@@ -942,9 +944,7 @@ function weekly_report() {
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) {
         budget += 40000;
         $("output.budget_now").val(budget);
-        $("div.weekly.budget.update").css("opacity","100%");
-    } else {
-        $("div.weekly.budget.update").css("opacity","0");
+        if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
     if (auto) {
@@ -1022,7 +1022,7 @@ function weekly_report() {
         .range([30, board_svg_size.width - 25]).padding(0.7);
     let yScale = d3.scaleLinear()
         .domain([0, d3.max(daily_IR, e => e.I1) + 1])
-        .range([board_svg_size.height - 50, 0]);
+        .range([board_svg_size.height - 50, 10]);
     let zScale = d3.scaleLinear()
         .domain([0, d3.max(daily_IR, e => e.R2) + 1])
         .range([board_svg_size.height - 50, 0]);
@@ -1060,6 +1060,19 @@ function weekly_report() {
         .attr("height", function(d) {return yScale(0) - yScale(d.I1);})
         .attr("x", function(d) {return xScale(d.tick - data_to.tick + 14)})
         .attr("y", function(d) {return yScale(d.I1);});
+
+    var v3 = board_svg.append("g").attr("class", "txt");
+
+    v3.selectAll("text")
+        .data(daily_IR)
+        .enter()
+        .append("text")
+        .attr("fill", "#f33e66")
+        .attr("font-size", "13px")
+        .style("text-align", "center")
+        .attr("x", function(d) {return xScale(d.tick - data_to.tick + 14) + 3 - 1.3 * Math.floor(d.I1 / 10)})
+        .attr("y", function(d) {return yScale(d.I1) - 4})
+        .text(function(d) {return d.I1;});
 
     var v2 = board_svg.append("g").attr("class", "line");
 
@@ -1103,4 +1116,11 @@ function toggle_week() {
         $("div.weekly.area.caution").css("opacity","0");
         $("#button_resume").attr("disabled",null);
     }
+}
+
+function triggerInnerPopup(popupType) {
+    $("img.innerPopup").css("display", "none");
+    $("img.innerPopup.resume").css("display", "block");
+    $("img.innerPopup." + popupType).css("display", "block");
+    $("#popupInnerPopup").fadeIn();
 }

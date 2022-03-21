@@ -687,7 +687,7 @@ td.weekly.warning[data-value="0"] {
     background-size: initial;
 }
 td.weekly.warning[data-value="1"] {
-    background-image: url("../img/wr_2_warning.svg");
+    background-image: url("../img/주의.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
@@ -1064,4 +1064,22 @@ div.popBody.node {
 
 g.nodes {
     z-index: 0;
+}
+
+#popupInnerPopup div.popBody {
+    position: absolute;
+    left: 365px;
+    top: 300px;
+}
+img.innerPopup {
+    position: absolute;
+    left: 0;
+}
+img.innerPopup.resume {
+    top: 207px;
+    left: 130px;
+}
+img.innerPopup.resume:hover {
+    filter: brightness(150%);
+    cursor: pointer;
 }
