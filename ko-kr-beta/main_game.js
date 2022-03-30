@@ -1,4 +1,7 @@
 /*ver.2022.03.15.01*/
+// noinspection HttpUrlsUsage
+
+var ONLINE = true;
 var run, chart_data, running_time, chart_param;
 var collision_statistics = {
     "Not infected": 0,
@@ -19,7 +22,6 @@ var area = {
 }
 var budget = 0;
 var clicker = 0;
-var init_param;
 var turn_end = true;
 var chart = 0;
 var running_speed = 1;
@@ -27,11 +29,22 @@ var tick = 1000 / 60;
 var w;
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
+
+function prob_calc(params) {
+    let age_inf = 0, age_sev = 0, pop_total = 0;
+    for (const age in params["age_severe"]) {
+        age_inf += params["age_dist"][age] * params["TPC_base"] * params["age_infect"][age];
+        age_sev += params["age_dist"][age] * params["age_severe"][age];
+        pop_total += params["age_dist"][age];
+    }
+    return [age_inf / pop_total, age_sev / pop_total];
+}
+
 /*
 Sets param values with retrieved data from input
  */
-function get_params() {
-    init_param = setting_response;
+function get_params(init) {
+    const init_param = JSON.parse(JSON.stringify(init));
     let param = {};
     for (const key in init_param) {
         if (key !== "duration") param[key] = init_param[key];
@@ -55,7 +68,7 @@ function get_params() {
     param["duration"]["I1-R1"][1] += Math.floor(stat.stat2 / 3);
     param["TPC_base"] += stat.stat3 * 0.003;
     for (const age in param["age_severe"]) {
-        param["age_severe"][age] += stat.stat4 * 0.02;
+        param["age_severe"][age] *= (1 + stat.stat4 * 0.02);
     }
 
     param["sim_width"] = 870;
@@ -143,6 +156,7 @@ function updateSim(param, node_data, time) {
     $("#turn_day").text(turn);
     chart += running_speed;
     if (chart >= param.fps) {
+        updateTotalI2(node_data);
         let temp_data = {
             "tick": Math.round(time / param.fps),
             "GDP": node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v * curr.income, 0) / 0.2 * 0.9,
@@ -672,12 +686,14 @@ function chart_update(param, chart_param, chart_data) {
 
 function start_simulation() {
     chart_data = [];
+    $("output.weekly_week").val(0);
+    $("#turn_day").val(0);
     $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     $("output.budget_now").val(0);
     budget = 0;
-    let param = get_params();
+    let param = get_params(setting_response);
     w.param = param;
     w.postMessage({type: "START", main: param, budget: 0});
 }
@@ -692,7 +708,7 @@ function reset_simulation() {
     d3.selectAll("#board > div > svg").remove();
     $("#sim_title").remove();
     chart_data = [];
-    w.param = get_params();
+    w.param = get_params(setting_response);
     $("line.weekly.border.invisible").attr("data-click", "0");
     $("input.policy.rate").val("0.5");
     $("input.policy.bed").val("10");
@@ -874,13 +890,14 @@ function change_stat(stat_index, direction, FLAG_IGNORE=false) {
 
     $("output.stat.value." + stat_index).text(stat[stat_index]);
     $("output.stat.value.total").text(stat["total"]);
-    let param = get_params();
+    let param = get_params(setting_response);
+    let stat_res = prob_calc(param);
 
     $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
     $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
     $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]);
-    $("output.daily.legend.rate.infectious").text((Math.round((0.01 + stat.stat3 * 0.003) * 100 * 24) / 100).toFixed(2));
-    $("output.daily.legend.rate.severity").text(Math.round((0.10 + stat.stat4 * 0.02) * 100) + "%");
+    $("output.daily.legend.rate.infectious").text((Math.round(stat_res[0] * 100) / 100).toFixed(2));
+    $("output.daily.legend.rate.severity").text(Math.round(stat_res[1] * 100) + "%");
 }
 
 function toggle_area(pos_x, pos_y, dir) {
@@ -924,7 +941,7 @@ function weekly_report() {
         $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient));
     } else {
         d3.select("#weekly_change_infect").style("color", "black");
-        $("#weekly_change_infect").val("▲0");
+        $("#weekly_change_infect").val("0");
     }
     // noinspection JSJQueryEfficiency
     let weekly_change_death = data_to.R2[9] - data_from.R2[9] - parseInt($("#weekly_death").val());
@@ -976,7 +993,6 @@ function weekly_report() {
     if (data_to.H2[9] === w.param.hospital_max) {
         $("td.weekly.warning.ICUs").attr("data-value","2");
     }
-    // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
 
     let daily_IR = chart_data_total.reduce((prev, curr, index) => {
         if (index === 0) return [];
@@ -1028,7 +1044,7 @@ function weekly_report() {
         .attr("class", "yAxis");
     board_svg.append("g")
         .attr("class", "zAxis")
-        .attr("transform", "translate(790,0)");
+        .attr("transform", "translate(802,0)");
 
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
@@ -1075,6 +1091,18 @@ function weekly_report() {
                     return zScale(e.R2)
         })(daily_IR));
 
+    v2.selectAll("circle")
+        .data(daily_IR)
+        .enter()
+        .append("circle")
+        .attr("class","line-marker")
+        .attr("fill","#3d3d3d")
+        .attr("stroke","none")
+        .attr("transform","translate(7,0)")
+        .attr("r", 3.5)
+        .attr("cx", function(e) {return xScale(e.tick - data_to.tick + 14)})
+        .attr("cy", function(e) {return zScale(e.R2)});
+
 }
 
 var auto = false;
@@ -1109,4 +1137,22 @@ function triggerInnerPopup(popupType) {
     $("img.innerPopup.resume").css("display", "block");
     $("img.innerPopup." + popupType).css("display", "block");
     $("#popupInnerPopup").fadeIn();
+}
+
+function updateTotalI2(nodes) {
+    $("output.I2_total").each(function() {
+        this.value = nodes.filter(node => node.flag.includes("FLAG_SEVERE")).length;
+    });
+}
+
+function send_school_request() {
+    let school_request = new XMLHttpRequest();
+    school_request.open("GET", "{enter_link}");
+    school_request.responseType = "text";
+    school_request.send();
+    return school_request.response;
+}
+
+function get_school_list() {
+
 }

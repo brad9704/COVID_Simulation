@@ -560,7 +560,7 @@ div.graph {
     height: 232px;
     color: black;
 }
-div.graph g.Xaxis, g.Yaxis path {
+div.graph g.Xaxis, g.Yaxis, g.Zaxis path {
     stroke-width: 2;
 }
 div.graph g.tick text {
@@ -708,7 +708,7 @@ div.weekly_board {
     position: absolute;
     top: 260px;
     left: 100px;
-    width: 790px;
+    width: 900px;
     height: 185px;
 }
 
@@ -721,8 +721,9 @@ div.weekly_board > svg > g > g.yAxis text,g.zAxis text {
     font-family: ONEMobilePOPRegular, sans-serif;
 }
 
-div.weekly_board > svg > g > g.yAxis line,g.zAxis line {
+div.weekly_board > svg > g > g.yAxis line, g.zAxis line, g.zAxis path {
     color: #f33e66;
+    stroke-width: 2;
 }
 
 

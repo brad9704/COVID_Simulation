@@ -111,7 +111,7 @@
                             <td class="weekly warning GDPs" data-value="0"></td>
                         </tr>
                     </table>
-                    <div class="weekly infectious">누적 확진자 <output class="weekly infectious" age="90">0</output>명</div>
+                    <div class="weekly infectious">누적 확진자 <output class="weekly infectious" age="90">0</output>명, 누적 중증 <output class="I2_total">0</output>명</div>
                     <div class="weekly death">누적 사망자 <output class="weekly death" age="90">0</output>명</div>
                 </div> <br>
                 <div class="weekly_chart">
@@ -195,7 +195,7 @@
             <div id="button_wrapper">
                 <div class="weekly budget update"><p>1달치 예산 $40,000이 입금되었습니다!</p></div>
                 <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
-                <img src="img/주간보고_버튼.png" id="button_resume" onclick="resume_simulation()">
+                <img src="img/주간보고_버튼.png" alt="" id="button_resume" onclick="resume_simulation()">
             </div>
         </div>
     </div>
@@ -232,7 +232,7 @@
                     </tr>
                     <tr class="result death">
                         <td class="result death label">Total death</td>
-                        <td class="result death number"><output class="death_total">0</output></td>
+                        <td class="result death number"><output class="death_total">0</output>/<output class="I2_total">0</output></td>
                         <td class="result death star base"><output>☆☆☆☆</output></td>
                     </tr>
                     <tr class="result GDP">
@@ -448,7 +448,7 @@
     };
     function new_virus (name) {
         let stat = virus_response.data.find(virus => virus.name === name)["stat"];
-        ["stat1","stat2","stat3","stat4"].forEach(e => {
+        ["stat1","stat2","stat3","stat4"].forEach(() => {
             reset_stat();
         });
         ["stat1","stat2","stat3","stat4"].forEach(e => {

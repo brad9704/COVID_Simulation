@@ -123,7 +123,7 @@ class Node {
      */
     move(loc_to) {
         if (this.loc.name === loc_to.name) return;
-        this.flag.push("move");
+        this.flag.push("FLAG_MOVE");
         this.x = d3.randomUniform(...loc_to.xrange)();
         this.y = d3.randomUniform(...loc_to.yrange)();
         if (loc_to.name !== "hospital") {
@@ -134,7 +134,7 @@ class Node {
             this.fy = this.y;
         }
         this.loc = loc_to;
-        this.flag.splice(this.flag.indexOf("move"), 1);
+        this.flag.splice(this.flag.indexOf("FLAG_MOVE"), 1);
     }
 
     /*
@@ -187,6 +187,7 @@ class Node {
             case "I1-I2":
                 if (this.state !== state.I1 && this.state !== state.H1) return;
                 this.state = state.I2;
+                this.flag.push("FLAG_SEVERE");
                 this.queue.push({
                     time: d3.randomUniform(...this.param.duration["I2-H2"])() * this.param.fps + this.curTime,
                     func: this.change_state,
@@ -277,5 +278,17 @@ class Node {
         if (this.x < (this.param.sim_width / 2)) temp = temp + "left";
         else temp = temp + "right";
         return temp;
+    }
+    updateAngle() {
+        let angle = Math.PI * 2 * Math.random();
+        if (this._vx === null) {
+            let speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+            this.vx = speed * Math.cos(angle);
+            this.vy = speed * Math.sin(angle);
+        } else {
+            let speed = Math.sqrt(this._vx * this._vx + this._vy * this._vy);
+            this._vx = speed * Math.cos(angle);
+            this._vy = speed * Math.sin(angle);
+        }
     }
 }

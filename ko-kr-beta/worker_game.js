@@ -18,6 +18,7 @@ onmessage = function(event){
         case "PAUSE":
             break;
         case "RESUME":
+            simulation.nodes().forEach(node => node.updateAngle())
             apply_policy(event.data.data);
             break;
         case "STOP":
