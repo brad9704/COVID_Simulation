@@ -1003,20 +1003,6 @@ function weekly_report() {
         .attr("height", "100%");
     let board_svg_size = {'height': 185, 'width': 790};
 
-    let data_stacked = d3.stack().keys(["I1","R2"])(daily_IR);
-
-    /*
-    let xScale = d3.scaleBand()
-        .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([30, board_svg_size.width - 25]).padding(0.7);
-    let yScale = d3.scaleLinear()
-        .domain([0, d3.max(d3.max(data_stacked), e => d3.max(e)) + 1])
-        .range([board_svg_size.height - 50, 0]);
-    let xAxis = d3.axisBottom().scale(xScale);
-    let yAxis = d3.axisLeft().scale(yScale);
-    yAxis.ticks(5);
-
- */
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
         .range([30, board_svg_size.width - 25]).padding(0.7);
@@ -1059,7 +1045,7 @@ function weekly_report() {
         .attr("width", xScale.bandwidth())
         .attr("height", function(d) {return yScale(0) - yScale(d.I1);})
         .attr("x", function(d) {return xScale(d.tick - data_to.tick + 14)})
-        .attr("y", function(d) {return yScale(d.I1);});
+        .attr("y", function(d) {return yScale(d.I1)+2;});
 
     var v3 = board_svg.append("g").attr("class", "txt");
 
