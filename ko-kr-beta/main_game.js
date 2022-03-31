@@ -1,5 +1,6 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
+const REQUEST_ID = "http://118.217.236.170:28420/";
 
 var ONLINE = true;
 var run, chart_data, running_time, chart_param;
@@ -1145,14 +1146,28 @@ function updateTotalI2(nodes) {
     });
 }
 
-function send_school_request() {
-    let school_request = new XMLHttpRequest();
-    school_request.open("GET", "{enter_link}");
-    school_request.responseType = "text";
-    school_request.send();
-    return school_request.response;
-}
-
-function get_school_list() {
-
+async function send_request(action, arg) {
+    let url, request = {};
+    switch (action) {
+        case "GetSchoolList":
+            request.method = "GET";
+            url = REQUEST_ID + "api/";
+            break;
+        case "GetSchoolInfo":
+            request.method = "GET";
+            url = REQUEST_ID + "api/" + arg["school"];
+            break;
+        case "GetVirusInfo":
+            request.method = "GET";
+            url = REQUEST_ID + "api/" + arg["school"];
+            break;
+        case "PostVirusInfo":
+            request.method = "POST";
+            request.headers = {"Content-Type": "application/json"};
+            request.body = JSON.stringify(arg["body"]);
+            url = REQUEST_ID + "api/" + arg["school"];
+            break;
+    }
+    const response = await fetch(url, request);
+    return response.json();
 }

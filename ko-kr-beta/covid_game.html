@@ -423,6 +423,9 @@
     }
 </script>
 <script type="text/javascript">
+    const InitSettingResponse = fetch("initial_setting.json").then(e => e.json());
+    const VirusInfoResponse = fetch("virus_info.json").then(e => e.json());
+
     var virus_request = new XMLHttpRequest();
     var setting_request = new XMLHttpRequest();
     var virus_response, setting_response, role;
@@ -466,7 +469,7 @@
             role = "Attack";
             reset_stat();
             $("input.virus.name").attr("disabled",null).val("Click here for name");
-            $("input.stat").attr("disabled",null);
+            $("input.stat").attr("disabled",null).css("cursor", "pointer");
             d3.selectAll("input.stat").style("color","rgba(0,0,0,0)").style("background","none");
         } else {
             role = "Defense";

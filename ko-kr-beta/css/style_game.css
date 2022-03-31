@@ -987,6 +987,8 @@ table.stat {
     position: absolute;
     top: 60px;
     left: 69px;
+    table-layout: fixed;
+    width: 167px;
 }
 table.stat td {
     height: 22px;
@@ -1006,7 +1008,8 @@ table.stat td.stat.block {
 }
 table.stat td.stat.value {
     text-align: center;
-    width: 33px;
+    width: 35px;
+    overflow: visible;
 }
 table.stat input {
     cursor: pointer;
@@ -1077,8 +1080,8 @@ img.innerPopup {
     left: 0;
 }
 img.innerPopup.resume {
-    top: 207px;
-    left: 130px;
+    top: 277px;
+    left: 138px;
 }
 img.innerPopup.resume:hover {
     filter: brightness(150%);
