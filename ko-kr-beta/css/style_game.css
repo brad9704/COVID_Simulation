@@ -1074,6 +1074,7 @@ g.nodes {
     position: absolute;
     left: 365px;
     top: 300px;
+    height: auto;
 }
 img.innerPopup {
     position: absolute;
@@ -1086,4 +1087,19 @@ img.innerPopup.resume {
 img.innerPopup.resume:hover {
     filter: brightness(150%);
     cursor: pointer;
+}
+
+#popupDescPopup {
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    top: unset;
+    left: unset;
+}
+
+#popupDescPopup div.popInnerBox {
+    width: fit-content;
+    height: fit-content;
+    top: 0;
+    left: 0;
 }

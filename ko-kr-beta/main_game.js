@@ -31,6 +31,47 @@ var w;
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
 
+function getVirus(virusInfo) {
+    d3.select("select.virus.selection").selectAll("option")
+        .data(virusInfo.data)
+        .enter()
+        .append("option")
+        .attr("value",function(e) {return e.name;})
+        .text(function(e) {if (e.name === "Attack") {return e.name;} else {return "Defense: " + e.name;}});
+    selectVirus(virusInfo.data[0].name, virusInfo);
+    $("#popup_init").fadeIn();
+}
+function selectVirus (name, virusInfo) {
+    let stat = virusInfo.data.find(virus => virus.name === name)["stat"];
+    ["stat1","stat2","stat3","stat4"].forEach(() => {
+        reset_stat();
+    });
+    ["stat1","stat2","stat3","stat4"].forEach(e => {
+        if (stat[e] > 0) {
+            for (let i = 0; i < stat[e]; i++) {
+                change_stat(e, 1, true);
+            }
+        } else {
+            for (let i = stat[e]; i < 0; i++) {
+                change_stat(e, -1, true);
+            }
+        }
+    });
+    if (name === "Attack") {
+        role = "Attack";
+        reset_stat();
+        $("input.virus.name").attr("disabled",null).val("Click here for name");
+        $("input.stat").attr("disabled",null).css("cursor", "pointer");
+        d3.selectAll("input.stat").style("color","rgba(0,0,0,0)").style("background","none");
+    } else {
+        role = "Defense";
+        $("text.virus.name").text(name);
+        $("input.virus.name").val(name).attr("disabled", "true");
+        $("input.stat").attr("disabled","true").css("cursor", "default");
+        d3.selectAll("input.stat").style("color","#ffe349").style("background-color","#ffe349");
+    }
+}
+
 function prob_calc(params) {
     let age_inf = 0, age_sev = 0, pop_total = 0;
     for (const age in params["age_severe"]) {
@@ -694,7 +735,7 @@ function start_simulation() {
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     $("output.budget_now").val(0);
     budget = 0;
-    let param = get_params(setting_response);
+    let param = get_params(initParams);
     w.param = param;
     w.postMessage({type: "START", main: param, budget: 0});
 }
@@ -709,7 +750,7 @@ function reset_simulation() {
     d3.selectAll("#board > div > svg").remove();
     $("#sim_title").remove();
     chart_data = [];
-    w.param = get_params(setting_response);
+    w.param = get_params(initParams);
     $("line.weekly.border.invisible").attr("data-click", "0");
     $("input.policy.rate").val("0.5");
     $("input.policy.bed").val("10");
@@ -891,7 +932,7 @@ function change_stat(stat_index, direction, FLAG_IGNORE=false) {
 
     $("output.stat.value." + stat_index).text(stat[stat_index]);
     $("output.stat.value.total").text(stat["total"]);
-    let param = get_params(setting_response);
+    let param = get_params(initParams);
     let stat_res = prob_calc(param);
 
     $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
@@ -1146,22 +1187,26 @@ function updateTotalI2(nodes) {
     });
 }
 
-async function send_request(action, arg) {
+function getSchoolList() {
+
+}
+
+async function sendRequest(action, arg) {
     let url, request = {};
     switch (action) {
-        case "GetSchoolList":
+        case "getSchoolList":
             request.method = "GET";
             url = REQUEST_ID + "api/";
             break;
-        case "GetSchoolInfo":
+        case "getSchoolInfo":
             request.method = "GET";
             url = REQUEST_ID + "api/" + arg["school"];
             break;
-        case "GetVirusInfo":
+        case "getVirusInfo":
             request.method = "GET";
             url = REQUEST_ID + "api/" + arg["school"];
             break;
-        case "PostVirusInfo":
+        case "postVirusInfo":
             request.method = "POST";
             request.headers = {"Content-Type": "application/json"};
             request.body = JSON.stringify(arg["body"]);
@@ -1171,3 +1216,55 @@ async function send_request(action, arg) {
     const response = await fetch(url, request);
     return response.json();
 }
+
+function triggerDescPopup(popupType, pos) {
+    let top = pos.top, left = pos.left;
+    $("img.descPopup")
+        .css("display", "none");
+    $("img.descPopup." + popupType)
+        .css("display", "block");
+    $("#popupDescPopup").css({
+        "top": top,
+        "left": left
+    }).fadeIn(0);
+}
+
+$("div.daily.rate.infectious.init")
+    .on("mouseenter",
+        event => triggerDescPopup("TPC", {
+            "top": 280,
+            "left": 300
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
+
+$("div.daily.rate.infectious.board")
+    .on("mouseenter",
+        event => triggerDescPopup("TPC", {
+            "top": -20,
+            "left": 910
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
+
+$("div.daily.rate.severity.init")
+    .on("mouseenter",
+        event => triggerDescPopup("severity", {
+            "top": 280,
+            "left": 410
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
+
+$("div.daily.rate.severity.board")
+    .on("mouseenter",
+        event => triggerDescPopup("severity", {
+            "top": -20,
+            "left": 1030
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
