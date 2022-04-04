@@ -1217,7 +1217,29 @@ async function sendRequest(action, arg) {
     return response.json();
 }
 
+function getObjRatio(key, obj, round_to=2) {
+    return getPercentile(obj[key] / _.values(obj).reduce((acc, cur) => {
+        return acc + cur;
+    }, 0), round_to)
+}
+function getPercentile(val, round_to=2) {
+    if (val > 1) return "100%";
+    else return (Math.round(val * Math.pow(10, round_to)) / Math.pow(10, round_to - 2)).toString() + "%";
+}
+
 function triggerDescPopup(popupType, pos) {
+    let param = get_params(initParams);
+    $("td.descPopup.dist.var").each((_, td) => {
+        td.innerText = getObjRatio(td.dataset.age.toString(), param.age_dist, 2);
+    })
+    $("td.descPopup.value.var").each((_, td) => {
+        if (popupType === "TPC") {
+            td.innerText = getPercentile(param.age_infect[td.dataset.age.toString()] * param.TPC_base, 2);
+        } else if (popupType === "severity") {
+            td.innerText = getPercentile(param.age_severe[td.dataset.age.toString()], 3);
+        }
+    })
+
     let top = pos.top, left = pos.left;
     $("img.descPopup")
         .css("display", "none");

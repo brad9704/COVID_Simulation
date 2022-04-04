@@ -1103,3 +1103,30 @@ img.innerPopup.resume:hover {
     top: 0;
     left: 0;
 }
+#popupDescPopup img.descPopup {
+    filter: drop-shadow(0px 0px 2px #a0a0a0);
+}
+
+#popupDescPopup table {
+    position: absolute;
+    color: white;
+    width: 527px;
+    height: 68px;
+    top: 83px;
+    left: 20px;
+    border-collapse: collapse;
+}
+#popupDescPopup td.descPopup {
+    border-left: 1px solid white;
+    width: 48px;
+}
+#popupDescPopup td.descPopup.age {
+    border-bottom: 1px solid white;
+    font-size: 115%;
+}
+#popupDescPopup td.descPopup.label {
+    color: #fcda9b;
+    font-size: 115%;
+    border-radius: 5px;
+    border-left: none;
+}
