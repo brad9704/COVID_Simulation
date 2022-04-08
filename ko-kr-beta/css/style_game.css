@@ -824,16 +824,17 @@ div.weekly.tab.content.area {
 }
 input.policy.rate {
     position: absolute;
-    top: 122px;
-    left: 307px;
-    width: 258px;
+    top: 28px;
+    left: 161px;
+    width: 256px;
 }
 input.policy.bed {
     position: absolute;
-    top: 369px;
-    left: 307px;
-    width: 258px;
-}
+    top: 290px;
+    left: 420px;
+    width: 60px;    
+}// need to be changed as the button
+
 div.weekly.area.budget{
     position: absolute;
     top: 368px;
