@@ -837,9 +837,9 @@ input.policy.bed {
 
 div.weekly.area.budget{
     position: absolute;
-    top: 368px;
-    left: 728px;
-    width: 313px;
+    top: 397px;
+    left: 272px;
+    width: 90px;
     height: 45px;
     text-align: center;
     color: white;
@@ -865,10 +865,10 @@ div.weekly.budget.update p {
 }
 svg.weekly.area.lines {
     position: absolute;
-    width: 296px;
-    height: 250px;
-    left: 638px;
-    top: 0;
+    width: 870px;
+    height: 557px;
+    left: -975px;
+    top: -80px;
     transform: translateY(-20px);
 }
 line.weekly.border.invisible[data-click="0"] {
@@ -877,9 +877,21 @@ line.weekly.border.invisible[data-click="0"] {
     stroke-width: 10px;
     cursor: pointer;
 }
-line.weekly.border.invisible[data-click="1"] {
-    stroke: black;
+line.weekly.border.invisible[data-click="0"]:hover {
+    stroke: yellow;
     opacity: 50%;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"] {
+    stroke: red;
+    opacity: 50%;
+    stroke-width: 5px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"]:hover {
+    stroke: yellow;
+    opacity: 25%;
     stroke-width: 10px;
     cursor: pointer;
 }
@@ -1166,8 +1178,8 @@ div.weekly.area.desc:hover img {
 }
 #popup_weekly img.clickHere{
     position: absolute;
-    top: 380px;
-    left: -350px;
-    background-color: rgba(30,30,30,0.85);
-    border-radius: 40px;
+    top: 437px;
+    left: -563px;
+    background-color: rgba(30,30,30,0.5);
+    border-radius: 30px;
 }
