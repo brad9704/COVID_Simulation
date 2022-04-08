@@ -648,6 +648,7 @@ img.weekly.tab.back {
 div.weekly.tab.content {
     position: absolute;
     top: 200px;
+    left: 85px;
 
 }
 
