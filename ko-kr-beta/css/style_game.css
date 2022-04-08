@@ -631,7 +631,7 @@ img.weekly.tab.back {
 }
 
 #popup_weekly .popBody {
-    font-size: 20px;
+    font-size: 16px;
     text-align: left;
     height: auto;
 }
@@ -652,28 +652,30 @@ div.weekly.tab.content {
 }
 
 div.weekly_status {
-    width: 1020px;
+    width: 520px;
     height: 240px;
 }
 
 div.weekly_status div.weekly.date {
     position: absolute;
     color: white;
-    left: 126px;
+    top: 8px;
+    left: 105px;
 }
 
 div.weekly_status table {
     color: #2e2886;
     position: absolute;
     text-align: center;
+    width: 425px;
     top: 76px;
-    left: 283px;
+    left: 90px;
     font-size: 80%;
     border-spacing: 0 1px;
 }
 div.weekly_status table tr td {
-    width: 163px;
-    height: 39px;
+    width: 36px;
+    height: 40px;
 }
 td.weekly.warning {
     background-repeat: no-repeat;
@@ -706,8 +708,8 @@ div.weekly_status p {
 div.weekly_board {
     position: absolute;
     top: 260px;
-    left: 100px;
-    width: 900px;
+    left: -20px;
+    width: 545px;
     height: 185px;
 }
 
@@ -729,17 +731,17 @@ div.weekly_board > svg > g > g.yAxis line, g.zAxis line, g.zAxis path {
 div.weekly.infectious {
     color: #2e2886;
     position: absolute;
-    top: 164px;
-    right: 420px;
-    width: 300px;
+    top: 168px;
+    right: 161px;
+    width: 260px;
     text-align: center;
 }
 div.weekly.death {
     color: #2e2886;
     position: absolute;
-    top: 164px;
-    right: 90px;
-    width: 300px;
+    top: 168px;
+    right: 8px;
+    width: 140px;
     text-align: center;
 }
 
@@ -1080,7 +1082,7 @@ img.innerPopup {
 }
 img.innerPopup.resume {
     top: 277px;
-    left: 138px;
+    left: 150px;
 }
 img.innerPopup.resume:hover {
     filter: brightness(150%);
