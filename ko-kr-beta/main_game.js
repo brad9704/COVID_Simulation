@@ -1060,7 +1060,7 @@ function weekly_report() {
     let board_svg = board.append("svg")
         .attr("width", "100%")
         .attr("height", "100%");
-    let board_svg_size = {'height': 185, 'width': 790};
+    let board_svg_size = {'height': 185, 'width': 400};
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
