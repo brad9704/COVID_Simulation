@@ -1062,7 +1062,7 @@ div.stat.description img.close_btn {
     position: absolute;
     top: 20px;
     right: 30px;
-    cursor: pointer;
+    cursor: pointer; 
 }
 
 div.popBody.node {
