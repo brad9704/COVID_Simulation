@@ -648,7 +648,7 @@ img.weekly.tab.back {
 div.weekly.tab.content {
     position: absolute;
     top: 200px;
-    left: 85px;
+    left: 90px;
 
 }
 
@@ -913,9 +913,9 @@ line.weekly.border.visible {
 #button_resume {
     border: none;
     background-color: rgba(0,0,0,0);
-    border-radius: 5px;
-    width: 335px;
-    top: 125px;
+    border-radius: 0px;
+    width: 333px;
+    top: 124px;
     position: absolute;
     left: 285px;
     cursor: pointer;
