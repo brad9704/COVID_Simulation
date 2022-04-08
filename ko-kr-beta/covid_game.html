@@ -27,7 +27,7 @@
     </div>
     <div class="daily legend">
         <img class="daily" src="img/감염병 정보 패널.png" alt="">
-        <img class="daily background" src="img/감염병 단계별 인구분포.png" alt="">
+        <img class="daily background rescale" src="img/stagePopulation.png" alt="">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
         <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
         <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
@@ -64,13 +64,12 @@
     </div>
 </div>
 <div id="popup_weekly" class="popup">
-    <div class="popBg"></div>
     <div class="popInnerBox">
         <div class="popBody">
-            <img src="img/주간보고_틀.png" alt="">
-            <img class="weekly tab back overall" src="img/주간보고_01.png" alt="">
-            <img class="weekly tab back age" src="img/주간보고_02.png" alt="" style="display:none">
-            <img class="weekly tab back area" src="img/주간보고_03.png" alt="" style="display:none">
+            <img class="rescale" src="img/weekly_report_back.png" alt="">
+            <img class="weekly tab back overall rescale" src="img/weekly_report_1.png" alt="">
+            <img class="weekly tab back age rescale" src="img/weekly_report_2.png" alt="" style="display:none">
+            <img class="weekly tab back area rescale" src="img/weekly_report_3.png" alt="" style="display:none">
             <div class="weekly switch tabs">
                 <input class="weekly tab switch overall" type="button" value="" active="true" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
@@ -122,6 +121,9 @@
             <div class="weekly age area tab weekly_policy" style="display:none">
                 <div class="panel_policy">
                     <div class="weekly age tab content">
+                        <div class="weekly age desc">
+                            <img alt="" class="rescale" src="img/weekly_report_desc_popup.png">
+                        </div>
                         <div class="policy level confirm">
                             <table>
                                 <tr class="policy info" style="opacity: 0;">
@@ -178,6 +180,10 @@
                         </div>
                     </div>
                     <div class="weekly area tab content">
+                        <img class="rescale clickHere" src="img/weeklyPolicy_clickHere.png" alt="">
+                        <div class="weekly area desc">
+                            <img alt="" class="rescale" src="img/weekly_report_desc_popup2.png">
+                        </div>
                         <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5" onchange="toggle_week();">
                         <input class="policy bed" type="range" min="10" max="30" step="2" value="10" onchange="toggle_week();">
                         <svg class="weekly area lines">
@@ -195,7 +201,7 @@
             <div id="button_wrapper">
                 <div class="weekly budget update"><p>1달치 예산 $40,000이 입금되었습니다!</p></div>
                 <div class="weekly area caution"><p>예산이 부족합니다! 봉쇄를 해제하거나 강도를 줄여 예산을 확보해주세요!</p></div>
-                <img src="img/주간보고_버튼.png" alt="" id="button_resume" onclick="resume_simulation()">
+                <img src="img/weekly_report_resume.png" alt="" id="button_resume" onclick="resume_simulation()">
             </div>
         </div>
     </div>
@@ -204,16 +210,16 @@
     <div class="popBg"></div>
     <div class="popInnerBox">
         <div class="popBody">
-            <img class="innerPopup budget over" style="display:none" src="img/팝업%20-%20예산%20초과.png" alt="">
-            <img class="innerPopup budget gain" src="img/팝업%20-%20예산%20지급.png" alt="">
-            <img class="innerPopup resume" src="img/주간보고_버튼.png" alt="" onclick="$('#popupInnerPopup').fadeOut()">
+            <img class="innerPopup budget over rescale" style="display:none" src="img/InnerPopup.png" alt="">
+            <img class="innerPopup budget gain rescale" src="img/InnerPopupIncome.png" alt="">
+            <img class="innerPopup resume rescale" src="img/InnerPopupConfirm.png" alt="" onclick="$('#popupInnerPopup').fadeOut()">
         </div>
     </div>
 </div>
 <div id="popup_result" class="popup">
     <div class="popBg"></div>
     <div class="popInnerBox result">
-        <div class="popHead">RESULT</div>
+        <img class="popup_result background" alt="" src="img/Result.png">
         <div class="popBody">
             <div class="popCommonVar">
                 Elapsed time: <output id="resultTime">0</output> days<br>
@@ -374,7 +380,7 @@
             </div>
             <div class="daily legend">
                 <img class="daily" src="img/감염병 정보 패널.png" alt="">
-                <img class="daily background" src="img/감염병 단계별 인구분포.png" alt="">
+                <img class="daily background rescale" src="img/stagePopulation.png" alt="">
                 <div class="virus name"><input class="virus name" onchange="$('text.virus.name').text(this.value)"></div>
                 <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
                 <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>

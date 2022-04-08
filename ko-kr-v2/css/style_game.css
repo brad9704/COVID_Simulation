@@ -46,6 +46,11 @@ body {
     background-color: black;
 }
 
+.rescale {
+    transform: scale(0.5);
+    transform-origin: top left;
+}
+
 div.controls{
     background-image: url("../img/시작화면 - 배경.png");
     background-repeat: no-repeat;
@@ -216,7 +221,6 @@ div.panel_output.budget {
 
 #popup_result .popInnerBox {
     height: 800px;
-    background-color: white;
 }
 #popup_result .popBody .popChart {
     border: 1px solid black;
@@ -573,6 +577,9 @@ div.graph g.tick text {
 
 #popup_weekly .popInnerBox {
     height: auto;
+    position: absolute;
+    left: 1090px;
+    top: -10px;
 }
 
 #popup_weekly .popHead {
@@ -586,49 +593,41 @@ div.graph g.tick text {
 }
 
 input.weekly.tab.switch {
-    margin-right: 64px;
+    position: absolute;
     width: 110px;
     height: 50px;
-    border: none;
     background-color: rgba(0,0,0,0);
+    border: 2px solid white;
 }
 input.weekly.tab.switch:hover {
-    border: 1px solid white;
+    border: 3px solid yellow;
     border-radius: 5px;
-}
-
-.weekly.tab.age {
-    transform: translate(-1.5px,0);
-}
-.weekly.tab.area {
-    transform: translate(1.5px,0);
 }
 
 input.weekly.tab.switch.overall {
     width: 100px;
-    transform: translate(6px,0);
 }
 input.weekly.tab.switch.age {
     width: 109px;
-    transform: translate(16px,0);
+    left: 170px;
 }
 input.weekly.tab.switch.area {
-    transform: translate(29px,0);
     width: 65px;
+    left: 365px;
 }
 
 div.weekly.switch.tabs {
     position: absolute;
-    top: 121px;
-    left: 515px;
+    top: 151px;
+    left: 150px;
 }
 
 div.weekly.tab.content img {
     position: absolute;
 }
 img.weekly.tab.back {
-    top: 138px;
-    left: 150px;
+    top: 210px;
+    left: 95px;
 }
 
 #popup_weekly .popBody {
@@ -896,14 +895,13 @@ line.weekly.border.visible {
 }
 
 #button_resume {
-    transform: translateY(-15px);
     border: none;
     background-color: rgba(0,0,0,0);
     border-radius: 5px;
-    width: 170px;
-    height: 68px;
+    width: 335px;
+    top: 125px;
     position: absolute;
-    left: 454px;
+    left: 285px;
     cursor: pointer;
 }
 #button_resume:hover {
@@ -1129,4 +1127,44 @@ img.innerPopup.resume:hover {
     font-size: 115%;
     border-radius: 5px;
     border-left: none;
+}
+
+div.weekly.desc {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+}
+
+
+div.weekly.age.desc {
+    top: -34px;
+    left: 182px;
+}
+div.weekly.area.desc {
+    top: -34px;
+    left: 147px;
+}
+
+div.weekly.age.desc img {
+    display: none;
+}
+div.weekly.age.desc:hover img {
+    display: block;
+    top: -120px;
+    left: -500px;
+}
+div.weekly.area.desc img {
+    display: none;
+}
+div.weekly.area.desc:hover img {
+    display: block;
+    top: -120px;
+    left: -500px;
+}
+#popup_weekly img.clickHere{
+    position: absolute;
+    top: 380px;
+    left: -350px;
+    background-color: rgba(30,30,30,0.85);
+    border-radius: 40px;
 }

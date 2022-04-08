@@ -655,8 +655,8 @@ function chart_update(param, chart_param, chart_data) {
     $(".death_now").val(now.R2-last.R2);
     $(".death_total").val(now.R2);
     $(".GDP_now").val(Math.round(now.GDP).toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 10000) / 100);
-    $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 10000) / 100);
+    $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 1000) / 10);
+    $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 1000) / 10);
 
     x1.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
@@ -1045,14 +1045,15 @@ function weekly_report() {
     }, []).filter(node => node.tick > (data_from.tick - w.param.turnUnit) && node.tick <= data_to.tick)
 
     let weekly_pointer = $("#popup_weekly");
+    weekly_pointer.fadeIn(50);
+/*
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
-    weekly_pointer.fadeIn();
     weekly_inner_pointer.on("mouseleave", function () {
         weekly_pointer.fadeTo(200, 0.05);
     });
     weekly_inner_pointer.on("mouseenter", function () {
         weekly_pointer.fadeTo(200, 1);
-    });
+    });*/
 
     let board = d3.select(".weekly_board");
     board.selectAll("svg").remove();
