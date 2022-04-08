@@ -631,7 +631,7 @@ img.weekly.tab.back {
 }
 
 #popup_weekly .popBody {
-    font-size: 20px;
+    font-size: 16px;
     text-align: left;
     height: auto;
 }
@@ -648,32 +648,35 @@ img.weekly.tab.back {
 div.weekly.tab.content {
     position: absolute;
     top: 200px;
+    left: 90px;
 
 }
 
 div.weekly_status {
-    width: 1020px;
+    width: 520px;
     height: 240px;
 }
 
 div.weekly_status div.weekly.date {
     position: absolute;
     color: white;
-    left: 126px;
+    top: 8px;
+    left: 105px;
 }
 
 div.weekly_status table {
     color: #2e2886;
     position: absolute;
     text-align: center;
+    width: 425px;
     top: 76px;
-    left: 283px;
+    left: 90px;
     font-size: 80%;
     border-spacing: 0 1px;
 }
 div.weekly_status table tr td {
-    width: 163px;
-    height: 39px;
+    width: 36px;
+    height: 40px;
 }
 td.weekly.warning {
     background-repeat: no-repeat;
@@ -706,8 +709,8 @@ div.weekly_status p {
 div.weekly_board {
     position: absolute;
     top: 260px;
-    left: 100px;
-    width: 900px;
+    left: -20px;
+    width: 545px;
     height: 185px;
 }
 
@@ -729,17 +732,17 @@ div.weekly_board > svg > g > g.yAxis line, g.zAxis line, g.zAxis path {
 div.weekly.infectious {
     color: #2e2886;
     position: absolute;
-    top: 164px;
-    right: 420px;
-    width: 300px;
+    top: 168px;
+    right: 161px;
+    width: 260px;
     text-align: center;
 }
 div.weekly.death {
     color: #2e2886;
     position: absolute;
-    top: 164px;
-    right: 90px;
-    width: 300px;
+    top: 168px;
+    right: 8px;
+    width: 140px;
     text-align: center;
 }
 
@@ -822,21 +825,22 @@ div.weekly.tab.content.area {
 }
 input.policy.rate {
     position: absolute;
-    top: 122px;
-    left: 307px;
-    width: 258px;
+    top: 28px;
+    left: 161px;
+    width: 256px;
 }
 input.policy.bed {
     position: absolute;
-    top: 369px;
-    left: 307px;
-    width: 258px;
+    top: 290px;
+    left: 420px;
+    width: 60px;    
 }
+
 div.weekly.area.budget{
     position: absolute;
-    top: 368px;
-    left: 728px;
-    width: 313px;
+    top: 397px;
+    left: 272px;
+    width: 90px;
     height: 45px;
     text-align: center;
     color: white;
@@ -862,10 +866,10 @@ div.weekly.budget.update p {
 }
 svg.weekly.area.lines {
     position: absolute;
-    width: 296px;
-    height: 250px;
-    left: 638px;
-    top: 0;
+    width: 870px;
+    height: 557px;
+    left: -975px;
+    top: -80px;
     transform: translateY(-20px);
 }
 line.weekly.border.invisible[data-click="0"] {
@@ -874,9 +878,21 @@ line.weekly.border.invisible[data-click="0"] {
     stroke-width: 10px;
     cursor: pointer;
 }
-line.weekly.border.invisible[data-click="1"] {
-    stroke: black;
+line.weekly.border.invisible[data-click="0"]:hover {
+    stroke: yellow;
     opacity: 50%;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"] {
+    stroke: red;
+    opacity: 50%;
+    stroke-width: 5px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"]:hover {
+    stroke: yellow;
+    opacity: 25%;
     stroke-width: 10px;
     cursor: pointer;
 }
@@ -897,9 +913,9 @@ line.weekly.border.visible {
 #button_resume {
     border: none;
     background-color: rgba(0,0,0,0);
-    border-radius: 5px;
-    width: 335px;
-    top: 125px;
+    border-radius: 0px;
+    width: 333px;
+    top: 124px;
     position: absolute;
     left: 285px;
     cursor: pointer;
@@ -1047,7 +1063,7 @@ div.stat.description img.close_btn {
     position: absolute;
     top: 20px;
     right: 30px;
-    cursor: pointer;
+    cursor: pointer; 
 }
 
 div.popBody.node {
@@ -1080,7 +1096,7 @@ img.innerPopup {
 }
 img.innerPopup.resume {
     top: 277px;
-    left: 138px;
+    left: 150px;
 }
 img.innerPopup.resume:hover {
     filter: brightness(150%);
@@ -1163,8 +1179,8 @@ div.weekly.area.desc:hover img {
 }
 #popup_weekly img.clickHere{
     position: absolute;
-    top: 380px;
-    left: -350px;
-    background-color: rgba(30,30,30,0.85);
-    border-radius: 40px;
+    top: 437px;
+    left: -563px;
+    background-color: rgba(30,30,30,0.5);
+    border-radius: 30px;
 }

@@ -1,13 +1,16 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
-const REQUEST_ID = "http://118.217.236.170:28420/";
+var NETWORK = {
+    STATUS: "ONLINE",
+    DEST_ADDRESS: "http://118.217.236.170:28420/",
+    GROUP: null,
+    STUDENT_ID: null
+};
 
-var ONLINE = true;
+
+
 var run, chart_data, running_time, chart_param;
-var collision_statistics = {
-    "Not infected": 0,
-    "Infected": 0
-}
+
 var stat = {
     total: 25,
     stat1: 0,
@@ -27,7 +30,7 @@ var turn_end = true;
 var chart = 0;
 var running_speed = 1;
 var tick = 1000 / 60;
-var w;
+var w; 
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
 
@@ -1060,7 +1063,7 @@ function weekly_report() {
     let board_svg = board.append("svg")
         .attr("width", "100%")
         .attr("height", "100%");
-    let board_svg_size = {'height': 185, 'width': 790};
+    let board_svg_size = {'height': 185, 'width': 400};
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
