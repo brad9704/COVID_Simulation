@@ -1,0 +1,36 @@
+<svg id="셀렉트박스" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="263" height="175" viewBox="0 0 263 175">
+  <defs>
+    <style>
+      .cls-1, .cls-3 {
+        fill: #f9e3d9;
+      }
+
+      .cls-1 {
+        stroke: #fff;
+        stroke-linejoin: round;
+        stroke-width: 5px;
+      }
+
+      .cls-2 {
+        font-size: 18px;
+        font-family: "ONE Mobile POP";
+      }
+
+      .cls-2, .cls-4 {
+        fill: #2e2886;
+      }
+
+      .cls-4 {
+        font-size: 14px;
+        font-family: "ONE Mobile Title";
+      }
+    </style>
+  </defs>
+  <rect id="Rounded_Rectangle_4_copy_2" data-name="Rounded Rectangle 4 copy 2" class="cls-1" x="2.5" y="2.5" width="258" height="62.094" rx="10" ry="10"/>
+  <text id="Attact" class="cls-2" x="27" y="40">Attact</text>
+  <image id="Vector_Smart_Object_copy_5" data-name="Vector Smart Object copy 5" x="219.5" y="29" width="18" height="11" xlink:href="data:img/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAALCAYAAAByF90EAAAAr0lEQVQokY3QPQrCQBCG4deYwtJC8ApWHkLLgBewTKVYegYrS0kw4GWsBe/hJQyrX2BdJ5sdWNifmYeZHS0Xpy1w4RtH4EZalMBZmYfxfLa+A1NgAmyAF/AYoHbAVTVurTIjqVJiDKnCy0zjpGIm4gw32lPjFMFjEYzZh+yBJteh9joJO7P2PvKpzb3LFMxE0B/5USthKH4QC+o6i2F/SB8Uw0wkBnVYA7y13N5EAFprsCTRMJu48gAAAABJRU5ErkJggg=="/>
+  <g id="_펼쳤을때_" data-name="**펼쳤을때**">
+    <rect id="Rounded_Rectangle_951" data-name="Rounded Rectangle 951" class="cls-3" x="7.5" y="64" width="247" height="111" rx="6" ry="6"/>
+    <text id="Defense_:_COVID-19_Defense_:_SLK-19_Defense_:_13-Week-War-19_De" data-name="Defense : COVID-19 Defense : SLK-19 Defense : 13-Week-War-19 De" class="cls-4" x="26" y="87">Defense : COVID-19<tspan x="26" dy="16.8">Defense : SLK-19</tspan><tspan x="26" dy="16.8">Defense : 13-Week-War-19</tspan><tspan x="26" dy="16.8">Defense : 타노스</tspan><tspan x="26" dy="16.8">Defense : 대머리바이러스</tspan></text>
+  </g>
+</svg>
