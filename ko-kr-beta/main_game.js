@@ -27,7 +27,7 @@ var turn_end = true;
 var chart = 0;
 var running_speed = 1;
 var tick = 1000 / 60;
-var w;
+var w; 
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
 
