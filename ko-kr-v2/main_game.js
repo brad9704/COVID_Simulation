@@ -2,10 +2,71 @@
 // noinspection HttpUrlsUsage
 var NETWORK = {
     STATUS: "ONLINE",
-    DEST_ADDRESS: "http://118.217.236.170:28420/",
+    DEST_ADDRESS: "http://unist-safelab.ddns.net/FTC",
     GROUP: null,
-    STUDENT_ID: null
+    STUDENT_ID: null,
+
+
+    IsValidSchool: function(school) {
+        return true;
+    },
+    IsValidStudent: function(student) {
+        return true;
+    },
+
+    SetSchool: function(school) {
+        if (this.IsValidSchool(school)) {
+            this.GROUP = school;
+        } else {
+            throw new NetworkException("Invalid school name.");
+        }
+    },
+    SetStudentID: function(id) {
+        if (this.IsValidStudent(id)) {
+            this.STUDENT_ID = id;
+        }
+        else {
+            throw new NetworkException("Invalid Student ID.");
+        }
+    },
+
+    ReadSession: async function() {
+    },
+
+    SendRequest: async function(method, school = "", student = "", body = Object()) {
+        let url = `${this.DEST_ADDRESS}/api/data?school=${school}&student=${student}`,
+            request = {};
+        if (method === "POST") {
+            request.method = "POST";
+            request.headers = {"Content-Type": "application/json"};
+            request.body = JSON.stringify(body);
+        }
+        const response = await fetch(url, request);
+        return response.json();
+    },
+
+    GetSchoolList: function() {
+        return this.SendRequest("GET");
+    },
+    GetStudentList: function() {
+        return this.SendRequest("GET", this.GROUP);
+    },
+    GetStudentScore: function() {
+        return this.SendRequest("GET", this.GROUP, this.STUDENT_ID);
+    },
+
+    PostStudent: function() {
+        return this.SendRequest("POST", this.GROUP, this.STUDENT_ID);
+    },
+    PostStudentResult: function(result) {
+        return this.SendRequest("POST", this.GROUP, this.STUDENT_ID, result);
+    }
+
 };
+function NetworkException(message) {
+    this.name = "NetworkException";
+    this.message = message;
+}
 
 
 
@@ -1195,31 +1256,7 @@ function getSchoolList() {
 
 }
 
-async function sendRequest(action, arg) {
-    let url, request = {};
-    switch (action) {
-        case "getSchoolList":
-            request.method = "GET";
-            url = REQUEST_ID + "api/";
-            break;
-        case "getSchoolInfo":
-            request.method = "GET";
-            url = REQUEST_ID + "api/" + arg["school"];
-            break;
-        case "getVirusInfo":
-            request.method = "GET";
-            url = REQUEST_ID + "api/" + arg["school"];
-            break;
-        case "postVirusInfo":
-            request.method = "POST";
-            request.headers = {"Content-Type": "application/json"};
-            request.body = JSON.stringify(arg["body"]);
-            url = REQUEST_ID + "api/" + arg["school"];
-            break;
-    }
-    const response = await fetch(url, request);
-    return response.json();
-}
+
 
 function getObjRatio(key, obj, round_to=2) {
     return getPercentile(obj[key] / _.values(obj).reduce((acc, cur) => {

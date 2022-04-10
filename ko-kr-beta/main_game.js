@@ -1,13 +1,9 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
-const REQUEST_ID = "http://118.217.236.170:28420/";
-
+const REQUEST_ID = "http://unist-safelab.ddns.net";
 var ONLINE = true;
+
 var run, chart_data, running_time, chart_param;
-var collision_statistics = {
-    "Not infected": 0,
-    "Infected": 0
-}
 var stat = {
     total: 25,
     stat1: 0,
@@ -153,7 +149,6 @@ w.onmessage = function(event) {
             weekly_report();
             break;
         case "CONSOLE_LOG":
-            collision_statistics[event.data.data] += 1;
             break;
         default:
             console.log("Worker message error: " + event.data.type);
@@ -1254,7 +1249,7 @@ function triggerDescPopup(popupType, pos) {
 
 $("div.daily.rate.infectious.init")
     .on("mouseenter",
-        event => triggerDescPopup("TPC", {
+        _ => triggerDescPopup("TPC", {
             "top": 280,
             "left": 300
         }))
@@ -1264,7 +1259,7 @@ $("div.daily.rate.infectious.init")
 
 $("div.daily.rate.infectious.board")
     .on("mouseenter",
-        event => triggerDescPopup("TPC", {
+        _ => triggerDescPopup("TPC", {
             "top": -20,
             "left": 910
         }))
@@ -1274,7 +1269,7 @@ $("div.daily.rate.infectious.board")
 
 $("div.daily.rate.severity.init")
     .on("mouseenter",
-        event => triggerDescPopup("severity", {
+        _ => triggerDescPopup("severity", {
             "top": 280,
             "left": 410
         }))
@@ -1284,7 +1279,7 @@ $("div.daily.rate.severity.init")
 
 $("div.daily.rate.severity.board")
     .on("mouseenter",
-        event => triggerDescPopup("severity", {
+        _ => triggerDescPopup("severity", {
             "top": -20,
             "left": 1030
         }))
