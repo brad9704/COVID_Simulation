@@ -7,22 +7,22 @@ var NETWORK = {
     STUDENT_ID: null,
 
 
-    IsValidSchool: function(school) {
+    isValidSchool: function(school) {
         return true;
     },
-    IsValidStudent: function(student) {
+    isValidStudent: function(student) {
         return true;
     },
 
-    SetSchool: function(school) {
-        if (this.IsValidSchool(school)) {
+    setSchool: function(school) {
+        if (this.isValidSchool(school)) {
             this.GROUP = school;
         } else {
             throw new NetworkException("Invalid school name.");
         }
     },
-    SetStudentID: function(id) {
-        if (this.IsValidStudent(id)) {
+    setStudentID: function(id) {
+        if (this.isValidStudent(id)) {
             this.STUDENT_ID = id;
         }
         else {
@@ -30,10 +30,10 @@ var NETWORK = {
         }
     },
 
-    ReadSession: async function() {
+    readSession: async function() {
     },
 
-    SendRequest: async function(method, school = "", student = "", body = Object()) {
+    sendRequest: async function(method, school = "", student = "", body = Object()) {
         let url = `${this.DEST_ADDRESS}/api/data?school=${school}&student=${student}`,
             request = {};
         if (method === "POST") {
@@ -45,21 +45,27 @@ var NETWORK = {
         return response.json();
     },
 
-    GetSchoolList: function() {
-        return this.SendRequest("GET");
-    },
-    GetStudentList: function() {
-        return this.SendRequest("GET", this.GROUP);
-    },
-    GetStudentScore: function() {
-        return this.SendRequest("GET", this.GROUP, this.STUDENT_ID);
+    getSetting: async function(filename) {
+        let url = `${this.DEST_ADDRESS}/api/file?filename=${filename}`;
+        const response = await fetch(url);
+        return response.json();
     },
 
-    PostStudent: function() {
-        return this.SendRequest("POST", this.GROUP, this.STUDENT_ID);
+    getSchoolList: function() {
+        return this.sendRequest("GET");
     },
-    PostStudentResult: function(result) {
-        return this.SendRequest("POST", this.GROUP, this.STUDENT_ID, result);
+    getStudentList: function() {
+        return this.sendRequest("GET", this.GROUP);
+    },
+    getStudentScore: function() {
+        return this.sendRequest("GET", this.GROUP, this.STUDENT_ID);
+    },
+
+    postStudent: function() {
+        return this.sendRequest("POST", this.GROUP, this.STUDENT_ID);
+    },
+    postStudentResult: function(result) {
+        return this.sendRequest("POST", this.GROUP, this.STUDENT_ID, result);
     }
 
 };
@@ -68,32 +74,346 @@ function NetworkException(message) {
     this.message = message;
 }
 
+class Game {
+    constructor() {
+        this.run = null;
+        this.runtime = null;
+        this.ticked = false;
+        this.speed = 1;
+        this.chartData = [];
+        this.tickCount = 0;
 
+        this.defaultParam = NETWORK.getSetting("default_params.json");
+        this.virusInfo = NETWORK.getSetting("virus_info.json")["data"];
+        this.policyData = {
+            area: {
+                upper_left: {
+                    speed: [1,1,1]
+                },
+                upper_right: {
+                    speed: [1,1,1]
+                },
+                lower_left: {
+                    speed: [1,1,1]
+                },
+                lower_right: {
+                    speed: [1,1,1]
+                }
+            },
+            border: {
+                upper: 0,
+                lower: 0,
+                left: 0,
+                right: 0
+            },
+            budget: 0
+        }
+        this.virus = this.virusInfo[0];
+        this.w = new Worker("worker_game.js");
+        var that = this;
+        w.onmessage = function(event) {
+            switch (event.data.type) {
+                case "START_SUCCESS":
+                    initSim(this.param, event.data.main);
+                    that.run = window.requestAnimationFrame(that.tick.bind(that));
+                    break;
+                case "TICK":
+                    that.ticked = true;
+                    updateSim(this.param, event.data.state, event.data.time);
+                    break;
+                case "STOP":
+                    that.reset();
+                    break;
+                case "PAUSE":
+                    that.pause();
+                    break;
+                default:
+                    console.log("Worker message error: " + event.data.type);
+            }
+        }
+        w.onerror = function(event) {
+            alert(event.message + ", " + event.filename + ": "+ event.lineno);
+            w.terminate();
+        }
+    }
+    get params() {
+        let param = JSON.parse(JSON.stringify(this.defaultParam));
+        let stat = this.virus["stat"];
+        param["tick"] = param["timeunit"] / param["fps"];
+        param["hospital_max"] = Math.floor(param["node_num"] * param["hospital_max"]);
+        param["duration"]["E2-I1"][0] += Math.floor(stat.stat1 / 2);
+        param["duration"]["E2-I1"][1] += Math.floor(stat.stat1 / 2);
+        param["duration"]["I1-I2"][0] += Math.floor(stat.stat2 / 3);
+        param["duration"]["I1-I2"][1] += Math.floor(stat.stat2 / 3);
+        param["duration"]["H2-R1"][1] += Math.floor(stat.stat4 / 2);
+        param["duration"]["I1-R1"][0] += Math.floor(stat.stat2 / 3);
+        param["duration"]["I1-R1"][1] += Math.floor(stat.stat2 / 3);
+        param["TPC_base"] += stat.stat3 * 0.003;
+        for (const age in param["age_severe"]) {
+            param["age_severe"][age] *= (1 + stat.stat4 * 0.02);
+        }
+        return param;
+    }
+    get simParams() {
+        let sim_param = {},
+            sim_param_key = ["node_num", "initial_patient", "hospital_max", "size",
+            "sim_size", "timeunit", "week_day", "fps", "age_dist", "age_speed"];
+        for (const key in sim_param_key) {
+            sim_param[key] = this.params[key];
+        }
+        return sim_param;
+    }
+    get virusParams() {
+        let virus_param = {},
+            virus_param_key = ["TPC_base", "duration", "age_infect", "age_severe"];
+        for (const key in virus_param_key) {
+            virus_param[key] = this.params[key];
+        }
+        return virus_param;
+    }
 
-var run, chart_data, running_time, chart_param;
+    selectVirus(name) {
+        this.virus = this.virusInfo["data"].find(v => v.name === name);
+    }
+    updateVirusList() {
+        d3.select("select.virus.selection").selectAll("option")
+            .data(this.virusInfo)
+            .enter()
+            .append("option")
+            .attr("value", function (e) {return e.name;})
+            .text(function(e) {
+                if (e.name === "Attack") {return e.name;}
+                else {return "Defense: " + e.name;}});
+        selectVirus(this.virusInfo[0]);
+    }
 
-var stat = {
-    total: 25,
-    stat1: 0,
-    stat2: 0,
-    stat3: 0,
-    stat4: 0
-};
-var area = {
-    upper_left: 0,
-    upper_right: 0,
-    lower_left: 0,
-    lower_right: 0
+    start() {
+        this.run = null;
+        this.runtime = null;
+        this.ticked = false;
+        this.speed = 1;
+        this.tickCount = 0;
+        this.chartData = [];
+        this.policyData = {
+            area: {
+                upper_left: {
+                    speed: [1,1,1]
+                },
+                upper_right: {
+                    speed: [1,1,1]
+                },
+                lower_left: {
+                    speed: [1,1,1]
+                },
+                lower_right: {
+                    speed: [1,1,1]
+                }
+            },
+            border: {
+                upper: 0,
+                lower: 0,
+                left: 0,
+                right: 0
+            },
+            budget: 0
+        };
+
+        // Reset Output
+        d3.selectAll(".game").remove();
+
+        this.w.postMessage({type: "START",
+            data: {params: this.params, policy: this.policyData}});
+    }
+    resume() {
+        this.runtime = null;
+        this.ticked = false;
+        this.run = window.requestAnimationFrame(this.tick.bind(this));
+    }
+    weeklyResume() {
+        this.w.postMessage({type: "RESUME", policy: this.policyData})
+        this.resume();
+    }
+    tick(timestamp) {
+        if (!this.runtime) this.runtime = timestamp;
+        let param = this.simParams;
+        if ((timestamp - this.runtime) < (this.speed * param.timeunit / param.fps) && this.ticked) {
+            this.tickCount += this.speed;
+            Tasks.tick();
+            this.ticked = false;
+            this.w.postMessage({type: "TICK", data: this.speed});
+            window.requestAnimationFrame(this.tick.bind(this));
+        }
+    }
+    reset() {
+        this.pause();
+        reset_sim();
+    }
+    pause() {
+        window.cancelAnimationFrame(this.run);
+        this.ticked = false;
+        this.run = null;
+    }
 }
-var budget = 0;
+
+function reset_sim() {
+    game = new Game();
+}
+function reset_output() {
+    $("output.weekly_week").val(0);
+    $("#turn_day").val(0);
+    $("div.result.chart").children().remove("svg");
+    $(".table_sliders > td > input").val(1);
+    $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
+    $("output.budget_now").val(0);
+}
+
+/*
+Tasks that should be repeated for each cycle.
+Task is an object with the following attributes:
+    name: a unique task name,
+    func: function to be executed,
+    cycle: cycle of the task (
+        tick: 1,
+        daily: game.simParams.fps,
+        weekly: game.simParams.fps * game.simParams.week_day
+        )
+*/
+var Tasks = {
+    taskList: [],
+    tickCount: 0,
+    add: function(task) {
+        this.taskList.append({
+            name: task.name,
+            func: task.func,
+            cycle: task.cycle
+        })
+    },
+    tick: function() {
+        this.tickCount += 1;
+        this.taskList
+            .filter(task => this.tickCount % task.cycle === 0)
+            .forEach(task => task.func());
+    },
+    remove: function(taskName) {
+        return this.taskList.splice(
+            this.taskList.findIndex(task => task.name === taskName),
+            1);
+    }
+}
+
+var Chart = function(name, id) {
+    this.name = name;
+    this.id = id;
+    this.target = d3.select(`#${id}`);
+    this.setAxis = function(scaleObject, axisObject, dimension) {
+        this.scale[dimension] = scaleObject;
+        this.axis[dimension] = axisObject;
+        return this;
+    }
+    this.init = function(type, data) {
+        this.type = type;
+        var that = this;
+        switch (type) {
+            case "line":
+                this.target.append("g")
+                    .attr("class", that.name)
+                    .selectAll(".line")
+                    .data(data)
+                    .enter()
+                    .append("path")
+                    .attr("class", "line")
+                    .style("stroke", function(d) {return d.color;})
+                    .style("fill", "none")
+                    .style("stroke-width", 2)
+                    .attr("d", function (e) {
+                        return d3.line()
+                            .x(function (d) {
+                                return that.scale.x(d[0]);
+                            })
+                            .y(function (d) {
+                                return that.scale.y(d[1]);
+                            })
+                            .curve(d3.curveBasis)(e.data);
+                    });
+                break;
+            case "rect":
+                this.target.append("g")
+                    .attr("class", that.name)
+                    .selectAll(".bar")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("class", "bar")
+                    .style("stroke", "none")
+                    .style("fill", function(d) {return d.color;})
+                    .attr("x", function(d) {return that.scale.x(d.x);})
+                    .attr("y", function(d) {return that.scale.y(d.y);})
+                    .attr("width", that.scale.x.bandwidth())
+                    .attr("height", function(d) {return that.scale.y(0) - that.scale.y(d.y)});
+                break;
+        }
+    };
+    this.update = function(data) {
+        var that = this;
+        switch (this.type) {
+            case "line":
+                this.target.select(`g.${this.name}`)
+                    .selectAll(".line")
+                    .data(data)
+                    .join(enter => enter.append("path")
+                        .attr("class", "line")
+                        .style("stroke", function(d) {return d.color;})
+                        .style("fill", "none")
+                        .style("stroke-width", 2)
+                        .attr("d", function (e) {
+                            return d3.line()
+                                .x(function (d) {
+                                    return that.scale.x(d[0]);
+                                })
+                                .y(function (d) {
+                                    return that.scale.y(d[1]);
+                                })
+                                .curve(d3.curveBasis)(e.data);
+                        }),
+                        join => join
+                            .attr("d", function (e) {
+                            return d3.line()
+                                .x(function (d) {
+                                    return that.scale.x(d[0]);
+                                })
+                                .y(function (d) {
+                                    return that.scale.y(d[1]);
+                                })
+                                .curve(d3.curveBasis)(e.data);
+                        }));
+                break;
+            case "rect":
+                this.target.select(`g.${this.name}`)
+                    .selectAll(".bar")
+                    .data(data)
+                    .join(enter => enter
+                            .append("rect")
+                            .attr("class", "bar")
+                            .style("stroke", "none")
+                            .style("fill", function(d) {return d.color;})
+                            .attr("x", function(d) {return that.scale.x(d.x);})
+                            .attr("y", function(d) {return that.scale.y(d.y);})
+                            .attr("width", that.scale.x.bandwidth())
+                            .attr("height", function(d) {return that.scale.y(0) - that.scale.y(d.y)}),
+                        update => update
+                            .attr("x", function(d) {return that.scale.x(d.x);})
+                            .attr("y", function(d) {return that.scale.y(d.y);})
+                            .attr("width", that.scale.x.bandwidth())
+                            .attr("height", function(d) {return that.scale.y(0) - that.scale.y(d.y)})
+                    );
+                break;
+        }
+    };
+}
+
+var game = new Game();
+
 var clicker = 0;
-var turn_end = true;
-var chart = 0;
-var running_speed = 1;
-var tick = 1000 / 60;
-var w; 
-var receive = false, receive_time = 0;
-w = new Worker("worker_game.js");
 
 function getVirus(virusInfo) {
     d3.select("select.virus.selection").selectAll("option")
@@ -145,113 +465,27 @@ function prob_calc(params) {
     }
     return [age_inf / pop_total, age_sev / pop_total];
 }
-
-/*
-Sets param values with retrieved data from input
- */
-function get_params(init) {
-    const init_param = JSON.parse(JSON.stringify(init));
-    let param = {};
-    for (const key in init_param) {
-        if (key !== "duration") param[key] = init_param[key];
-        else {
-            param["duration"] = {};
-            for (const key in init_param["duration"]) {
-                param["duration"][key] = [];
-                param["duration"][key][0] = init_param["duration"][key][0];
-                param["duration"][key][1] = init_param["duration"][key][1];
-            }
-        }
-    }
-    tick = param["timeunit"] / param["fps"];
-    param["hospital_max"] = Math.floor(param["node_num"] * param["hospital_max"]);
-    param["duration"]["E2-I1"][0] += Math.floor(stat.stat1 / 2);
-    param["duration"]["E2-I1"][1] += Math.floor(stat.stat1 / 2);
-    param["duration"]["I1-I2"][0] += Math.floor(stat.stat2 / 3);
-    param["duration"]["I1-I2"][1] += Math.floor(stat.stat2 / 3);
-    param["duration"]["H2-R1"][1] += Math.floor(stat.stat4 / 2);
-    param["duration"]["I1-R1"][0] += Math.floor(stat.stat2 / 3);
-    param["duration"]["I1-R1"][1] += Math.floor(stat.stat2 / 3);
-    param["TPC_base"] += stat.stat3 * 0.003;
-    for (const age in param["age_severe"]) {
-        param["age_severe"][age] *= (1 + stat.stat4 * 0.02);
-    }
-
-    param["sim_width"] = 870;
-    param["sim_height"] = 555;
-
-    return param;
+function getGDP(node_data) {
+    return node_data
+        .filter(e =>
+            e.state !== state.I2 &&
+            e.state !== state.H1 &&
+            e.state !== state.H2 &&
+            e.state !== state.R2)
+        .reduce((prev, curr) => prev + curr.v * curr.income, 0) / 0.2 * 0.9;
 }
 
-w.onmessage = function(event) {
-    switch (event.data.type) {
-        case "START":
-            receive_time = 0;
-            receive = true;
-            $("#popup_init").fadeOut();
-            running_time = event.data.time;
-            initSim(this.param, event.data.state, event.data.loc);
-            run = setInterval(() => {
-                if (receive) {
-                    w.postMessage({type: "REPORT", data: running_speed});
-                    receive = false;
-                    receive_time += running_speed;
-                }
-            }, tick)
-            break;
-        case "STOP":
-            clearInterval(run);
-            break;
-        case "REPORT":
-            if (receive_time === event.data.time) {
-                receive = true;
-            }
-            updateSim(this.param, event.data.state, event.data.time);
-            break;
-        case "LOG":
-            chart_data = event.data.data;
-            save_log();
-            break;
-        case "PAUSE":
-            pause_simulation();
-            weekly_report();
-            break;
-        case "CONSOLE_LOG":
-            collision_statistics[event.data.data] += 1;
-            break;
-        default:
-            console.log("Worker message error: " + event.data.type);
-    }
-}
-w.onerror = function(event) {
-    alert(event.message + ", " + event.filename + ": "+ event.lineno);
-    w.terminate();
-}
-
-function initSim(param, initial_node_data, loc) {
-    turn_end = true;
-    d3.selectAll("div.panel_button svg").attr("onclick","reset_simulation();");
-    d3.selectAll("#board > div > svg").remove()
-    $(".popChart").find("div").remove();
-    node_init(param, initial_node_data, loc);
+function initSim(param, node_data) {
     let init_data = {
         "tick": 0,
-        "GDP": initial_node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v * curr.income, 0) / 0.2 * 0.9,
-        "budget": budget
+        "GDP": getGDP(node_data),
+        "budget": game.policyData.budget
     };
-    Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stat => {
-        init_data[stat] = [initial_node_data.filter(e => e.state === state[stat] && e.age === "0").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "10").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "20").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "30").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "40").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "50").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "60").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "70").length,
-            initial_node_data.filter(e => e.state === state[stat] && e.age === "80").length,
-            initial_node_data.filter(e => e.state === state[stat]).length];
+    Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stage => {
+        init_data[stage] = node_data.filter(e => e.state === state[stage]).length;
     })
-    chart_data.push(init_data);
+    game.chartData.push(init_data);
+    node_init(param, node_data);
     chart_param = chart_init(param);
 }
 
@@ -447,7 +681,7 @@ function show_result(param) {
 /*
 Initializes node canvas
  */
-function node_init(param, node_data, loc) {
+function node_init(param, node_data) {
     let sim_board = d3.select("#sim_board");
 
     let sim_cont = sim_board.append("svg")
@@ -530,19 +764,6 @@ function node_init(param, node_data, loc) {
             clearInterval(run);
             run = null;
         });
-
-    sim_cont.selectAll("rect")
-        .data(loc.list)
-        .enter().append("rect")
-        .attr("class", "locations")
-        .attr("id", d => "loc_" + d.name)
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-        .attr("width", d => d.width)
-        .attr("height", d => d.height)
-        .style("stroke", "rgb(0,0,0)")
-        .style("stroke-width", 1)
-        .style("fill", "none");
 
     let line_rate = parseFloat($("input.policy.rate").val());
 
@@ -1251,12 +1472,6 @@ function updateTotalI2(nodes) {
         this.value = nodes.filter(node => node.flag.includes("FLAG_SEVERE")).length;
     });
 }
-
-function getSchoolList() {
-
-}
-
-
 
 function getObjRatio(key, obj, round_to=2) {
     return getPercentile(obj[key] / _.values(obj).reduce((acc, cur) => {

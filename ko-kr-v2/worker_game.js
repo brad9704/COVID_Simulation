@@ -7,13 +7,12 @@ importScripts("https://d3js.org/d3.v5.min.js",
 var running_time;
 var simulation;
 var param;
-var budget;
+var policy;
 
 onmessage = function(event){
     switch (event.data.type) {
         case "START":
-            budget = event.data.budget;
-            postMessage(startSim(event.data.main));
+            postMessage(startSim(event.data.params));
             break;
         case "PAUSE":
             break;
@@ -25,7 +24,7 @@ onmessage = function(event){
             postMessage(stopSim());
             break;
         case "REPORT":
-            postMessage(reportSim(event.data.data));
+            postMessage(reportSim(event.data.policy));
             break;
     }
 }
