@@ -22,6 +22,12 @@ var NETWORK = {
     DEST_ADDRESS: "http://uni-safelab.ddns.net/FTC",
     GROUP: null,
     STUDENT_ID: null,
+    SEED: 0,
+
+    mode_offline: function() {
+        this.STATUS = "OFFLINE"
+        this.DEST_ADDRESS = ""
+    },
 
     isValidSchool: function(school) {
         return true;
@@ -50,6 +56,7 @@ var NETWORK = {
             let session = JSON.parse(cookieSession);
             this.setSchool(session["school"])
             this.setStudentID(session["studentID"]);
+            Event.trigger("InitPopup", game);
         } else {
             Event.trigger("RequestLogin");
         }
@@ -63,23 +70,37 @@ var NETWORK = {
     },
 
     sendRequest: async function(method, target, school = "", student = "", body = Object()) {
-        let url = `${this.DEST_ADDRESS}/api/${target}?school=${school}&student=${student}`,
-            request = {headers: {mode: "no-cors"}};
-        if (method === "POST") {
-            request.method = "POST";
-            request.headers = {"Content-Type": "application/json", "mode": "no-cors"};
-            request.body = JSON.stringify(body);
+        if (this.status === "ONLINE") {
+            let url = `${this.DEST_ADDRESS}/api/${target}?school=${school}&student=${student}`,
+                request = {headers: {mode: "no-cors"}};
+            if (method === "POST") {
+                request.method = "POST";
+                request.headers = {"Content-Type": "application/json", "mode": "no-cors"};
+                request.body = JSON.stringify(body);
+            }
+            const response = await fetch(url, request);
+            if (!response.ok) throw new NetworkException(response.statusText);
+            return response.json();
+        } else {
+            if (method === "GET") {
+                return [];
+            } else {
+                return null;
+            }
         }
-        const response = await fetch(url, request);
-        if (!response.ok) throw new NetworkException(response.statusText);
-        return response.json();
     },
     getSetting: async function(filename) {
-        let url = `${this.DEST_ADDRESS}/api/file?filename=${filename}`,
-            request = {headers: {mode: "no-cors"}};
-        const response = await fetch(url, request);
-        if (!response.ok) throw new NetworkException(response.statusText);
-        return response.json();
+        if (this.STATUS === "ONLINE") {
+            let url = `${this.DEST_ADDRESS}/api/file?filename=${filename}`,
+                request = {headers: {mode: "no-cors"}};
+            const response = await fetch(url, request);
+            if (!response.ok) throw new NetworkException(response.statusText);
+            return response.json();
+        } else {
+            const response = await fetch(filename);
+            if (!response.ok) throw new NetworkException(response.statusText);
+            return response.json();
+        }
     },
 
     getSchoolList: function() {

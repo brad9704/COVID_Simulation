@@ -1,34 +1,9 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
-
-var Event = {
-    trigger: function(eventType, eventData = null) {
-        switch (eventType) {
-            case "RequestLogin":
-                $("#popupLogin input.submit.button").on("click")
-                $("#popupLogin").fadeIn();
-                break;
-            case "WeekEnd":
-                $("#popupWeek").fadeIn();
-                break;
-            case "GameStop":
-                break;
-            case "GameEnd":
-                NETWORK.postStudentResult(eventData).then(
-                    return_code => {
-                        if (return_code !== 0) alert("Network error while uploading results");
-                    }
-                )
-                break;
-            default:
-                console.log(eventType)
-                break;
-        }
-    }
-}
-
 class Game {
     constructor() {
+        NETWORK.mode_offline();
+
         var that = this;
         this.run = null;
         this.runtime = null;
@@ -38,10 +13,10 @@ class Game {
         this.tickCount = 0;
         this.defaultParam = {};
         this.virusInfo = [];
-        let temp_promise = async function() {
+        this.network_promise = async function() {
             [that.defaultParam, that.virusInfo] = await Promise.all([
-                NETWORK.getSetting("default_params"),
-                NETWORK.getSetting("virus_info")]).then(response => {
+                NETWORK.getSetting("default_params.json"),
+                NETWORK.getSetting("virus_info.json")]).then(response => {
                 return [response[0], response[1]];
             });
             that.updateVirusList();
@@ -146,7 +121,7 @@ class Game {
             .text(function(e) {
                 if (e.name === "Attack") {return e.name;}
                 else {return "Defense: " + e.name;}});
-        selectVirus(this.virusInfo[0]);
+        this.selectVirus(this.virusInfo["data"][0]["name"]);
     }
 
     start() {
@@ -210,6 +185,56 @@ class Game {
         window.cancelAnimationFrame(this.run);
         this.ticked = false;
         this.run = null;
+    }
+}
+
+var game = new Game();
+var Event = {
+    log: [],
+    trigger: function(eventType, eventData = null) {
+        this.log.push(eventType);
+        switch (eventType) {
+            case "RequestLogin":
+                $("#popupLogin input.login.submit").on("click", event => {
+                    NETWORK.setSchool($("#popupLogin input.login.school").val());
+                    NETWORK.setStudentID($("#popupLogin input.login.student").val());
+                    NETWORK.writeSession();
+                    $("#popupLogin").fadeOut();
+                    Event.trigger("InitPopup");
+                })
+                $("#popupLogin").fadeIn();
+                break;
+            case "InitPopup":
+                Event.InitPopup(eventData);
+                break;
+            case "WeekEnd":
+                $("#popupWeek").fadeIn();
+                break;
+            case "GameStop":
+                break;
+            case "GameEnd":
+                NETWORK.postStudentResult(eventData).then(
+                    return_code => {
+                        if (return_code !== 0) alert("Network error while uploading results");
+                    }
+                )
+                break;
+            default:
+                console.log(eventType)
+                break;
+        }
+    },
+
+    InitPopup: function(game) {
+        game.network_promise.then(() => {
+            d3.select("select.virus.selection").attr("onchange", "game.selectVirus(game.virusInfo.data[0].name);").selectAll("option")
+                .data(game.virusInfo.data)
+                .enter()
+                .append("option")
+                .attr("value",function(e) {return e.name;})
+                .text(function(e) {return e.name;});
+            $("#popup_init").fadeIn();
+        })
     }
 }
 
@@ -369,49 +394,6 @@ var Chart = function(name, id) {
     };
 }
 
-var game = new Game();
-
-function getVirus(virusInfo) {
-    d3.select("select.virus.selection").selectAll("option")
-        .data(virusInfo.data)
-        .enter()
-        .append("option")
-        .attr("value",function(e) {return e.name;})
-        .text(function(e) {if (e.name === "Attack") {return e.name;} else {return "Defense: " + e.name;}});
-    selectVirus(virusInfo.data[0].name, virusInfo);
-    $("#popup_init").fadeIn();
-}
-function selectVirus (name, virusInfo) {
-    let stat = virusInfo.data.find(virus => virus.name === name)["stat"];
-    ["stat1","stat2","stat3","stat4"].forEach(() => {
-        reset_stat();
-    });
-    ["stat1","stat2","stat3","stat4"].forEach(e => {
-        if (stat[e] > 0) {
-            for (let i = 0; i < stat[e]; i++) {
-                change_stat(e, 1, true);
-            }
-        } else {
-            for (let i = stat[e]; i < 0; i++) {
-                change_stat(e, -1, true);
-            }
-        }
-    });
-    if (name === "Attack") {
-        role = "Attack";
-        reset_stat();
-        $("input.virus.name").attr("disabled",null).val("Click here for name");
-        $("input.stat").attr("disabled",null).css("cursor", "pointer");
-        d3.selectAll("input.stat").style("color","rgba(0,0,0,0)").style("background","none");
-    } else {
-        role = "Defense";
-        $("text.virus.name").text(name);
-        $("input.virus.name").val(name).attr("disabled", "true");
-        $("input.stat").attr("disabled","true").css("cursor", "default");
-        d3.selectAll("input.stat").style("color","#ffe349").style("background-color","#ffe349");
-    }
-}
-
 function prob_calc(params) {
     let age_inf = 0, age_sev = 0, pop_total = 0;
     for (const age in params["age_severe"]) {
@@ -442,7 +424,8 @@ function initSim(param, node_data) {
     })
     game.chartData.push(init_data);
     node_init(param, node_data);
-    chart_param = chart_init(param);
+    let dailyChart = new Chart("dailyChart", "dailyChart");
+    //chart_param = chart_init(param);
 }
 
 function updateSim(param, node_data, time) {

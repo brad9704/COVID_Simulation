@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<!--ver.2022.03.15.01-->
 <html lang="ko">
 <meta name="referrer" content="no-referrer-when-downgrade"/>
-<!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
 <head>
     <meta charset="UTF-8">
@@ -24,8 +22,7 @@
     </div>
 </div>
 <div class="board" id="board">
-    <div id="sim_board">
-    </div>
+    <div id="sim_board"></div>
     <div class="daily legend">
         <img class="daily" src="img/virus_info_panel.png" alt="">
         <img class="daily background rescale" src="img/stagePopulation.png" alt="">
@@ -298,16 +295,16 @@
     <div class="popBg"></div>
     <div class="popBody">
         <div class="controls">
-            <img src="img/시작화면 - 배경.png" alt="">
+            <img src="img/init_back.png" alt="">
             <div class="stat wrapper">
                 <div class="virus selection">
-                    <img src="img/셀렉트박스.png" alt="">
-                    <select class="virus selection" onchange="selectVirus(value, virusData)">
+                    <img src="img/selectbox.png" alt="">
+                    <select class="virus selection">
                     </select>
                     <span class="icoArrow"><img src="img/cursor.png" alt=""></span>
                 </div>
                 <div class="stat left">
-                    <img src="img/시작화면 - 스탯창.png" alt="">
+                    <img src="img/init_stat.png" alt="">
                     <table class="stat def">
                         <tr class="stat group stat1">
                             <td class="stat info stat1" onmouseover="
@@ -400,6 +397,11 @@
         </div>
     </div>
 </div>
+<div id="popupLogin" class="popup">
+    <input id="loginSchool" class="login school" type="text">
+    <input id="loginStudent" class="login student" type="text">
+    <input id="loginSubmit" class="login submit" type="button">
+</div>
 <div id="popupDescPopup" class="popup">
     <div class="popInnerBox">
         <img class="descPopup TPC" src="img/infect_age.png" alt="" style="display:none">
@@ -407,39 +409,21 @@
         <table>
             <tr>
                 <td class="descPopup age label">연령</td>
-                <td class="descPopup age var">0-9</td>
-                <td class="descPopup age var">10-19</td>
-                <td class="descPopup age var">20-29</td>
-                <td class="descPopup age var">30-39</td>
-                <td class="descPopup age var">40-49</td>
-                <td class="descPopup age var">50-59</td>
-                <td class="descPopup age var">60-69</td>
-                <td class="descPopup age var">70-79</td>
-                <td class="descPopup age var">80+</td>
+                <td class="descPopup age var">미성년자</td>
+                <td class="descPopup age var">청장년층</td>
+                <td class="descPopup age var">고령자</td>
             </tr>
             <tr>
                 <td class="descPopup dist label">분포</td>
                 <td class="descPopup dist var" data-age="0">0</td>
-                <td class="descPopup dist var" data-age="10">0</td>
                 <td class="descPopup dist var" data-age="20">0</td>
-                <td class="descPopup dist var" data-age="30">0</td>
-                <td class="descPopup dist var" data-age="40">0</td>
-                <td class="descPopup dist var" data-age="50">0</td>
                 <td class="descPopup dist var" data-age="60">0</td>
-                <td class="descPopup dist var" data-age="70">0</td>
-                <td class="descPopup dist var" data-age="80">0</td>
             </tr>
             <tr>
                 <td class="descPopup value label">확률</td>
                 <td class="descPopup value var" data-age="0">0</td>
-                <td class="descPopup value var" data-age="10">0</td>
                 <td class="descPopup value var" data-age="20">0</td>
-                <td class="descPopup value var" data-age="30">0</td>
-                <td class="descPopup value var" data-age="40">0</td>
-                <td class="descPopup value var" data-age="50">0</td>
                 <td class="descPopup value var" data-age="60">0</td>
-                <td class="descPopup value var" data-age="70">0</td>
-                <td class="descPopup value var" data-age="80">0</td>
             </tr>
         </table>
     </div>
