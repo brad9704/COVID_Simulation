@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/style_game.css">
 </head>
 <body>
-<img id="background" src="img/배경.png" alt="">
+<img id="background" src="img/background.png" alt="">
 <div class="sidebar">
     <div class="Day"><output class="weekly_week">0</output>주 / <output id="turn_day">0</output><text id="day_text">일</text></div>
     <div class="speed">
@@ -27,7 +27,7 @@
     <div id="sim_board">
     </div>
     <div class="daily legend">
-        <img class="daily" src="img/감염병 정보 패널.png" alt="">
+        <img class="daily" src="img/virus_info_panel.png" alt="">
         <img class="daily background rescale" src="img/stagePopulation.png" alt="">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
         <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
@@ -363,24 +363,24 @@
                 </div>
                 <div class="stat description">
                     <div class="stat desc stat1">
-                        <img src="img/잠복기.png" alt="">
+                        <img src="img/latent.png" alt="">
                     </div>
                     <div class="stat desc stat2">
-                        <img src="img/감염기간.png" alt="">
+                        <img src="img/duration.png" alt="">
                     </div>
                     <div class="stat desc stat3">
-                        <img src="img/전염성.png" alt="">
+                        <img src="img/transfer.png" alt="">
                     </div>
                     <div class="stat desc stat4">
-                        <img src="img/중증이환률.png" alt="">
+                        <img src="img/severe.png" alt="">
                     </div>
                 </div>
             </div>
             <div class="control" id="Simulation">
-                <img id="button_start" src="img/시작화면 - 버튼.png" alt="" onclick="start_simulation()">
+                <img id="button_start" src="img/button_start.png" alt="" onclick="start_simulation()">
             </div>
             <div class="daily legend">
-                <img class="daily" src="img/감염병 정보 패널.png" alt="">
+                <img class="daily" src="img/virus_info_panel.png" alt="">
                 <img class="daily background rescale" src="img/stagePopulation.png" alt="">
                 <div class="virus name"><input class="virus name" onchange="$('text.virus.name').text(this.value)"></div>
                 <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
@@ -402,8 +402,8 @@
 </div>
 <div id="popupDescPopup" class="popup">
     <div class="popInnerBox">
-        <img class="descPopup TPC" src="img/연령별_감염확률.png" alt="" style="display:none">
-        <img class="descPopup severity" src="img/연령별_중증이환률.png" alt="" style="display:none">
+        <img class="descPopup TPC" src="img/infect_age.png" alt="" style="display:none">
+        <img class="descPopup severity" src="img/severe_age.png" alt="" style="display:none">
         <table>
             <tr>
                 <td class="descPopup age label">연령</td>

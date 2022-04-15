@@ -52,7 +52,7 @@ body {
 }
 
 div.controls{
-    background-image: url("../img/시작화면 - 배경.png");
+    background-image: url("../img/init_back.png");
     background-repeat: no-repeat;
     padding: 0;
     justify-content:space-between;
@@ -142,7 +142,7 @@ div.controls > div.control > img {
 }
 div.panel_footer {
     position: absolute;
-    background-image: url("../img/메인 - 하단 패널.png");
+    background-image: url("../img/main_bottom_panel.png");
     background-repeat: no-repeat;
     top: 760px;
     left: 345px;
@@ -557,7 +557,7 @@ div.daily.num.R2 {
 
 div.graph {
     position: absolute;
-    background-image: url("../img/메인 - 그래프 패널.png");
+    background-image: url("../img/main_graph_panel.png");
     left: 1150px;
     top: 458px;
     width: 573px;
@@ -684,17 +684,17 @@ td.weekly.warning {
     background-size: 40%;
 }
 td.weekly.warning[data-value="0"] {
-    background-image: url("../img/정상.png");
+    background-image: url("../img/good.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
 td.weekly.warning[data-value="1"] {
-    background-image: url("../img/주의.png");
+    background-image: url("../img/caution.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
 td.weekly.warning[data-value="2"] {
-    background-image: url("../img/위험.png");
+    background-image: url("../img/bad.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
