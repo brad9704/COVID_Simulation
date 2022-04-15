@@ -448,12 +448,14 @@
 <script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
 <script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="network.js"></script>
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
 <script type="text/javascript">
-    d3.select("img").attr("draggable", "false");
-
-    var initParams, virusData;
+    $(function() {
+        $("img").attr("draggable", "false");
+        NETWORK.readSession();
+    });
 
     d3.xml("img/node_info.svg").then(data => {
         d3.select("div.popBody.node").node().append(data.documentElement)
@@ -468,19 +470,10 @@
         d3.select("div.sidebar").node().append(data.documentElement)
     });
 
-    window.onload = async function() {
+    window.onload = function() {
         let scale = this.innerWidth / 1920;
         let translate = (1 - 1920 / this.innerWidth) * 50;
         d3.select("body").style("transform","scale(" + scale + ") translate(0," + translate + "%)");
-
-        [initParams, virusData] = await Promise.all([
-            fetch("initial_setting.json").then(e => e.json()),
-            fetch("virus_info.json").then(e => e.json())])
-            .then(response => {
-                let initSetting = response[0], virusInfo = response[1];
-                getVirus(virusInfo);
-                return [initSetting, virusInfo];
-            })
     }
     window.onresize = function() {
         let scale = this.innerWidth / 1920;

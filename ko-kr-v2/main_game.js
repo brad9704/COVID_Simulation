@@ -1,90 +1,51 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
-var NETWORK = {
-    STATUS: "ONLINE",
-    DEST_ADDRESS: "http://unist-safelab.ddns.net/FTC",
-    GROUP: null,
-    STUDENT_ID: null,
 
-
-    isValidSchool: function(school) {
-        return true;
-    },
-    isValidStudent: function(student) {
-        return true;
-    },
-
-    setSchool: function(school) {
-        if (this.isValidSchool(school)) {
-            this.GROUP = school;
-        } else {
-            throw new NetworkException("Invalid school name.");
+var Event = {
+    trigger: function(eventType, eventData = null) {
+        switch (eventType) {
+            case "RequestLogin":
+                $("#popupLogin input.submit.button").on("click")
+                $("#popupLogin").fadeIn();
+                break;
+            case "WeekEnd":
+                $("#popupWeek").fadeIn();
+                break;
+            case "GameStop":
+                break;
+            case "GameEnd":
+                NETWORK.postStudentResult(eventData).then(
+                    return_code => {
+                        if (return_code !== 0) alert("Network error while uploading results");
+                    }
+                )
+                break;
+            default:
+                console.log(eventType)
+                break;
         }
-    },
-    setStudentID: function(id) {
-        if (this.isValidStudent(id)) {
-            this.STUDENT_ID = id;
-        }
-        else {
-            throw new NetworkException("Invalid Student ID.");
-        }
-    },
-
-    readSession: async function() {
-    },
-
-    sendRequest: async function(method, school = "", student = "", body = Object()) {
-        let url = `${this.DEST_ADDRESS}/api/data?school=${school}&student=${student}`,
-            request = {};
-        if (method === "POST") {
-            request.method = "POST";
-            request.headers = {"Content-Type": "application/json"};
-            request.body = JSON.stringify(body);
-        }
-        const response = await fetch(url, request);
-        return response.json();
-    },
-
-    getSetting: async function(filename) {
-        let url = `${this.DEST_ADDRESS}/api/file?filename=${filename}`;
-        const response = await fetch(url);
-        return response.json();
-    },
-
-    getSchoolList: function() {
-        return this.sendRequest("GET");
-    },
-    getStudentList: function() {
-        return this.sendRequest("GET", this.GROUP);
-    },
-    getStudentScore: function() {
-        return this.sendRequest("GET", this.GROUP, this.STUDENT_ID);
-    },
-
-    postStudent: function() {
-        return this.sendRequest("POST", this.GROUP, this.STUDENT_ID);
-    },
-    postStudentResult: function(result) {
-        return this.sendRequest("POST", this.GROUP, this.STUDENT_ID, result);
     }
-
-};
-function NetworkException(message) {
-    this.name = "NetworkException";
-    this.message = message;
 }
 
 class Game {
     constructor() {
+        var that = this;
         this.run = null;
         this.runtime = null;
         this.ticked = false;
         this.speed = 1;
         this.chartData = [];
         this.tickCount = 0;
-
-        this.defaultParam = NETWORK.getSetting("default_params.json");
-        this.virusInfo = NETWORK.getSetting("virus_info.json")["data"];
+        this.defaultParam = {};
+        this.virusInfo = [];
+        let temp_promise = async function() {
+            [that.defaultParam, that.virusInfo] = await Promise.all([
+                NETWORK.getSetting("default_params"),
+                NETWORK.getSetting("virus_info")]).then(response => {
+                return [response[0], response[1]];
+            });
+            that.updateVirusList();
+        } ();
         this.policyData = {
             area: {
                 upper_left: {
@@ -110,8 +71,7 @@ class Game {
         }
         this.virus = this.virusInfo[0];
         this.w = new Worker("worker_game.js");
-        var that = this;
-        w.onmessage = function(event) {
+        this.w.onmessage = function(event) {
             switch (event.data.type) {
                 case "START_SUCCESS":
                     initSim(this.param, event.data.main);
@@ -122,17 +82,19 @@ class Game {
                     updateSim(this.param, event.data.state, event.data.time);
                     break;
                 case "STOP":
+                    Event.trigger("GameStop");
                     that.reset();
                     break;
                 case "PAUSE":
+                    Event.trigger("WeekEnd");
                     that.pause();
                     break;
                 default:
                     console.log("Worker message error: " + event.data.type);
             }
         }
-        w.onerror = function(event) {
-            alert(event.message + ", " + event.filename + ": "+ event.lineno);
+        this.w.onerror = function(event) {
+            alert(`${event.message}, ${event.filename}: ${event.lineno}`);
             w.terminate();
         }
     }
@@ -228,10 +190,6 @@ class Game {
         this.runtime = null;
         this.ticked = false;
         this.run = window.requestAnimationFrame(this.tick.bind(this));
-    }
-    weeklyResume() {
-        this.w.postMessage({type: "RESUME", policy: this.policyData})
-        this.resume();
     }
     tick(timestamp) {
         if (!this.runtime) this.runtime = timestamp;
@@ -412,8 +370,6 @@ var Chart = function(name, id) {
 }
 
 var game = new Game();
-
-var clicker = 0;
 
 function getVirus(virusInfo) {
     d3.select("select.virus.selection").selectAll("option")
