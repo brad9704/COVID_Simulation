@@ -400,7 +400,7 @@
 <div id="popupLogin" class="popup">
     <input id="loginSchool" class="login school" type="text">
     <input id="loginStudent" class="login student" type="text">
-    <input id="loginSubmit" class="login submit" type="button">
+    <input id="loginSubmit" class="login submit" type="button" value="Login">
 </div>
 <div id="popupDescPopup" class="popup">
     <div class="popInnerBox">
@@ -437,24 +437,20 @@
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
 <script type="text/javascript">
-    $(function() {
-        $("img").attr("draggable", "false");
-        NETWORK.readSession();
-    });
-
-    d3.xml("img/node_info.svg").then(data => {
-        d3.select("div.popBody.node").node().append(data.documentElement)
-    });
-    d3.xml("img/STOP_active.svg").then(data => {
-        d3.select("div.panel_button").node().append(data.documentElement)
-    });
-    d3.xml("img/STOP_inactive.svg").then(data => {
-        d3.select("div.panel_button").node().append(data.documentElement)
-    });
-    d3.xml("img/sidebar.svg").then(data => {
-        d3.select("div.sidebar").node().append(data.documentElement)
-    });
-
+    (function loadSVG () {
+        d3.xml("img/node_info.svg").then(data => {
+            d3.select("div.popBody.node").node().append(data.documentElement)
+        });
+        d3.xml("img/STOP_active.svg").then(data => {
+            d3.select("div.panel_button").node().append(data.documentElement)
+        });
+        d3.xml("img/STOP_inactive.svg").then(data => {
+            d3.select("div.panel_button").node().append(data.documentElement)
+        });
+        d3.xml("img/sidebar.svg").then(data => {
+            d3.select("div.sidebar").node().append(data.documentElement)
+        });
+    }) ();
     window.onload = function() {
         let scale = this.innerWidth / 1920;
         let translate = (1 - 1920 / this.innerWidth) * 50;
@@ -465,6 +461,82 @@
         let translate = (1 - 1920 / this.innerWidth) * 50;
         d3.select("body").style("transform","scale(" + scale + ") translate(0%," + translate + "%)");
     }
+    var GAME, EVENT;
+
+    $(function() {
+        $("img").attr("draggable", "false");
+        fetch(NETWORK.DEST_ADDRESS)
+            .catch(() => {
+                console.log("NETWORK ERROR: Switching to offline mode.");
+                NETWORK.mode_offline()
+            })
+            .finally(() => {
+                GAME = new Game();
+                EVENT = new Event();
+                NETWORK.readSession();
+
+                (function () {
+                    function triggerDescPopup(popupType, pos) {
+                        let param = GAME.params;
+                        $("td.descPopup.dist.var").each((_, td) => {
+                            td.innerText = getObjRatio(td.dataset.age.toString(), param.age_dist, 2);
+                        })
+                        $("td.descPopup.value.var").each((_, td) => {
+                            if (popupType === "TPC") {
+                                td.innerText = getPercentile(param.age_infect[td.dataset.age.toString()] * param.TPC_base, 2);
+                            } else if (popupType === "severity") {
+                                td.innerText = getPercentile(param.age_severe[td.dataset.age.toString()], 3);
+                            }
+                        })
+
+                        let top = pos.top, left = pos.left;
+                        $("img.descPopup")
+                            .css("display", "none");
+                        $("img.descPopup." + popupType)
+                            .css("display", "block");
+                        $("#popupDescPopup").css({
+                            "top": top,
+                            "left": left
+                        }).fadeIn(0);
+                    }
+
+                    $("div.daily.rate.infectious.init")
+                        .on("mouseenter", event => triggerDescPopup("TPC", {
+                                "top": 280,
+                                "left": 300
+                            }))
+                        .on("mouseleave", () => {
+                            $("#popupDescPopup").fadeOut(0);
+                        });
+                    $("div.daily.rate.infectious.board")
+                        .on("mouseenter", event => triggerDescPopup("TPC", {
+                                "top": -20,
+                                "left": 910
+                            }))
+                        .on("mouseleave", () => {
+                            $("#popupDescPopup").fadeOut(0);
+                        });
+                    $("div.daily.rate.severity.init")
+                        .on("mouseenter", event => triggerDescPopup("severity", {
+                                "top": 280,
+                                "left": 410
+                            }))
+                        .on("mouseleave", () => {
+                            $("#popupDescPopup").fadeOut(0);
+                        });
+                    $("div.daily.rate.severity.board")
+                        .on("mouseenter", event => triggerDescPopup("severity", {
+                                "top": -20,
+                                "left": 1030
+                            }))
+                        .on("mouseleave", () => {
+                            $("#popupDescPopup").fadeOut(0);
+                        });
+
+
+                }) ();
+            });
+    });
 </script>
 </body>
 </html>

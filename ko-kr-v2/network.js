@@ -56,9 +56,9 @@ var NETWORK = {
             let session = JSON.parse(cookieSession);
             this.setSchool(session["school"])
             this.setStudentID(session["studentID"]);
-            Event.trigger("InitPopup", game);
+            EVENT.trigger("InitPopup", GAME);
         } else {
-            Event.trigger("RequestLogin");
+            EVENT.trigger("RequestLogin");
         }
     },
     writeSession: function() {

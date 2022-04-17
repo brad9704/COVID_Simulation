@@ -1,9 +1,9 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
+
+
 class Game {
     constructor() {
-        NETWORK.mode_offline();
-
         var that = this;
         this.run = null;
         this.runtime = null;
@@ -110,7 +110,35 @@ class Game {
     }
 
     selectVirus(name) {
+        function prob_calc(params) {
+            let age_inf = 0, age_sev = 0, pop_total = 0;
+            for (const age in params["age_severe"]) {
+                if (params["age_severe"].hasOwnProperty(age)) {
+                    age_inf += params["age_dist"][age] * params["TPC_base"] * params["age_infect"][age];
+                    age_sev += params["age_dist"][age] * params["age_severe"][age];
+                    pop_total += params["age_dist"][age];
+                }
+            }
+            return [age_inf / pop_total, age_sev / pop_total];
+        }
+
+
         this.virus = this.virusInfo["data"].find(v => v.name === name);
+        $("text.virus.name").text(this.virus.name);
+        $("input.virus.name").val(this.virus.name);
+        for (const key in this.virus["stat"]) {
+            if (this.virus["stat"].hasOwnProperty(key)) {
+                $(`output.stat.value.${key}`).val(this.virus["stat"][key]);
+            }
+        }
+
+        let stat_res = prob_calc(GAME.params);
+        $("output.daily.legend.duration.E2-I1").text(GAME.params["duration"]["E2-I1"][0]+"-"+GAME.params["duration"]["E2-I1"][1]);
+        $("output.daily.legend.duration.I1-I2").text(GAME.params["duration"]["I1-I2"][0]+"-"+GAME.params["duration"]["I1-I2"][1]);
+        $("output.daily.legend.duration.I1-R1").text(GAME.params["duration"]["I1-R1"][0]);
+        $("output.daily.legend.rate.infectious").text((Math.round(stat_res[0] * 100) / 100).toFixed(2));
+        $("output.daily.legend.rate.severity").text(Math.round(stat_res[1] * 100) + "%");
+
     }
     updateVirusList() {
         d3.select("select.virus.selection").selectAll("option")
@@ -179,7 +207,7 @@ class Game {
     }
     reset() {
         this.pause();
-        reset_sim();
+        EVENT.trigger("RESET");
     }
     pause() {
         window.cancelAnimationFrame(this.run);
@@ -188,10 +216,9 @@ class Game {
     }
 }
 
-var game = new Game();
-var Event = {
-    log: [],
-    trigger: function(eventType, eventData = null) {
+var Event = function () {
+    this.log = [];
+    this.trigger = function(eventType, eventData = null) {
         this.log.push(eventType);
         switch (eventType) {
             case "RequestLogin":
@@ -200,12 +227,12 @@ var Event = {
                     NETWORK.setStudentID($("#popupLogin input.login.student").val());
                     NETWORK.writeSession();
                     $("#popupLogin").fadeOut();
-                    Event.trigger("InitPopup");
+                    Event.trigger("InitPopup", GAME);
                 })
                 $("#popupLogin").fadeIn();
                 break;
             case "InitPopup":
-                Event.InitPopup(eventData);
+                this.InitPopup(eventData);
                 break;
             case "WeekEnd":
                 $("#popupWeek").fadeIn();
@@ -219,15 +246,19 @@ var Event = {
                     }
                 )
                 break;
+            case "RESET":
+                GAME = new Game();
+                break;
             default:
                 console.log(eventType)
                 break;
         }
-    },
+    };
 
-    InitPopup: function(game) {
+    this.InitPopup = function(game) {
         game.network_promise.then(() => {
-            d3.select("select.virus.selection").attr("onchange", "game.selectVirus(game.virusInfo.data[0].name);").selectAll("option")
+            d3.select("select.virus.selection").attr("onchange",
+                "GAME.selectVirus(value);").selectAll("option")
                 .data(game.virusInfo.data)
                 .enter()
                 .append("option")
@@ -235,19 +266,7 @@ var Event = {
                 .text(function(e) {return e.name;});
             $("#popup_init").fadeIn();
         })
-    }
-}
-
-function reset_sim() {
-    game = new Game();
-}
-function reset_output() {
-    $("output.weekly_week").val(0);
-    $("#turn_day").val(0);
-    $("div.result.chart").children().remove("svg");
-    $(".table_sliders > td > input").val(1);
-    $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
-    $("output.budget_now").val(0);
+    };
 }
 
 /*
@@ -394,15 +413,6 @@ var Chart = function(name, id) {
     };
 }
 
-function prob_calc(params) {
-    let age_inf = 0, age_sev = 0, pop_total = 0;
-    for (const age in params["age_severe"]) {
-        age_inf += params["age_dist"][age] * params["TPC_base"] * params["age_infect"][age];
-        age_sev += params["age_dist"][age] * params["age_severe"][age];
-        pop_total += params["age_dist"][age];
-    }
-    return [age_inf / pop_total, age_sev / pop_total];
-}
 function getGDP(node_data) {
     return node_data
         .filter(e =>
@@ -1422,66 +1432,4 @@ function getPercentile(val, round_to=2) {
     else return (Math.round(val * Math.pow(10, round_to)) / Math.pow(10, round_to - 2)).toString() + "%";
 }
 
-function triggerDescPopup(popupType, pos) {
-    let param = get_params(initParams);
-    $("td.descPopup.dist.var").each((_, td) => {
-        td.innerText = getObjRatio(td.dataset.age.toString(), param.age_dist, 2);
-    })
-    $("td.descPopup.value.var").each((_, td) => {
-        if (popupType === "TPC") {
-            td.innerText = getPercentile(param.age_infect[td.dataset.age.toString()] * param.TPC_base, 2);
-        } else if (popupType === "severity") {
-            td.innerText = getPercentile(param.age_severe[td.dataset.age.toString()], 3);
-        }
-    })
 
-    let top = pos.top, left = pos.left;
-    $("img.descPopup")
-        .css("display", "none");
-    $("img.descPopup." + popupType)
-        .css("display", "block");
-    $("#popupDescPopup").css({
-        "top": top,
-        "left": left
-    }).fadeIn(0);
-}
-
-$("div.daily.rate.infectious.init")
-    .on("mouseenter",
-        event => triggerDescPopup("TPC", {
-            "top": 280,
-            "left": 300
-        }))
-    .on("mouseleave", () => {
-        $("#popupDescPopup").fadeOut(0);
-    });
-
-$("div.daily.rate.infectious.board")
-    .on("mouseenter",
-        event => triggerDescPopup("TPC", {
-            "top": -20,
-            "left": 910
-        }))
-    .on("mouseleave", () => {
-        $("#popupDescPopup").fadeOut(0);
-    });
-
-$("div.daily.rate.severity.init")
-    .on("mouseenter",
-        event => triggerDescPopup("severity", {
-            "top": 280,
-            "left": 410
-        }))
-    .on("mouseleave", () => {
-        $("#popupDescPopup").fadeOut(0);
-    });
-
-$("div.daily.rate.severity.board")
-    .on("mouseenter",
-        event => triggerDescPopup("severity", {
-            "top": -20,
-            "left": 1030
-        }))
-    .on("mouseleave", () => {
-        $("#popupDescPopup").fadeOut(0);
-    });
