@@ -6,6 +6,8 @@
   "hospital_max": 0.01,
   "size": 4,
   "sim_size": 1000,
+  "canvas_width": 800,
+  "canvas_height": 600,
   "timeunit": 1000,
   "turnUnit": 7,
   "fps": 24,

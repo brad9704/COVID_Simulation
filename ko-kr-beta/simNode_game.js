@@ -83,7 +83,7 @@ class Node {
 
         this.state = state.S;
         this.age = age;
-        this.detail_age = Math.floor(Math.random()) * 9 + parseInt(age) + 1;
+        this.detail_age = Math.floor(Math.random() * 10) + parseInt(age) + 1;
         this.mask = false;
         this.vaccine = false;
         this.income = 100;
@@ -290,5 +290,10 @@ class Node {
             this._vx = speed * Math.cos(angle);
             this._vy = speed * Math.sin(angle);
         }
+    }
+    getAgeGroup () {
+        if (this.detail_age < 20) return 0;
+        else if (this.detail_age < 60) return 1;
+        else return 2;
     }
 }

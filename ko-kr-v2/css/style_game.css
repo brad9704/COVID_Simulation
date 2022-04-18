@@ -1188,3 +1188,13 @@ div.weekly.area.desc:hover img {
 #loginSubmit {
     border: 1px solid black;
 }
+
+#sim_board rect.board.inactive {
+    stroke: rgba(0,0,0,0);
+}
+#sim_board rect.board.inactive:hover {
+    stroke: rgba(255,236,56,0.5);
+}
+#sim_board rect.board.active {
+    stroke: rgba(255,236,56,0.5);
+}

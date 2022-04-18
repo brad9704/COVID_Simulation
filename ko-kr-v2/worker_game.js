@@ -5,14 +5,18 @@ importScripts("https://d3js.org/d3.v5.min.js",
     "//unpkg.com/underscore@1.12.0/underscore-min.js",
     "simNode_game.js")
 var running_time;
-var simulation;
-var param;
-var policy;
+var simulation = {};
 
 onmessage = function(event){
+    console.log(event.data);
     switch (event.data.type) {
         case "START":
-            postMessage(startSim(event.data.params));
+            let start_ret = startSim(event.data.params);
+            apply_policy(event.data.policy);
+            postMessage(start_ret);
+            break;
+        case "TICK":
+            postMessage(reportSim(event.data.data));
             break;
         case "PAUSE":
             break;
@@ -23,41 +27,30 @@ onmessage = function(event){
         case "STOP":
             postMessage(stopSim());
             break;
-        case "REPORT":
-            postMessage(reportSim(event.data.policy));
-            break;
     }
 }
 
 
 var startSim = function(event_data) {
-    /*
-        Assertion for necessary parameters
-    */
-    function assertion (event_data) {
-        for (let key of ["sim_width", "sim_height", "size", "timeunit", "fps", "duration", "age_dist", "age_infect", "age_severe",
-            "node_num", "initial_patient", "speed", "TPC_base", "hospital_max"]) {
-            console.assert(event_data.hasOwnProperty(key));
-        }
-    }
-    assertion(event_data);
-    param = event_data;
+    let param = event_data;
     param.sim_height = param["sim_size"];
     param.sim_width = param["sim_size"];
     running_time = 0;
     simulation = null;
 
-    var node_list = createNodes();
+    var node_list = createNodes(param);
 
     simulation = d3.forceSimulation(node_list)
         .alphaDecay(0)
         .velocityDecay(0);
 
+    simulation.param = param;
+
     /*
         Location settings
      */
     simulation.loc = new locs();
-    simulation.loc.push(new simLoc("world", 0, 0, 0, param.sim_width, param.sim_height));
+    simulation.loc.push(new simLoc("world", 0, 0, 0, simulation.param.sim_width, simulation.param.sim_height));
 
     simulation.nodes().forEach(node => node.move(simulation.loc.by_name("world")))
 
@@ -67,8 +60,8 @@ var startSim = function(event_data) {
         .radius(param.size)
         .oneWay(false));
 
-    //_.sample(simulation.nodes(), Math.floor(param.node_num * param.mask_ratio)).forEach(node => node.mask = true);
-    simulation.find(param.sim_width / 2, param.sim_height / 2).infected();
+    //_.sample(simulation.nodes(), Math.floor(param.node_num * simulation.param.mask_ratio)).forEach(node => node.mask = true);
+    simulation.find(param.sim_width / 2, simulation.param.sim_height / 2).infected();
 
     let report_nodes = [];
     simulation.nodes().forEach(node => {
@@ -87,7 +80,72 @@ var startSim = function(event_data) {
         });
     })
     simulation.stop();
-    return {type:"START", state:report_nodes, time: running_time, loc: simulation.loc};
+
+    simulation.policyData = {
+        area: {
+            upper_left: {
+                speed: [1,1,1]
+            },
+            upper_right: {
+                speed: [1,1,1]
+            },
+            lower_left: {
+                speed: [1,1,1]
+            },
+            lower_right: {
+                speed: [1,1,1]
+            }
+        },
+        border: {
+            upper: 0,
+            lower: 0,
+            left: 0,
+            right: 0
+        },
+        budget: 0,
+        hospital_max: 0
+    };
+    simulation.updatePolicy = function () {
+        let policy = simulation.policyData;
+        simulation.nodes()
+            .forEach(node => {
+                node.speed(policy.area[node.isIn()][node.getAgeGroup()]);
+                node.hospital_max = policy.hospital_max;
+            });
+
+        let surface = [
+            {
+            from: {
+                x: simulation.param.sim_width / 2,
+                y: simulation.param.sim_height * (1 - policy.border.upper) / 4},
+            to: {
+                x: simulation.param.sim_width / 2,
+                y: simulation.param.sim_height * (1 + policy.border.upper) / 4}
+        }, {
+            from: {
+                x: simulation.param.sim_width / 2,
+                y: simulation.param.sim_height * (3 - policy.border.lower) / 4},
+            to: {
+                x: simulation.param.sim_width / 2,
+                y: simulation.param.sim_height * (3 + policy.border.lower) / 4}
+        }, {
+            from: {
+                x: simulation.param.sim_width * (1 - policy.border.left) / 4,
+                y: simulation.param.sim_height / 2},
+            to: {
+                x: simulation.param.sim_width * (1 + policy.border.left) / 4,
+                y: simulation.param.sim_height / 2}
+        }, {
+            from: {
+                x: simulation.param.sim_width * (3 - policy.border.right) / 4,
+                y: simulation.param.sim_height / 2},
+            to: {
+                x: simulation.param.sim_width * (3 + policy.border.right) / 4,
+                y: simulation.param.sim_height / 2}
+        }]
+        simulation.force("surface").surfaces(surface);
+    }
+    return {type:"START_SUCCESS", main:report_nodes};
 }
 
 /*
@@ -109,7 +167,7 @@ function collision (node1, node2) {
 Transmission probability per contact
  */
 function TPC (node1) {
-    return param.TPC_base * param.age_infect[node1.age.toString()];
+    return simulation.param.TPC_base * simulation.param.age_infect[node1.age.toString()];
 }
 
 function ticked() {
@@ -118,12 +176,12 @@ function ticked() {
     this.nodes().forEach(node1 => {
         this.nodes().forEach(node2 => {
             let a = (node1.x - node2.x), b = node1.y - node2.y;
-            if (a*a+b*b < param.size*param.size*4)
+            if (a*a+b*b < simulation.param.size*param.size*4)
                 collision(node1, node2);
         })
     }, this);
     simulation.nodes().forEach(node => node.dispatch.call("tick", this));
-    if (Math.ceil(running_time / (param.fps * param.turnUnit)) !== Math.ceil((running_time + 1) / (param.fps * param.turnUnit))) {
+    if (Math.ceil(running_time / (param.fps * simulation.param.turnUnit)) !== Math.ceil((running_time + 1) / (param.fps * simulation.param.turnUnit))) {
         postMessage({type:"PAUSE"});
     }
 }
@@ -157,10 +215,10 @@ var reportSim = function(iter) {
             tick: node.curTime
         });
     })
-    return {type:"REPORT", state:report_nodes, time: running_time};
+    return {type:"TICK", state:report_nodes, time: running_time};
 }
 
-function create_age_list () {
+function create_age_list (param) {
     let age_list = _.range(0, param.node_num);
     let dist_total = 0;
     for (let k in param["age_dist"]) {
@@ -181,7 +239,7 @@ function create_age_list () {
 /*
 Create nodes and assign initial values
  */
-function createNodes () {
+function createNodes (param) {
     let _nodes = [];
 
     // Assigns age factor for each node
@@ -197,28 +255,6 @@ function createNodes () {
 }
 
 function apply_policy(policy) {
-    for (let i in policy.age) {
-        simulation.nodes()
-            .filter(node => node.age === i)
-            .forEach(node => {
-                node.speed(policy.age[i][policy.area[node.isIn()]])
-            });
-        simulation.nodes().forEach(node => {
-            node.param.hospital_max = policy.hospital_max;
-        })
-    }
-    let temp = simulation.loc.get_surface(), line_rate = policy.rate;
-    if (policy.surface.upper === "1") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height * (1 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (1 + line_rate) / 4}
-    });
-    if (policy.surface.lower === "1") temp.push({
-        from: {x: param.sim_width / 2, y: param.sim_height * (3 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (3 + line_rate) / 4}
-    });
-    if (policy.surface.left === "1") temp.push({
-        from: {x: param.sim_width * (1 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (1 + line_rate) / 4, y: param.sim_height / 2}
-    });
-    if (policy.surface.right === "1") temp.push({
-        from: {x: param.sim_width * (3 - line_rate) / 4, y: param.sim_height / 2}, to: {x: param.sim_width * (3 + line_rate) / 4, y: param.sim_height / 2}
-    });
-    simulation.force("surface").surfaces(temp);
+    simulation.policyData = policy;
+    simulation.updatePolicy();
 }

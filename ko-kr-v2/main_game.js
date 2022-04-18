@@ -11,6 +11,7 @@ class Game {
         this.speed = 1;
         this.chartData = [];
         this.tickCount = 0;
+        this.role = "Defense";
         this.defaultParam = {};
         this.virusInfo = [];
         this.network_promise = async function() {
@@ -42,14 +43,17 @@ class Game {
                 left: 0,
                 right: 0
             },
-            budget: 0
+            budget: 0,
+            hospital_max: 0
         }
         this.virus = this.virusInfo[0];
         this.w = new Worker("worker_game.js");
         this.w.onmessage = function(event) {
+            console.log(event.data);
             switch (event.data.type) {
                 case "START_SUCCESS":
-                    initSim(this.param, event.data.main);
+                    initSim(that.params, event.data.main);
+                    that.w.postMessage({type: "TICK", data: that.speed});
                     that.run = window.requestAnimationFrame(that.tick.bind(that));
                     break;
                 case "TICK":
@@ -94,7 +98,7 @@ class Game {
     get simParams() {
         let sim_param = {},
             sim_param_key = ["node_num", "initial_patient", "hospital_max", "size",
-            "sim_size", "timeunit", "week_day", "fps", "age_dist", "age_speed"];
+            "sim_size", "canvas_width", "canvas_height", "timeunit", "week_day", "fps", "age_dist", "age_speed"];
         for (const key in sim_param_key) {
             sim_param[key] = this.params[key];
         }
@@ -180,14 +184,15 @@ class Game {
                 left: 0,
                 right: 0
             },
-            budget: 0
+            budget: 0,
+            hospital_max: 0
         };
 
         // Reset Output
         d3.selectAll(".game").remove();
 
         this.w.postMessage({type: "START",
-            data: {params: this.params, policy: this.policyData}});
+            params: this.params, policy: this.policyData});
     }
     resume() {
         this.runtime = null;
@@ -196,12 +201,14 @@ class Game {
     }
     tick(timestamp) {
         if (!this.runtime) this.runtime = timestamp;
-        let param = this.simParams;
-        if ((timestamp - this.runtime) < (this.speed * param.timeunit / param.fps) && this.ticked) {
+        let param = this.params;
+        if ((timestamp - this.runtime) > (this.speed * param.timeunit / param.fps) && this.ticked) {
             this.tickCount += this.speed;
             Tasks.tick();
             this.ticked = false;
             this.w.postMessage({type: "TICK", data: this.speed});
+            window.requestAnimationFrame(this.tick.bind(this));
+        } else {
             window.requestAnimationFrame(this.tick.bind(this));
         }
     }
@@ -227,7 +234,7 @@ var Event = function () {
                     NETWORK.setStudentID($("#popupLogin input.login.student").val());
                     NETWORK.writeSession();
                     $("#popupLogin").fadeOut();
-                    Event.trigger("InitPopup", GAME);
+                    EVENT.trigger("InitPopup", GAME);
                 })
                 $("#popupLogin").fadeIn();
                 break;
@@ -427,12 +434,12 @@ function initSim(param, node_data) {
     let init_data = {
         "tick": 0,
         "GDP": getGDP(node_data),
-        "budget": game.policyData.budget
+        "budget": GAME.policyData.budget
     };
     Array.from(["S","E1","E2","I1","I2","H1","H2","R1","R2"]).forEach(stage => {
         init_data[stage] = node_data.filter(e => e.state === state[stage]).length;
     })
-    game.chartData.push(init_data);
+    GAME.chartData.push(init_data);
     node_init(param, node_data);
     let dailyChart = new Chart("dailyChart", "dailyChart");
     //chart_param = chart_init(param);
@@ -635,11 +642,10 @@ function node_init(param, node_data) {
 
     let sim_cont = sim_board.append("svg")
         .attr("id", "sim_container")
-        .attr("width", param.sim_width)
-        .attr("height", param.sim_height);
-    let xScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_width"]]),
-        yScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_height"]]);
-
+        .attr("width", param["canvas_width"])
+        .attr("height", param["canvas_height"]);
+    let xScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["canvas_width"]]),
+        yScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["canvas_height"]]);
 
     d3.xml("img/background.svg")
         .then(data => {
@@ -648,22 +654,25 @@ function node_init(param, node_data) {
                 .node().append(data.documentElement)
         });
 
-    sim_cont.append("rect")
-        .attr("width", param.sim_width / 2)
-        .attr("height", param.sim_height / 2)
-        .attr("x", 0)
-        .attr("y", 0)
-        .style("stroke", "none")
-        .style("fill", "#A0A0A0")
-        .style("opacity", "15%");
-    sim_cont.append("rect")
-        .attr("width", param.sim_width / 2)
-        .attr("height", param.sim_height / 2)
-        .attr("x", param.sim_width / 2)
-        .attr("y", param.sim_height / 2)
-        .style("stroke", "none")
-        .style("fill", "#A0A0A0")
-        .style("opacity", "15%");
+    (function createAreaRect () {
+        sim_cont.selectAll("rect")
+            .data([
+                {pos: "upper left", x: 0, y: 0},
+                {pos: "upper right", x: 0.5, y: 0},
+                {pos: "lower left", x: 0, y: 0.5},
+                {pos: "lower right", x: 0.5, y: 0.5}])
+            .enter().append("rect")
+            .attr("width", param["canvas_width"] / 2)
+            .attr("height", param["canvas_height"] / 2)
+            .attr("x", function(d) {return (param["canvas_width"] * d.x)})
+            .attr("y", function(d) {return (param["canvas_height"] * d.y)})
+            .attr("class", function(d) {return `board ${d.pos} inactive`})
+            .style("stroke", "rgba(0,0,0,0)")
+            .style("stroke-width", "5")
+            .style("fill", function(d) {return (d.x + d.y) === 0.5 ? "rgba(160,160,160,0.15)" : "rgba(255,255,255,1)"})
+            .style("opacity", "15%");
+    }) ();
+
 
     sim_cont.append("g")
         .attr("id", "nodes")
@@ -674,11 +683,13 @@ function node_init(param, node_data) {
         .attr("id", function (d) {
             return "node_" + d.index;
         })
-        .attr("class", d => (d.mask) ? "node " + _.findKey(state,e => e === d.state) + " mask" : "node " + _.findKey(state,e => e === d.state))
+        .attr("class", d => (d.mask) ?
+            "node " + _.findKey(state,e => e === d.state) + " mask" :
+            "node " + _.findKey(state,e => e === d.state))
         .attr("cx", d => xScale(d.x))
         .attr("cy", d => yScale(d.y))
         .attr("r", param["size"])
-        .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
+        .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (GAME.role === "Defense")) ? state.S : d.state)
         .on("mouseenter", function(d) {
             d3.select("#node_" + d.index).attr("r", param.size * 3);
             d3.select("#node_" + d.index).classed("hovered", true);
@@ -694,7 +705,7 @@ function node_init(param, node_data) {
             d3.select("tspan.node.corr_y").text(Math.round(d.y));
             d3.select("tspan.node.loc").text(d.loc.name);
             d3.select("tspan.node.income").text(d.income);
-            d3.select("tspan.node.stage").text(role === "Defense" && (temp_stat === "E1" || temp_stat === "E2") ? "S" : temp_stat);
+            d3.select("tspan.node.stage").text(GAME.role === "Defense" && (temp_stat === "E1" || temp_stat === "E2") ? "S" : temp_stat);
             d3.select("tspan.node.mask").text(d.mask ? "착용" : "미착용");
             d3.select("tspan.node.vaccine").text(d.vaccine ? "1차" : "미접종");
             $("#popup_node").fadeIn(1);
@@ -702,25 +713,35 @@ function node_init(param, node_data) {
             d3.select("#popup_node > div.popBg").on("click", function() {
                 $("#popup_node").fadeOut(1);
                 d3.select("#node_" + d.index).attr("r", param.size).classed("hovered",false);
-                run = setInterval(() => {
-                    if (receive) {
-                        w.postMessage({type: "REPORT", data: running_speed});
-                        receive = false;
-                        receive_time += running_speed;
-                    }
-                }, tick);
+                GAME.resume();
             })
-            clearInterval(run);
-            run = null;
+            GAME.pause();
         });
 
     let line_rate = parseFloat($("input.policy.rate").val());
 
     sim_cont.selectAll("line.svg_line")
-        .data([{name: "upper", x1: param.sim_width / 2, y1: param.sim_height * (1 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (1 + line_rate) / 4},
-            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height * (3 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (3 + line_rate) / 4},
-            {name: "left", x1: param.sim_width * (1 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (1 + line_rate) / 4, y2: param.sim_height / 2},
-            {name: "right", x1: param.sim_width * (3 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (3 + line_rate) / 4, y2: param.sim_height / 2}])
+        .data([
+            {name: "upper",
+                x1: param["canvas_width"] / 2,
+                y1: param["canvas_height"] * (1 - line_rate) / 4,
+                x2: param["canvas_width"] / 2,
+                y2: param["canvas_height"] * (1 + line_rate) / 4},
+            {name: "lower",
+                x1: param["canvas_width"] / 2,
+                y1: param["canvas_height"] * (3 - line_rate) / 4,
+                x2: param["canvas_width"] / 2,
+                y2: param["canvas_height"] * (3 + line_rate) / 4},
+            {name: "left",
+                x1: param["canvas_width"] * (1 - line_rate) / 4,
+                y1: param["canvas_height"] / 2,
+                x2: param["canvas_width"] * (1 + line_rate) / 4,
+                y2: param["canvas_height"] / 2},
+            {name: "right",
+                x1: param["canvas_width"] * (3 - line_rate) / 4,
+                y1: param["canvas_height"] / 2,
+                x2: param["canvas_width"] * (3 + line_rate) / 4,
+                y2: param["canvas_height"] / 2}])
         .enter()
         .append("line")
         .attr("class", function(d) {return "sim_board svg_line " + d.name;})
@@ -737,10 +758,10 @@ function node_init(param, node_data) {
 function node_update(param, node_data) {
     let xScale = d3.scaleLinear()
             .domain([0,param["sim_size"]])
-            .range([0,param["sim_width"]]),
+            .range([0,param["canvas_width"]]),
         yScale = d3.scaleLinear()
             .domain([0,param["sim_size"]])
-            .range([0,param["sim_height"]]);
+            .range([0,param["canvas_height"]]);
 
     d3.select(".nodes")
         .selectAll("circle")
@@ -754,7 +775,7 @@ function node_update(param, node_data) {
                 .attr("cx", d => xScale(d.x))
                 .attr("cy", d => yScale(d.y))
                 .attr("r", param["size"])
-                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
+                .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (GAME.role === "Defense")) ? state.S : d.state)
                 .on("mouseover", function(d) {
                     d3.select("#node_" + d.index).attr("r", param.size * 3);
                     d3.select("#node_" + d.index).lower();
@@ -778,16 +799,9 @@ function node_update(param, node_data) {
                     d3.select("#popup_node > div.popBg").on("click", function() {
                         $("#popup_node").fadeOut(1);
                         d3.select("#node_" + d.index).attr("r", param.size);
-                        run = setInterval(() => {
-                            if (receive) {
-                                w.postMessage({type: "REPORT", data: running_speed});
-                                receive = false;
-                                receive_time += running_speed;
-                            }
-                        }, tick);
+                        GAME.resume();
                     })
-                    clearInterval(run);
-                    run = null;
+                    GAME.pause();
                 }),
             update => update
                 .attr("cx", d => xScale(d.x))
