@@ -109,9 +109,6 @@ function get_params(init) {
         param["age_severe"][age] *= (1 + stat.stat4 * 0.02);
     }
 
-    param["sim_width"] = 870;
-    param["sim_height"] = 555;
-
     return param;
 }
 
@@ -383,10 +380,10 @@ function node_init(param, node_data, loc) {
 
     let sim_cont = sim_board.append("svg")
         .attr("id", "sim_container")
-        .attr("width", param.sim_width)
-        .attr("height", param.sim_height);
-    let xScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_width"]]),
-        yScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_height"]]);
+        .attr("width", param["canvas_width"])
+        .attr("height", param["canvas_height"]);
+    let xScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["canvas_width"]]),
+        yScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["canvas_height"]]);
 
 
     d3.xml("img/background.svg")
@@ -396,22 +393,21 @@ function node_init(param, node_data, loc) {
                 .node().append(data.documentElement)
         });
 
-    sim_cont.append("rect")
-        .attr("width", param.sim_width / 2)
-        .attr("height", param.sim_height / 2)
-        .attr("x", 0)
-        .attr("y", 0)
-        .style("stroke", "none")
-        .style("fill", "#A0A0A0")
-        .style("opacity", "15%");
-    sim_cont.append("rect")
-        .attr("width", param.sim_width / 2)
-        .attr("height", param.sim_height / 2)
-        .attr("x", param.sim_width / 2)
-        .attr("y", param.sim_height / 2)
-        .style("stroke", "none")
-        .style("fill", "#A0A0A0")
-        .style("opacity", "15%");
+    (function createAreaRect () {
+        sim_cont.selectAll("rect")
+            .data([
+                {pos: "upper left", x: 0, y: 0},
+                {pos: "upper right", x: 0.5, y: 0},
+                {pos: "lower left", x: 0, y: 0.5},
+                {pos: "lower right", x: 0.5, y: 0.5}])
+            .enter().append("rect")
+            .attr("width", param["canvas_width"] / 2)
+            .attr("height", param["canvas_height"] / 2)
+            .attr("x", function(d) {return (param["canvas_width"] * d.x)})
+            .attr("y", function(d) {return (param["canvas_height"] * d.y)})
+            .attr("class", function(d) {return `board ${d.pos} inactive`})
+            .style("fill", function(d) {return (d.x + d.y) === 0.5 ? "rgba(160,160,160,0)" : "rgba(255,255,255,0.15)"});
+    }) ();
 
     sim_cont.append("g")
         .attr("id", "nodes")
@@ -428,8 +424,10 @@ function node_init(param, node_data, loc) {
         .attr("r", param["size"])
         .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
         .on("mouseenter", function(d) {
-            d3.select("#node_" + d.index).attr("r", param.size * 3);
-            d3.select("#node_" + d.index).classed("hovered", true);
+            if (run !== null) {
+                d3.select("#node_" + d.index).attr("r", param.size * 3);
+                d3.select("#node_" + d.index).classed("hovered", true);
+            }
         })
         .on("mouseleave", function(d) {
             if (run !== null) d3.select("#node_" + d.index).attr("r", param.size).classed("hovered", false);
@@ -462,26 +460,14 @@ function node_init(param, node_data, loc) {
             run = null;
         });
 
-    sim_cont.selectAll("rect")
-        .data(loc.list)
-        .enter().append("rect")
-        .attr("class", "locations")
-        .attr("id", d => "loc_" + d.name)
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-        .attr("width", d => d.width)
-        .attr("height", d => d.height)
-        .style("stroke", "rgb(0,0,0)")
-        .style("stroke-width", 1)
-        .style("fill", "none");
 
     let line_rate = parseFloat($("input.policy.rate").val());
 
     sim_cont.selectAll("line.svg_line")
-        .data([{name: "upper", x1: param.sim_width / 2, y1: param.sim_height * (1 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (1 + line_rate) / 4},
-            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height * (3 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (3 + line_rate) / 4},
-            {name: "left", x1: param.sim_width * (1 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (1 + line_rate) / 4, y2: param.sim_height / 2},
-            {name: "right", x1: param.sim_width * (3 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (3 + line_rate) / 4, y2: param.sim_height / 2}])
+        .data([{name: "upper", x1: param["canvas_width"] / 2, y1: param["canvas_height"] * (1 - line_rate) / 4, x2: param["canvas_width"] / 2, y2: param["canvas_height"] * (1 + line_rate) / 4},
+            {name: "lower", x1: param["canvas_width"] / 2, y1: param["canvas_height"] * (3 - line_rate) / 4, x2: param["canvas_width"] / 2, y2: param["canvas_height"] * (3 + line_rate) / 4},
+            {name: "left", x1: param["canvas_width"] * (1 - line_rate) / 4, y1: param["canvas_height"] / 2, x2: param["canvas_width"] * (1 + line_rate) / 4, y2: param["canvas_height"] / 2},
+            {name: "right", x1: param["canvas_width"] * (3 - line_rate) / 4, y1: param["canvas_height"] / 2, x2: param["canvas_width"] * (3 + line_rate) / 4, y2: param["canvas_height"] / 2}])
         .enter()
         .append("line")
         .attr("class", function(d) {return "sim_board svg_line " + d.name;})
@@ -490,7 +476,7 @@ function node_init(param, node_data, loc) {
         .attr("x2", function(d) {return d.x2;})
         .attr("y2", function(d) {return d.y2;})
         .style("stroke", "#C00000")
-        .style("stroke-width", 1)
+        .style("stroke-width", 3)
         .style("opacity", "0");
 
 }
@@ -498,10 +484,10 @@ function node_init(param, node_data, loc) {
 function node_update(param, node_data) {
     let xScale = d3.scaleLinear()
             .domain([0,param["sim_size"]])
-            .range([0,param["sim_width"]]),
+            .range([0,param["canvas_width"]]),
         yScale = d3.scaleLinear()
             .domain([0,param["sim_size"]])
-            .range([0,param["sim_height"]]);
+            .range([0,param["canvas_height"]]);
 
     d3.select(".nodes")
         .selectAll("circle")
@@ -517,8 +503,10 @@ function node_update(param, node_data) {
                 .attr("r", param["size"])
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
                 .on("mouseover", function(d) {
-                    d3.select("#node_" + d.index).attr("r", param.size * 3);
-                    d3.select("#node_" + d.index).lower();
+                    if (run !== null) {
+                        d3.select("#node_" + d.index).attr("r", param.size * 3);
+                        d3.select("#node_" + d.index).lower();
+                    }
                 })
                 .on("mouseleave", function(d) {
                     if (run !== null) d3.select("#node_" + d.index).attr("r", param.size);
@@ -799,10 +787,10 @@ function resume_simulation () {
         };
     let new_budget = budget - 10000 * (hospital_max - w.param.hospital_max);
     d3.selectAll("line.sim_board.svg_line")
-        .data([{name: "upper", x1: w.param.sim_width / 2, y1: w.param.sim_height * (1 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (1 + line_rate) / 4},
-            {name: "lower", x1: w.param.sim_width / 2, y1: w.param.sim_height * (3 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (3 + line_rate) / 4},
-            {name: "left", x1: w.param.sim_width * (1 - line_rate) / 4, y1: w.param.sim_height / 2, x2: w.param.sim_width * (1 + line_rate) / 4, y2: w.param.sim_height / 2},
-            {name: "right", x1: w.param.sim_width * (3 - line_rate) / 4, y1: w.param.sim_height / 2, x2: w.param.sim_width * (3 + line_rate) / 4, y2: w.param.sim_height / 2}])
+        .data([{name: "upper", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (1 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (1 + line_rate) / 4},
+            {name: "lower", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (3 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (3 + line_rate) / 4},
+            {name: "left", x1: w.param["canvas_width"] * (1 - line_rate) / 4, y1: w.param["canvas_height"] / 2, x2: w.param["canvas_width"] * (1 + line_rate) / 4, y2: w.param["canvas_height"] / 2},
+            {name: "right", x1: w.param["canvas_width"] * (3 - line_rate) / 4, y1: w.param["canvas_height"] / 2, x2: w.param["canvas_width"] * (3 + line_rate) / 4, y2: w.param["canvas_height"] / 2}])
         .join(enter => enter, update => update
             .attr("class", function(d) {return "sim_board svg_line " + d.name;})
             .attr("x1", function(d) {return d.x1;})
@@ -842,6 +830,7 @@ function resume_simulation () {
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     $("#popup_weekly").fadeOut();
     d3.selectAll("g.nodes > circle").attr("r", w.param.size).classed("hovered",false);
+    $("#sim_container rect.board").off("click");
     run = setInterval(() => {
         if (receive) {
             w.postMessage({type: "REPORT", data: running_speed});
@@ -1141,6 +1130,10 @@ function weekly_report() {
         .attr("cx", function(e) {return xScale(e.tick - data_to.tick + 14)})
         .attr("cy", function(e) {return zScale(e.R2)});
 
+    $("#sim_container rect.board").on("click", function() {
+        toggle_active(this);
+    });
+
 }
 
 var auto = false;
@@ -1286,3 +1279,12 @@ $("div.daily.rate.severity.board")
     .on("mouseleave", () => {
         $("#popupDescPopup").fadeOut(0);
     });
+
+function toggle_active(dom) {
+    let el = d3.select(dom);
+    if (el.classed("active")) {
+        el.classed("active",false).classed("inactive",true);
+    } else {
+        el.classed("active",true).classed("inactive",false);
+    }
+}

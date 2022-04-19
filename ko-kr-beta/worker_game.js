@@ -35,13 +35,6 @@ var startSim = function(event_data) {
     /*
         Assertion for necessary parameters
     */
-    function assertion (event_data) {
-        for (let key of ["sim_width", "sim_height", "size", "timeunit", "fps", "duration", "age_dist", "age_infect", "age_severe",
-            "node_num", "initial_patient", "speed", "TPC_base", "hospital_max"]) {
-            console.assert(event_data.hasOwnProperty(key));
-        }
-    }
-    assertion(event_data);
     param = event_data;
     param.sim_height = param["sim_size"];
     param.sim_width = param["sim_size"];

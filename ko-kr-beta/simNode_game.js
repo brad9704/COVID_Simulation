@@ -98,6 +98,7 @@ class Node {
         this.dispatch = d3.dispatch("tick", "change");
 
         this.dispatch.on("tick.time", () => {
+            this.check_loc();
             this.curTime += 1;
             if (this.queue.length > 0) {
                 this.queue.forEach((task, i) => {
