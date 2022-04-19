@@ -477,6 +477,7 @@
             .then(response => {
                 let initSetting = response[0], virusInfo = response[1];
                 getVirus(virusInfo);
+                $("img").attr("draggable", "false");
                 return [initSetting, virusInfo];
             })
     }
