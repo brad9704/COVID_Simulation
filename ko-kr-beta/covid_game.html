@@ -77,21 +77,24 @@
                 $('img.weekly.tab.back.overall').css('display','block');
                 $('input.weekly.tab.switch.overall').attr('active','true');
                 $('div.weekly.tab').css('display','none');
-                $('div.weekly.tab.overall').css('display','block');">
+                $('div.weekly.tab.overall').css('display','block');
+                d3.selectAll('g.board').classed('enabled',false);">
                 <input class="weekly tab switch age" type="button" value="사회적 거리두기" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('img.weekly.tab.back').css('display','none');
                 $('img.weekly.tab.back.age').css('display','block');
                 $('input.weekly.tab.switch.age').attr('active','true');
                 $('div.weekly.tab').css('display','none');
-                $('div.weekly.tab.age').css('display','block');">
+                $('div.weekly.tab.age').css('display','block');
+                d3.selectAll('g.board').classed('enabled',true);">
                 <input class="weekly tab switch area" type="button" value="예산 분배" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('img.weekly.tab.back').css('display','none');
                 $('img.weekly.tab.back.area').css('display','block');
                 $('input.weekly.tab.switch.area').attr('active','true');
                 $('div.weekly.tab').css('display','none');
-                $('div.weekly.tab.area').css('display','block');">
+                $('div.weekly.tab.area').css('display','block');
+                d3.selectAll('g.board').classed('enabled',false);">
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">

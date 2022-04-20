@@ -16,7 +16,20 @@ var area = {
     upper_right: 0,
     lower_left: 0,
     lower_right: 0
+};
+var age_policy_data = [
+    {pos: "upper left", x: 0, y: 0, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]},
+    {pos: "upper right", x: 0.5, y: 0, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]},
+    {pos: "lower left", x: 0, y: 0.5, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]},
+    {pos: "lower right", x: 0.5, y: 0.5, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]}
+];
+
+function update_people () {
+    age_policy_data.forEach(area => {
+
+    })
 }
+
 var budget = 0;
 var clicker = 0;
 var turn_end = true;
@@ -392,22 +405,20 @@ function node_init(param, node_data, loc) {
                 .attr("id", "sim_title")
                 .node().append(data.documentElement)
         });
-
-    (function createAreaRect () {
-        sim_cont.selectAll("rect")
-            .data([
-                {pos: "upper left", x: 0, y: 0},
-                {pos: "upper right", x: 0.5, y: 0},
-                {pos: "lower left", x: 0, y: 0.5},
-                {pos: "lower right", x: 0.5, y: 0.5}])
-            .enter().append("rect")
-            .attr("width", param["canvas_width"] / 2)
-            .attr("height", param["canvas_height"] / 2)
-            .attr("x", function(d) {return (param["canvas_width"] * d.x)})
-            .attr("y", function(d) {return (param["canvas_height"] * d.y)})
-            .attr("class", function(d) {return `board ${d.pos} inactive`})
-            .style("fill", function(d) {return (d.x + d.y) === 0.5 ? "rgba(160,160,160,0)" : "rgba(255,255,255,0.15)"});
-    }) ();
+    sim_cont.selectAll("g.background_rect")
+        .data([
+            {pos: "upper left", x: 0, y: 0},
+            {pos: "upper right", x: 0.5, y: 0},
+            {pos: "lower left", x: 0, y: 0.5},
+            {pos: "lower right", x: 0.5, y: 0.5}])
+        .enter().append("g")
+        .attr("class", function(d) {return `background_rect ${d.pos}`})
+        .append("rect")
+        .attr("width", param["canvas_width"] / 2)
+        .attr("height", param["canvas_height"] / 2)
+        .attr("x", function(d) {return (param["canvas_width"] * d.x)})
+        .attr("y", function(d) {return (param["canvas_height"] * d.y)})
+        .style("fill", function(d) {return (d.x + d.y) === 0.5 ? "rgba(160,160,160,0)" : "rgba(255,255,255,0.15)"});
 
     sim_cont.append("g")
         .attr("id", "nodes")
@@ -460,6 +471,69 @@ function node_init(param, node_data, loc) {
             run = null;
         });
 
+    (function createAreaRect () {
+        let g = d3.select("#sim_container").selectAll("g.board")
+            .data(age_policy_data)
+            .enter().append("g")
+            .attr("class", function(d) {return `board ${d.pos}`})
+            .style("display", "none");
+        g.append("rect")
+            .attr("width", param["canvas_width"] / 2)
+            .attr("height", param["canvas_height"] / 2)
+            .attr("x", function(d) {return (param["canvas_width"] * d.x)})
+            .attr("y", function(d) {return (param["canvas_height"] * d.y)})
+            .attr("class", function(d) {return `board ${d.pos} inactive`})
+            .style("fill", "rgba(0,0,0,0)");
+        g.selectAll("image")
+            .data(e => e.data)
+            .join(
+                enter => {
+                    enter.append("image")
+                        .attr("class", function (d) {return `board_icon count level_${d.level}`})
+                        .attr("href", function(d) {
+                            return d.level > 0 ? `img/distancing_level_${d.level}.png` : "";
+                        })
+                        .attr("width", 38)
+                        .attr("height", 38)
+                        .attr("x", function(d) {
+                            return param["canvas_width"] *
+                                (d3.select(this.parentElement).datum().x +
+                                    (d.age * 0.1)) + 52;
+                        })
+                        .attr("y", function() {
+                            return param["canvas_height"] *
+                                (d3.select(this.parentElement).datum().y + 0.17) - 22;
+                        });
+                    enter.append("image")
+                        .attr("class", function (d) {return `board_icon human age_${d.age}`})
+                        .attr("href", function (d) {
+                            return `img/distancing_age_${d.age}.png`;
+                        })
+                        .attr("width", 75)
+                        .attr("height", 75)
+                        .attr("x", function(d) {
+                            return param["canvas_width"] *
+                                (d3.select(this.parentElement).datum().x +
+                                (d.age * 0.1));
+                        })
+                        .attr("y", function() {
+                            return param["canvas_height"] *
+                                (d3.select(this.parentElement).datum().y + 0.17);
+                        })
+                        .on("mouseover", function(d) {
+                            d3.select(this).attr("href", `img/distancing_age_${d.age}_hover.png`);
+                        })
+                        .on("mouseout", function(d) {
+                            d3.select(this).attr("href", `img/distancing_age_${d.age}.png`);
+                        })
+                        .on("click", function(d, i, p) {
+                            if (d.level < 3) d++;
+                            else d.level = 0;
+                        });
+                }
+            )
+
+    }) ();
 
     let line_rate = parseFloat($("input.policy.rate").val());
 
@@ -808,6 +882,7 @@ function resume_simulation () {
         triggerInnerPopup("budget.over");
         return -1;
     }
+    d3.selectAll("#sim_container g.board").style("display", "none");
     budget = new_budget;
     budget_output.val(new_budget);
     w.postMessage({type: "RESUME", data: {
@@ -995,6 +1070,8 @@ function weekly_report() {
         if (res === 0) return;
     }
 
+    d3.select("#sim_container").selectAll("g.board").style("display", "block");
+
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
     // noinspection JSJQueryEfficiency
@@ -1131,7 +1208,12 @@ function weekly_report() {
         .attr("cy", function(e) {return zScale(e.R2)});
 
     $("#sim_container rect.board").on("click", function() {
-        toggle_active(this);
+        if (this.parentElement.classList.contains("enabled")) {
+            if (!this.parentElement.classList.contains("active")) {
+                d3.selectAll("#sim_container g.board").classed("active",false);
+            }
+            this.parentElement.classList.toggle("active");
+        }
     });
 
 }

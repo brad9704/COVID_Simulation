@@ -297,14 +297,15 @@ svg.result.legend {
     stroke: rgba(0,0,0,0);
     stroke-width: 5px;
 }
-#sim_board rect.board.inactive:hover {
+#sim_board g.board.enabled:not(.active) rect.board:hover {
     stroke: rgba(255,236,56,0.5);
 }
-#sim_board rect.board.active {
+#sim_board g.board.enabled.active rect.board {
     stroke: rgba(255,236,56,1);
 }
-#sim_board rect.board.active:hover {
-    stroke: rgba(255,255,255,1);}
+#sim_board g.board.enabled.active rect.board:hover {
+    stroke: rgba(255,255,255,1);
+}
 
 #sim_container {
     position: absolute;
