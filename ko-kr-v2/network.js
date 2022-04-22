@@ -19,7 +19,7 @@ function NetworkException(message) {
 
 var NETWORK = {
     STATUS: "ONLINE",
-    DEST_ADDRESS: "http://uni-safelab.ddns.net/FTC",
+    DEST_ADDRESS: "http://118.217.236.170:28421/FTC",
     GROUP: null,
     STUDENT_ID: null,
     SEED: 0,
