@@ -86,7 +86,8 @@
                 $('input.weekly.tab.switch.age').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.age').css('display','block');
-                d3.selectAll('g.board').classed('enabled',true);">
+                d3.selectAll('g.board').classed('enabled',true);
+                update_weekly_output();">
                 <input class="weekly tab switch area" type="button" value="예산 분배" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('img.weekly.tab.back').css('display','none');
@@ -129,11 +130,11 @@
                         </div>
                         <div class="weekly age policy_status">
                             <div class="weekly age policy child">
-                                <label class="weekly age policy stage"><output class="weekly age policy child stage">0</output>단계</label> (<output>100%</output>)</div>
+                                <label class="weekly age policy stage"><output class="weekly age policy child stage">0</output>단계</label> (<output class="weekly age policy child speed">100</output>%)</div>
                             <div class="weekly age policy adult">
-                                <label class="weekly age policy stage"><output class="weekly age policy child stage">0</output>단계</label> (<output>100%</output>)</div>
+                                <label class="weekly age policy stage"><output class="weekly age policy adult stage">0</output>단계</label> (<output class="weekly age policy adult speed">100</output>%)</div>
                             <div class="weekly age policy elder">
-                                <label class="weekly age policy stage"><output class="weekly age policy child stage">0</output>단계</label> (<output>100%</output>)</div>
+                                <label class="weekly age policy stage"><output class="weekly age policy elder stage">0</output>단계</label> (<output class="weekly age policy elder speed">100</output>%)</div>
                         </div>
                         <table class="weekly age occurrence">
                             <tr>

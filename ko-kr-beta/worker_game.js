@@ -191,16 +191,14 @@ function createNodes () {
 }
 
 function apply_policy(policy) {
-    for (let i in policy.age) {
-        simulation.nodes()
-            .filter(node => node.age === i)
+    policy.area.forEach(area => {
+        simulation.nodes().filter(node => node.isIn().replace("_", " ") === area.pos)
             .forEach(node => {
-                node.speed(policy.age[i][policy.area[node.isIn()]])
-            });
-        simulation.nodes().forEach(node => {
-            node.param.hospital_max = policy.hospital_max;
-        })
-    }
+                node.speed(Speed(area.data.find(a => a.age === node.getAgeGroup()).level));
+            })
+    })
+    simulation.nodes().forEach(node => node.param.hospital_max = policy.hospital_max);
+
     let temp = simulation.loc.get_surface(), line_rate = policy.rate;
     if (policy.surface.upper === "1") temp.push({
         from: {x: param.sim_width / 2, y: param.sim_height * (1 - line_rate) / 4}, to: {x: param.sim_width / 2, y: param.sim_height * (1 + line_rate) / 4}

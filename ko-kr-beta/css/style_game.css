@@ -1254,3 +1254,9 @@ table.weekly.age.occurrence td {
     padding: 0;
     line-height: 26px;
 }
+g.board.enabled image.board_icon {
+    display: block;
+}
+g.board:not(.enabled) image.board_icon {
+    display: none;
+}

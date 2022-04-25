@@ -18,16 +18,65 @@ var area = {
     lower_right: 0
 };
 var age_policy_data = [
-    {pos: "upper left", x: 0, y: 0, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]},
-    {pos: "upper right", x: 0.5, y: 0, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]},
-    {pos: "lower left", x: 0, y: 0.5, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]},
-    {pos: "lower right", x: 0.5, y: 0.5, data: [{"age": 1, "level": 1}, {"age": 2, "level": 2}, {"age": 3, "level": 3}]}
+    {pos: "upper left", x: 0, y: 0, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
+    {pos: "upper right", x: 0.5, y: 0, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
+    {pos: "lower left", x: 0, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
+    {pos: "lower right", x: 0.5, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]}
 ];
+
+
 
 function update_people () {
     age_policy_data.forEach(area => {
-
+        d3.select(`g.board.${area.pos.replace(" ", ".")}`)
+            .selectAll(`image.board_icon.count`)
+            .each(function (d) {this.setAttribute("href", d.level > 0 ? `img/distancing_level_${d.level}.png` : "")});
     })
+    update_weekly_output();
+}
+
+function update_weekly_output () {
+    let target = $("g.board.enabled.active").length === 0 ?
+        [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}] :
+        age_policy_data.find(area => d3.select("g.board.active").classed(area.pos)).data;
+
+    ["child", "adult", "elder"].forEach((ageGroup, ageNum) => {
+        let occ = {};
+        let accessor;
+        if (ageNum === 0) {
+            accessor = function(e, i) {
+                return i < 2 ? e : 0
+            };
+        }
+        else if (ageNum === 2) {
+            accessor = function(e, i) {
+                return i > 5 && i < 9 ? e : 0
+            };
+        }
+        else {
+            accessor = function(e, i) {
+                return i > 2 && i < 5 ? e : 0
+            };
+        }
+        occ.infect = d3.sum(chart_data[chart_data.length - 1].I1, accessor)
+            + d3.sum(chart_data[chart_data.length - 1].I2, accessor)
+            + d3.sum(chart_data[chart_data.length - 1].H1, accessor)
+            + d3.sum(chart_data[chart_data.length - 1].H2, accessor);
+        occ.ICU = d3.sum(chart_data[chart_data.length - 1].H2, accessor);
+        occ.death = d3.sum(chart_data[chart_data.length - 1].R2, accessor);
+
+
+        $(`output.weekly.age.policy.${ageGroup}.stage`).val(
+            target.find(e => e.age === ageNum + 1).level
+        );
+        $(`output.weekly.age.policy.${ageGroup}.speed`).val(Speed(target.find(e => e.age === ageNum + 1).level) * 100);
+        $(`output.weekly.age.occur.infect.${ageGroup}`).val(occ.infect);
+        $(`output.weekly.age.occur.ICU.${ageGroup}`).val(occ.ICU);
+        $(`output.weekly.age.occur.death.${ageGroup}`).val(occ.death);
+    });
+}
+function get_weekly_input () {
+
 }
 
 var budget = 0;
@@ -489,7 +538,7 @@ function node_init(param, node_data, loc) {
             .join(
                 enter => {
                     enter.append("image")
-                        .attr("class", function (d) {return `board_icon count level_${d.level}`})
+                        .attr("class", function (d) {return `board_icon count level_${d.age}`})
                         .attr("href", function(d) {
                             return d.level > 0 ? `img/distancing_level_${d.level}.png` : "";
                         })
@@ -498,11 +547,11 @@ function node_init(param, node_data, loc) {
                         .attr("x", function(d) {
                             return param["canvas_width"] *
                                 (d3.select(this.parentElement).datum().x +
-                                    (d.age * 0.1)) + 52;
+                                    (d.age * 0.1)) + 56;
                         })
                         .attr("y", function() {
                             return param["canvas_height"] *
-                                (d3.select(this.parentElement).datum().y + 0.17) - 22;
+                                (d3.select(this.parentElement).datum().y + 0.17) - 28;
                         });
                     enter.append("image")
                         .attr("class", function (d) {return `board_icon human age_${d.age}`})
@@ -527,8 +576,9 @@ function node_init(param, node_data, loc) {
                             d3.select(this).attr("href", `img/distancing_age_${d.age}.png`);
                         })
                         .on("click", function(d, i, p) {
-                            if (d.level < 3) d++;
+                            if (d.level < 3) d.level++;
                             else d.level = 0;
+                            update_people();
                         });
                 }
             )
@@ -886,16 +936,7 @@ function resume_simulation () {
     budget = new_budget;
     budget_output.val(new_budget);
     w.postMessage({type: "RESUME", data: {
-            age: {"0": age_0,
-                "10": age_0,
-                "20": age_20,
-                "30": age_20,
-                "40": age_20,
-                "50": age_20,
-                "60": age_60,
-                "70": age_60,
-                "80": age_60},
-            area: area,
+            area: age_policy_data,
             rate: line_rate,
             hospital_max: hospital_max,
             surface: surface,
@@ -1071,6 +1112,7 @@ function weekly_report() {
     }
 
     d3.select("#sim_container").selectAll("g.board").style("display", "block");
+    d3.select("g.board image.board_icon").style("display", "none");
 
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
@@ -1214,6 +1256,7 @@ function weekly_report() {
             }
             this.parentElement.classList.toggle("active");
         }
+        update_weekly_output();
     });
 
 }
