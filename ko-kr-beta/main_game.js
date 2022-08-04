@@ -1,6 +1,6 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
-const REQUEST_ID = "http://unist-safelab.ddns.net";
+const REQUEST_ID = "http://uni-safelab.ddns.net:28421";
 var ONLINE = true;
 
 var run, chart_data, running_time, chart_param;
@@ -25,7 +25,6 @@ var age_policy_data = [
 ];
 
 
-
 function update_people () {
     age_policy_data.forEach(area => {
         d3.select(`g.board.${area.pos.replace(" ", ".")}`)
@@ -36,6 +35,8 @@ function update_people () {
 }
 
 function update_weekly_output () {
+    $("output.budget_now").val(budget);
+
     let target = $("g.board.enabled.active").length === 0 ?
         [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}] :
         age_policy_data.find(area => d3.select("g.board.active").classed(area.pos)).data;
