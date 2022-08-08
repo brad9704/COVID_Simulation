@@ -1,6 +1,6 @@
 /*ver.2022.03.15.01*/
 // noinspection HttpUrlsUsage
-const REQUEST_ID = "http://uni-safelab.ddns.net:28421";
+const REQUEST_ID = "https://chickenberry.ddns.net:8192/FTC";
 var ONLINE = true;
 
 var run, chart_data, running_time, chart_param;
@@ -220,6 +220,7 @@ w.onerror = function(event) {
 }
 
 function initSim(param, initial_node_data, loc) {
+    sendRequest("getSchoolList").then(res => console.log(res));
     turn_end = true;
     d3.selectAll("div.panel_button svg").attr("onclick","reset_simulation();");
     d3.selectAll("#board > div > svg").remove()
@@ -1311,21 +1312,16 @@ async function sendRequest(action, arg) {
     switch (action) {
         case "getSchoolList":
             request.method = "GET";
-            url = REQUEST_ID + "api/";
+            url = REQUEST_ID + "/api/list";
             break;
         case "getSchoolInfo":
             request.method = "GET";
-            url = REQUEST_ID + "api/" + arg["school"];
-            break;
-        case "getVirusInfo":
-            request.method = "GET";
-            url = REQUEST_ID + "api/" + arg["school"];
+            url = REQUEST_ID + "/api/list?school=" + arg["school"];
             break;
         case "postVirusInfo":
             request.method = "POST";
-            request.headers = {"Content-Type": "application/json"};
             request.body = JSON.stringify(arg["body"]);
-            url = REQUEST_ID + "api/" + arg["school"];
+            url = REQUEST_ID + "/api/score?school=" + arg["school"];
             break;
     }
     const response = await fetch(url, request);
