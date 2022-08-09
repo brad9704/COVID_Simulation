@@ -222,6 +222,11 @@ div.panel_output.budget {
 #popup_result .popInnerBox {
     height: 800px;
 }
+
+#popup_result div.popBody {
+    position: absolute;
+}
+
 #popup_result .popBody .popChart {
     border: 1px solid black;
     border-radius: 5px;
@@ -856,8 +861,11 @@ input.policy.rate {
 }
 img.policy.bed {
     position: absolute;
-    top: 282px;
+    top: 255px;
     left: 435px;
+}
+img.policy.bed.dec {
+    top: 305px;
 }
 img.policy.bed:hover {
     transform-origin: -12.5% -12.5%;
@@ -1259,4 +1267,31 @@ g.board.enabled image.board_icon {
 }
 g.board:not(.enabled) image.board_icon {
     display: none;
+}
+
+div.weekly.beds {
+    position: absolute;
+    top: 276px;
+    left: 76px;
+    width: 336px;
+    height: 42px;
+    color: white;
+    align-content: center;
+}
+div.weekly.bed {
+    width: 134px;
+    height: 44px;
+    line-height: 44px;
+    top: 0;
+    position: absolute;
+    text-align: center;
+}
+div.weekly.bed.cost {
+    left: 210px;
+}
+
+svg > text {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }

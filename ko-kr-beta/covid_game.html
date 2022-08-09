@@ -160,7 +160,12 @@
                             <img alt="" class="rescale" src="img/weekly_report_desc_popup2.png">
                         </div>
                         <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5" onchange="toggle_week();">
-                        <img alt="" src="img/button_increase.png" class="policy bed rescale" onchange="toggle_week();">
+                        <div class="weekly beds">
+                            <div class="weekly bed plan"><output class="weekly bed plan">0</output>개</div>
+                            <div class="weekly bed cost">$<output class="weekly bed cost">0</output></div>
+                        </div>
+                        <img alt="" src="img/button_increase.png" class="policy bed rescale inc" onclick="bed_change(1);">
+                        <img alt="" src="img/button_decrease.png" class="policy bed rescale dec" onclick="bed_change(-1);">
                         <svg class="weekly area lines">
                             <line class="weekly border visible" x1="0" y1="125" x2="292" y2="125"/>
                             <line class="weekly border visible" x1="146" y1="0" x2="146" y2="245"/>
