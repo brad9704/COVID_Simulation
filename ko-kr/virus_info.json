@@ -1,14 +1,5 @@
 {
 	"data": [{
-		"name": "Attack",
-		"stat": {
-			"stat1": 0,
-			"stat2": 0,
-			"stat3": 0,
-			"stat4": 0
-			}
-		},
-		{
 		"name": "COVID-19",
 		"stat": {
 				"stat1": 4,
@@ -23,7 +14,7 @@
 				"stat1": 4,
 				"stat2": 9,
 				"stat3": 37,
-				"stat4": 1
+				"stat4": 14
 			}
 		},
 		{
@@ -32,7 +23,7 @@
 				"stat1": 4,
 				"stat2": 9,
 				"stat3": 180,
-				"stat4": -4
+				"stat4": -38
 			}
 		},
 		{
@@ -41,7 +32,7 @@
 				"stat1": 0,
 				"stat2": 7,
 				"stat3": 4,
-				"stat4": 20
+				"stat4": 200
 			}
 		},
 		{
@@ -50,7 +41,7 @@
 				"stat1": 4,
 				"stat2": 5,
 				"stat3": 52,
-				"stat4": -5
+				"stat4": -50
 			}
 		}
 	]

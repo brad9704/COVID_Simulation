@@ -46,8 +46,13 @@ body {
     background-color: black;
 }
 
+.rescale {
+    transform: scale(0.5);
+    transform-origin: top left;
+}
+
 div.controls{
-    background-image: url("../img/시작화면 - 배경.png");
+    background-image: url("../img/init_back.png");
     background-repeat: no-repeat;
     padding: 0;
     justify-content:space-between;
@@ -137,7 +142,7 @@ div.controls > div.control > img {
 }
 div.panel_footer {
     position: absolute;
-    background-image: url("../img/메인 - 하단 패널.png");
+    background-image: url("../img/main_bottom_panel.png");
     background-repeat: no-repeat;
     top: 760px;
     left: 345px;
@@ -217,6 +222,11 @@ div.panel_output.budget {
 #popup_result .popInnerBox {
     height: 800px;
 }
+
+#popup_result div.popBody {
+    position: absolute;
+}
+
 #popup_result .popBody .popChart {
     border: 1px solid black;
     border-radius: 5px;
@@ -244,6 +254,7 @@ div.panel_output.budget {
 #popup_result div.popBody table.result td.star {
     color: black;
     font-size: 40px;
+    display: none;
 }
 div.panel_policy_result {
     font-size: 40px;
@@ -287,14 +298,28 @@ svg.result.legend {
     width: 883px;
     height: 620px;
 }
+#sim_board rect.board {
+    stroke: rgba(0,0,0,0);
+    stroke-width: 5px;
+}
+#sim_board g.board.enabled:not(.active) rect.board:hover {
+    stroke: rgba(255,236,56,0.5);
+}
+#sim_board g.board.enabled.active rect.board {
+    stroke: rgba(255,236,56,1);
+}
+#sim_board g.board.enabled.active rect.board:hover {
+    stroke: rgba(255,255,255,1);
+}
+
 #sim_container {
     position: absolute;
-    margin: 60px 40px 25px 7px;
+    margin: 60px 6px 6px 5px;
+    overflow: visible;
 }
 #sim_container circle {
     stroke: none;
 }
-
 #sim_container circle.node.R2 {
     opacity: 0.2;
 }
@@ -551,14 +576,14 @@ div.daily.num.R2 {
 
 div.graph {
     position: absolute;
-    background-image: url("../img/메인 - 그래프 패널.png");
+    background-image: url("../img/main_graph_panel.png");
     left: 1150px;
     top: 458px;
     width: 573px;
     height: 232px;
     color: black;
 }
-div.graph g.Xaxis, g.Yaxis path {
+div.graph g.Xaxis, g.Yaxis, g.Zaxis path {
     stroke-width: 2;
 }
 div.graph g.tick text {
@@ -569,8 +594,17 @@ div.graph g.tick text {
     display: none;
 }
 
+#popup_weekly {
+    width: unset;
+    height: unset;
+}
+
 #popup_weekly .popInnerBox {
     height: auto;
+    position: absolute;
+    left: 1090px;
+    top: -10px;
+    width: 614px;
 }
 
 #popup_weekly .popHead {
@@ -584,53 +618,50 @@ div.graph g.tick text {
 }
 
 input.weekly.tab.switch {
-    margin-right: 64px;
-    width: 110px;
-    height: 50px;
-    border: none;
+    position: absolute;
+    width: 165px;
+    height: 53px;
     background-color: rgba(0,0,0,0);
+    color: white;
+    font-family: ONEMobilePOPRegular, sans-serif;
+    font-size: 110%;
+    text-align: center;
+    text-indent: 35px;
 }
+
+input.weekly.tab.switch[active=true] {
+    color: yellow;
+}
+
 input.weekly.tab.switch:hover {
-    border: 1px solid white;
-    border-radius: 5px;
+    color: yellow;
+    font-size: 120%;
 }
 
-.weekly.tab.age {
-    transform: translate(-1.5px,0);
-}
-.weekly.tab.area {
-    transform: translate(1.5px,0);
-}
-
-input.weekly.tab.switch.overall {
-    width: 100px;
-    transform: translate(6px,0);
-}
 input.weekly.tab.switch.age {
-    width: 109px;
-    transform: translate(16px,0);
+    text-indent: 40px;
+    left: 180px;
 }
 input.weekly.tab.switch.area {
-    transform: translate(29px,0);
-    width: 65px;
+    left: 360px;
 }
 
 div.weekly.switch.tabs {
     position: absolute;
-    top: 121px;
-    left: 515px;
+    top: 151px;
+    left: 91px;
 }
 
 div.weekly.tab.content img {
     position: absolute;
 }
 img.weekly.tab.back {
-    top: 138px;
-    left: 150px;
+    top: 210px;
+    left: 95px;
 }
 
 #popup_weekly .popBody {
-    font-size: 20px;
+    font-size: 16px;
     text-align: left;
     height: auto;
 }
@@ -647,32 +678,35 @@ img.weekly.tab.back {
 div.weekly.tab.content {
     position: absolute;
     top: 200px;
+    left: 90px;
 
 }
 
 div.weekly_status {
-    width: 1020px;
+    width: 520px;
     height: 240px;
 }
 
 div.weekly_status div.weekly.date {
     position: absolute;
     color: white;
-    left: 126px;
+    top: 8px;
+    left: 105px;
 }
 
 div.weekly_status table {
     color: #2e2886;
     position: absolute;
     text-align: center;
+    width: 425px;
     top: 76px;
-    left: 283px;
+    left: 90px;
     font-size: 80%;
     border-spacing: 0 1px;
 }
 div.weekly_status table tr td {
-    width: 163px;
-    height: 39px;
+    width: 36px;
+    height: 40px;
 }
 td.weekly.warning {
     background-repeat: no-repeat;
@@ -680,17 +714,17 @@ td.weekly.warning {
     background-size: 40%;
 }
 td.weekly.warning[data-value="0"] {
-    background-image: url("../img/정상.png");
+    background-image: url("../img/good.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
 td.weekly.warning[data-value="1"] {
-    background-image: url("../img/wr_2_warning.svg");
+    background-image: url("../img/caution.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
 td.weekly.warning[data-value="2"] {
-    background-image: url("../img/위험.png");
+    background-image: url("../img/bad.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
@@ -705,8 +739,8 @@ div.weekly_status p {
 div.weekly_board {
     position: absolute;
     top: 260px;
-    left: 100px;
-    width: 790px;
+    left: -20px;
+    width: 545px;
     height: 185px;
 }
 
@@ -719,25 +753,26 @@ div.weekly_board > svg > g > g.yAxis text,g.zAxis text {
     font-family: ONEMobilePOPRegular, sans-serif;
 }
 
-div.weekly_board > svg > g > g.yAxis line,g.zAxis line {
+div.weekly_board > svg > g > g.yAxis line, g.zAxis line, g.zAxis path {
     color: #f33e66;
+    stroke-width: 2;
 }
 
 
 div.weekly.infectious {
     color: #2e2886;
     position: absolute;
-    top: 164px;
-    right: 420px;
-    width: 300px;
+    top: 168px;
+    right: 161px;
+    width: 260px;
     text-align: center;
 }
 div.weekly.death {
     color: #2e2886;
     position: absolute;
-    top: 164px;
-    right: 90px;
-    width: 300px;
+    top: 168px;
+    right: 8px;
+    width: 140px;
     text-align: center;
 }
 
@@ -820,21 +855,29 @@ div.weekly.tab.content.area {
 }
 input.policy.rate {
     position: absolute;
-    top: 122px;
-    left: 307px;
-    width: 258px;
+    top: 28px;
+    left: 161px;
+    width: 256px;
 }
-input.policy.bed {
+img.policy.bed {
     position: absolute;
-    top: 369px;
-    left: 307px;
-    width: 258px;
+    top: 255px;
+    left: 435px;
 }
+img.policy.bed.dec {
+    top: 305px;
+}
+img.policy.bed:hover {
+    transform-origin: -12.5% -12.5%;
+    transform: scale(0.6);
+    cursor: pointer;
+}
+
 div.weekly.area.budget{
     position: absolute;
-    top: 368px;
-    left: 728px;
-    width: 313px;
+    top: 397px;
+    left: 272px;
+    width: 90px;
     height: 45px;
     text-align: center;
     color: white;
@@ -860,10 +903,10 @@ div.weekly.budget.update p {
 }
 svg.weekly.area.lines {
     position: absolute;
-    width: 296px;
-    height: 250px;
-    left: 638px;
-    top: 0;
+    width: 870px;
+    height: 557px;
+    left: -975px;
+    top: -80px;
     transform: translateY(-20px);
 }
 line.weekly.border.invisible[data-click="0"] {
@@ -872,9 +915,21 @@ line.weekly.border.invisible[data-click="0"] {
     stroke-width: 10px;
     cursor: pointer;
 }
-line.weekly.border.invisible[data-click="1"] {
-    stroke: black;
+line.weekly.border.invisible[data-click="0"]:hover {
+    stroke: yellow;
     opacity: 50%;
+    stroke-width: 10px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"] {
+    stroke: red;
+    opacity: 50%;
+    stroke-width: 5px;
+    cursor: pointer;
+}
+line.weekly.border.invisible[data-click="1"]:hover {
+    stroke: yellow;
+    opacity: 25%;
     stroke-width: 10px;
     cursor: pointer;
 }
@@ -893,14 +948,13 @@ line.weekly.border.visible {
 }
 
 #button_resume {
-    transform: translateY(-15px);
     border: none;
     background-color: rgba(0,0,0,0);
-    border-radius: 5px;
-    width: 170px;
-    height: 68px;
+    border-radius: 0px;
+    width: 333px;
+    top: 124px;
     position: absolute;
-    left: 454px;
+    left: 285px;
     cursor: pointer;
 }
 #button_resume:hover {
@@ -984,6 +1038,8 @@ table.stat {
     position: absolute;
     top: 60px;
     left: 69px;
+    table-layout: fixed;
+    width: 167px;
 }
 table.stat td {
     height: 22px;
@@ -1003,7 +1059,8 @@ table.stat td.stat.block {
 }
 table.stat td.stat.value {
     text-align: center;
-    width: 33px;
+    width: 35px;
+    overflow: visible;
 }
 table.stat input {
     cursor: pointer;
@@ -1043,7 +1100,7 @@ div.stat.description img.close_btn {
     position: absolute;
     top: 20px;
     right: 30px;
-    cursor: pointer;
+    cursor: pointer; 
 }
 
 div.popBody.node {
@@ -1056,10 +1113,185 @@ div.popBody.node {
     font-size: 18px;
     transform: translate(-126px, 7px);
 }
+
 #popup_node div.popBg {
     background:rgba(0,0,0,0);
 }
 
 g.nodes {
     z-index: 0;
+}
+
+#popupInnerPopup div.popBody {
+    position: absolute;
+    left: 365px;
+    top: 300px;
+    height: auto;
+}
+img.innerPopup {
+    position: absolute;
+    left: 0;
+}
+img.innerPopup.resume {
+    top: 277px;
+    left: 150px;
+}
+img.innerPopup.resume:hover {
+    filter: brightness(150%);
+    cursor: pointer;
+}
+
+#popupDescPopup {
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    top: unset;
+    left: unset;
+}
+
+#popupDescPopup div.popInnerBox {
+    width: fit-content;
+    height: fit-content;
+    top: 0;
+    left: 0;
+}
+#popupDescPopup img.descPopup {
+    filter: drop-shadow(0px 0px 2px #a0a0a0);
+}
+
+#popupDescPopup table {
+    position: absolute;
+    color: white;
+    width: 527px;
+    height: 68px;
+    top: 83px;
+    left: 20px;
+    border-collapse: collapse;
+}
+#popupDescPopup td.descPopup {
+    border-left: 1px solid white;
+    width: 48px;
+}
+#popupDescPopup td.descPopup.age {
+    border-bottom: 1px solid white;
+    font-size: 115%;
+}
+#popupDescPopup td.descPopup.label {
+    color: #fcda9b;
+    font-size: 115%;
+    border-radius: 5px;
+    border-left: none;
+}
+
+div.weekly.desc {
+    width: 153px;
+    height: 30px;
+    position: absolute;
+}
+
+
+div.weekly.age.desc {
+    top: -30px;
+    left: -34px;
+}
+div.weekly.area.desc {
+    top: -29px;
+    left: -37px;
+    width: 123px;
+}
+
+div.weekly.age.desc img {
+    display: none;
+}
+div.weekly.age.desc:hover img {
+    display: block;
+    top: -120px;
+    left: -500px;
+}
+div.weekly.area.desc img {
+    display: none;
+}
+div.weekly.area.desc:hover img {
+    display: block;
+    top: -120px;
+    left: -500px;
+}
+#popup_weekly img.clickHere{
+    position: absolute;
+    top: 464px;
+    left: -361px;
+    background-color: rgba(30,30,30,0.5);
+    border-radius: 30px;
+    transform: scale(0.4);
+}
+div.weekly.age.policy {
+    width: 103px;
+    height: 23px;
+    line-height: 23px;
+    position: absolute;
+    top: 283px;
+    text-align: center;
+    vert-align: middle;
+    font-size: 90%;
+}
+div.weekly.age.policy label.stage {
+    color: #f33e66;
+}
+
+div.weekly.age.policy.child {
+    left: 23px;
+}
+div.weekly.age.policy.adult {
+    left: 170px;
+}
+div.weekly.age.policy.elder {
+    left: 319px;
+}
+table.weekly.age.occurrence {
+    position: absolute;
+    border-collapse: collapse;
+    top: 365px;
+    left: 59px;
+    width: 406px;
+    height: 78px;
+}
+table.weekly.age.occurrence td {
+    color: white;
+    font-size: 100%;
+    height: 26px;
+    padding: 0;
+    line-height: 26px;
+}
+g.board.enabled image.board_icon {
+    display: block;
+}
+g.board:not(.enabled) image.board_icon {
+    display: none;
+}
+
+div.weekly.beds {
+    position: absolute;
+    top: 276px;
+    left: 76px;
+    width: 336px;
+    height: 42px;
+    color: white;
+    align-content: center;
+}
+div.weekly.bed {
+    width: 134px;
+    height: 44px;
+    line-height: 44px;
+    top: 0;
+    position: absolute;
+    text-align: center;
+}
+div.weekly.bed.cost {
+    left: 210px;
+}
+
+svg > text {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }

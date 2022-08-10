@@ -1,9 +1,9 @@
 /*ver.2022.03.15.01*/
+// noinspection HttpUrlsUsage
+const REQUEST_ID = "https://chickenberry.ddns.net:8192/FTC";
+var ONLINE = true;
+
 var run, chart_data, running_time, chart_param;
-var collision_statistics = {
-    "Not infected": 0,
-    "Infected": 0
-}
 var stat = {
     total: 25,
     stat1: 0,
@@ -16,22 +16,82 @@ var area = {
     upper_right: 0,
     lower_left: 0,
     lower_right: 0
-}
+};
+var age_policy_data = [
+    {pos: "upper left", x: 0, y: 0, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
+    {pos: "upper right", x: 0.5, y: 0, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
+    {pos: "lower left", x: 0, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
+    {pos: "lower right", x: 0.5, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]}
+];
+
+
+
 var budget = 0;
 var clicker = 0;
-var init_param;
 var turn_end = true;
 var chart = 0;
 var running_speed = 1;
 var tick = 1000 / 60;
-var w;
+var w; 
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
+
+function getVirus(virusInfo) {
+    d3.select("select.virus.selection").selectAll("option")
+        .data(virusInfo.data)
+        .enter()
+        .append("option")
+        .attr("value",function(e) {return e.name;})
+        .text(function(e) {if (e.name === "Attack") {return e.name;} else {return "Defense: " + e.name;}});
+    selectVirus(virusInfo.data[0].name, virusInfo);
+    $("#popup_init").fadeIn();
+}
+function selectVirus (name, virusInfo) {
+    let stat = virusInfo.data.find(virus => virus.name === name)["stat"];
+    ["stat1","stat2","stat3","stat4"].forEach(() => {
+        reset_stat();
+    });
+    ["stat1","stat2","stat3","stat4"].forEach(e => {
+        if (stat[e] > 0) {
+            for (let i = 0; i < stat[e]; i++) {
+                change_stat(e, 1, true);
+            }
+        } else {
+            for (let i = stat[e]; i < 0; i++) {
+                change_stat(e, -1, true);
+            }
+        }
+    });
+    if (name === "Attack") {
+        role = "Attack";
+        reset_stat();
+        $("input.virus.name").attr("disabled",null).val("Click here for name");
+        $("input.stat").attr("disabled",null).css("cursor", "pointer");
+        d3.selectAll("input.stat").style("color","rgba(0,0,0,0)").style("background","none");
+    } else {
+        role = "Defense";
+        $("text.virus.name").text(name);
+        $("input.virus.name").val(name).attr("disabled", "true");
+        $("input.stat").attr("disabled","true").css("cursor", "default");
+        d3.selectAll("input.stat").style("color","#ffe349").style("background-color","#ffe349");
+    }
+}
+
+function prob_calc(params) {
+    let age_inf = 0, age_sev = 0, pop_total = 0;
+    for (const age in params["age_severe"]) {
+        age_inf += params["age_dist"][age] * params["TPC_base"] * params["age_infect"][age];
+        age_sev += params["age_dist"][age] * params["age_severe"][age];
+        pop_total += params["age_dist"][age];
+    }
+    return [age_inf / pop_total, age_sev / pop_total];
+}
+
 /*
 Sets param values with retrieved data from input
  */
-function get_params() {
-    init_param = setting_response;
+function get_params(init) {
+    const init_param = JSON.parse(JSON.stringify(init));
     let param = {};
     for (const key in init_param) {
         if (key !== "duration") param[key] = init_param[key];
@@ -55,11 +115,8 @@ function get_params() {
     param["duration"]["I1-R1"][1] += Math.floor(stat.stat2 / 3);
     param["TPC_base"] += stat.stat3 * 0.003;
     for (const age in param["age_severe"]) {
-        param["age_severe"][age] += stat.stat4 * 0.02;
+        param["age_severe"][age] *= (1 + stat.stat4 * 0.02);
     }
-
-    param["sim_width"] = 870;
-    param["sim_height"] = 555;
 
     return param;
 }
@@ -98,7 +155,6 @@ w.onmessage = function(event) {
             weekly_report();
             break;
         case "CONSOLE_LOG":
-            collision_statistics[event.data.data] += 1;
             break;
         default:
             console.log("Worker message error: " + event.data.type);
@@ -110,6 +166,7 @@ w.onerror = function(event) {
 }
 
 function initSim(param, initial_node_data, loc) {
+    sendRequest("getSchoolList").then(res => console.log(res));
     turn_end = true;
     d3.selectAll("div.panel_button svg").attr("onclick","reset_simulation();");
     d3.selectAll("#board > div > svg").remove()
@@ -143,6 +200,7 @@ function updateSim(param, node_data, time) {
     $("#turn_day").text(turn);
     chart += running_speed;
     if (chart >= param.fps) {
+        updateTotalI2(node_data);
         let temp_data = {
             "tick": Math.round(time / param.fps),
             "GDP": node_data.filter(e => e.state !== state.I2 && e.state !== state.H1 && e.state !== state.H2 && e.state !== state.R2).reduce((prev, curr) => prev + curr.v * curr.income, 0) / 0.2 * 0.9,
@@ -202,51 +260,6 @@ function show_result(param) {
     $("#resultTime").text(last_state["tick"]);
     $("output.budget_total").text(final_budget);
 
-    let star_infection, star_death, star_GDP, star_budget;
-    if (last_state["S"][9] > 500) star_infection = 1;
-    else star_infection = 0;
-    if (last_state["R2"][9] < 70) star_death = 4;
-    else if (last_state["R2"][9] < 82) star_death = 3;
-    else if (last_state["R2"][9] < 94) star_death = 2;
-    else if (last_state["R2"][9] < 106) star_death = 1;
-    else star_death = 0;
-    if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.8) star_GDP = 3;
-    else if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.7) star_GDP = 2;
-    else if (chart_data.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data.length * chart_data[0].GDP) > 0.6) star_GDP = 1;
-    else star_GDP = 0;
-    star_budget = 0;
-
-    $("td.result.star.infection > output").text("★".repeat(star_infection) + "☆".repeat(1-star_infection));
-    $("td.result.star.death > output").text("★".repeat(star_death) + "☆".repeat(4-star_death));
-    $("td.result.star.GDP > output").text("★".repeat(star_GDP) + "☆".repeat(3-star_GDP));
-    $("td.result.star.budget > output").text("★".repeat(star_budget) + "☆".repeat(2-star_budget));
-    $("output.result.total.star").text(star_infection + star_death + star_GDP + star_budget);
-
-    var margin = {top:20, right: 150, bottom: 30, left: 50},
-        width = 700,
-        height = 150;
-    var x = d3.scaleLinear().range([0,width]),
-        y = d3.scaleLinear().range([height,0]),
-        z = d3.scaleLinear().range([height,0]);
-    var xAxis = d3.axisBottom().scale(x),
-        yAxis = d3.axisLeft().scale(y),
-        zAxis = d3.axisRight().scale(z);
-
-    var svg = d3.select("div.result.chart").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    svg.append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .attr("class", "Xaxis");
-    svg.append("g")
-        .attr("class", "Yaxis");
-    svg.append("g")
-        .attr("transform", "translate(" + width + ",0)")
-        .attr("class", "Zaxis")
-
     let chart_data_total = [];
     chart_data.forEach(data => {
         let temp_data = {};
@@ -259,23 +272,6 @@ function show_result(param) {
         }
         chart_data_total.push(temp_data);
     })
-    x.domain([0, d3.max(chart_data_total, function(d) {
-        return d["tick"];
-    })]);
-    svg.selectAll(".Xaxis")
-        .call(xAxis);
-
-    y.domain([0, param.node_num]);
-    svg.selectAll(".Yaxis")
-        .call(yAxis);
-
-    z.domain([d3.min(chart_data_total, function(d) {
-        return d["budget"];
-    }), d3.max(chart_data_total, function(d) {
-        return d["budget"];
-    })]);
-    svg.selectAll(".Zaxis")
-        .call(zAxis);
 
     let chart_data_ = chart_data_total.reduce((prev, curr) => {
         prev[0].data.push([curr.tick, curr.I1 + curr.I2 + curr.H1 + curr.H2]);
@@ -284,36 +280,6 @@ function show_result(param) {
         prev[3].data.push([curr.tick, curr.budget]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}, {type: "budget", data: [], color: "purple"}]);
-
-    var v = svg.selectAll(".line")
-        .data(chart_data_);
-    v.enter()
-        .append("path")
-        .attr("class", "line")
-        .merge(v)
-        .style("stroke", function(d) {return d.color;})
-        .style("fill", "none")
-        .style("stroke-width", 1.5)
-        .attr("d", function (e) {
-            if (e.type === "budget") {
-                return d3.line()
-                    .x(function (d) {
-                        return x(d[0]);
-                    })
-                    .y(function (d) {
-                        return z(d[1]);
-                    })
-                    .curve(d3.curveBasis)(e.data);
-            } else return d3.line()
-                .x(function (d) {
-                    return x(d[0]);
-                })
-                .y(function (d) {
-                    return y(d[1]);
-                })
-                .curve(d3.curveBasis)(e.data);
-        });
-
 
     $("#popup_result").fadeIn();
     $("#popup_result > #exit").on("click", function() {
@@ -332,10 +298,10 @@ function node_init(param, node_data, loc) {
 
     let sim_cont = sim_board.append("svg")
         .attr("id", "sim_container")
-        .attr("width", param.sim_width)
-        .attr("height", param.sim_height);
-    let xScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_width"]]),
-        yScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["sim_height"]]);
+        .attr("width", param["canvas_width"])
+        .attr("height", param["canvas_height"]);
+    let xScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["canvas_width"]]),
+        yScale = d3.scaleLinear().domain([0,param["sim_size"]]).range([0,param["canvas_height"]]);
 
 
     d3.xml("img/background.svg")
@@ -344,23 +310,20 @@ function node_init(param, node_data, loc) {
                 .attr("id", "sim_title")
                 .node().append(data.documentElement)
         });
-
-    sim_cont.append("rect")
-        .attr("width", param.sim_width / 2)
-        .attr("height", param.sim_height / 2)
-        .attr("x", 0)
-        .attr("y", 0)
-        .style("stroke", "none")
-        .style("fill", "#A0A0A0")
-        .style("opacity", "15%");
-    sim_cont.append("rect")
-        .attr("width", param.sim_width / 2)
-        .attr("height", param.sim_height / 2)
-        .attr("x", param.sim_width / 2)
-        .attr("y", param.sim_height / 2)
-        .style("stroke", "none")
-        .style("fill", "#A0A0A0")
-        .style("opacity", "15%");
+    sim_cont.selectAll("g.background_rect")
+        .data([
+            {pos: "upper left", x: 0, y: 0},
+            {pos: "upper right", x: 0.5, y: 0},
+            {pos: "lower left", x: 0, y: 0.5},
+            {pos: "lower right", x: 0.5, y: 0.5}])
+        .enter().append("g")
+        .attr("class", function(d) {return `background_rect ${d.pos}`})
+        .append("rect")
+        .attr("width", param["canvas_width"] / 2)
+        .attr("height", param["canvas_height"] / 2)
+        .attr("x", function(d) {return (param["canvas_width"] * d.x)})
+        .attr("y", function(d) {return (param["canvas_height"] * d.y)})
+        .style("fill", function(d) {return (d.x + d.y) === 0.5 ? "rgba(160,160,160,0)" : "rgba(255,255,255,0.15)"});
 
     sim_cont.append("g")
         .attr("id", "nodes")
@@ -377,8 +340,10 @@ function node_init(param, node_data, loc) {
         .attr("r", param["size"])
         .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
         .on("mouseenter", function(d) {
-            d3.select("#node_" + d.index).attr("r", param.size * 3);
-            d3.select("#node_" + d.index).classed("hovered", true);
+            if (run !== null) {
+                d3.select("#node_" + d.index).attr("r", param.size * 3);
+                d3.select("#node_" + d.index).classed("hovered", true);
+            }
         })
         .on("mouseleave", function(d) {
             if (run !== null) d3.select("#node_" + d.index).attr("r", param.size).classed("hovered", false);
@@ -411,26 +376,78 @@ function node_init(param, node_data, loc) {
             run = null;
         });
 
-    sim_cont.selectAll("rect")
-        .data(loc.list)
-        .enter().append("rect")
-        .attr("class", "locations")
-        .attr("id", d => "loc_" + d.name)
-        .attr("x", d => d.x)
-        .attr("y", d => d.y)
-        .attr("width", d => d.width)
-        .attr("height", d => d.height)
-        .style("stroke", "rgb(0,0,0)")
-        .style("stroke-width", 1)
-        .style("fill", "none");
+    (function createAreaRect () {
+        let g = d3.select("#sim_container").selectAll("g.board")
+            .data(age_policy_data)
+            .enter().append("g")
+            .attr("class", function(d) {return `board ${d.pos}`})
+            .style("display", "none");
+        g.append("rect")
+            .attr("width", param["canvas_width"] / 2)
+            .attr("height", param["canvas_height"] / 2)
+            .attr("x", function(d) {return (param["canvas_width"] * d.x)})
+            .attr("y", function(d) {return (param["canvas_height"] * d.y)})
+            .attr("class", function(d) {return `board ${d.pos} inactive`})
+            .style("fill", "rgba(0,0,0,0)");
+        g.selectAll("image")
+            .data(e => e.data)
+            .join(
+                enter => {
+                    enter.append("image")
+                        .attr("class", function (d) {return `board_icon count level_${d.age}`})
+                        .attr("href", function(d) {
+                            return d.level > 0 ? `img/distancing_level_${d.level}.png` : "";
+                        })
+                        .attr("width", 38)
+                        .attr("height", 38)
+                        .attr("x", function(d) {
+                            return param["canvas_width"] *
+                                (d3.select(this.parentElement).datum().x +
+                                    (d.age * 0.1)) + 56;
+                        })
+                        .attr("y", function() {
+                            return param["canvas_height"] *
+                                (d3.select(this.parentElement).datum().y + 0.17) - 28;
+                        });
+                    enter.append("image")
+                        .attr("class", function (d) {return `board_icon human age_${d.age}`})
+                        .attr("href", function (d) {
+                            return `img/distancing_age_${d.age}.png`;
+                        })
+                        .attr("width", 75)
+                        .attr("height", 75)
+                        .attr("x", function(d) {
+                            return param["canvas_width"] *
+                                (d3.select(this.parentElement).datum().x +
+                                (d.age * 0.1));
+                        })
+                        .attr("y", function() {
+                            return param["canvas_height"] *
+                                (d3.select(this.parentElement).datum().y + 0.17);
+                        })
+                        .on("mouseover", function(d) {
+                            d3.select(this).attr("href", `img/distancing_age_${d.age}_hover.png`);
+                        })
+                        .on("mouseout", function(d) {
+                            d3.select(this).attr("href", `img/distancing_age_${d.age}.png`);
+                        })
+                        .on("click", function(d, i, p) {
+                            if (d.level < 3) d.level++;
+                            else d.level = 0;
+                            update_people();
+                        });
+                }
+            )
+
+    }) ();
 
     let line_rate = parseFloat($("input.policy.rate").val());
 
     sim_cont.selectAll("line.svg_line")
-        .data([{name: "upper", x1: param.sim_width / 2, y1: param.sim_height * (1 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (1 + line_rate) / 4},
-            {name: "lower", x1: param.sim_width / 2, y1: param.sim_height * (3 - line_rate) / 4, x2: param.sim_width / 2, y2: param.sim_height * (3 + line_rate) / 4},
-            {name: "left", x1: param.sim_width * (1 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (1 + line_rate) / 4, y2: param.sim_height / 2},
-            {name: "right", x1: param.sim_width * (3 - line_rate) / 4, y1: param.sim_height / 2, x2: param.sim_width * (3 + line_rate) / 4, y2: param.sim_height / 2}])
+        .data([{name: "upper", x1: param["canvas_width"] / 2, y1: param["canvas_height"] * (1 - line_rate) / 4, x2: param["canvas_width"] / 2, y2: param["canvas_height"] * (1 + line_rate) / 4},
+            {name: "lower", x1: param["canvas_width"] / 2, y1: param["canvas_height"] * (3 - line_rate) / 4, x2: param["canvas_width"] / 2, y2: param["canvas_height"] * (3 + line_rate) / 4},
+            {name: "left", x1: param["canvas_width"] * (1 - line_rate) / 4, y1: param["canvas_height"] / 2, x2: param["canvas_width"] * (1 + line_rate) / 4, y2: param["canvas_height"] / 2},
+            {name: "right", x1: param["canvas_width"] * (3 - line_rate) / 4, y1: param["canvas_height"] / 2, x2: param["canvas_width"] * (3 + line_rate) / 4, y2: param["canvas_height"] / 2}])
         .enter()
         .append("line")
         .attr("class", function(d) {return "sim_board svg_line " + d.name;})
@@ -439,7 +456,7 @@ function node_init(param, node_data, loc) {
         .attr("x2", function(d) {return d.x2;})
         .attr("y2", function(d) {return d.y2;})
         .style("stroke", "#C00000")
-        .style("stroke-width", 1)
+        .style("stroke-width", 3)
         .style("opacity", "0");
 
 }
@@ -447,10 +464,10 @@ function node_init(param, node_data, loc) {
 function node_update(param, node_data) {
     let xScale = d3.scaleLinear()
             .domain([0,param["sim_size"]])
-            .range([0,param["sim_width"]]),
+            .range([0,param["canvas_width"]]),
         yScale = d3.scaleLinear()
             .domain([0,param["sim_size"]])
-            .range([0,param["sim_height"]]);
+            .range([0,param["canvas_height"]]);
 
     d3.select(".nodes")
         .selectAll("circle")
@@ -466,8 +483,10 @@ function node_update(param, node_data) {
                 .attr("r", param["size"])
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state)
                 .on("mouseover", function(d) {
-                    d3.select("#node_" + d.index).attr("r", param.size * 3);
-                    d3.select("#node_" + d.index).lower();
+                    if (run !== null) {
+                        d3.select("#node_" + d.index).attr("r", param.size * 3);
+                        d3.select("#node_" + d.index).lower();
+                    }
                 })
                 .on("mouseleave", function(d) {
                     if (run !== null) d3.select("#node_" + d.index).attr("r", param.size);
@@ -599,8 +618,8 @@ function chart_update(param, chart_param, chart_data) {
     $(".death_now").val(now.R2-last.R2);
     $(".death_total").val(now.R2);
     $(".GDP_now").val(Math.round(now.GDP).toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 10000) / 100);
-    $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 10000) / 100);
+    $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 1000) / 10);
+    $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 1000) / 10);
 
     x1.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
@@ -672,12 +691,14 @@ function chart_update(param, chart_param, chart_data) {
 
 function start_simulation() {
     chart_data = [];
+    $("output.weekly_week").val(0);
+    $("#turn_day").val(0);
     $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     $("output.budget_now").val(0);
     budget = 0;
-    let param = get_params();
+    let param = get_params(initParams);
     w.param = param;
     w.postMessage({type: "START", main: param, budget: 0});
 }
@@ -689,9 +710,10 @@ function stop_simulation() {
 }
 function reset_simulation() {
     stop_simulation();
-    d3.selectAll("#board > div > svg").remove()
+    d3.selectAll("#board > div > svg").remove();
+    $("#sim_title").remove();
     chart_data = [];
-    w.param = get_params();
+    w.param = get_params(initParams);
     $("line.weekly.border.invisible").attr("data-click", "0");
     $("input.policy.rate").val("0.5");
     $("input.policy.bed").val("10");
@@ -735,7 +757,7 @@ function resume_simulation () {
         age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
         age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
         line_rate = parseFloat($("input.policy.rate").val()),
-        hospital_max = parseInt($("input.policy.bed").val()),
+        hospital_max = parseInt($("output.weekly.bed.plan").val()),
         budget_output = $("output.budget_now"),
         surface = {
             "upper": $("line.weekly.border.invisible.upper").attr("data-click"),
@@ -745,10 +767,10 @@ function resume_simulation () {
         };
     let new_budget = budget - 10000 * (hospital_max - w.param.hospital_max);
     d3.selectAll("line.sim_board.svg_line")
-        .data([{name: "upper", x1: w.param.sim_width / 2, y1: w.param.sim_height * (1 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (1 + line_rate) / 4},
-            {name: "lower", x1: w.param.sim_width / 2, y1: w.param.sim_height * (3 - line_rate) / 4, x2: w.param.sim_width / 2, y2: w.param.sim_height * (3 + line_rate) / 4},
-            {name: "left", x1: w.param.sim_width * (1 - line_rate) / 4, y1: w.param.sim_height / 2, x2: w.param.sim_width * (1 + line_rate) / 4, y2: w.param.sim_height / 2},
-            {name: "right", x1: w.param.sim_width * (3 - line_rate) / 4, y1: w.param.sim_height / 2, x2: w.param.sim_width * (3 + line_rate) / 4, y2: w.param.sim_height / 2}])
+        .data([{name: "upper", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (1 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (1 + line_rate) / 4},
+            {name: "lower", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (3 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (3 + line_rate) / 4},
+            {name: "left", x1: w.param["canvas_width"] * (1 - line_rate) / 4, y1: w.param["canvas_height"] / 2, x2: w.param["canvas_width"] * (1 + line_rate) / 4, y2: w.param["canvas_height"] / 2},
+            {name: "right", x1: w.param["canvas_width"] * (3 - line_rate) / 4, y1: w.param["canvas_height"] / 2, x2: w.param["canvas_width"] * (3 + line_rate) / 4, y2: w.param["canvas_height"] / 2}])
         .join(enter => enter, update => update
             .attr("class", function(d) {return "sim_board svg_line " + d.name;})
             .attr("x1", function(d) {return d.x1;})
@@ -763,21 +785,14 @@ function resume_simulation () {
             } else return "0";
     });
     if (new_budget < 0) {
+        triggerInnerPopup("budget.over");
         return -1;
     }
+    d3.selectAll("#sim_container g.board").style("display", "none");
     budget = new_budget;
     budget_output.val(new_budget);
     w.postMessage({type: "RESUME", data: {
-            age: {"0": age_0,
-                "10": age_0,
-                "20": age_20,
-                "30": age_20,
-                "40": age_20,
-                "50": age_20,
-                "60": age_60,
-                "70": age_60,
-                "80": age_60},
-            area: area,
+            area: age_policy_data,
             rate: line_rate,
             hospital_max: hospital_max,
             surface: surface,
@@ -787,6 +802,7 @@ function resume_simulation () {
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
     $("#popup_weekly").fadeOut();
     d3.selectAll("g.nodes > circle").attr("r", w.param.size).classed("hovered",false);
+    $("#sim_container rect.board").off("click");
     run = setInterval(() => {
         if (receive) {
             w.postMessage({type: "REPORT", data: running_speed});
@@ -872,13 +888,14 @@ function change_stat(stat_index, direction, FLAG_IGNORE=false) {
 
     $("output.stat.value." + stat_index).text(stat[stat_index]);
     $("output.stat.value.total").text(stat["total"]);
-    let param = get_params();
+    let param = get_params(initParams);
+    let stat_res = prob_calc(param);
 
     $("output.daily.legend.duration.E2-I1").text(param["duration"]["E2-I1"][0]+"-"+param["duration"]["E2-I1"][1]);
     $("output.daily.legend.duration.I1-I2").text(param["duration"]["I1-I2"][0]+"-"+param["duration"]["I1-I2"][1]);
     $("output.daily.legend.duration.I1-R1").text(param["duration"]["I1-R1"][0]);
-    $("output.daily.legend.rate.infectious").text((Math.round((0.01 + stat.stat3 * 0.003) * 100 * 24) / 100).toFixed(2));
-    $("output.daily.legend.rate.severity").text(Math.round((0.10 + stat.stat4 * 0.02) * 100) + "%");
+    $("output.daily.legend.rate.infectious").text((Math.round(stat_res[0] * 100) / 100).toFixed(2));
+    $("output.daily.legend.rate.severity").text(Math.round(stat_res[1] * 100) + "%");
 }
 
 function toggle_area(pos_x, pos_y, dir) {
@@ -894,6 +911,7 @@ function toggle_area(pos_x, pos_y, dir) {
 function weekly_report() {
     $("td.weekly.warning").attr("data-value", "0");
     let chart_data_total = [];
+    $("output.bed.plan").val(w.param.hospital_max);
 
     chart_data.forEach(data => {
         let temp_data = {};
@@ -922,7 +940,7 @@ function weekly_report() {
         $("#weekly_change_infect").val("▼" + (prev_new_patient - this_new_patient));
     } else {
         d3.select("#weekly_change_infect").style("color", "black");
-        $("#weekly_change_infect").val("▲0");
+        $("#weekly_change_infect").val("0");
     }
     // noinspection JSJQueryEfficiency
     let weekly_change_death = data_to.R2[9] - data_from.R2[9] - parseInt($("#weekly_death").val());
@@ -942,15 +960,16 @@ function weekly_report() {
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) {
         budget += 40000;
         $("output.budget_now").val(budget);
-        $("div.weekly.budget.update").css("opacity","100%");
-    } else {
-        $("div.weekly.budget.update").css("opacity","0");
+        if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
     if (auto) {
         let res = resume_simulation();
         if (res === 0) return;
     }
+
+    d3.select("#sim_container").selectAll("g.board").style("display", "block");
+    d3.select("g.board image.board_icon").style("display", "none");
 
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
@@ -976,7 +995,6 @@ function weekly_report() {
     if (data_to.H2[9] === w.param.hospital_max) {
         $("td.weekly.warning.ICUs").attr("data-value","2");
     }
-    // .filter(node => node.tick >= data_from.tick && node.tick <= data_to.tick)
 
     let daily_IR = chart_data_total.reduce((prev, curr, index) => {
         if (index === 0) return [];
@@ -987,42 +1005,29 @@ function weekly_report() {
     }, []).filter(node => node.tick > (data_from.tick - w.param.turnUnit) && node.tick <= data_to.tick)
 
     let weekly_pointer = $("#popup_weekly");
+    weekly_pointer.fadeIn(50);
+/*
     let weekly_inner_pointer = $("#popup_weekly > .popInnerBox");
-    weekly_pointer.fadeIn();
     weekly_inner_pointer.on("mouseleave", function () {
         weekly_pointer.fadeTo(200, 0.05);
     });
     weekly_inner_pointer.on("mouseenter", function () {
         weekly_pointer.fadeTo(200, 1);
-    });
+    });*/
 
     let board = d3.select(".weekly_board");
     board.selectAll("svg").remove();
     let board_svg = board.append("svg")
         .attr("width", "100%")
         .attr("height", "100%");
-    let board_svg_size = {'height': 185, 'width': 790};
+    let board_svg_size = {'height': 185, 'width': 400};
 
-    let data_stacked = d3.stack().keys(["I1","R2"])(daily_IR);
-
-    /*
-    let xScale = d3.scaleBand()
-        .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([30, board_svg_size.width - 25]).padding(0.7);
-    let yScale = d3.scaleLinear()
-        .domain([0, d3.max(d3.max(data_stacked), e => d3.max(e)) + 1])
-        .range([board_svg_size.height - 50, 0]);
-    let xAxis = d3.axisBottom().scale(xScale);
-    let yAxis = d3.axisLeft().scale(yScale);
-    yAxis.ticks(5);
-
- */
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
         .range([30, board_svg_size.width - 25]).padding(0.7);
     let yScale = d3.scaleLinear()
         .domain([0, d3.max(daily_IR, e => e.I1) + 1])
-        .range([board_svg_size.height - 50, 0]);
+        .range([board_svg_size.height - 50, 10]);
     let zScale = d3.scaleLinear()
         .domain([0, d3.max(daily_IR, e => e.R2) + 1])
         .range([board_svg_size.height - 50, 0]);
@@ -1042,7 +1047,7 @@ function weekly_report() {
         .attr("class", "yAxis");
     board_svg.append("g")
         .attr("class", "zAxis")
-        .attr("transform", "translate(790,0)");
+        .attr("transform", "translate(802,0)");
 
     board_svg.selectAll(".xAxis").call(xAxis);
     board_svg.selectAll(".yAxis").call(yAxis);
@@ -1059,7 +1064,20 @@ function weekly_report() {
         .attr("width", xScale.bandwidth())
         .attr("height", function(d) {return yScale(0) - yScale(d.I1);})
         .attr("x", function(d) {return xScale(d.tick - data_to.tick + 14)})
-        .attr("y", function(d) {return yScale(d.I1);});
+        .attr("y", function(d) {return yScale(d.I1)+2;});
+
+    var v3 = board_svg.append("g").attr("class", "txt");
+
+    v3.selectAll("text")
+        .data(daily_IR)
+        .enter()
+        .append("text")
+        .attr("fill", "#f33e66")
+        .attr("font-size", "13px")
+        .style("text-align", "center")
+        .attr("x", function(d) {return xScale(d.tick - data_to.tick + 14) + 3 - 1.3 * Math.floor(d.I1 / 10)})
+        .attr("y", function(d) {return yScale(d.I1) - 4})
+        .text(function(d) {return d.I1;});
 
     var v2 = board_svg.append("g").attr("class", "line");
 
@@ -1076,6 +1094,28 @@ function weekly_report() {
                     return zScale(e.R2)
         })(daily_IR));
 
+    v2.selectAll("circle")
+        .data(daily_IR)
+        .enter()
+        .append("circle")
+        .attr("class","line-marker")
+        .attr("fill","#3d3d3d")
+        .attr("stroke","none")
+        .attr("transform","translate(7,0)")
+        .attr("r", 3.5)
+        .attr("cx", function(e) {return xScale(e.tick - data_to.tick + 14)})
+        .attr("cy", function(e) {return zScale(e.R2)});
+
+    $("#sim_container rect.board").on("click", function() {
+        if (this.parentElement.classList.contains("enabled")) {
+            if (!this.parentElement.classList.contains("active")) {
+                d3.selectAll("#sim_container g.board").classed("active",false);
+            }
+            this.parentElement.classList.toggle("active");
+        }
+        update_weekly_output();
+    });
+
 }
 
 var auto = false;
@@ -1084,17 +1124,40 @@ function toggle_auto(val) {
     auto = (val === "1");
 }
 
+function bed_change(dir) {
+    let plan = $("output.weekly.bed.plan"), cost = $("output.weekly.bed.cost");
+    if (dir > 0 && parseInt(cost.val()) > budget - 10000) {
+        toggle_week();
+        return;
+    }
+    if (dir < 0 && parseInt(plan.val()) === w.param.hospital_max) {
+        toggle_week();
+        return;
+    }
+    plan.val(parseInt(plan.val()) + dir);
+    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000);
+    if (plan.val() !== w.param.hospital_max) {
+        plan.css("color", "yellow");
+    }
+    toggle_week();
+}
+
+function bed_update() {
+    let plan = $("output.weekly.bed.plan"), cost = $("output.weekly.bed.cost");
+    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000);
+    if (parseInt(plan.val()) !== w.param.hospital_max) {
+        plan.css("color", "yellow");
+    } else plan.css("color", "white");
+    return parseInt(cost.val());
+}
+
 function toggle_week() {
     let surface = 0;
     $("line.weekly.border.invisible").each(function() {
         surface += parseInt(this.dataset.click);
     });
-    let bed = $("input.policy.bed");
-    if (parseInt(bed.val()) < w.param.hospital_max) {
-        bed.val(w.param.hospital_max);
-    }
-    let new_budget = 10000 * (parseInt(bed.val()) - w.param.hospital_max) +
-        10000 * surface * parseFloat($("input.policy.rate").val())
+    bed_update();
+    let new_budget = 10000 * surface * parseFloat($("input.policy.rate").val()) + bed_update();
     $("output.weekly.budget_next").val(new_budget.toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0}));
     if (new_budget > budget) {
         $("div.weekly.area.caution").css("opacity","100%");
@@ -1102,5 +1165,179 @@ function toggle_week() {
     } else {
         $("div.weekly.area.caution").css("opacity","0");
         $("#button_resume").attr("disabled",null);
+    }
+}
+
+function update_people () {
+    age_policy_data.forEach(area => {
+        d3.select(`g.board.${area.pos.replace(" ", ".")}`)
+            .selectAll(`image.board_icon.count`)
+            .each(function (d) {this.setAttribute("href", d.level > 0 ? `img/distancing_level_${d.level}.png` : "")});
+    })
+    update_weekly_output();
+}
+
+function update_weekly_output () {
+    $("output.budget_now").val(budget);
+
+    let target = $("g.board.enabled.active").length === 0 ?
+        [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}] :
+        age_policy_data.find(area => d3.select("g.board.active").classed(area.pos)).data;
+
+    ["child", "adult", "elder"].forEach((ageGroup, ageNum) => {
+        let occ = {};
+        let accessor;
+        if (ageNum === 0) {
+            accessor = function(e, i) {
+                return i < 2 ? e : 0
+            };
+        }
+        else if (ageNum === 2) {
+            accessor = function(e, i) {
+                return i > 5 && i < 9 ? e : 0
+            };
+        }
+        else {
+            accessor = function(e, i) {
+                return i > 2 && i < 5 ? e : 0
+            };
+        }
+        occ.infect = d3.sum(chart_data[chart_data.length - 1].I1, accessor)
+            + d3.sum(chart_data[chart_data.length - 1].I2, accessor)
+            + d3.sum(chart_data[chart_data.length - 1].H1, accessor)
+            + d3.sum(chart_data[chart_data.length - 1].H2, accessor);
+        occ.ICU = d3.sum(chart_data[chart_data.length - 1].H2, accessor);
+        occ.death = d3.sum(chart_data[chart_data.length - 1].R2, accessor);
+
+
+        $(`output.weekly.age.policy.${ageGroup}.stage`).val(
+            target.find(e => e.age === ageNum + 1).level
+        );
+        $(`output.weekly.age.policy.${ageGroup}.speed`).val(Speed(target.find(e => e.age === ageNum + 1).level) * 100);
+        $(`output.weekly.age.occur.infect.${ageGroup}`).val(occ.infect);
+        $(`output.weekly.age.occur.ICU.${ageGroup}`).val(occ.ICU);
+        $(`output.weekly.age.occur.death.${ageGroup}`).val(occ.death);
+    });
+}
+
+
+function triggerInnerPopup(popupType) {
+    $("img.innerPopup").css("display", "none");
+    $("img.innerPopup.resume").css("display", "block");
+    $("img.innerPopup." + popupType).css("display", "block");
+    $("#popupInnerPopup").fadeIn();
+}
+
+function updateTotalI2(nodes) {
+    $("output.I2_total").each(function() {
+        this.value = nodes.filter(node => node.flag.includes("FLAG_SEVERE")).length;
+    });
+}
+
+function getSchoolList() {
+
+}
+
+async function sendRequest(action, arg) {
+    let url, request = {};
+    switch (action) {
+        case "getSchoolList":
+            request.method = "GET";
+            url = REQUEST_ID + "/api/list";
+            break;
+        case "getSchoolInfo":
+            request.method = "GET";
+            url = REQUEST_ID + "/api/list?school=" + arg["school"];
+            break;
+        case "postVirusInfo":
+            request.method = "POST";
+            request.body = JSON.stringify(arg["body"]);
+            url = REQUEST_ID + "/api/score?school=" + arg["school"];
+            break;
+    }
+    const response = await fetch(url, request);
+    return response.json();
+}
+
+function getObjRatio(key, obj, round_to=2) {
+    return getPercentile(obj[key] / _.values(obj).reduce((acc, cur) => {
+        return acc + cur;
+    }, 0), round_to)
+}
+function getPercentile(val, round_to=2) {
+    if (val > 1) return "100%";
+    else return (Math.round(val * Math.pow(10, round_to)) / Math.pow(10, round_to - 2)).toString() + "%";
+}
+
+function triggerDescPopup(popupType, pos) {
+    let param = get_params(initParams);
+    $("td.descPopup.dist.var").each((_, td) => {
+        td.innerText = getObjRatio(td.dataset.age.toString(), param.age_dist, 2);
+    })
+    $("td.descPopup.value.var").each((_, td) => {
+        if (popupType === "TPC") {
+            td.innerText = getPercentile(param.age_infect[td.dataset.age.toString()] * param.TPC_base, 2);
+        } else if (popupType === "severity") {
+            td.innerText = getPercentile(param.age_severe[td.dataset.age.toString()], 3);
+        }
+    })
+
+    let top = pos.top, left = pos.left;
+    $("img.descPopup")
+        .css("display", "none");
+    $("img.descPopup." + popupType)
+        .css("display", "block");
+    $("#popupDescPopup").css({
+        "top": top,
+        "left": left
+    }).fadeIn(0);
+}
+
+$("div.daily.rate.infectious.init")
+    .on("mouseenter",
+        _ => triggerDescPopup("TPC", {
+            "top": 280,
+            "left": 300
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
+
+$("div.daily.rate.infectious.board")
+    .on("mouseenter",
+        _ => triggerDescPopup("TPC", {
+            "top": -20,
+            "left": 910
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
+
+$("div.daily.rate.severity.init")
+    .on("mouseenter",
+        _ => triggerDescPopup("severity", {
+            "top": 280,
+            "left": 410
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
+
+$("div.daily.rate.severity.board")
+    .on("mouseenter",
+        _ => triggerDescPopup("severity", {
+            "top": -20,
+            "left": 1030
+        }))
+    .on("mouseleave", () => {
+        $("#popupDescPopup").fadeOut(0);
+    });
+
+function toggle_active(dom) {
+    let el = d3.select(dom);
+    if (el.classed("active")) {
+        el.classed("active",false).classed("inactive",true);
+    } else {
+        el.classed("active",true).classed("inactive",false);
     }
 }
