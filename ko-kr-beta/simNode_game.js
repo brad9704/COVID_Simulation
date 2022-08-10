@@ -98,6 +98,7 @@ class Node {
         this.dispatch = d3.dispatch("tick", "change");
 
         this.dispatch.on("tick.time", () => {
+            this.check_loc();
             this.curTime += 1;
             if (this.queue.length > 0) {
                 this.queue.forEach((task, i) => {
@@ -292,8 +293,21 @@ class Node {
         }
     }
     getAgeGroup () {
-        if (this.detail_age < 20) return 0;
-        else if (this.detail_age < 60) return 1;
-        else return 2;
+        if (this.detail_age < 20) return 1;
+        else if (this.detail_age < 60) return 2;
+        else return 3;
     }
+}
+
+function Speed(level) {
+    return level === 0 ? 1 :
+        level === 1 ? 0.7 :
+            level === 2 ? 0.5 :
+                0.3;
+}
+function Level(speed) {
+    return speed === 1 ? 0 :
+        speed === 0.7 ? 1 :
+            speed === 0.5 ? 2 :
+                3;
 }

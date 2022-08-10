@@ -52,7 +52,7 @@ body {
 }
 
 div.controls{
-    background-image: url("../img/시작화면 - 배경.png");
+    background-image: url("../img/init_back.png");
     background-repeat: no-repeat;
     padding: 0;
     justify-content:space-between;
@@ -142,7 +142,7 @@ div.controls > div.control > img {
 }
 div.panel_footer {
     position: absolute;
-    background-image: url("../img/메인 - 하단 패널.png");
+    background-image: url("../img/main_bottom_panel.png");
     background-repeat: no-repeat;
     top: 760px;
     left: 345px;
@@ -222,6 +222,11 @@ div.panel_output.budget {
 #popup_result .popInnerBox {
     height: 800px;
 }
+
+#popup_result div.popBody {
+    position: absolute;
+}
+
 #popup_result .popBody .popChart {
     border: 1px solid black;
     border-radius: 5px;
@@ -293,14 +298,28 @@ svg.result.legend {
     width: 883px;
     height: 620px;
 }
+#sim_board rect.board {
+    stroke: rgba(0,0,0,0);
+    stroke-width: 5px;
+}
+#sim_board g.board.enabled:not(.active) rect.board:hover {
+    stroke: rgba(255,236,56,0.5);
+}
+#sim_board g.board.enabled.active rect.board {
+    stroke: rgba(255,236,56,1);
+}
+#sim_board g.board.enabled.active rect.board:hover {
+    stroke: rgba(255,255,255,1);
+}
+
 #sim_container {
     position: absolute;
-    margin: 60px 40px 25px 7px;
+    margin: 60px 6px 6px 5px;
+    overflow: visible;
 }
 #sim_container circle {
     stroke: none;
 }
-
 #sim_container circle.node.R2 {
     opacity: 0.2;
 }
@@ -557,7 +576,7 @@ div.daily.num.R2 {
 
 div.graph {
     position: absolute;
-    background-image: url("../img/메인 - 그래프 패널.png");
+    background-image: url("../img/main_graph_panel.png");
     left: 1150px;
     top: 458px;
     width: 573px;
@@ -575,11 +594,17 @@ div.graph g.tick text {
     display: none;
 }
 
+#popup_weekly {
+    width: unset;
+    height: unset;
+}
+
 #popup_weekly .popInnerBox {
     height: auto;
     position: absolute;
     left: 1090px;
     top: -10px;
+    width: 614px;
 }
 
 #popup_weekly .popHead {
@@ -594,32 +619,37 @@ div.graph g.tick text {
 
 input.weekly.tab.switch {
     position: absolute;
-    width: 110px;
-    height: 50px;
+    width: 165px;
+    height: 53px;
     background-color: rgba(0,0,0,0);
-    border: 2px solid white;
-}
-input.weekly.tab.switch:hover {
-    border: 3px solid yellow;
-    border-radius: 5px;
+    color: white;
+    font-family: ONEMobilePOPRegular, sans-serif;
+    font-size: 110%;
+    text-align: center;
+    text-indent: 35px;
 }
 
-input.weekly.tab.switch.overall {
-    width: 100px;
+input.weekly.tab.switch[active=true] {
+    color: yellow;
 }
+
+input.weekly.tab.switch:hover {
+    color: yellow;
+    font-size: 120%;
+}
+
 input.weekly.tab.switch.age {
-    width: 109px;
-    left: 170px;
+    text-indent: 40px;
+    left: 180px;
 }
 input.weekly.tab.switch.area {
-    width: 65px;
-    left: 365px;
+    left: 360px;
 }
 
 div.weekly.switch.tabs {
     position: absolute;
     top: 151px;
-    left: 150px;
+    left: 91px;
 }
 
 div.weekly.tab.content img {
@@ -684,17 +714,17 @@ td.weekly.warning {
     background-size: 40%;
 }
 td.weekly.warning[data-value="0"] {
-    background-image: url("../img/정상.png");
+    background-image: url("../img/good.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
 td.weekly.warning[data-value="1"] {
-    background-image: url("../img/주의.png");
+    background-image: url("../img/caution.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
 td.weekly.warning[data-value="2"] {
-    background-image: url("../img/위험.png");
+    background-image: url("../img/bad.png");
     background-repeat: no-repeat;
     background-size: initial;
 }
@@ -829,11 +859,18 @@ input.policy.rate {
     left: 161px;
     width: 256px;
 }
-input.policy.bed {
+img.policy.bed {
     position: absolute;
-    top: 290px;
-    left: 420px;
-    width: 60px;    
+    top: 255px;
+    left: 435px;
+}
+img.policy.bed.dec {
+    top: 305px;
+}
+img.policy.bed:hover {
+    transform-origin: -12.5% -12.5%;
+    transform: scale(0.6);
+    cursor: pointer;
 }
 
 div.weekly.area.budget{
@@ -1076,6 +1113,7 @@ div.popBody.node {
     font-size: 18px;
     transform: translate(-126px, 7px);
 }
+
 #popup_node div.popBg {
     background:rgba(0,0,0,0);
 }
@@ -1146,19 +1184,20 @@ img.innerPopup.resume:hover {
 }
 
 div.weekly.desc {
-    width: 30px;
+    width: 153px;
     height: 30px;
     position: absolute;
 }
 
 
 div.weekly.age.desc {
-    top: -34px;
-    left: 182px;
+    top: -30px;
+    left: -34px;
 }
 div.weekly.area.desc {
-    top: -34px;
-    left: 147px;
+    top: -29px;
+    left: -37px;
+    width: 123px;
 }
 
 div.weekly.age.desc img {
@@ -1179,8 +1218,80 @@ div.weekly.area.desc:hover img {
 }
 #popup_weekly img.clickHere{
     position: absolute;
-    top: 437px;
-    left: -563px;
+    top: 464px;
+    left: -361px;
     background-color: rgba(30,30,30,0.5);
     border-radius: 30px;
+    transform: scale(0.4);
+}
+div.weekly.age.policy {
+    width: 103px;
+    height: 23px;
+    line-height: 23px;
+    position: absolute;
+    top: 283px;
+    text-align: center;
+    vert-align: middle;
+    font-size: 90%;
+}
+div.weekly.age.policy label.stage {
+    color: #f33e66;
+}
+
+div.weekly.age.policy.child {
+    left: 23px;
+}
+div.weekly.age.policy.adult {
+    left: 170px;
+}
+div.weekly.age.policy.elder {
+    left: 319px;
+}
+table.weekly.age.occurrence {
+    position: absolute;
+    border-collapse: collapse;
+    top: 365px;
+    left: 59px;
+    width: 406px;
+    height: 78px;
+}
+table.weekly.age.occurrence td {
+    color: white;
+    font-size: 100%;
+    height: 26px;
+    padding: 0;
+    line-height: 26px;
+}
+g.board.enabled image.board_icon {
+    display: block;
+}
+g.board:not(.enabled) image.board_icon {
+    display: none;
+}
+
+div.weekly.beds {
+    position: absolute;
+    top: 276px;
+    left: 76px;
+    width: 336px;
+    height: 42px;
+    color: white;
+    align-content: center;
+}
+div.weekly.bed {
+    width: 134px;
+    height: 44px;
+    line-height: 44px;
+    top: 0;
+    position: absolute;
+    text-align: center;
+}
+div.weekly.bed.cost {
+    left: 210px;
+}
+
+svg > text {
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
