@@ -166,7 +166,6 @@ w.onerror = function(event) {
 }
 
 function initSim(param, initial_node_data, loc) {
-    sendRequest("getSchoolList").then(res => console.log(res));
     turn_end = true;
     d3.selectAll("div.panel_button svg").attr("onclick","reset_simulation();");
     d3.selectAll("#board > div > svg").remove()
