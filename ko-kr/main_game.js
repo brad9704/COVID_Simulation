@@ -1019,11 +1019,11 @@ function weekly_report() {
     let board_svg = board.append("svg")
         .attr("width", "100%")
         .attr("height", "100%");
-    let board_svg_size = {'height': 185, 'width': 400};
+    let board_svg_size = {'height': 185, 'width': 540};
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([30, board_svg_size.width - 25]).padding(0.7);
+        .range([-25, board_svg_size.width - 35]).padding(0.7);
     let yScale = d3.scaleLinear()
         .domain([0, d3.max(daily_IR, e => e.I1) + 1])
         .range([board_svg_size.height - 50, 10]);
@@ -1040,10 +1040,11 @@ function weekly_report() {
         .attr("transform", "translate(40,20)");
 
     board_svg.append("g")
-        .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")")
-        .attr("class", "xAxis");
+        .attr("class", "xAxis")
+        .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")");
     board_svg.append("g")
-        .attr("class", "yAxis");
+        .attr("class", "yAxis")
+        .attr("transform", "translate(-5,0)");
     board_svg.append("g")
         .attr("class", "zAxis")
         .attr("transform", "translate(802,0)");
