@@ -253,6 +253,7 @@ function updateSim(param, node_data, time) {
 }
 
 function show_result(param) {
+    d3.select("div.result.chart").selectAll("svg").remove();
     $("td.result, div.panel_policy_result").css("display:none");
     let last_state = chart_data[chart_data.length - 1];
     let final_budget = budget
@@ -279,6 +280,8 @@ function show_result(param) {
         prev[3].data.push([curr.tick, curr.budget]);
         return prev;
     }, [{type: "infected", data: [], color: "red"}, {type: "dead", data: [], color: "black"}, {type: "GDP", data: [], color: "blue"}, {type: "budget", data: [], color: "purple"}]);
+
+    $("#death_board > svg").clone().css("background-color", "white").css("border", "1px solid black").css("transform", "translate(0,-20)").appendTo("div.result.chart");
 
     $("#popup_result").fadeIn();
     $("#popup_result > #exit").on("click", function() {
