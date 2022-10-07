@@ -971,7 +971,7 @@ function weekly_report() {
     }
 
     d3.select("#sim_container").selectAll("g.board").style("display", "block");
-    d3.select("g.board image.board_icon").style("display", "none");
+    //d3.select("g.board image.board_icon").style("display", "none");
 
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
