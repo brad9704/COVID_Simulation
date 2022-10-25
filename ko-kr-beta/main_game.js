@@ -23,11 +23,7 @@ var age_policy_data = [
     {pos: "lower left", x: 0, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
     {pos: "lower right", x: 0.5, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]}
 ];
-
-
-
 var budget = 0;
-var clicker = 0;
 var turn_end = true;
 var chart = 0;
 var running_speed = 1;
@@ -836,10 +832,6 @@ function save_log() {
 
 function change_speed(direction) {
     let speed_addr = $("#speed_out");
-    clicker += 1;
-    if (clicker > 30) {
-        $("#day_text").text("🥕: ");
-    }
     if (direction > 0) {
         if (running_speed === 8) {
             toggle_auto("1");

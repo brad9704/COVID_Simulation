@@ -178,6 +178,9 @@
                     </div>
                 </div>
             </div>
+            <div class="weekly multiplayer tab content" style="display:none">
+                
+            </div>
             <div id="button_wrapper">
                 <img src="img/weekly_report_resume.png" alt="" id="button_resume" onclick="resume_simulation()">
             </div>
@@ -199,72 +202,18 @@
     <div class="popInnerBox result">
         <img class="popup_result background" alt="" src="img/Result.png">
         <div class="popBody">
-            <div class="popCommonVar">
-                Elapsed time: <output id="resultTime">0</output> days<br>
-            </div>
-            <div class="popChart">
-                <table class="result">
-                    <tr class="result label">
-                        <td class="result label">Criteria</td>
-                        <td class="result number">Value</td>
-                        <td class="result base">Star gained</td>
-                    </tr>
-                    <tr class="result infection">
-                        <td class="result infection label">Total infection</td>
-                        <td class="result infection number"><output class="infectious_total">0</output></td>
-                        <td class="result infection star base"><output>☆</output></td>
-                    </tr>
-                    <tr class="result death">
-                        <td class="result death label">Total death</td>
-                        <td class="result death number"><output class="death_total">0</output>/<output class="I2_total">0</output></td>
-                        <td class="result death star base"><output>☆☆☆☆</output></td>
-                    </tr>
-                    <tr class="result GDP">
-                        <td class="result GDP label">Economic functionality</td>
-                        <td class="result GDP number"><output class="GDP_total">0</output>%</td>
-                        <td class="result GDP star base"><output>☆☆☆</output></td>
-                    </tr>
-                    <tr class="result budget">
-                        <td class="result budget label">Spent Budget</td>
-                        <td class="result budget number"><output class="budget_total">0</output></td>
-                        <td class="result budget star"><output>☆☆</output></td>
-                    </tr>
-                </table>
-            </div>
             <div class="panel_policy_result">
-                Total ★ gained: <output class="result total star"></output>
-                <table class="panel_status" style="display:none">
-                    <tr class="panel tag">
-                        <td class="infectious">Infectious</td>
-                        <td class="death">Death</td>
-                        <td class="GDP">GDP</td>
-                    </tr>
-                    <tr class="panel unit">
-                        <td class="infectious">cumulative</td>
-                        <td class="death">cumulative</td>
-                        <td class="GDP">compared to non-COVID scenario</td>
-                    </tr>
-                    <tr class="panel var">
-                        <td class="infectious"><output class="infectious_total">0</output></td>
-                        <td class="death"><output class="death_total">0</output></td>
-                        <td class="GDP"><output class="GDP_total">0</output>%</td>
-                    </tr>
-                </table>
+                <div class="innerPopup result time"><output id="resultTime">0</output> days</div>
+                <div class="innerPopup result infectious"><output class="infectious_total">0</output></div>
+                <div class="innerPopup result ICU"><output class="I2_total">0</output></div>
+                <div class="innerPopup result deaths"><output class="death_total">0</output></div>
+                <div class="innerPopup result GDP"><output class="GDP_total">0</output>%</div>
+                <div class="innerPopup result budget"><output class="budget_total">0</output></div>
             </div>
-            <svg class="result legend">
-                <circle cx="10" cy="10" r="6" fill="red"></circle>
-                <text x="25" y="16">Infected</text>
-                <circle cx="10" cy="30" r="6" fill="black"></circle>
-                <text x="25" y="36">Dead</text>
-                <circle cx="10" cy="50" r="6" fill="blue"></circle>
-                <text x="25" y="56">Daily GDP</text>
-                <circle cx="10" cy="70" r="6" fill="purple"></circle>
-                <text x="25" y="76">Budget</text>
-            </svg>
-            <input type="button" onclick="request_log()" value="Log" style="display:none">
-            <input id="exit" type="button" value="Exit" onclick="$('#popup_result').fadeOut(); reset_simulation();">
             <div class="result chart">
             </div>
+            <input type="button" onclick="request_log()" value="Log" style="display:none">
+            <input id="exit" type="button" value="Exit" onclick="$('#popup_result').fadeOut(); reset_simulation();">
         </div>
         <div class="popFoot">
         </div>

@@ -219,50 +219,50 @@ div.panel_output.budget {
     font-size:16px;
 }
 
+
+
 #popup_result .popInnerBox {
     height: 800px;
+    width: 1080px;
 }
 
 #popup_result div.popBody {
     position: absolute;
+    width: 1080px;
 }
 
-#popup_result .popBody .popChart {
-    border: 1px solid black;
-    border-radius: 5px;
-    width: 900px;
-    height: 300px;
-    max-width: 100%;
-    margin: 10px auto;
-}
-#popup_result div.popBody table.result {
-    width: 900px;
-    height: 300px;
-    padding: 10px;
-    font-size: 25px;
-    border-collapse: collapse;
-}
-#popup_result div.popBody table.result tr {
-    height: 60px;
-}
-#popup_result div.popBody table.result tr.label {
-    height: 40px;
-    border-bottom: 1px solid black;
-}
-#popup_result div.popBody table.result td {
-}
-#popup_result div.popBody table.result td.star {
-    color: black;
-    font-size: 40px;
-    display: none;
-}
 div.panel_policy_result {
-    font-size: 40px;
+    position: absolute;
+    top: 330px;
+    left: 650px;
+    width: 150px;
+    height: 350px;
 }
-div.result.chart {
-    margin-top: 30px;
-    height: 200px;
-    max-width: 100%;
+
+div.panel_policy_result div {
+    position: absolute;
+    font-size: 24px;
+    align-content: center;
+    width: 150px;
+}
+
+div.panel_policy_result div.time {
+    top: 10px;
+}
+div.panel_policy_result div.infectious {
+    top: 68px;
+}
+div.panel_policy_result div.ICU {
+    top: 125px;
+}
+div.panel_policy_result div.deaths {
+    top: 182px;
+}
+div.panel_policy_result div.GDP {
+    top: 239px;
+}
+div.panel_policy_result div.budget {
+    top: 296px;
 }
 svg.result.legend {
     width: 100px;
@@ -277,7 +277,7 @@ svg.result.legend {
 }
 
 #popup_result .popBody input {
-    margin: 15px auto;
+    margin: 680px auto 15px;
     max-width: 100%;
     display: block;
     width: 80px;

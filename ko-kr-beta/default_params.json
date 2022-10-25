@@ -4,6 +4,8 @@
   "speed": 0.2,
   "TPC_base": 0.01,
   "hospital_max": 0.01,
+  "vaccine_effect": 0.5,
+  "mask_effect": 0.1,
   "size": 4,
   "sim_size": 1000,
   "canvas_width": 870,
