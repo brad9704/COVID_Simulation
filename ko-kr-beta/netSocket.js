@@ -18,7 +18,8 @@ function NetworkException(message) {
 var NETWORK = {
     STUDENT_ID: null,
     TEAMTYPE: null,
-    TEAM: null
+    TEAM: null,
+    HOST: false
 };
 
 var socketURL = "https://chickenberry.ddns.net:8192/FTC/socket";
@@ -43,8 +44,19 @@ socket.on("loginSuccess", function(msg) {
     NETWORK.STUDENTNAME = msg["studentName"];
     NETWORK.TEAMTYPE = msg["teamType"];
     NETWORK.TEAM = msg["team"];
+    NETWORK.HOST = msg["host"];
     NETWORK.USERLIST = msg["students"].filter(student =>
         student.studentID !== NETWORK.STUDENT_ID);
+
+    $("#loginForm > input").attr("disabled",true);
+
+    d3.select("div.login.form > div.login.userlist")
+        .selectAll("p")
+        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : this.id;})
+        .enter()
+        .append("div")
+        .attr("class", "login user rows")
+        .text(function(student) {return `Name: ${student.name}, status: ${student.status}`});
 });
 socket.on("loginFail", function(msg) {
     console.log("Login failed: " + msg["Reason"]);
@@ -52,6 +64,12 @@ socket.on("loginFail", function(msg) {
 socket.on("updateUserLogin", function(msg) {
     NETWORK.USERLIST = msg["students"].filter(student =>
         student.studentID !== NETWORK.STUDENT_ID);
+    d3.select("div.login.form > div.login.userlist")
+        .selectAll("p")
+        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : this.id;})
+        .text(function (student) {
+            return `Name: ${student.name}, status: ${student.status}`
+        });
 });
 
 socket.on("chat", function(msg) {
@@ -75,3 +93,7 @@ socket.on("turnReady", function(msg) {
 socket.on("gameOver", function(msg) {
     let user = msg["studentID"];
 })
+
+window.onbeforeunload = function() {
+    socket.emit("disconnected");
+}

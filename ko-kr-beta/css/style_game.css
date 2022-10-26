@@ -76,6 +76,31 @@ div.controls > div.stat.wrapper > div.stat.left {
     width: 258px;
     height: 243px;
 }
+div.login.form {
+    position: absolute;
+    top: 307px;
+    right: 70px;
+    width: 258px;
+    height: 243px;
+    background-color: white;
+}
+form#loginForm input {
+    border: 1px solid black;
+    font-size: 16px;
+    font-family: "ONE 모바일고딕 Regular", serif;
+    text-align: center;
+    margin: 10px 5px;
+    padding: 5px 10px;
+}
+form#loginForm input[type=text] {
+    width: 120px;
+}
+form#loginForm input[type=submit]:not(:disabled):hover {
+    box-shadow: 0 32px 0 0 rgba(0,0,0,0.25) inset, 0 -32px 0 0 rgba(0,0,0,0.25) inset;
+    transition: all 0.3s;
+}
+
+
 #button_start {
     background: none;
     position: absolute;

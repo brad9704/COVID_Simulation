@@ -233,7 +233,7 @@
                     </select>
                     <span class="icoArrow"><img src="img/cursor.png" alt=""></span>
                 </div>
-                <div class="stat left">
+                <div class="stat left" style="display:none">
                     <img src="img/init_stat.png" alt="">
                     <table class="stat def">
                         <tr class="stat group stat1">
@@ -287,6 +287,13 @@
                                 change_stat(e,-1);
                             }
                         });}"></div>
+                </div>
+                <div class="login form">
+                    <form id="loginForm" action="" method="POST">
+                        <input type="text" class="login studentID" placeholder="student ID"/>
+                        <input type="submit" value="LOGIN"/>
+                    </form>
+                    <div class="login userlist"></div>
                 </div>
                 <div class="stat description">
                     <div class="stat desc stat1">
@@ -379,6 +386,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" crossorigin="anonymous"></script>
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
+<script src="netSocket.js"></script>
 <script type="text/javascript">
     var initParams, virusData;
 
