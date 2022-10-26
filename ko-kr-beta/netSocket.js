@@ -62,7 +62,6 @@ socket.on("loginFail", function(msg) {
     console.log("Login failed: " + msg["Reason"]);
 });
 socket.on("updateUserLogin", function(msg) {
-    console.log(msg);
     NETWORK.USERLIST = msg["students"];
     d3.select("div.login.form > div.login.userlist")
         .selectAll("div")
@@ -80,8 +79,8 @@ socket.on("chat", function(msg) {
 });
 
 socket.on("weekOver", function(msg) {
-    let user= msg["studentID"];
-    let result = msg["result"];
+    NETWORK.USERLIST[NETWORK.USERLIST.findIndex(student =>
+        student.studentID === msg["studentID"])]["STAT"] = msg["result"];
 })
 
 socket.on("turnReady", function(msg) {
@@ -119,3 +118,7 @@ function gameStart() {
 }
 
 socket.on("gameStart", start_simulation);
+
+function weekOver(infected, ICU, death, GDP, vaccine) {
+    socket.emit("weekOver", {infected: infected, ICU: ICU, death: death, GDP: GDP, vaccine: vaccine});
+}

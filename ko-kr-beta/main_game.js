@@ -31,6 +31,7 @@ var tick = 1000 / 60;
 var w; 
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
+var vaccine_research;
 
 function getVirus(virusInfo) {
     d3.select("select.virus.selection").selectAll("option")
@@ -692,6 +693,7 @@ function start_simulation() {
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     $("output.budget_now").val(0);
     budget = 0;
+    vaccine_research = 0;
     let param = get_params(initParams);
     w.param = param;
     w.postMessage({type: "START", main: param, budget: 0});
@@ -947,21 +949,31 @@ function weekly_report() {
         $("#weekly_change_death").val(weekly_change_death).css("color","#2e2886;");
     }
 
-
     $("output.weekly_date_from").val(data_from.tick + 1);
     $("output.weekly_date_to").val(data_to.tick + 1);
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) {
-        budget += 40000;
+        budget += Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit * 4), 0), chart_data.length)
+            .reduce((prev, curr) => prev + (curr.GDP / 4 * (
+                w.param.node_num - curr.I2[9] - curr.H1[9] - curr.H2[9] - curr.R2[9]) / w.param.node_num / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
         $("output.budget_now").val(budget);
         if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
+
+    weekOver(
+        [$("output.infectious_now").val(), $("output.infectious_total").val()],
+        [$("output.hospital_now").val(), $("output.hospital_max").val()],
+        [$("output.death_now").val(), $("output.death_total").val()],
+        $("output.GDP_now").val(),
+        vaccine_research
+    );
+    /*
     if (auto) {
         let res = resume_simulation();
         if (res === 0) return;
     }
-
+    */
     d3.select("#sim_container").selectAll("g.board").style("display", "block");
     //d3.selectAll("g.board image.board_icon").style("display", "none");
 
