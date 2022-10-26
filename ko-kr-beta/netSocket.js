@@ -114,6 +114,7 @@ function toggleReady(pos) {
 
 function gameStart() {
     if (!NETWORK.HOST) return;
+    if (NETWORK.USERLIST.find(student => student.status === "online")) return;
     socket.emit("gameStart");
 }
 
