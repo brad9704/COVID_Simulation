@@ -45,16 +45,16 @@ socket.on("loginSuccess", function(msg) {
     NETWORK.TEAMTYPE = msg["teamType"];
     NETWORK.TEAM = msg["team"];
     NETWORK.HOST = msg["host"];
-    NETWORK.USERLIST = msg["students"].filter(student =>
-        student.studentID !== NETWORK.STUDENT_ID);
+    NETWORK.USERLIST = msg["students"];
 
     $("#loginForm > input").attr("disabled",true);
 
     d3.select("div.login.form > div.login.userlist")
         .selectAll("p")
-        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : this.id;})
+        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
         .enter()
         .append("div")
+        .attr("id", function(student) {return "std" + student.studentID;})
         .attr("class", "login user rows")
         .text(function(student) {return `Name: ${student.name}, status: ${student.status}`});
 });
@@ -62,11 +62,11 @@ socket.on("loginFail", function(msg) {
     console.log("Login failed: " + msg["Reason"]);
 });
 socket.on("updateUserLogin", function(msg) {
-    NETWORK.USERLIST = msg["students"].filter(student =>
-        student.studentID !== NETWORK.STUDENT_ID);
+    console.log(msg);
+    NETWORK.USERLIST = msg["students"];
     d3.select("div.login.form > div.login.userlist")
-        .selectAll("p")
-        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : this.id;})
+        .selectAll("div")
+        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
         .text(function (student) {
             return `Name: ${student.name}, status: ${student.status}`
         });
@@ -97,3 +97,24 @@ socket.on("gameOver", function(msg) {
 window.onbeforeunload = function() {
     socket.emit("disconnected");
 }
+
+function toggleReady(pos) {
+    let studentIdx = NETWORK.USERLIST.findIndex(student => student.studentID === NETWORK.STUDENT_ID)
+    if (pos === "init") {
+        socket.emit("gameReady", {is: NETWORK.USERLIST[studentIdx].status !== "ready"});
+    } else if (pos === "week") {
+        socket.emit("turnReady", {is: NETWORK.USERLIST[studentIdx].status !== "wReady",
+            week: Math.floor(chart_data[chart_data.length - 1]["tick"] / 7),
+            action: getAction()
+        });
+    } else {
+        socket.emit("gameOver");
+    }
+}
+
+function gameStart() {
+    if (!NETWORK.HOST) return;
+    socket.emit("gameStart");
+}
+
+socket.on("gameStart", start_simulation);

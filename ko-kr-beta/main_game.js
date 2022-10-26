@@ -898,6 +898,10 @@ function toggle_area(pos_x, pos_y, dir) {
     }
 }
 
+function getAction() {
+
+}
+
 function weekly_report() {
     $("td.weekly.warning").attr("data-value", "0");
     let chart_data_total = [];
