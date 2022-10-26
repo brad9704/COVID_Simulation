@@ -368,23 +368,25 @@ div.sidebar div.button input {
 
 div.control_panel div.panel_button {
     position: absolute;
-    top: 754px;
-    left: 1400px;
+    top: 760px;
+    left: 1406px;
+    width: 344px;
+    height: 173px;
     cursor: pointer;
 }
 
-div.panel_button svg.active {
+div.panel_button img.active {
     position: absolute;
     visibility: hidden;
 }
-div.panel_button:hover svg.active {
+div.panel_button:hover img.active {
     visibility: visible;
 }
-div.panel_button svg.inactive {
+div.panel_button img.inactive {
     position: absolute;
     visibility: visible;
 }
-div.panel_button:hover svg.inactive{
+div.panel_button:hover img.inactive{
     visibility: hidden;
 }
 

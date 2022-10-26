@@ -48,6 +48,8 @@
 </div>
 <div class="control_panel">
     <div class="panel_button">
+        <img class="STOP_button active" src="img/메인 - STOP 아이콘.png" alt="">
+        <img class="STOP_button inactive" src="img/메인%20-%20STOP%20아이콘%20-%20비활성화.png" alt="">
     </div>
     <div class="panel_footer">
         <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
@@ -374,6 +376,7 @@
 <script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
 <script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" crossorigin="anonymous"></script>
 <script src="simNode_game.js"></script>
 <script src="main_game.js"></script>
 <script type="text/javascript">
@@ -381,12 +384,6 @@
 
     d3.xml("img/node_info.svg").then(data => {
         d3.select("div.popBody.node").node().append(data.documentElement)
-    });
-    d3.xml("img/STOP_active.svg").then(data => {
-        d3.select("div.panel_button").node().append(data.documentElement)
-    });
-    d3.xml("img/STOP_inactive.svg").then(data => {
-        d3.select("div.panel_button").node().append(data.documentElement)
     });
     d3.xml("img/sidebar.svg").then(data => {
         d3.select("div.sidebar").node().append(data.documentElement)

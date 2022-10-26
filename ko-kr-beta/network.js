@@ -54,7 +54,7 @@ var NETWORK = {
         let cookieSession = getCookie("session");
         if (cookieSession) {
             let session = JSON.parse(cookieSession);
-            this.setSchool(session["school"])
+            this.setSchool(session["team"])
             this.setStudentID(session["studentID"]);
             EVENT.trigger("InitPopup", GAME);
         } else {
@@ -63,7 +63,7 @@ var NETWORK = {
     },
     writeSession: function() {
         let session = {
-            "school": this.GROUP,
+            "team": this.GROUP,
             "studentID": this.STUDENT_ID
         };
         setCookie("session", JSON.stringify(session), 1);
