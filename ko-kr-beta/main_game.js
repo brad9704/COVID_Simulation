@@ -23,6 +23,11 @@ var age_policy_data = [
     {pos: "lower left", x: 0, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]},
     {pos: "lower right", x: 0.5, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]}
 ];
+
+var age_policy_data_fix = [
+    {policy: 1, active: false}, {policy: 2, active: false}, {policy: 3, active: false}
+];
+
 var budget = 0;
 var turn_end = true;
 var chart = 0;
@@ -372,72 +377,7 @@ function node_init(param, node_data, loc) {
             run = null;
         });
 
-    (function createAreaRect () {
-        let g = d3.select("#sim_container").selectAll("g.board")
-            .data(age_policy_data)
-            .enter().append("g")
-            .attr("class", function(d) {return `board ${d.pos}`})
-            .style("display", "none");
-        g.append("rect")
-            .attr("width", param["canvas_width"] / 2)
-            .attr("height", param["canvas_height"] / 2)
-            .attr("x", function(d) {return (param["canvas_width"] * d.x)})
-            .attr("y", function(d) {return (param["canvas_height"] * d.y)})
-            .attr("class", function(d) {return `board ${d.pos} inactive`})
-            .style("fill", "rgba(0,0,0,0)");
-        g.selectAll("image")
-            .data(e => e.data)
-            .join(
-                enter => {
-                    enter.append("image")
-                        .attr("class", function (d) {return `board_icon count level_${d.age}`})
-                        .attr("href", function(d) {
-                            return d.level > 0 ? `img/distancing_level_${d.level}.png` : "";
-                        })
-                        .attr("width", 38)
-                        .attr("height", 38)
-                        .attr("x", function(d) {
-                            return param["canvas_width"] *
-                                (d3.select(this.parentElement).datum().x +
-                                    (d.age * 0.1)) + 56;
-                        })
-                        .attr("y", function() {
-                            return param["canvas_height"] *
-                                (d3.select(this.parentElement).datum().y + 0.17) - 28;
-                        });
-                    enter.append("image")
-                        .attr("class", function (d) {return `board_icon human age_${d.age}`})
-                        .attr("href", function (d) {
-                            return `img/distancing_age_${d.age}.png`;
-                        })
-                        .attr("width", 75)
-                        .attr("height", 75)
-                        .attr("x", function(d) {
-                            return param["canvas_width"] *
-                                (d3.select(this.parentElement).datum().x +
-                                (d.age * 0.1));
-                        })
-                        .attr("y", function() {
-                            return param["canvas_height"] *
-                                (d3.select(this.parentElement).datum().y + 0.17);
-                        })
-                        .on("mouseover", function(d) {
-                            d3.select(this).attr("href", `img/distancing_age_${d.age}_hover.png`);
-                        })
-                        .on("mouseout", function(d) {
-                            d3.select(this).attr("href", `img/distancing_age_${d.age}.png`);
-                        })
-                        .on("click", function(d, i, p) {
-                            if (d.level < 3) d.level++;
-                            else d.level = 0;
-                            update_people();
-                        });
-                }
-            )
-
-    }) ();
-
-    let line_rate = parseFloat($("input.policy.rate").val());
+    let line_rate = 0.9;
 
     sim_cont.selectAll("line.svg_line")
         .data([{name: "upper", x1: param["canvas_width"] / 2, y1: param["canvas_height"] * (1 - line_rate) / 4, x2: param["canvas_width"] / 2, y2: param["canvas_height"] * (1 + line_rate) / 4},
@@ -694,6 +634,9 @@ function start_simulation() {
     $("output.budget_now").val(0);
     budget = 0;
     vaccine_research = 0;
+    age_policy_data_fix = [
+        {policy: 1, active: false}, {policy: 2, active: false}, {policy: 3, active: false}
+    ];
     let param = get_params(initParams);
     w.param = param;
     w.postMessage({type: "START", main: param, budget: 0});
@@ -711,7 +654,6 @@ function reset_simulation() {
     chart_data = [];
     w.param = get_params(initParams);
     $("line.weekly.border.invisible").attr("data-click", "0");
-    $("input.policy.rate").val("0.5");
     $("input.policy.bed").val("10");
     $("input.policy.level[data-level=1]").val((1.00).toFixed(2));
     $("input.policy.level[data-level=2]").val((0.90).toFixed(2));
@@ -730,7 +672,6 @@ function pause_simulation() {
 
 function toggle_run() {
     if (run === null) {
-        d3.select("input.panel_button.resume").attr("class", "panel_button pause").attr("value","Pause");
         run = setInterval(() => {
             if (receive) {
                 w.postMessage({type: "REPORT", data: running_speed});
@@ -741,7 +682,6 @@ function toggle_run() {
     } else {
         clearInterval(run);
         run = null;
-        d3.select("input.panel_button.pause").attr("class", "panel_button resume").attr("value","Resume");
     }
 }
 
@@ -752,7 +692,7 @@ function resume_simulation () {
     let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
         age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
         age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
-        line_rate = parseFloat($("input.policy.rate").val()),
+        line_rate = 0.9,
         hospital_max = parseInt($("output.weekly.bed.plan").val()),
         budget_output = $("output.budget_now"),
         surface = {
@@ -787,6 +727,13 @@ function resume_simulation () {
     d3.selectAll("#sim_container g.board").style("display", "none");
     budget = new_budget;
     budget_output.val(new_budget);
+
+    age_policy_data.forEach(area => {
+        area.data[0].level = age_policy_data_fix[2].active ? 3 : age_policy_data_fix[0].active ? 2 : 0;
+        area.data[1].level = age_policy_data_fix[2].active ? 3 : age_policy_data_fix[1].active ? 2 : 0;
+        area.data[2].level = age_policy_data_fix[2].active ? 3 : 0;
+    });
+
     w.postMessage({type: "RESUME", data: {
             area: age_policy_data,
             rate: line_rate,
@@ -901,7 +848,7 @@ function toggle_area(pos_x, pos_y, dir) {
 }
 
 function getAction() {
-
+    return [];
 }
 
 function weekly_report() {
@@ -954,12 +901,17 @@ function weekly_report() {
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) {
         budget += Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit * 4), 0), chart_data.length)
-            .reduce((prev, curr) => prev + (curr.GDP / 4 * (
-                w.param.node_num - curr.I2[9] - curr.H1[9] - curr.H2[9] - curr.R2[9]) / w.param.node_num / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
+            .reduce((prev, curr) => prev + (curr.GDP / 4 / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
         $("output.budget_now").val(budget);
         if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
+
+    vaccine_research += Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit), 0), chart_data.length)
+        .reduce((prev, curr) => prev + (curr.GDP *
+            (data_to.S[9] + data_to.E1[9] + data_to.E2[9] + data_to.I1[9] + data_to.R1[9]) /
+            w.param.node_num / 4 /
+            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))), 0)) / 20000;
 
     weekOver(
         [$("output.infectious_now").val(), $("output.infectious_total").val()],
@@ -1030,7 +982,7 @@ function weekly_report() {
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([-25, board_svg_size.width - 35]).padding(0.7);
+        .range([-25, board_svg_size.width - 45]).padding(0.7);
     let yScale = d3.scaleLinear()
         .domain([0, d3.max(daily_IR, e => e.I1) + 1])
         .range([board_svg_size.height - 50, 10]);
@@ -1044,7 +996,7 @@ function weekly_report() {
     zAxis.ticks(5);
 
     board_svg = board_svg.append("g")
-        .attr("transform", "translate(40,20)");
+        .attr("transform", "translate(35,10)");
 
     board_svg.append("g")
         .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")")
@@ -1164,7 +1116,7 @@ function toggle_week() {
         surface += parseInt(this.dataset.click);
     });
     bed_update();
-    let new_budget = 10000 * surface * parseFloat($("input.policy.rate").val()) + bed_update();
+    let new_budget = 10000 * surface * 0.9 + bed_update();
     $("output.weekly.budget_next").val(new_budget.toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0}));
     if (new_budget > budget) {
         $("div.weekly.area.caution").css("opacity","100%");
@@ -1175,17 +1127,27 @@ function toggle_week() {
     }
 }
 
-function update_people () {
-    age_policy_data.forEach(area => {
-        d3.select(`g.board.${area.pos.replace(" ", ".")}`)
-            .selectAll(`image.board_icon.count`)
-            .each(function (d) {this.setAttribute("href", d.level > 0 ? `img/distancing_level_${d.level}.png` : "")});
-    })
+function toggleAgePolicy(policyNum) {
+    age_policy_data_fix[policyNum].active = !(age_policy_data_fix[policyNum].active);
+    if (policyNum === 2) {
+        if (age_policy_data_fix[policyNum].active) {
+            age_policy_data_fix[0].active = false;
+            age_policy_data_fix[1].active = false;
+        }
+    }
     update_weekly_output();
 }
 
 function update_weekly_output () {
     $("output.budget_now").val(budget);
+
+    age_policy_data_fix.forEach(pol => {
+        d3.select("img.weekly.age.on_off.policy0" + pol.policy).attr("src", "img/policy0" + pol.policy + "_" + (pol.active ? "on" : "off") + ".png");
+        if (pol.policy === 3 && pol.active) {
+            d3.select("img.weekly.age.on_off.policy01").attr("src", "img/policy01_disabled.png");
+            d3.select("img.weekly.age.on_off.policy02").attr("src", "img/policy02_disabled.png");
+        }
+    });
 
     let target = $("g.board.enabled.active").length === 0 ?
         [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}] :

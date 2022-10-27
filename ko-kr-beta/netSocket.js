@@ -49,25 +49,25 @@ socket.on("loginSuccess", function(msg) {
 
     $("#loginForm > input").attr("disabled",true);
 
-    d3.select("div.login.form > div.login.userlist")
+    d3.selectAll("div.login.userlist")
         .selectAll("p")
         .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
         .enter()
         .append("div")
         .attr("id", function(student) {return "std" + student.studentID;})
         .attr("class", "login user rows")
-        .text(function(student) {return `Name: ${student.name}, status: ${student.status}`});
+        .text(function(student) {return `${student.name}: ${student.status}`});
 });
 socket.on("loginFail", function(msg) {
     console.log("Login failed: " + msg["Reason"]);
 });
 socket.on("updateUserLogin", function(msg) {
     NETWORK.USERLIST = msg["students"];
-    d3.select("div.login.form > div.login.userlist")
+    d3.selectAll("div.login.userlist")
         .selectAll("div")
         .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
         .text(function (student) {
-            return `Name: ${student.name}, status: ${student.status}`
+            return `${student.name}: ${student.status}`
         });
 });
 
@@ -84,9 +84,14 @@ socket.on("weekOver", function(msg) {
 })
 
 socket.on("turnReady", function(msg) {
-    let user = msg["studentID"];
-    let week = msg["week"];
-    let action = msg["action"];
+    NETWORK.USERLIST = msg["students"];
+    d3.selectAll("div.login.userlist")
+        .selectAll("div")
+        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
+        .text(function (student) {
+            return `${student.name}: ${student.status}`
+        });
+
 });
 
 socket.on("gameOver", function(msg) {
@@ -118,8 +123,33 @@ function gameStart() {
     if (NETWORK.USERLIST.find(student => student.status === "online")) return;
     socket.emit("gameStart");
 }
+function turnStart() {
+    if (NETWORK.STUDENT_ID == null) return;
+    if (!NETWORK.HOST) return;
+    if (NETWORK.USERLIST.find(student => student.status !== "wReady" && student.status !== "offline")) return;
+    socket.emit("turnStart");
+}
 
-socket.on("gameStart", start_simulation);
+socket.on("gameStart", function(msg) {
+    NETWORK.USERLIST = msg["students"];
+    d3.selectAll("div.login.userlist")
+        .selectAll("div")
+        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
+        .text(function (student) {
+            return `${student.name}: ${student.status}`
+        });
+    start_simulation();
+});
+socket.on("turnStart", function(msg) {
+    NETWORK.USERLIST = msg["students"];
+    d3.selectAll("div.login.userlist")
+        .selectAll("div")
+        .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
+        .text(function (student) {
+            return `${student.name}: ${student.status}`
+        });
+    resume_simulation();
+});
 
 function weekOver(infected, ICU, death, GDP, vaccine) {
     socket.emit("weekOver", {infected: infected, ICU: ICU, death: death, GDP: GDP, vaccine: vaccine});

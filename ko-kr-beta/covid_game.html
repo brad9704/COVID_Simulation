@@ -48,8 +48,8 @@
 </div>
 <div class="control_panel">
     <div class="panel_button">
-        <img class="STOP_button active" src="img/메인 - STOP 아이콘.png" alt="">
-        <img class="STOP_button inactive" src="img/메인%20-%20STOP%20아이콘%20-%20비활성화.png" alt="">
+        <img class="STOP_button active" src="img/메인 - STOP 아이콘.png" alt="" onclick="toggle_run()">
+        <img class="STOP_button inactive" src="img/메인%20-%20STOP%20아이콘%20-%20비활성화.png" alt="" onclick="toggle_run()">
     </div>
     <div class="panel_footer">
         <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
@@ -68,12 +68,13 @@
 <div id="popup_weekly" class="popup">
     <div class="popInnerBox">
         <div class="popBody">
-            <img class="rescale" src="img/weekly_report_back.png" alt="">
-            <img class="weekly tab back overall rescale" src="img/weekly_report_1.png" alt="">
-            <img class="weekly tab back age rescale" src="img/weekly_report_2.png" alt="" style="display:none">
-            <img class="weekly tab back area rescale" src="img/weekly_report_3.png" alt="" style="display:none">
+            <img class="rescale" src="img/WR_틀_예산 포함.png" alt="">
+            <img class="weekly tab back overall" src="img/주간보고_01_Report_ENG.png" alt="">
+            <img class="weekly tab back age" src="img/주간보고_02_Policy.png" alt="" style="display:none">
+            <img class="weekly tab back area" src="img/주간보고_03_Multi_초안.png" alt="" style="display:none">
             <div class="weekly switch tabs">
-                <input class="weekly tab switch overall" type="button" value="주간 발생 동향" active="true" onclick="
+                <img class="weekly tab01 icon" src="img/icon_1.png" alt="">
+                <input class="weekly tab switch overall" type="button" value="TRENDS" active="true" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('img.weekly.tab.back').css('display','none');
                 $('img.weekly.tab.back.overall').css('display','block');
@@ -81,7 +82,8 @@
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.overall').css('display','block');
                 d3.selectAll('g.board').classed('enabled',false);">
-                <input class="weekly tab switch age" type="button" value="사회적 거리두기" onclick="
+                <img class="weekly tab02 icon" src="img/icon_2.png" alt="">
+                <input class="weekly tab switch age" type="button" value="POLICY" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('img.weekly.tab.back').css('display','none');
                 $('img.weekly.tab.back.age').css('display','block');
@@ -90,7 +92,8 @@
                 $('div.weekly.tab.age').css('display','block');
                 d3.selectAll('g.board').classed('enabled',true);
                 update_weekly_output();">
-                <input class="weekly tab switch area" type="button" value="예산 분배" onclick="
+                <img class="weekly tab03 icon" src="img/icon_3.png" alt="">
+                <input class="weekly tab switch area" type="button" value="MULTIPLAY" onclick="
                 $('input.weekly.tab.switch').attr('active','false');
                 $('img.weekly.tab.back').css('display','none');
                 $('img.weekly.tab.back.area').css('display','block');
@@ -127,17 +130,28 @@
             <div class="weekly age area tab weekly_policy" style="display:none">
                 <div class="panel_policy">
                     <div class="weekly age tab content">
-                        <div class="weekly age desc">
-                            <img alt="" class="rescale" src="img/weekly_report_desc_popup.png">
-                        </div>
                         <div class="weekly age policy_status">
                             <div class="weekly age policy child">
-                                <label class="weekly age policy stage"><output class="weekly age policy child stage">0</output>단계</label> (<output class="weekly age policy child speed">100</output>%)</div>
+                                <img class="weekly age on_off policy01" src="img/policy01_off.png" alt="" onclick="toggleAgePolicy(0)"></div>
                             <div class="weekly age policy adult">
-                                <label class="weekly age policy stage"><output class="weekly age policy adult stage">0</output>단계</label> (<output class="weekly age policy adult speed">100</output>%)</div>
+                                <img class="weekly age on_off policy02" src="img/policy02_off.png" alt="" onclick="toggleAgePolicy(1)"></div>
                             <div class="weekly age policy elder">
-                                <label class="weekly age policy stage"><output class="weekly age policy elder stage">0</output>단계</label> (<output class="weekly age policy elder speed">100</output>%)</div>
+                                <img class="weekly age on_off policy03" src="img/policy03_off.png" alt="" onclick="toggleAgePolicy(2)"></div>
                         </div>
+                        <div class="weekly beds">
+                            <div class="weekly bed plan"><output class="weekly bed plan">0</output>개</div>
+                            <div class="weekly bed cost">$<output class="weekly bed cost">0</output></div>
+                        </div>
+                        <img alt="" src="img/button_increase.png" class="policy bed rescale inc" onclick="bed_change(1);">
+                        <img alt="" src="img/button_decrease.png" class="policy bed rescale dec" onclick="bed_change(-1);">
+                        <svg class="weekly area lines">
+                            <line class="weekly border visible" x1="0" y1="125" x2="292" y2="125"/>
+                            <line class="weekly border visible" x1="146" y1="0" x2="146" y2="245"/>
+                            <line class="weekly border invisible left" data-click="0" x1="20" y1="278" x2="410" y2="278" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible right" data-click="0" x1="460" y1="278" x2="850" y2="278" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible upper" data-click="0" x1="433" y1="20" x2="433" y2="258" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible lower" data-click="0" x1="433" y1="298" x2="433" y2="536" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                        </svg>
                         <table class="weekly age occurrence">
                             <tr>
                                 <td><output class="weekly age occur infect child">0</output></td>
@@ -157,34 +171,15 @@
                         </table>
                     </div>
                     <div class="weekly area tab content">
-                        <img class="rescale clickHere" src="img/weeklyPolicy_clickHere.png" alt="">
-                        <div class="weekly area desc">
-                            <img alt="" class="rescale" src="img/weekly_report_desc_popup2.png">
-                        </div>
-                        <input class="policy rate" type="range" max="0.90" min="0.5" step="0.2" value="0.5" onchange="toggle_week();">
-                        <div class="weekly beds">
-                            <div class="weekly bed plan"><output class="weekly bed plan">0</output>개</div>
-                            <div class="weekly bed cost">$<output class="weekly bed cost">0</output></div>
-                        </div>
-                        <img alt="" src="img/button_increase.png" class="policy bed rescale inc" onclick="bed_change(1);">
-                        <img alt="" src="img/button_decrease.png" class="policy bed rescale dec" onclick="bed_change(-1);">
-                        <svg class="weekly area lines">
-                            <line class="weekly border visible" x1="0" y1="125" x2="292" y2="125"/>
-                            <line class="weekly border visible" x1="146" y1="0" x2="146" y2="245"/>
-                            <line class="weekly border invisible left" data-click="0" x1="20" y1="278" x2="410" y2="278" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                            <line class="weekly border invisible right" data-click="0" x1="460" y1="278" x2="850" y2="278" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                            <line class="weekly border invisible upper" data-click="0" x1="433" y1="20" x2="433" y2="258" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                            <line class="weekly border invisible lower" data-click="0" x1="433" y1="298" x2="433" y2="536" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
-                        </svg>
-                        <div class="weekly area budget"><output class="weekly budget_next">0</output></div>
                     </div>
+                    <div class="weekly area budget"><output class="weekly budget_next">0</output></div>
                 </div>
             </div>
-            <div class="weekly multiplayer tab content" style="display:none">
-                
             </div>
             <div id="button_wrapper">
-                <img src="img/weekly_report_resume.png" alt="" id="button_resume" onclick="resume_simulation()">
+                <img src="img/weekly_report_resume.png" alt="" id="button_turnReady" onclick="toggleReady('week')">
+                <div class="login userlist weekly"></div>
+                <img src="img/weekly_report_resume.png" alt="" id="button_resume" onclick="turnStart()">
             </div>
         </div>
     </div>

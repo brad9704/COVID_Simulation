@@ -652,9 +652,19 @@ div.graph g.tick text {
     position: absolute;
 }
 
+div.weekly.login.userlist {
+    position: absolute;
+    background-color: white;
+    width: 162px;
+    height: 76px;
+    top: 125px;
+    left: 450px;
+    font-size: 16px;
+}
+
 input.weekly.tab.switch {
     position: absolute;
-    width: 165px;
+    width: 140px;
     height: 53px;
     background-color: rgba(0,0,0,0);
     color: white;
@@ -675,10 +685,10 @@ input.weekly.tab.switch:hover {
 
 input.weekly.tab.switch.age {
     text-indent: 40px;
-    left: 180px;
+    left: 160px;
 }
 input.weekly.tab.switch.area {
-    left: 360px;
+    left: 335px;
 }
 
 div.weekly.switch.tabs {
@@ -690,9 +700,26 @@ div.weekly.switch.tabs {
 div.weekly.tab.content img {
     position: absolute;
 }
+img.weekly.icon {
+    position: absolute;
+    top: 5px;
+}
+img.weekly.tab02 {
+    position: absolute;
+    left: 145px;
+    top: 5px;
+}
+img.weekly.tab03 {
+    left: 320px;
+}
 img.weekly.tab.back {
     top: 210px;
-    left: 95px;
+    left: 90px;
+    width: 500px;
+}
+img.weekly.tab.back.age {
+    left: 10px;
+    width: 550px;
 }
 
 #popup_weekly .popBody {
@@ -726,22 +753,22 @@ div.weekly_status div.weekly.date {
     position: absolute;
     color: white;
     top: 8px;
-    left: 105px;
+    left: 165px;
 }
 
 div.weekly_status table {
     color: #2e2886;
     position: absolute;
     text-align: center;
-    width: 425px;
+    width: 403px;
     top: 76px;
-    left: 90px;
+    left: 93px;
     font-size: 80%;
     border-spacing: 0 1px;
 }
 div.weekly_status table tr td {
     width: 36px;
-    height: 40px;
+    height: 33px;
 }
 td.weekly.warning {
     background-repeat: no-repeat;
@@ -797,16 +824,16 @@ div.weekly_board > svg > g > g.yAxis line, g.zAxis line, g.zAxis path {
 div.weekly.infectious {
     color: #2e2886;
     position: absolute;
-    top: 168px;
-    right: 161px;
+    top: 162px;
+    right: 168px;
     width: 260px;
     text-align: center;
 }
 div.weekly.death {
     color: #2e2886;
     position: absolute;
-    top: 168px;
-    right: 8px;
+    top: 162px;
+    right: 26px;
     width: 140px;
     text-align: center;
 }
@@ -896,11 +923,11 @@ input.policy.rate {
 }
 img.policy.bed {
     position: absolute;
-    top: 255px;
-    left: 435px;
+    top: 218px;
+    left: 371px;
 }
 img.policy.bed.dec {
-    top: 305px;
+    top: 263px;
 }
 img.policy.bed:hover {
     transform-origin: -12.5% -12.5%;
@@ -910,13 +937,14 @@ img.policy.bed:hover {
 
 div.weekly.area.budget{
     position: absolute;
-    top: 397px;
-    left: 272px;
-    width: 90px;
-    height: 45px;
+    top: 676px;
+    left: 483px;
+    width: 109px;
+    height: 37px;
     text-align: center;
-    color: white;
-    font-size: 80%;
+    color: #2E2886;
+    font-size: 120%;
+    line-height: 36px;
 }
 
 div.weekly.area.caution {
@@ -982,14 +1010,29 @@ line.weekly.border.visible {
     font-size: 15px;
 }
 
+#button_turnReady {
+    border: none;
+    background-color: rgba(0,0,0,0);
+    border-radius: 0px;
+    width: 165px;
+    top: 124px;
+    position: absolute;
+    left: 285px;
+    cursor: pointer;
+}
+#button_turnReady:hover {
+    filter: brightness(150%);
+}
+
 #button_resume {
     border: none;
     background-color: rgba(0,0,0,0);
     border-radius: 0px;
-    width: 333px;
-    top: 124px;
+    width: 330px;
+    top: 201px;
+    height: 80px;
     position: absolute;
-    left: 285px;
+    left: 284px;
     cursor: pointer;
 }
 #button_resume:hover {
@@ -1264,7 +1307,7 @@ div.weekly.age.policy {
     height: 23px;
     line-height: 23px;
     position: absolute;
-    top: 283px;
+    top: 112px;
     text-align: center;
     vert-align: middle;
     font-size: 90%;
@@ -1272,22 +1315,31 @@ div.weekly.age.policy {
 div.weekly.age.policy label.stage {
     color: #f33e66;
 }
+img.weekly.age.on_off {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(0.5);
+}
+img.weekly.age.on_off:hover {
+    filter: brightness(1.2);
+}
 
 div.weekly.age.policy.child {
-    left: 23px;
+    left: -57px;
 }
 div.weekly.age.policy.adult {
-    left: 170px;
+    left: 91px;
 }
 div.weekly.age.policy.elder {
-    left: 319px;
+    left: 240px;
 }
 table.weekly.age.occurrence {
     position: absolute;
     border-collapse: collapse;
-    top: 365px;
-    left: 59px;
-    width: 406px;
+    top: 342px;
+    left: 47px;
+    width: 389px;
     height: 78px;
 }
 table.weekly.age.occurrence td {
@@ -1306,23 +1358,22 @@ g.board:not(.enabled) image.board_icon {
 
 div.weekly.beds {
     position: absolute;
-    top: 276px;
+    top: 252px;
     left: 76px;
-    width: 336px;
+    width: 275px;
     height: 42px;
     color: white;
     align-content: center;
 }
 div.weekly.bed {
-    width: 134px;
-    height: 44px;
-    line-height: 44px;
+    width: 129px;
     top: 0;
     position: absolute;
     text-align: center;
 }
 div.weekly.bed.cost {
-    left: 210px;
+    left: 181px;
+    width: 101px;
 }
 
 svg > text {
