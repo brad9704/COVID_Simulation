@@ -100,17 +100,25 @@ form#loginForm input[type=submit]:not(:disabled):hover {
     transition: all 0.3s;
 }
 
-
+#button_ready {
+    background: none;
+    position: absolute;
+    right: 199px;
+    top: 549px;
+    width: 129px;
+    height: 99px;
+    cursor: pointer;
+}
 #button_start {
     background: none;
     position: absolute;
     right: 70px;
     top: 549px;
-    width: 258px;
+    width: 129px;
     height: 99px;
     cursor: pointer;
 }
-#button_start:hover {
+#Simulation > img:hover {
     filter: brightness(150%);
 }
 

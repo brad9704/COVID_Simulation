@@ -98,6 +98,7 @@ window.onbeforeunload = function() {
 }
 
 function toggleReady(pos) {
+    if (NETWORK.STUDENT_ID == null) return;
     let studentIdx = NETWORK.USERLIST.findIndex(student => student.studentID === NETWORK.STUDENT_ID)
     if (pos === "init") {
         socket.emit("gameReady", {is: NETWORK.USERLIST[studentIdx].status !== "ready"});
@@ -112,6 +113,7 @@ function toggleReady(pos) {
 }
 
 function gameStart() {
+    if (NETWORK.STUDENT_ID == null) return;
     if (!NETWORK.HOST) return;
     if (NETWORK.USERLIST.find(student => student.status === "online")) return;
     socket.emit("gameStart");
@@ -122,3 +124,4 @@ socket.on("gameStart", start_simulation);
 function weekOver(infected, ICU, death, GDP, vaccine) {
     socket.emit("weekOver", {infected: infected, ICU: ICU, death: death, GDP: GDP, vaccine: vaccine});
 }
+
