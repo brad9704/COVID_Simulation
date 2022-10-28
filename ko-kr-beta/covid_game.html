@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!--ver.2022.10.28.02-->
+<!--ver.2022.10.28.03-->
 <html lang="ko">
 <!--🥕-->
 <link rel="shortcut icon" href="favicon.ico">
@@ -49,7 +49,6 @@
 <div class="control_panel">
     <div class="panel_button">
         <img class="STOP_button active" src="img/메인 - STOP 아이콘.png" alt="" onclick="toggle_run()">
-        <img class="STOP_button inactive" src="img/메인%20-%20STOP%20아이콘%20-%20비활성화.png" alt="" onclick="toggle_run()">
     </div>
     <div class="panel_footer">
         <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
@@ -258,7 +257,7 @@
                 </div>
             </div>
             <div id="button_wrapper">
-                <img src="img/weekly_report_resume.png" alt="" id="button_turnReady" onclick="toggleReady('week')">
+                <img src="img/Ready_off.png" alt="" id="button_turnReady" onclick="toggleReady('week')">
                 <div class="login userlist weekly"></div>
                 <img src="img/weekly_report_resume.png" alt="" id="button_resume" onclick="turnStart()">
             </div>
@@ -365,11 +364,30 @@
                         });}"></div>
                 </div>
                 <div class="login form">
+                    <img src="img/시작화면%20-%20로그인창@2x.png" alt="" class="rescale" style="position: absolute">
                     <form id="loginForm" action="" method="POST">
+                        <img src="img/Login.png" alt="" class="rescale login_image">
                         <input type="text" class="login studentID" placeholder="student ID"/>
-                        <input type="submit" value="LOGIN"/>
+                        <button type="submit"><img src="img/Login_button.png" alt="" class="rescale login_submit"></button>
                     </form>
-                    <div class="login userlist"></div>
+                    <div class="login userlist init" style="display:none">
+                        <div class="userlist_dt student00">
+                            <img src="img/Profile_offline.png" alt="" class="login userlist student00 rescale">
+                            <output class="login student00 name"></output>
+                        </div>
+                        <div class="userlist_dt student01">
+                            <img src="img/Profile_offline.png" alt="" class="login userlist student01 rescale">
+                            <output class="login student01 name"></output>
+                        </div>
+                        <div class="userlist_dt student02">
+                            <img src="img/Profile_offline.png" alt="" class="login userlist student02 rescale">
+                            <output class="login student02 name"></output>
+                        </div>
+                        <div class="userlist_dt student03">
+                            <img src="img/Profile_offline.png" alt="" class="login userlist student03 rescale">
+                            <output class="login student03 name"></output>
+                        </div>
+                    </div>
                 </div>
                 <div class="stat description">
                     <div class="stat desc stat1">
@@ -387,8 +405,8 @@
                 </div>
             </div>
             <div class="control" id="Simulation">
-                <img id="button_ready" src="img/button_start.png" alt="" onclick="toggleReady('init')">
-                <img id="button_start" src="img/button_start.png" alt="" onclick="gameStart()">
+                <img id="button_ready" src="img/Ready_off.png" alt="" onclick="toggleReady('init')">
+                <img id="button_start" src="img/Start_disabled.png" alt="" onclick="gameStart()">
             </div>
             <div class="daily legend">
                 <img class="daily" src="img/virus_info_panel.png" alt="">

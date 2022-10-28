@@ -76,24 +76,75 @@ div.controls > div.stat.wrapper > div.stat.left {
     width: 258px;
     height: 243px;
 }
+div.login.form img {
+    position: absolute;
+}
+div.login.form img.login_image {
+    top: 50px;
+    left: 22px;
+}
+div.login.form img.login_submit {
+    position: absolute;
+    top: 170px;
+    left: 44px;
+}
+div.login.form img.login_submit:hover {
+    cursor: pointer;
+    filter: brightness(1.2);
+}
+
+div.login.form div.userlist_dt {
+    position: absolute;
+    text-align: center;
+}
+
+
+div.login.form div.student00 {
+    top: 65px;
+    left: 20px;
+}
+div.login.form div.student01 {
+    top: 65px;
+    left: 135px;
+}
+div.login.form div.student02 {
+    top: 130px;
+    left: 20px;
+}
+div.login.form div.student03 {
+    top: 130px;
+    left: 135px;
+}
+
+div.userlist_dt output {
+    position: absolute;
+    top: 37px;
+    width: 101px;
+    text-align: center;
+}
+
 div.login.form {
     position: absolute;
     top: 307px;
     right: 70px;
     width: 258px;
     height: 243px;
-    background-color: white;
 }
 form#loginForm input {
-    border: 1px solid black;
-    font-size: 16px;
+    position: absolute;
+    top: 80px;
+    left: 19px;
+    font-size: 22px;
     font-family: "ONE 모바일고딕 Regular", serif;
     text-align: center;
     margin: 10px 5px;
-    padding: 5px 10px;
+    padding: 20px 44px;
 }
 form#loginForm input[type=text] {
     width: 120px;
+}
+div.login.form input:hover {
+    cursor: pointer;
 }
 form#loginForm input[type=submit]:not(:disabled):hover {
     box-shadow: 0 32px 0 0 rgba(0,0,0,0.25) inset, 0 -32px 0 0 rgba(0,0,0,0.25) inset;
@@ -410,17 +461,9 @@ div.control_panel div.panel_button {
 
 div.panel_button img.active {
     position: absolute;
-    visibility: hidden;
 }
 div.panel_button:hover img.active {
-    visibility: visible;
-}
-div.panel_button img.inactive {
-    position: absolute;
-    visibility: visible;
-}
-div.panel_button:hover img.inactive{
-    visibility: hidden;
+    filter: brightness(1.2);
 }
 
 #board > div.daily.legend {

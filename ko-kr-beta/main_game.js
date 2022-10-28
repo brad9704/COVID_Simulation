@@ -556,13 +556,15 @@ function chart_update(param, chart_param, chart_data) {
     $(".infectious_now").val(now.I1+now.I2+now.H1+now.H2);
     $(".infectious_total").val(w.param.node_num - now.S - now.E1 - now.E2);
     $(".hospital_now").val(now.H2);
-    $(".hospital_max").val(w.param.hospital_max);
+    $(".hospital_max").val(w.param.hospital_max + received_multiplayer_policy["action01"]);
     $(".death_now").val(now.R2-last.R2);
     $(".death_total").val(now.R2);
     $(".GDP_now").val(Math.round(now.GDP).toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}));
     $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 1000) / 10);
     $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 1000) / 10);
-
+    if (received_multiplayer_policy["action01"] > 0) $(".hospital_max").css("color", "blue");
+    else if (received_multiplayer_policy["action01"] < 0) $(".hospital_max").css("color", "red");
+    else $(".hospital_max").css("color", "black");
     x1.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
     })]);
@@ -745,6 +747,11 @@ function resume_simulation () {
         area.data[1].level = age_policy_data_fix[2].active ? 3 : age_policy_data_fix[1].active ? 2 : 0;
         area.data[2].level = age_policy_data_fix[2].active ? 3 : 0;
     });
+    let weight = Math.min(Math.max(0.5, 1 - received_multiplayer_policy["action02"] * 0.05), 1.5);
+    if (weight > 1) $("output.daily.legend.rate.infectious").css("color", "red");
+    else if (weight < 1) $("output.daily.legend.rate.infectious").css("color", "blue");
+    else $("output.daily.legend.rate.infectious").css("color", "white");
+    $("output.daily.legend.rate.infectious").text((Math.round(prob_calc(get_params(initParams))[0] * 100) / 100).toFixed(2));
 
     w.postMessage({type: "RESUME", data: {
             area: age_policy_data,
@@ -1136,13 +1143,7 @@ function bed_change(dir) {
 
 function bed_update() {
     let plan = $("output.weekly.bed.plan"), cost = $("output.weekly.bed.cost");
-    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000 +
-        multiplayer_policy[0].value.reduce(
-            (prev, curr) => prev + curr.num, 0
-        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) +
-        multiplayer_policy[1].value.reduce(
-            (prev, curr) => prev + curr.num, 0
-        ) * 4000);
+    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000);
     if (parseInt(plan.val()) !== w.param.hospital_max) {
         plan.css("color", "yellow");
     } else plan.css("color", "white");
@@ -1155,7 +1156,13 @@ function toggle_week() {
         surface += parseInt(this.dataset.click);
     });
     bed_update();
-    let new_budget = 10000 * surface * 0.9 + bed_update();
+    let new_budget = 10000 * surface * 0.9 + bed_update() +
+        multiplayer_policy[0].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) +
+        multiplayer_policy[1].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * 4000;
     $("output.weekly.budget_next").val(new_budget.toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0}));
     if (new_budget > budget) {
         $("div.weekly.area.caution").css("opacity","100%");
@@ -1369,6 +1376,6 @@ function changePolicyMultiplayer (policy, player, direction) {
         if (multiplayer_policy[policyIdx].value[targetIdx].num <= 0) return;
         multiplayer_policy[policyIdx].value[targetIdx].num--;
     }
-    bed_update();
     getAction();
+    toggle_week();
 }
