@@ -100,7 +100,7 @@ socket.on("weekOver", function(msg) {
         $("output.student0" + studentIdx + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
         $("output.student0" + studentIdx + ".studentStatus.death").val(student["STAT"]["death"]);
         $("output.student0" + studentIdx + ".studentStatus.GDP").val(student["STAT"]["GDP"]);
-        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"]);
+        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(parseFloat(student["STAT"]["vaccine"]).toFixed(2));
     })
 })
 

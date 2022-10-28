@@ -911,7 +911,7 @@ function weekly_report() {
         .reduce((prev, curr) => prev + (curr.GDP *
             (data_to.S[9] + data_to.E1[9] + data_to.E2[9] + data_to.I1[9] + data_to.R1[9]) /
             w.param.node_num / 4 /
-            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))), 0)) / 20000;
+            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))), 0) / 200) / 100;
 
     weekOver(
         [$("output.infectious_now").val(), $("output.infectious_total").val()],
