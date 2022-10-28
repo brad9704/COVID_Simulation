@@ -1403,3 +1403,69 @@ div.weekly.statistics td {
     height: 21px;
     overflow: hidden;
 }
+
+g.actions {
+    position: absolute;
+}
+g.actions img:hover {
+    cursor: pointer;
+    filter: brightness(1.2);
+}
+
+g.actions.action01 img {
+    top: 200px;
+}
+g.actions.action02 img {
+    top: 295px;
+}
+g.actions img.student01.increase {
+    left: 90px;
+}
+g.actions img.student01.decrease {
+    left: 140px;
+}
+g.actions img.student02.increase {
+    left: 225px;
+}
+g.actions img.student02.decrease {
+    left: 275px;
+}
+g.actions img.student03.increase {
+    left: 360px;
+}
+g.actions img.student03.decrease {
+    left: 410px;
+}
+
+g.actions div {
+    position: absolute;
+    width: 129px;
+    height: 31px;
+    line-height: 31px;
+    font-size: 20px;
+    color: white;
+    text-align: center;
+}
+g.actions div output {
+    text-align: center;
+    width: 129px;
+    height: 31px;
+    line-height: 31px;
+    font-size: 20px;
+}
+g.actions.action01 div {
+    top: 245px;
+}
+g.actions.action02 div {
+    top: 340px;
+}
+
+g.actions div.student01 {
+    left: 70px;
+}
+g.actions div.student02 {
+    left: 204px;
+}
+g.actions div.student03 {
+    left: 338px;
+}

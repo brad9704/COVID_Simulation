@@ -38,6 +38,7 @@ var startSim = function(event_data) {
     param = event_data;
     param.sim_height = param["sim_size"];
     param.sim_width = param["sim_size"];
+    param.weightByPolicy = 1;
     running_time = 0;
     simulation = null;
 
@@ -103,7 +104,7 @@ function collision (node1, node2) {
 Transmission probability per contact
  */
 function TPC (node1) {
-    return param.TPC_base * param.age_infect[node1.age.toString()];
+    return param.TPC_base * param.age_infect[node1.age.toString()] * param.weightByPolicy;
 }
 
 function ticked() {
@@ -197,7 +198,10 @@ function apply_policy(policy) {
                 node.speed(Speed(area.data.find(a => a.age === node.getAgeGroup()).level));
             })
     })
-    simulation.nodes().forEach(node => node.param.hospital_max = policy.hospital_max);
+    simulation.nodes().forEach(node => {
+        node.param.hospital_max = Math.max(policy.hospital_max + policy.multiplayer_policy["action01"], 0);
+    });
+    param.weightByPolicy = Math.min(Math.max(0.5, 1 - policy.multiplayer_policy["action02"] * 0.05), 1.5);
 
     let temp = simulation.loc.get_surface(), line_rate = policy.rate;
     if (policy.surface.upper === "1") temp.push({

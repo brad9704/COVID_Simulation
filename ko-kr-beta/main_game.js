@@ -27,6 +27,12 @@ var age_policy_data = [
 var age_policy_data_fix = [
     {policy: 1, active: false}, {policy: 2, active: false}, {policy: 3, active: false}
 ];
+var multiplayer_policy = [
+    {policyNo: 1, name: "ICU_control", value: [{target: "student01", num: 0}, {target: "student02", num: 0}, {target: "student03", num: 0}]},
+    {policyNo: 2, name: "transfer_control", value: [{target: "student01", num: 0}, {target: "student02", num: 0}, {target: "student03", num: 0}]}
+];
+
+var received_multiplayer_policy = {"action01": 0, "action02": 0};
 
 var budget = 0;
 var turn_end = true;
@@ -701,7 +707,13 @@ function resume_simulation () {
             "left": $("line.weekly.border.invisible.left").attr("data-click"),
             "right": $("line.weekly.border.invisible.right").attr("data-click")
         };
-    let new_budget = budget - 10000 * (hospital_max - w.param.hospital_max);
+    let new_budget = budget - 10000 * (hospital_max - w.param.hospital_max) -
+        multiplayer_policy[0].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) -
+        multiplayer_policy[1].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * 4000;
     d3.selectAll("line.sim_board.svg_line")
         .data([{name: "upper", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (1 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (1 + line_rate) / 4},
             {name: "lower", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (3 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (3 + line_rate) / 4},
@@ -739,7 +751,8 @@ function resume_simulation () {
             rate: line_rate,
             hospital_max: hospital_max,
             surface: surface,
-            budget: budget
+            budget: budget,
+            multiplayer_policy: received_multiplayer_policy
         }});
     w.param.hospital_max = hospital_max;
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
@@ -848,7 +861,27 @@ function toggle_area(pos_x, pos_y, dir) {
 }
 
 function getAction() {
-    return [];
+    let std_list = NETWORK.USERLIST.filter(student => student.studentID !== NETWORK.STUDENT_ID);
+    multiplayer_policy.forEach(pol => {
+        pol.value.forEach(usr => {
+            $(`output.action0${pol.policyNo}.${usr.target}`).val(usr.num);
+        })
+    });
+
+    let policy_msg = {};
+    let dir = NETWORK.TEAMTYPE === "COOP" ? 1 : -1;
+    std_list.forEach((e, i) => {
+        policy_msg[e.studentID] = {
+            "action01": dir * multiplayer_policy[0].value[i],
+            "action02": dir * multiplayer_policy[1].value[i]
+        };
+        policy_msg[NETWORK.STUDENT_ID] = {
+            "action01": - dir * multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0),
+            "action02": 0
+        };
+    })
+
+    return std_list;
 }
 
 function weekly_report() {
@@ -1311,4 +1344,22 @@ function toggle_active(dom) {
     } else {
         el.classed("active",true).classed("inactive",false);
     }
+}
+
+function changePolicyMultiplayer (policy, player, direction) {
+    let policyIdx = multiplayer_policy.findIndex(p => p.policyNo === policy);
+    let targetIdx = multiplayer_policy[policyIdx].value.findIndex(cnt => cnt.target === player);
+    if ($(`output.${player}`).val() === "") return;
+
+    if (direction > 0) {
+        if (NETWORK.TEAMTYPE === "COOP" &&
+            multiplayer_policy[policyIdx].name === "ICU_control" &&
+            (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value[targetIdx].num) return;
+        if (multiplayer_policy[policyIdx].name === "transfer_control" && multiplayer_policy[policyIdx].value[targetIdx].num >= 10) return;
+        multiplayer_policy[policyIdx].value[targetIdx].num++;
+    } else {
+        if (multiplayer_policy[policyIdx].value[targetIdx].num <= 0) return;
+        multiplayer_policy[policyIdx].value[targetIdx].num--;
+    }
+    getAction();
 }

@@ -66,6 +66,7 @@ socket.on("loginSuccess", function(msg) {
         .attr("id", function(student) {return "std" + student.studentID;})
         .attr("class", "login user rows")
         .text(function(student) {return `${student.name}: ${student.status}`});
+
 });
 socket.on("loginFail", function(msg) {
     console.log("Login failed: " + msg["Reason"]);
@@ -100,7 +101,7 @@ socket.on("weekOver", function(msg) {
         $("output.student0" + studentIdx + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
         $("output.student0" + studentIdx + ".studentStatus.death").val(student["STAT"]["death"]);
         $("output.student0" + studentIdx + ".studentStatus.GDP").val(student["STAT"]["GDP"]);
-        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(parseFloat(student["STAT"]["vaccine"]).toFixed(2));
+        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"] !== "" ? parseFloat(student["STAT"]["vaccine"]).toFixed(2) : "");
     })
 })
 
@@ -131,6 +132,48 @@ function toggleReady(pos) {
     if (pos === "init") {
         socket.emit("gameReady", {is: NETWORK.USERLIST[studentIdx].status !== "ready"});
     } else if (pos === "week") {
+        $("input.weekly.tab.switch.overall").click();
+        let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
+            age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
+            age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
+            line_rate = 0.9,
+            hospital_max = parseInt($("output.weekly.bed.plan").val()),
+            budget_output = $("output.budget_now"),
+            surface = {
+                "upper": $("line.weekly.border.invisible.upper").attr("data-click"),
+                "lower": $("line.weekly.border.invisible.lower").attr("data-click"),
+                "left": $("line.weekly.border.invisible.left").attr("data-click"),
+                "right": $("line.weekly.border.invisible.right").attr("data-click")
+            };
+        let new_budget = budget - 10000 * (hospital_max - w.param.hospital_max) -
+            multiplayer_policy[0].value.reduce(
+                (prev, curr) => prev + curr.num, 0
+            ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) -
+            multiplayer_policy[1].value.reduce(
+                (prev, curr) => prev + curr.num, 0
+            ) * 4000;
+        d3.selectAll("line.sim_board.svg_line")
+            .data([{name: "upper", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (1 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (1 + line_rate) / 4},
+                {name: "lower", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (3 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (3 + line_rate) / 4},
+                {name: "left", x1: w.param["canvas_width"] * (1 - line_rate) / 4, y1: w.param["canvas_height"] / 2, x2: w.param["canvas_width"] * (1 + line_rate) / 4, y2: w.param["canvas_height"] / 2},
+                {name: "right", x1: w.param["canvas_width"] * (3 - line_rate) / 4, y1: w.param["canvas_height"] / 2, x2: w.param["canvas_width"] * (3 + line_rate) / 4, y2: w.param["canvas_height"] / 2}])
+            .join(enter => enter, update => update
+                .attr("class", function(d) {return "sim_board svg_line " + d.name;})
+                .attr("x1", function(d) {return d.x1;})
+                .attr("y1", function(d) {return d.y1;})
+                .attr("x2", function(d) {return d.x2;})
+                .attr("y2", function(d) {return d.y2;})
+            )
+            .style("opacity", function(d) {
+                if (surface[d.name] === "1") {
+                    new_budget -= 10000 * line_rate;
+                    return "100%";
+                } else return "0";
+            });
+        if (new_budget < 0) {
+            triggerInnerPopup("budget.over");
+            return -1;
+        }
         socket.emit("turnReady", {is: NETWORK.USERLIST[studentIdx].status !== "wReady",
             week: Math.floor(chart_data[chart_data.length - 1]["tick"] / 7),
             action: getAction()
@@ -175,6 +218,10 @@ socket.on("turnStart", function(msg) {
         .text(function (student) {
             return `${student.name}: ${student.status}`
         });
+    let multiplayer_policy_queue = msg["students"].find(std => std.studentID === NETWORK.STUDENT_ID)["queue"];
+    received_multiplayer_policy["action01"] = multiplayer_policy_queue.reduce((prev, curr) => prev + curr["value"][0], 0);
+    received_multiplayer_policy["action02"] = multiplayer_policy_queue.reduce((prev, curr) => prev + curr["value"][1], 0);
+
     resume_simulation();
 });
 
