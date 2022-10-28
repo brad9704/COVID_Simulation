@@ -872,16 +872,16 @@ function getAction() {
     let dir = NETWORK.TEAMTYPE === "COOP" ? 1 : -1;
     std_list.forEach((e, i) => {
         policy_msg[e.studentID] = {
-            "action01": dir * multiplayer_policy[0].value[i],
-            "action02": dir * multiplayer_policy[1].value[i]
+            "action01": dir * multiplayer_policy[0].value[i].num,
+            "action02": dir * multiplayer_policy[1].value[i].num
         };
         policy_msg[NETWORK.STUDENT_ID] = {
-            "action01": - dir * multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0),
+            "action01": -1 * dir * multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0),
             "action02": 0
         };
     })
 
-    return std_list;
+    return policy_msg;
 }
 
 function weekly_report() {
@@ -1136,7 +1136,13 @@ function bed_change(dir) {
 
 function bed_update() {
     let plan = $("output.weekly.bed.plan"), cost = $("output.weekly.bed.cost");
-    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000);
+    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000 -
+        multiplayer_policy[0].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) -
+        multiplayer_policy[1].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * 4000);
     if (parseInt(plan.val()) !== w.param.hospital_max) {
         plan.css("color", "yellow");
     } else plan.css("color", "white");
@@ -1349,13 +1355,15 @@ function toggle_active(dom) {
 function changePolicyMultiplayer (policy, player, direction) {
     let policyIdx = multiplayer_policy.findIndex(p => p.policyNo === policy);
     let targetIdx = multiplayer_policy[policyIdx].value.findIndex(cnt => cnt.target === player);
-    if ($(`output.${player}`).val() === "") return;
+    if ($(`output.${player}`).val() === "") {
+        return;
+    }
 
     if (direction > 0) {
         if (NETWORK.TEAMTYPE === "COOP" &&
             multiplayer_policy[policyIdx].name === "ICU_control" &&
             (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value[targetIdx].num) return;
-        if (multiplayer_policy[policyIdx].name === "transfer_control" && multiplayer_policy[policyIdx].value[targetIdx].num >= 10) return;
+        if (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control") || multiplayer_policy[policyIdx].name === "transfer_control") && multiplayer_policy[policyIdx].value[targetIdx].num >= 10) return;
         multiplayer_policy[policyIdx].value[targetIdx].num++;
     } else {
         if (multiplayer_policy[policyIdx].value[targetIdx].num <= 0) return;
