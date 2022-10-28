@@ -1136,10 +1136,10 @@ function bed_change(dir) {
 
 function bed_update() {
     let plan = $("output.weekly.bed.plan"), cost = $("output.weekly.bed.cost");
-    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000 -
+    cost.val((parseInt(plan.val()) - w.param.hospital_max) * 10000 +
         multiplayer_policy[0].value.reduce(
             (prev, curr) => prev + curr.num, 0
-        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) -
+        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) +
         multiplayer_policy[1].value.reduce(
             (prev, curr) => prev + curr.num, 0
         ) * 4000);
@@ -1369,5 +1369,6 @@ function changePolicyMultiplayer (policy, player, direction) {
         if (multiplayer_policy[policyIdx].value[targetIdx].num <= 0) return;
         multiplayer_policy[policyIdx].value[targetIdx].num--;
     }
+    bed_update();
     getAction();
 }
