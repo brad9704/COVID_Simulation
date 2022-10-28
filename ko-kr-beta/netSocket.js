@@ -46,6 +46,15 @@ socket.on("loginSuccess", function(msg) {
     NETWORK.TEAM = msg["team"];
     NETWORK.HOST = msg["host"];
     NETWORK.USERLIST = msg["students"];
+    NETWORK.USERLIST.forEach(student => {
+        student["STAT"] = {
+            "infected": "",
+            "ICU": "",
+            "death": "",
+            "GDP": "",
+            "vaccine": ""
+        };
+    });
 
     $("#loginForm > input").attr("disabled",true);
 
@@ -62,7 +71,9 @@ socket.on("loginFail", function(msg) {
     console.log("Login failed: " + msg["Reason"]);
 });
 socket.on("updateUserLogin", function(msg) {
-    NETWORK.USERLIST = msg["students"];
+    NETWORK.USERLIST.forEach(student => {
+        student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
+    });
     d3.selectAll("div.login.userlist")
         .selectAll("div")
         .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
@@ -82,17 +93,20 @@ socket.on("weekOver", function(msg) {
     let studentIdx = NETWORK.USERLIST.findIndex(student =>
         student.studentID === msg["studentID"]);
     NETWORK.USERLIST[studentIdx]["STAT"] = msg["result"];
-    let student = NETWORK.USERLIST[studentIdx];
-    $("output.student0" + studentIdx + ".studentName").val(student.name);
-    $("output.student0" + studentIdx + ".studentStatus.infectious").val(student["STAT"]["infected"]);
-    $("output.student0" + studentIdx + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
-    $("output.student0" + studentIdx + ".studentStatus.death").val(student["STAT"]["death"]);
-    $("output.student0" + studentIdx + ".studentStatus.GDP").val(student["STAT"]["GDP"]);
-    $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"]);
+    NETWORK.USERLIST.forEach((student, studentIdx) => {
+        $("output.student0" + studentIdx + ".studentName").val(student.name);
+        $("output.student0" + studentIdx + ".studentStatus.infectious").val(student["STAT"]["infected"]);
+        $("output.student0" + studentIdx + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
+        $("output.student0" + studentIdx + ".studentStatus.death").val(student["STAT"]["death"]);
+        $("output.student0" + studentIdx + ".studentStatus.GDP").val(student["STAT"]["GDP"]);
+        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"]);
+    })
 })
 
 socket.on("turnReady", function(msg) {
-    NETWORK.USERLIST = msg["students"];
+    NETWORK.USERLIST.forEach(student => {
+        student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
+    });
     d3.selectAll("div.login.userlist")
         .selectAll("div")
         .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
@@ -139,7 +153,9 @@ function turnStart() {
 }
 
 socket.on("gameStart", function(msg) {
-    NETWORK.USERLIST = msg["students"];
+    NETWORK.USERLIST.forEach(student => {
+        student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
+    });
     d3.selectAll("div.login.userlist")
         .selectAll("div")
         .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
@@ -149,7 +165,9 @@ socket.on("gameStart", function(msg) {
     start_simulation();
 });
 socket.on("turnStart", function(msg) {
-    NETWORK.USERLIST = msg["students"];
+    NETWORK.USERLIST.forEach(student => {
+        student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
+    });
     d3.selectAll("div.login.userlist")
         .selectAll("div")
         .data(NETWORK.USERLIST, function(student) {return student ? student.studentID : "std" + this.id;})
