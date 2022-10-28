@@ -1399,4 +1399,7 @@ div.weekly.statistics table {
 div.weekly.statistics td {
     font-size: 18px;
     line-height: 21px;
+    width: 129px;
+    height: 21px;
+    overflow: hidden;
 }
