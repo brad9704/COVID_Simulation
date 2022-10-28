@@ -1381,3 +1381,22 @@ svg > text {
     -moz-user-select: none;
     -ms-user-select: none;
 }
+
+div.weekly.statistics {
+    position: absolute;
+    top: 50px;
+    left: 72px;
+    text-align: center;
+
+}
+
+div.weekly.statistics table {
+    color: #2E2886;
+        text-align: center;
+    width: 388px;
+}
+
+div.weekly.statistics td {
+    font-size: 18px;
+    line-height: 21px;
+}

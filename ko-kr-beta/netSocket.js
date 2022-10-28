@@ -81,6 +81,14 @@ socket.on("chat", function(msg) {
 socket.on("weekOver", function(msg) {
     NETWORK.USERLIST[NETWORK.USERLIST.findIndex(student =>
         student.studentID === msg["studentID"])]["STAT"] = msg["result"];
+    NETWORK.USERLIST.forEach((student, i) => {
+        $("output.student0" + i + ".studentName").val(student.name);
+        $("output.student0" + i + ".studentStatus.infectious").val(student["STAT"]["infected"]);
+        $("output.student0" + i + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
+        $("output.student0" + i + ".studentStatus.death").val(student["STAT"]["death"]);
+        $("output.student0" + i + ".studentStatus.GDP").val(student["STAT"]["GDP"]);
+        $("output.student0" + i + ".studentStatus.vaccine").val(student["STAT"]["vaccine"]);
+    })
 })
 
 socket.on("turnReady", function(msg) {
