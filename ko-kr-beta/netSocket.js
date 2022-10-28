@@ -93,7 +93,8 @@ socket.on("weekOver", function(msg) {
     let studentIdx = NETWORK.USERLIST.findIndex(student =>
         student.studentID === msg["studentID"]);
     NETWORK.USERLIST[studentIdx]["STAT"] = msg["result"];
-    NETWORK.USERLIST.forEach((student, studentIdx) => {
+    NETWORK.USERLIST.filter(student => student.studentID !== NETWORK.STUDENT_ID).forEach((student, i) => {
+        let studentIdx = i + 1;
         $("output.student0" + studentIdx + ".studentName").val(student.name);
         $("output.student0" + studentIdx + ".studentStatus.infectious").val(student["STAT"]["infected"]);
         $("output.student0" + studentIdx + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
