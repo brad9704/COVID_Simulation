@@ -133,12 +133,8 @@ function toggleReady(pos) {
         socket.emit("gameReady", {is: NETWORK.USERLIST[studentIdx].status !== "ready"});
     } else if (pos === "week") {
         $("input.weekly.tab.switch.overall").click();
-        let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
-            age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
-            age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
-            line_rate = 0.9,
+        let line_rate = 0.9,
             hospital_max = parseInt($("output.weekly.bed.plan").val()),
-            budget_output = $("output.budget_now"),
             surface = {
                 "upper": $("line.weekly.border.invisible.upper").attr("data-click"),
                 "lower": $("line.weekly.border.invisible.lower").attr("data-click"),
