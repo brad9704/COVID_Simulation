@@ -1053,6 +1053,7 @@ line.weekly.border.visible {
     text-align: center;
     align-content: center;
     font-size: 15px;
+    background-color: rgba(0,0,0,0);
 }
 
 #button_turnReady {
@@ -1125,8 +1126,9 @@ div.login.userlist.weekly div.userlist_dt img {
 div.login.userlist.weekly div.userlist_dt output {
     width: 80px;
     left: 0;
-    top: 30px;
+    top: 25px;
     text-align: center;
+    font-family: "ONEMobileTitle", sans-serif;
 }
 
 .panel_policy input[type=number] {
