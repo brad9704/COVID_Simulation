@@ -97,12 +97,12 @@ socket.on("updateUserLogin", function(msg) {
 
     d3.select("#button_ready")
         .attr("src", NETWORK.USERLIST.find(student =>
-            student.studentID === NETWORK.STUDENT_ID).status === "ready" ?
+            student.studentID === NETWORK.STUDENT_ID).status === "READY" ?
             "img/Ready_on.png" : "img/Ready_off.png");
     d3.select("#button_start")
         .attr("src", (NETWORK.STUDENT_ID == null ||
             !NETWORK.HOST ||
-            NETWORK.USERLIST.find(student => student.status === "online")) ?
+            NETWORK.USERLIST.find(student => student.status === "ONLINE")) ?
             "img/Start_disabled.png" : "img/Start_off.png");
 
 });
@@ -143,7 +143,9 @@ socket.on("turnReady", function(msg) {
 });
 
 socket.on("gameOver", function(msg) {
-    let user = msg["studentID"];
+    NETWORK.USERLIST.forEach(student => {
+        student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
+    });
 })
 
 window.onbeforeunload = function() {
@@ -154,7 +156,7 @@ function toggleReady(pos) {
     if (NETWORK.STUDENT_ID == null) return;
     let studentIdx = NETWORK.USERLIST.findIndex(student => student.studentID === NETWORK.STUDENT_ID)
     if (pos === "init") {
-        socket.emit("gameReady", {is: NETWORK.USERLIST[studentIdx].status !== "ready"});
+        socket.emit("gameReady", {is: NETWORK.USERLIST[studentIdx].status !== "READY"});
     } else if (pos === "week") {
         $("input.weekly.tab.switch.overall").click();
         let line_rate = 0.9,
@@ -194,7 +196,7 @@ function toggleReady(pos) {
             triggerInnerPopup("budget.over");
             return -1;
         }
-        socket.emit("turnReady", {is: NETWORK.USERLIST[studentIdx].status !== "wReady",
+        socket.emit("turnReady", {is: NETWORK.USERLIST[studentIdx].status !== "WREADY",
             week: Math.floor(chart_data[chart_data.length - 1]["tick"] / 7),
             action: getAction()
         });
@@ -206,13 +208,14 @@ function toggleReady(pos) {
 function gameStart() {
     if (NETWORK.STUDENT_ID == null) return;
     if (!NETWORK.HOST) return;
-    if (NETWORK.USERLIST.find(student => student.status === "online")) return;
+    if (NETWORK.USERLIST.find(student => student.status === "ONLINE" ||
+        student.status === "PLAYING" || student.status === "WREADY")) return;
     socket.emit("gameStart");
 }
 function turnStart() {
     if (NETWORK.STUDENT_ID == null) return;
     if (!NETWORK.HOST) return;
-    if (NETWORK.USERLIST.find(student => student.status !== "wReady" && student.status !== "offline")) return;
+    if (NETWORK.USERLIST.find(student => student.status === "PLAYING")) return;
     socket.emit("turnStart");
 }
 
@@ -256,3 +259,10 @@ function weekOver(infected, ICU, death, GDP, vaccine) {
     socket.emit("weekOver", {infected: infected, ICU: ICU, death: death, GDP: GDP, vaccine: vaccine});
 }
 
+function gameOver() {
+    socket.emit("gameOver");
+}
+
+function gameReset() {
+    socket.emit("gameReset");
+}

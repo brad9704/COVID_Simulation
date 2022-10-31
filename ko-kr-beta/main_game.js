@@ -229,9 +229,24 @@ function updateSim(param, node_data, time) {
         chart_update(param, chart_param, chart_data);
         chart = 0;
     }
-//    if (time % (param.turnUnit * param.fps) === 0) pause_simulation();
-    if (node_data.filter(e => e.state === state.S || e.state === state.R1 || e.state === state.R2).length === node_data.length &&
-        node_data.filter(e => e.state === state.R1 || e.state === state.R2).length > 0) {
+
+    if (vaccine_research > 100 || chart_data.length > 365 ||
+        (node_data.filter(e =>
+            e.state === state.S ||
+            e.state === state.R1 ||
+            e.state === state.R2
+            ).length === node_data.length &&
+        node_data.filter(e =>
+            e.state === state.R1 ||
+            e.state === state.R2
+        ).length > 0)) gameOver();
+
+    if ((NETWORK.TEAMTYPE === "COMP" &&
+        NETWORK.USERLIST.some(student => student.status === "FINISHED")) ||
+        (NETWORK.TEAMTYPE === "COOP" &&
+            NETWORK.USERLIST.every(student =>
+                student.status !== "PLAYING" &&
+                student.status !== "WREADY"))) {
         while (chart_data.length < 365) {
             let temp_data = {
                 "tick": Math.round(time / param.fps),
@@ -669,6 +684,7 @@ function reset_simulation() {
     $("input.policy.level[data-level=4]").val((0.30).toFixed(2));
     $("select.area_policy.option").val(0);
     toggle_week();
+    gameReset();
     $("#popup_init").fadeIn();
 }
 function pause_simulation() {
