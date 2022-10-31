@@ -45,6 +45,8 @@ socket.on("loginSuccess", function(msg) {
     NETWORK.TEAMTYPE = msg["teamType"];
     NETWORK.TEAM = msg["team"];
     NETWORK.HOST = msg["host"];
+    NETWORK.HINT = msg["hint"];
+    NETWORK.HINTNUM = 0;
     NETWORK.USERLIST = msg["students"];
     NETWORK.USERLIST.forEach(student => {
         student["STAT"] = {
@@ -55,6 +57,7 @@ socket.on("loginSuccess", function(msg) {
             "vaccine": ""
         };
     });
+    d3.select("img.weekly.tab.back.area").attr("src", "img/WR_03_" + NETWORK.TEAMTYPE + ".png");
 
     $("#loginForm > input").attr("disabled",true);
     $("#loginForm").fadeOut();
@@ -122,6 +125,10 @@ socket.on("weekOver", function(msg) {
     NETWORK.USERLIST[studentIdx]["STAT"] = msg["result"];
     NETWORK.USERLIST.filter(student => student.studentID !== NETWORK.STUDENT_ID).forEach((student, i) => {
         let studentIdx = i + 1;
+        if (student.status !== "PLAYING" && student.status !== "WREADY") {
+            $("output.student0" + studentIdx).val("");
+            return;
+        }
         $("output.student0" + studentIdx + ".studentName").val(student.name);
         $("output.student0" + studentIdx + ".studentStatus.infectious").val(student["STAT"]["infected"]);
         $("output.student0" + studentIdx + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
@@ -221,6 +228,7 @@ function toggleReady(pos) {
             triggerInnerPopup("budget.over");
             return -1;
         }
+        toggle_weekly_input(NETWORK.USERLIST[studentIdx].status !== "WREADY");
         socket.emit("turnReady", {is: NETWORK.USERLIST[studentIdx].status !== "WREADY",
             week: Math.floor(chart_data[chart_data.length - 1]["tick"] / 7),
             action: getAction()
@@ -262,6 +270,7 @@ socket.on("gameStart", function(msg) {
         .attr("id", function(student) {return "out" + student.studentID;})
         .text(function(student) {return student.name})
         .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+    toggle_weekly_input(true);
     start_simulation();
 });
 socket.on("turnStart", function(msg) {
@@ -277,7 +286,7 @@ socket.on("turnStart", function(msg) {
     let multiplayer_policy_queue = msg["students"].find(std => std.studentID === NETWORK.STUDENT_ID)["queue"];
     received_multiplayer_policy["action01"] = multiplayer_policy_queue.reduce((prev, curr) => prev + curr["value"][0], 0);
     received_multiplayer_policy["action02"] = multiplayer_policy_queue.reduce((prev, curr) => prev + curr["value"][1], 0);
-
+    toggle_weekly_input(true);
     resume_simulation();
 });
 
@@ -292,3 +301,19 @@ function gameOver() {
 function gameReset() {
     socket.emit("gameReset");
 }
+
+function hintFound(hint) {
+    socket.emit("hintFound", {type: hint});
+}
+socket.on("hintFound", function(msg) {
+    let addedHintNum = NETWORK.HINTNUM;
+    NETWORK.HINT.keys().forEach(key => {
+        if (NETWORK.HINT[key] !== 1 && msg.HINT[key] === 1) {
+            NETWORK.HINT[key] = true;
+            addedHintNum++;
+        }
+    });
+    if (addedHintNum > 0) $("output.numHintFound").val(addedHintNum).css("display", "inline");
+    else $("output.numHintFound").val(addedHintNum).css("display", "none");
+    NETWORK.HINTNUM = addedHintNum;
+})

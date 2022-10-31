@@ -1,4 +1,4 @@
-/*ver.2022.03.15.01*/
+/*ver.2022.11.01.01*/
 // noinspection HttpUrlsUsage
 const REQUEST_ID = "https://chickenberry.ddns.net:8192/FTC";
 var ONLINE = true;
@@ -160,6 +160,7 @@ w.onmessage = function(event) {
             break;
         case "PAUSE":
             pause_simulation();
+            toggle_weekly_input(false);
             weekly_report();
             break;
         case "CONSOLE_LOG":
@@ -817,8 +818,10 @@ function change_speed(direction) {
     let speed_addr = $("#speed_out");
     if (direction > 0) {
         if (running_speed === 8) {
+/*
             toggle_auto("1");
             speed_addr.val("AUTO");
+ */
             return;
         }
         running_speed *= 2;
@@ -1131,6 +1134,13 @@ function weekly_report() {
         update_weekly_output();
     });
 
+
+    [1,2].forEach(policy => {
+        [1, 2, 3].forEach(studentNo => {
+            changePolicyMultiplayer(policy, `student0${studentNo}`, 0);
+        })
+    })
+
 }
 
 var auto = false;
@@ -1256,6 +1266,9 @@ function triggerInnerPopup(popupType) {
     $("img.innerPopup").css("display", "none");
     $("img.innerPopup.resume").css("display", "block");
     $("img.innerPopup." + popupType).css("display", "block");
+    let newBudget = Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit * 4), 0), chart_data.length)
+        .reduce((prev, curr) => prev + (curr.GDP / 4 / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
+    $("output.innerPopup.budget.gain").val("$" + newBudget).css("display", popupType === "budget.gain" ? "block" : "none");
     $("#popupInnerPopup").fadeIn();
 }
 
@@ -1263,10 +1276,6 @@ function updateTotalI2(nodes) {
     $("output.I2_total").each(function() {
         this.value = nodes.filter(node => node.flag.includes("FLAG_SEVERE")).length;
     });
-}
-
-function getSchoolList() {
-
 }
 
 async function sendRequest(action, arg) {
@@ -1378,20 +1387,74 @@ function toggle_active(dom) {
 function changePolicyMultiplayer (policy, player, direction) {
     let policyIdx = multiplayer_policy.findIndex(p => p.policyNo === policy);
     let targetIdx = multiplayer_policy[policyIdx].value.findIndex(cnt => cnt.target === player);
+
+    d3.selectAll(`div.weekly.area.actions img.increase.action0${policy}.${player}`).attr("src", `img/button_${NETWORK.TEAMTYPE}_increase.png`);
+    d3.selectAll(`div.weekly.area.actions img.decrease.action0${policy}.${player}`).attr("src", `img/button_${NETWORK.TEAMTYPE}_decrease.png`);
+
     if ($(`output.${player}`).val() === "") {
+        d3.selectAll("div.weekly.area.actions img.increase").attr("src", "img/button_disabled_increase.png");
+        d3.selectAll("div.weekly.area.actions img.decrease").attr("src", "img/button_disabled_decrease.png");
         return;
+    }
+    let positive = !(
+        (NETWORK.TEAMTYPE === "COOP" &&
+            multiplayer_policy[policyIdx].name === "ICU_control" &&
+            (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value[targetIdx].num
+        ) ||
+        (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control") ||
+            multiplayer_policy[policyIdx].name === "transfer_control") &&
+            multiplayer_policy[policyIdx].value[targetIdx].num >= 10));
+
+    let negative = multiplayer_policy[policyIdx].value[targetIdx].num > 0;
+
+    if (!positive) {
+        d3.selectAll(`div.weekly.area.actions img.increase.action0${policy}.${player}`).attr("src", "img/button_disabled_increase.png");
+    }
+    else if (!negative) {
+        d3.selectAll(`div.weekly.area.actions img.decrease.action0${policy}.${player}`).attr("src", "img/button_disabled_decrease.png");
     }
 
     if (direction > 0) {
-        if (NETWORK.TEAMTYPE === "COOP" &&
-            multiplayer_policy[policyIdx].name === "ICU_control" &&
-            (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value[targetIdx].num) return;
-        if (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control") || multiplayer_policy[policyIdx].name === "transfer_control") && multiplayer_policy[policyIdx].value[targetIdx].num >= 10) return;
+        if (!positive) return;
         multiplayer_policy[policyIdx].value[targetIdx].num++;
-    } else {
-        if (multiplayer_policy[policyIdx].value[targetIdx].num <= 0) return;
+    } else if (direction < 0) {
+        if (!negative) return;
         multiplayer_policy[policyIdx].value[targetIdx].num--;
-    }
+    } else return;
     getAction();
     toggle_week();
+    changePolicyMultiplayer(policy, player, 0);
 }
+
+function toggle_weekly_input(bool) {
+    $("div.weekly.age.area.tab.weekly_policy input").attr("disabled", bool);
+    $("input.weekly.tab.switch").attr("disabled", bool);
+    $("div.weekly.age.area.tab.weekly_policy img").attr("disabled", bool);
+}
+
+$("div.hint").on("click", function() {
+    if (NETWORK.STUDENT_ID === null) return;
+    if (run) {
+        toggle_run();
+        $("input.closeHint").on("click", function() {
+            $("#popup_hint").fadeOut();
+            toggle_run();
+        })
+    } else {
+        $("input.closeHint").on("click", toggle_run);
+    }
+    d3.select("div.hintTitle")
+        .selectAll("input.topic")
+        .data(keyFacts, function(e) {return e ? e["topic"] : "topic_" + this.id;})
+        .join(enter => enter.append("input")
+                .attr("type", "button")
+                .attr("class", "topic")
+                .attr("value", function(e) {return e["topic"];})
+                .classed("found", function(e) {return e["status"] > 0})
+                .classed("read", function(e) {return e["status"] > 1}),
+            update => update.classed("found", function(e) {return e["status"] > 0})
+                .classed("read", function(e) {return e["status"] > 1}));
+
+
+    $("#popup_hint").fadeIn();
+})

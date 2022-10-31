@@ -70,7 +70,7 @@
             <img class="rescale" src="img/WR_틀_예산 포함.png" alt="">
             <img class="weekly tab back overall" src="img/주간보고_01_Report_ENG.png" alt="">
             <img class="weekly tab back age" src="img/주간보고_02_Policy.png" alt="" style="display:none">
-            <img class="weekly tab back area" src="img/주간보고_03_Multi_초안.png" alt="" style="display:none">
+            <img class="weekly tab back area" src="img/WR_03_COOP.png" alt="" style="display:none">
             <div class="weekly switch tabs">
                 <img class="weekly tab01 icon" src="img/icon_1.png" alt="">
                 <input class="weekly tab switch overall" type="button" value="TRENDS" active="true" onclick="
@@ -207,48 +207,48 @@
                         <div class="weekly area actions">
                             <div class="actions action01">
                                 <g class="actions action01 student01">
-                                    <img src="img/button_increase.png" alt="" class="action01 student01 increase rescale" onclick="changePolicyMultiplayer(1, 'student01', 1)">
-                                    <img src="img/button_decrease.png" alt="" class="action01 student01 decrease rescale" onclick="changePolicyMultiplayer(1, 'student01', -1)">
                                     <div class="action01 student01 status">
                                         <output class="action01 student01 status">0</output>
                                     </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action01 student01 decrease " onclick="changePolicyMultiplayer(1, 'student01', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action01 student01 increase " onclick="changePolicyMultiplayer(1, 'student01', 1)">
                                 </g>
                                 <g class="actions action01 student02">
-                                    <img src="img/button_increase.png" alt="" class="action01 student02 increase rescale" onclick="changePolicyMultiplayer(1, 'student02', 1)">
-                                    <img src="img/button_decrease.png" alt="" class="action01 student02 decrease rescale" onclick="changePolicyMultiplayer(1, 'student02', -1)">
                                     <div class="action01 student02 status">
                                         <output class="action01 student02 status">0</output>
                                     </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action01 student02 decrease " onclick="changePolicyMultiplayer(1, 'student02', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action01 student02 increase " onclick="changePolicyMultiplayer(1, 'student02', 1)">
                                 </g>
                                 <g class="actions action01 student03">
-                                    <img src="img/button_increase.png" alt="" class="action01 student03 increase rescale" onclick="changePolicyMultiplayer(1, 'student03', 1)">
-                                    <img src="img/button_decrease.png" alt="" class="action01 student03 decrease rescale" onclick="changePolicyMultiplayer(1, 'student03', -1)">
                                     <div class="action01 student03 status">
                                         <output class="action01 student03 status">0</output>
                                     </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action01 student03 decrease " onclick="changePolicyMultiplayer(1, 'student03', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action01 student03 increase " onclick="changePolicyMultiplayer(1, 'student03', 1)">
                                 </g>
                             </div>
                             <div class="actions action02">
                                 <g class="actions action02 student01">
-                                    <img src="img/button_increase.png" alt="" class="action02 student01 increase rescale" onclick="changePolicyMultiplayer(2, 'student01', 1)">
-                                    <img src="img/button_decrease.png" alt="" class="action02 student01 decrease rescale" onclick="changePolicyMultiplayer(2, 'student01', -1)">
                                     <div class="action02 student01 status">
                                         <output class="action02 student01 status">0</output>
                                     </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action02 student01 decrease " onclick="changePolicyMultiplayer(2, 'student01', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action02 student01 increase " onclick="changePolicyMultiplayer(2, 'student01', 1)">
                                 </g>
                                 <g class="actions action02 student02">
-                                    <img src="img/button_increase.png" alt="" class="action02 student02 increase rescale" onclick="changePolicyMultiplayer(2, 'student02', 1)">
-                                    <img src="img/button_decrease.png" alt="" class="action02 student02 decrease rescale" onclick="changePolicyMultiplayer(2, 'student02', -1)">
                                     <div class="action02 student02 status">
                                         <output class="action02 student02 status">0</output>
                                     </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action02 student02 decrease " onclick="changePolicyMultiplayer(2, 'student02', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action02 student02 increase " onclick="changePolicyMultiplayer(2, 'student02', 1)">
                                 </g>
                                 <g class="actions action02 student03">
-                                    <img src="img/button_increase.png" alt="" class="action02 student03 increase rescale" onclick="changePolicyMultiplayer(2, 'student03', 1)">
-                                    <img src="img/button_decrease.png" alt="" class="action02 student03 decrease rescale" onclick="changePolicyMultiplayer(2, 'student03', -1)">
                                     <div class="action02 student03 status">
                                         <output class="action02 student03 status">0</output>
                                     </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action02 student03 decrease " onclick="changePolicyMultiplayer(2, 'student03', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action02 student03 increase " onclick="changePolicyMultiplayer(2, 'student03', 1)">
                                 </g>
                             </div>
                         </div>
@@ -282,13 +282,17 @@
         </div>
     </div>
 </div>
+<div class="hint">
+    <output class="numHintFound" style="display: none">1</output>
+</div>
 <div id="popupInnerPopup" class="popup">
     <div class="popBg"></div>
     <div class="popInnerBox">
         <div class="popBody">
-            <img class="innerPopup budget over rescale" style="display:none" src="img/InnerPopup.png" alt="">
-            <img class="innerPopup budget gain rescale" src="img/InnerPopupIncome.png" alt="">
-            <img class="innerPopup resume rescale" src="img/InnerPopupConfirm.png" alt="" onclick="$('#popupInnerPopup').fadeOut()">
+            <img class="innerPopup budget over" style="display:none" src="img/InnerPopupBudgetOver.png" alt="">
+            <img class="innerPopup budget gain" src="img/InnerPopupBudgetReceived.png" alt="">
+            <output class="innerPopup budget gain"></output>
+            <img class="innerPopup resume" src="img/InnerPopup_확인버튼.png" alt="" onclick="$('#popupInnerPopup').fadeOut()">
         </div>
     </div>
 </div>
@@ -312,6 +316,14 @@
         </div>
         <div class="popFoot">
         </div>
+    </div>
+</div>
+<div id="popup_hint" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox hintBox">
+        <div class="hintTitle"></div>
+        <div class="hintBody"></div>
+        <input type="button" value="Exit" class="closeHint" onclick="">
     </div>
 </div>
 <div id="popup_init" class="popup">
@@ -501,7 +513,7 @@
 <script src="main_game.js"></script>
 <script src="netSocket.js"></script>
 <script type="text/javascript">
-    var initParams, virusData;
+    var initParams, virusData, keyFacts;
 
     d3.xml("img/node_info.svg").then(data => {
         d3.select("div.popBody.node").node().append(data.documentElement)
@@ -517,10 +529,13 @@
 
         await Promise.all([
             fetch("default_params.json").then(e => e.json()),
-            fetch("virus_info.json").then(e => e.json())])
+            fetch("virus_info.json").then(e => e.json()),
+            fetch("Key_facts.json").then(e => e.json())])
             .then(response => {
                 initParams = response[0];
                 virusData = response[1];
+                keyFacts = response[2];
+                keyFacts.forEach(e => e.status = 0);
                 getVirus(virusData);
                 $("img").attr("draggable", "false");
             })
