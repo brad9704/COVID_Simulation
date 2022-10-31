@@ -154,9 +154,9 @@ form#loginForm input[type=submit]:not(:disabled):hover {
 #button_ready {
     background: none;
     position: absolute;
-    right: 199px;
+    right: 174px;
     top: 549px;
-    width: 129px;
+    width: 153px;
     height: 99px;
     cursor: pointer;
 }
@@ -165,7 +165,7 @@ form#loginForm input[type=submit]:not(:disabled):hover {
     position: absolute;
     right: 70px;
     top: 549px;
-    width: 129px;
+    width: 103px;
     height: 99px;
     cursor: pointer;
 }
@@ -1046,8 +1046,10 @@ line.weekly.border.visible {
 
 #button_wrapper {
     position: absolute;
-    top: 645px;
-    width: 100%;
+    top: 770px;
+    left: 315px;
+    width: 328px;
+    height: 157px;
     text-align: center;
     align-content: center;
     font-size: 15px;
@@ -1056,11 +1058,9 @@ line.weekly.border.visible {
 #button_turnReady {
     border: none;
     background-color: rgba(0,0,0,0);
-    border-radius: 0px;
-    width: 165px;
-    top: 124px;
+    width: 123px;
+    right: 0;
     position: absolute;
-    left: 285px;
     cursor: pointer;
 }
 #button_turnReady:hover {
@@ -1068,18 +1068,65 @@ line.weekly.border.visible {
 }
 
 #button_resume {
-    border: none;
     background-color: rgba(0,0,0,0);
-    border-radius: 0px;
-    width: 330px;
-    top: 201px;
-    height: 80px;
+    width: 123px;
+    top: 80px;
     position: absolute;
-    left: 284px;
+    right: 0;
     cursor: pointer;
 }
 #button_resume:hover {
     filter: brightness(150%);
+}
+
+div.login.userlist.weekly {
+    left: 0;
+    top: 0;
+    width: 205px;
+}
+div.login.userlist.weekly img {
+    left: 0;
+    top: 0;
+}
+div.login.userlist.weekly div.userlist_dt {
+    position: absolute;
+    text-align: center;
+    align-content: center;
+}
+div.login.userlist.weekly div.student00 {
+    width: 80px;
+    height: 45px;
+    top: 40px;
+    left: 20px;
+}
+div.login.userlist.weekly div.student01 {
+    width: 80px;
+    height: 45px;
+    top: 40px;
+    left: 105px;
+}
+div.login.userlist.weekly div.student02 {
+    width: 80px;
+    height: 45px;
+    top: 90px;
+    left: 20px;
+}
+div.login.userlist.weekly div.student03 {
+    width: 80px;
+    height: 45px;
+    top: 90px;
+    left: 105px;
+}
+
+div.login.userlist.weekly div.userlist_dt img {
+    width: 80px;
+}
+
+div.login.userlist.weekly div.userlist_dt output {
+    width: 80px;
+    left: 0;
+    top: 30px;
+    text-align: center;
 }
 
 .panel_policy input[type=number] {
