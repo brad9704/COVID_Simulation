@@ -1443,10 +1443,12 @@ $("div.hint").on("click", function() {
         $("input.closeHint").on("click", function() {
             $("#popup_hint").fadeOut();
             toggle_run();
+            $("input.closeHint").off("click");
         })
     } else {
         $("input.closeHint").on("click", function() {
             $("#popup_hint").fadeOut();
+            $("input.closeHint").off("click");
         });
     }
     updateHint();
