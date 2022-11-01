@@ -1,17 +1,17 @@
 [
 	{
-		"topic": "Flattening_the_Curve", "content": "TEST CONTENT"
+		"topic": "Flattening_the_Curve", "content": " Flattening the Curve is one of the principles for slowing the spread of the disease.\nThe main goal is to control the maximum number of people who need treatment so that the medical system can handle it, including hospital beds and medical staff. Seriously ill patients who are not treated in a timely manner, because of exceeded healthcare capacity, can lose their lives."
 	},
 	{
-		"topic": "SEIHR", "content": "TEST CONTENT"
+		"topic": "SEIHR", "content": " Many models were suggested to analyze and simulate infectious diseases. SEIHR model, consists of Susceptible, Exposed (Latent period), Infectious, Hospitalized, and Recovered or removed, is applied to this game."
 	},
 	{
-		"topic": "Latent_Period", "content": "TEST CONTENT"
+		"topic": "Latent_Period", "content": " People who are exposed to infectious pathogens usually shows symptoms after certain amount of time, which is called latent period or incubation period. During this period, people could or not show mild symptoms such as cough, fatigue etc. In case of COVID-19, it is known that latent period could be up to two weeks(14) or just one day, but in average it lasts for 5-7 days."
 	},
 	{
-		"topic": "Lockdown", "content": "TEST CONTENT"
+		"topic": "Lockdown", "content": " Lockdown is an extreme option for dealing with infectious diseases. With prohibiting most of movements between towns, cities and abroads, the spread of disease could dramatically decrease. However, it costs huge damage on economy and strong opposition would rise among the local people. Also, still there is no guarantee that this will eliminate the pandemic. The longer the policy applied, the more economic damage will be given to the residents."
 	},
 	{
-		"topic": "Social_Distancing", "content": "TEST CONTENT"
+		"topic": "Social_Distancing", "content": " Social distancing prevents the spread of a contagious disease by reducing the movement of people. Common methods are 1) closing of schools and workplaces, 2) restricting the movement of people such as isolation or quarantine, and 3) cancellation of mass gatherings. However it could induce side effects such as loneliness and economic costs."
 	}
 ]
