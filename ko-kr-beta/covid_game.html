@@ -11,7 +11,7 @@
 <body>
 <img id="background" src="img/background.png" alt="">
 <div class="sidebar">
-    <div class="Day"><output class="weekly_week">0</output>주 / <output id="turn_day">0</output><text id="day_text">일</text></div>
+    <div class="Day">Week <output class="weekly_week">0</output> / <text id="day_text">Day</text> <output id="turn_day">0</output></div>
     <div class="speed">
         <div id="speed_output_wrapper">
             <output id="speed_out">X 1</output>
@@ -27,7 +27,7 @@
     </div>
     <div class="daily legend">
         <img class="daily" src="img/virus_info_panel.png" alt="">
-        <img class="daily background rescale" src="img/stagePopulation.png" alt="">
+        <img class="daily background" src="img/stagePopulation.png" alt="">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
         <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
         <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
@@ -103,7 +103,7 @@
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">
-                    <div class="weekly date"><output class="weekly_week">1</output>주: <output class="weekly_date_from">1</output>~<output class="weekly_date_to">7</output>일차</div>
+                    <div class="weekly date">Week <output class="weekly_week">1</output>: Day <output class="weekly_date_from">1</output>~<output class="weekly_date_to">7</output></div>
                     <table>
                         <tr>
                             <td><output id="weekly_new_infect">0</output></td>
@@ -118,8 +118,8 @@
                             <td class="weekly warning GDPs" data-value="0"></td>
                         </tr>
                     </table>
-                    <div class="weekly infectious">누적 확진자 <output class="weekly infectious" age="90">0</output>명, 누적 중증 <output class="I2_total">0</output>명</div>
-                    <div class="weekly death">누적 사망자 <output class="weekly death" age="90">0</output>명</div>
+                    <div class="weekly infectious">Infectious <output class="weekly infectious" age="90">0</output>, Severe <output class="I2_total">0</output></div>
+                    <div class="weekly death"><output class="weekly death" age="90">0</output> deaths</div>
                 </div> <br>
                 <div class="weekly_chart">
                     <div class="weekly_board">
@@ -138,7 +138,7 @@
                                 <img class="weekly age on_off policy03" src="img/policy03_off.png" alt="" onclick="toggleAgePolicy(2)"></div>
                         </div>
                         <div class="weekly beds">
-                            <div class="weekly bed plan"><output class="weekly bed plan">0</output>개</div>
+                            <div class="weekly bed plan"><output class="weekly bed plan">0</output> beds</div>
                             <div class="weekly bed cost">$<output class="weekly bed cost">0</output></div>
                         </div>
                         <img alt="" src="img/button_increase.png" class="policy bed rescale inc" onclick="bed_change(1);">
@@ -440,7 +440,7 @@
             </div>
             <div class="daily legend">
                 <img class="daily" src="img/virus_info_panel.png" alt="">
-                <img class="daily background rescale" src="img/stagePopulation.png" alt="">
+                <img class="daily background" src="img/stagePopulation.png" alt="">
                 <div class="virus name"><input class="virus name" onchange="$('text.virus.name').text(this.value)"></div>
                 <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
                 <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>

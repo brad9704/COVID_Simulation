@@ -1441,8 +1441,27 @@ $("div.hint").on("click", function() {
             toggle_run();
         })
     } else {
-        $("input.closeHint").on("click", toggle_run);
+        $("input.closeHint").on("click", function() {
+            $("#popup_hint").fadeOut();
+        });
     }
+    updateHint();
+
+    d3.selectAll("input.topic.found").on("click", function(e) {
+        keyFacts[keyFacts.findIndex(fact => fact["topic"] === e["topic"])]["status"] = 2;
+        d3.select("div.hintBody").text(e["content"]);
+        d3.selectAll("input.topic.found").classed("selected", false);
+        d3.select(this).classed("selected", true);
+        updateHint();
+    })
+    $("#popup_hint").fadeIn();
+})
+
+function updateHint() {
+    let addedHintNum = keyFacts.filter(fact => fact.status === 1).length;
+    if (addedHintNum > 0) $("output.numHintFound").val(addedHintNum).css("display", "inline");
+    else $("output.numHintFound").val(addedHintNum).css("display", "none");
+
     d3.select("div.hintTitle")
         .selectAll("input.topic")
         .data(keyFacts, function(e) {return e ? e["topic"] : "topic_" + this.id;})
@@ -1454,7 +1473,4 @@ $("div.hint").on("click", function() {
                 .classed("read", function(e) {return e["status"] > 1}),
             update => update.classed("found", function(e) {return e["status"] > 0})
                 .classed("read", function(e) {return e["status"] > 1}));
-
-
-    $("#popup_hint").fadeIn();
-})
+}

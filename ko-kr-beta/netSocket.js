@@ -77,6 +77,8 @@ socket.on("loginSuccess", function(msg) {
         .attr("id", function(student) {return "out" + student.studentID;})
         .text(function(student) {return student.name})
         .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+
+    hintFound("");
 });
 socket.on("loginFail", function(msg) {
     console.log("Login failed: " + msg["Reason"]);
@@ -84,7 +86,10 @@ socket.on("loginFail", function(msg) {
 socket.on("updateUserLogin", function(msg) {
     NETWORK.USERLIST.forEach(student => {
         student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
+        student["host"] = msg["students"].find(std => std.studentID === student.studentID)["host"];
     });
+    NETWORK.HOST = NETWORK.USERLIST.find(std => std.studentID === NETWORK.STUDENT_ID)["host"]
+
     d3.selectAll("div.login.userlist")
         .selectAll("img.login.userlist")
         .data(NETWORK.USERLIST, function(student) {return student ? "img" + student.studentID : this.id})
@@ -92,7 +97,8 @@ socket.on("updateUserLogin", function(msg) {
         .text(function(student) {return student.name})
         .attr("src", function(student) {
             return `img/Profile_${student.status}.png`
-        });
+        })
+        .classed("host", function(student) {return student.host});
     d3.selectAll("div.login.userlist")
         .selectAll("output.name", function(student) {return student ? "out" + student.studentID : this.id})
         .data(NETWORK.USERLIST)
@@ -291,7 +297,8 @@ socket.on("turnStart", function(msg) {
 });
 
 function weekOver(infected, ICU, death, GDP, vaccine) {
-    socket.emit("weekOver", {infected: infected, ICU: ICU, death: death, GDP: GDP, vaccine: vaccine});
+    socket.emit("weekOver", {week: Math.floor(chart_data[chart_data.length - 1]["tick"] / 7),
+        infected: infected, ICU: ICU, death: death, GDP: GDP, vaccine: vaccine});
 }
 
 function gameOver() {
@@ -306,14 +313,10 @@ function hintFound(hint) {
     socket.emit("hintFound", {type: hint});
 }
 socket.on("hintFound", function(msg) {
-    let addedHintNum = NETWORK.HINTNUM;
-    NETWORK.HINT.keys().forEach(key => {
-        if (NETWORK.HINT[key] !== 1 && msg.HINT[key] === 1) {
-            NETWORK.HINT[key] = true;
-            addedHintNum++;
+    keyFacts.forEach(fact => {
+        if (fact.status < 1 && msg.HINT[fact["topic"]]) {
+            fact.status = 1;
         }
     });
-    if (addedHintNum > 0) $("output.numHintFound").val(addedHintNum).css("display", "inline");
-    else $("output.numHintFound").val(addedHintNum).css("display", "none");
-    NETWORK.HINTNUM = addedHintNum;
+    updateHint();
 })

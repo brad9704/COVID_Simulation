@@ -99,6 +99,9 @@ div.login.form div.userlist_dt {
     text-align: center;
 }
 
+img.userlist.host {
+    box-shadow: 0 0 4px 2px red;
+}
 
 div.login.form div.student00 {
     top: 65px;
@@ -243,20 +246,20 @@ div.panel_output {
     text-align: center;
 }
 div.panel_output.infectious {
-    left: 122px;
+    left: 129px;
 }
 div.panel_output.hospital {
-    left: 277px;
+    left: 285px;
 }
 div.panel_output.death {
-    left: 425px;
+    left: 413px;
 }
 div.panel_output.GDP {
-    left: 608px;
+    left: 580px;
     font-size: 23px;
 }
 div.panel_output.budget {
-    left: 795px;
+    left: 775px;
 }
 
 .popup {
@@ -571,7 +574,7 @@ text.virus.name {
 
 div.daily.duration, div.daily.rate, div.daily.num {
     position: absolute;
-    font-size: 18px;
+    font-size: 16px;
     color: white;
     text-align: center;
     width: 50px;
@@ -582,22 +585,22 @@ div.daily > output {
 }
 
 div.daily.legend > div.duration, div.rate {
-    top: 107px;
+    top: 109px;
 }
 div.daily.duration.E2-I1 {
     right: 483px;
 }
 div.daily.duration.I1-I2 {
-     right: 298px;
+     right: 285px;
  }
 div.daily.duration.I1-R1 {
-    right: 389px;
+    right: 374px;
 }
 div.daily.rate.infectious {
-    right: 172px;
+    right: 152px;
 }
 div.daily.rate.severity {
-    right: 60px;
+    right: 30px;
 }
 
 div.daily.num {
@@ -1608,7 +1611,6 @@ div.hintTitle {
     position: absolute;
     width: 730px;
     height: 100px;
-    border: 1px solid white;
     top: 105px;
     left: 170px;
     text-align: left;
@@ -1618,7 +1620,6 @@ div.hintBody {
     position: absolute;
     width: 730px;
     height: 400px;
-    border: 1px solid white;
     top: 250px;
     left: 170px;
 }
@@ -1630,13 +1631,19 @@ div.hintTitle input.topic {
     color: rgba(0,0,0,0);
     background-color: rgb(150,150,150);
     margin: 5px 10px;
+    padding: 3px 5px;
     border-radius: 5px;
+    font-family: "ONEMobilePOPRegular", monospace;
 }
 
 div.hintTitle input.topic.found {
     color: #2e2886;
     background-color: yellow;
 }
+div.hintTitle input.topic.found:hover {
+     filter: brightness(1.2);
+ }
+
 div.hintTitle input.topic.found.read {
     background-color: white;
 }
@@ -1658,4 +1665,10 @@ div.hintBox input.closeHint[type=button] {
 }
 div.hintBox input.closeHint[type=button]:hover {
     background: rgba(0,0,0,1);
+}
+
+div.hintBody {
+    color: white;
+    font-size: 25px;
+    text-align: left;
 }
