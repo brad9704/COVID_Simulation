@@ -1202,6 +1202,8 @@ function toggle_week() {
 }
 
 function toggleAgePolicy(policyNum) {
+    if (age_policy_data_fix[2].active && policyNum !== 2) return;
+
     age_policy_data_fix[policyNum].active = !(age_policy_data_fix[policyNum].active);
     if (policyNum === 2) {
         if (age_policy_data_fix[policyNum].active) {
@@ -1436,7 +1438,7 @@ function toggle_weekly_input(bool) {
 
 $("div.hint").on("click", function() {
     if (NETWORK.STUDENT_ID === null) return;
-    if (run) {
+    if (run !== null) {
         toggle_run();
         $("input.closeHint").on("click", function() {
             $("#popup_hint").fadeOut();
