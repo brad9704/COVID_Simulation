@@ -331,6 +331,8 @@ function node_init(param, node_data, loc) {
         .then(data => {
             d3.select("#sim_board").append("div")
                 .attr("id", "sim_title")
+                .attr("onclick", "hintFound('Flattening_the_Curve'); d3.select(this).style('cursor', null);")
+                .style("cursor", "pointer")
                 .node().append(data.documentElement)
         });
     sim_cont.selectAll("g.background_rect")

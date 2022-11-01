@@ -27,9 +27,9 @@
     </div>
     <div class="daily legend">
         <img class="daily" src="img/virus_info_panel.png" alt="">
-        <img class="daily background" src="img/stagePopulation.png" alt="">
+        <img class="daily background" src="img/stagePopulation.png" alt="" style="cursor: pointer" onclick="hintFound('SEIHR'); d3.select(this).style('cursor', null);">
         <div class="virus name"><text class="virus name">COVID-19</text></div>
-        <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
+        <div class="daily duration E2-I1" style="cursor: pointer" onclick="hintFound('Latent_Period'); d3.select(this).style('cursor', null);"><output class="daily legend duration E2-I1">0-0</output></div>
         <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
         <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
         <div class="daily rate infectious board"><output class="daily legend rate infectious">0%</output></div>
@@ -131,11 +131,11 @@
                     <div class="weekly age tab content">
                         <div class="weekly age policy_status">
                             <div class="weekly age policy child">
-                                <img class="weekly age on_off policy01" src="img/policy01_off.png" alt="" onclick="toggleAgePolicy(0)"></div>
+                                <img class="weekly age on_off policy01" src="img/policy01_off.png" alt="" onclick="toggleAgePolicy(0); hintFound('Social_Distancing');"></div>
                             <div class="weekly age policy adult">
-                                <img class="weekly age on_off policy02" src="img/policy02_off.png" alt="" onclick="toggleAgePolicy(1)"></div>
+                                <img class="weekly age on_off policy02" src="img/policy02_off.png" alt="" onclick="toggleAgePolicy(1); hintFound('Social_Distancing');"></div>
                             <div class="weekly age policy elder">
-                                <img class="weekly age on_off policy03" src="img/policy03_off.png" alt="" onclick="toggleAgePolicy(2)"></div>
+                                <img class="weekly age on_off policy03" src="img/policy03_off.png" alt="" onclick="toggleAgePolicy(2); hintFound('Lockdown');" ></div>
                         </div>
                         <div class="weekly beds">
                             <div class="weekly bed plan"><output class="weekly bed plan">0</output> beds</div>
