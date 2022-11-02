@@ -1455,7 +1455,7 @@ $("div.hint").on("click", function() {
 
     d3.selectAll("input.topic.found").on("click", function(e) {
         keyFacts[keyFacts.findIndex(fact => fact["topic"] === e["topic"])]["status"] = 2;
-        d3.select("div.hintBody").text(e["content"]);
+        d3.select("div.hintBody").node().innerHTML = e["content"];
         d3.selectAll("input.topic.found").classed("selected", false);
         d3.select(this).classed("selected", true);
         updateHint();
