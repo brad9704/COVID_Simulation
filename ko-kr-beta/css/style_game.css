@@ -1672,3 +1672,32 @@ div.hintBody {
     font-size: 25px;
     text-align: left;
 }
+
+div.upperLeftSpace {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 60px;
+    font-size: 50px;
+    text-align: right;
+    line-height: 60px;
+    padding: 20px;
+}
+
+div.upperLeftSpace img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+div.vaccine_progress {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 140px;
+    height: 60px;
+    font-size: 30px;
+    text-align: right;
+    line-height: 60px;
+    padding: 20px 8px;
+}

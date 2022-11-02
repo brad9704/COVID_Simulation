@@ -481,7 +481,9 @@ function node_update(param, node_data) {
             update => update
                 .attr("cx", d => xScale(d.x))
                 .attr("cy", d => yScale(d.y))
-                .attr("class", d => (d.mask) ? "node " + _.findKey(state,e => e === d.state) + " mask" : "node " + _.findKey(state,e => e === d.state))
+                .attr("class", d => (d.mask) ?
+                    "node " + _.findKey(state,e => e === d.state) + " mask" :
+                    "node " + _.findKey(state,e => e === d.state))
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state),
             exit => exit.remove()
@@ -973,7 +975,7 @@ function weekly_report() {
             (data_to.S[9] + data_to.E1[9] + data_to.E2[9] + data_to.I1[9] + data_to.R1[9]) /
             w.param.node_num / 4 /
             (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))), 0) / 200) / 100;
-
+    $("output.vaccine_progress").val(Math.round(vaccine_research));
     weekOver(
         [$("output.infectious_now").val(), $("output.infectious_total").val()],
         [$("output.hospital_now").val(), $("output.hospital_max").val()],
