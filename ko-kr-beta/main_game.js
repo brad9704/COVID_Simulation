@@ -243,13 +243,17 @@ function updateSim(param, node_data, time) {
         ).length > 0)) &&
         NETWORK.USERLIST.find(std => std.studentID === NETWORK.STUDENT_ID)
             .status !== "FINISHED") gameOver();
+    let isGameOverCOMP = (NETWORK.TEAMTYPE === "COMP" &&
+        NETWORK.USERLIST.some(student => student.status === "FINISHED"));
+    let isGameOverCOOP = (NETWORK.TEAMTYPE === "COOP" &&
+        NETWORK.USERLIST.every(student =>
+            student.status !== "PLAYING" &&
+            student.status !== "WREADY"));
 
-    if ((NETWORK.TEAMTYPE === "COMP" &&
-        NETWORK.USERLIST.some(student => student.status === "FINISHED")) ||
-        (NETWORK.TEAMTYPE === "COOP" &&
-            NETWORK.USERLIST.every(student =>
-                student.status !== "PLAYING" &&
-                student.status !== "WREADY"))) {
+    if (isGameOverCOMP || isGameOverCOOP) {
+        if (isGameOverCOMP) $("div.resultReason").text(`${NETWORK.USERLIST.find(student => student.status === "FINISHED").name} satisfied game objectives!`);
+        if (isGameOverCOOP) $("div.resultReason").text("Every teammate satisfied game objectives!");
+
         while (chart_data.length < 365) {
             let temp_data = {
                 "tick": Math.round(time / param.fps),

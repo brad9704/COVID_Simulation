@@ -334,6 +334,18 @@ div.panel_policy_result div {
     width: 150px;
 }
 
+div.resultReason {
+    position: absolute;
+    width: 580px;
+    height: 45px;
+    font-size: 25px;
+    line-height: 45px;
+    top: 280px;
+    left: 240px;
+    text-align: center;
+    color: #f30e36;
+}
+
 div.panel_policy_result div.time {
     top: 10px;
 }
