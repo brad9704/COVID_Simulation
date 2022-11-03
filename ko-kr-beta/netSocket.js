@@ -122,16 +122,16 @@ socket.on("weekOver", function(msg) {
     NETWORK.USERLIST[studentIdx]["STAT"] = msg["result"];
     NETWORK.USERLIST.filter(student => student.studentID !== NETWORK.STUDENT_ID).forEach((student, i) => {
         let studentIdx = i + 1;
-        if (student.status !== "PLAYING" && student.status !== "WREADY") {
+        if (student.status !== "PLAYING" && student.status !== "WREADY" && student.status !== "FINISHED") {
             $("output.student0" + studentIdx).val("");
             return;
         }
         $("output.student0" + studentIdx + ".studentName").val(student.name);
-        $("output.student0" + studentIdx + ".studentStatus.infectious").val(student["STAT"]["infected"]);
-        $("output.student0" + studentIdx + ".studentStatus.ICU").val(student["STAT"]["ICU"]);
-        $("output.student0" + studentIdx + ".studentStatus.death").val(student["STAT"]["death"]);
+        $("output.student0" + studentIdx + ".studentStatus.infectious").val(`${student["STAT"]["infected"][0]} / ${student["STAT"]["infected"][1]} Total`);
+        $("output.student0" + studentIdx + ".studentStatus.ICU").val(`${student["STAT"]["ICU"][0]} / ${student["STAT"]["ICU"][1]}`);
+        $("output.student0" + studentIdx + ".studentStatus.death").val(`${student["STAT"]["death"][0]} / ${student["STAT"]["death"][1]}`);
         $("output.student0" + studentIdx + ".studentStatus.GDP").val(student["STAT"]["GDP"]);
-        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"] !== "" ? parseFloat(student["STAT"]["vaccine"]).toFixed(2) : "");
+        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"] !== "" ? `${parseFloat(student["STAT"]["vaccine"]).toFixed(2)}%` : "");
     });
     updateUserStatus();
 })
