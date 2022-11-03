@@ -231,7 +231,7 @@ function updateSim(param, node_data, time) {
         chart = 0;
     }
 
-    if (vaccine_research > 100 || chart_data.length > 365 ||
+    if ((vaccine_research > 100 || chart_data.length > 365 ||
         (node_data.filter(e =>
             e.state === state.S ||
             e.state === state.R1 ||
@@ -240,7 +240,9 @@ function updateSim(param, node_data, time) {
         node_data.filter(e =>
             e.state === state.R1 ||
             e.state === state.R2
-        ).length > 0)) gameOver();
+        ).length > 0)) &&
+        NETWORK.USERLIST.find(std => std.studentID === NETWORK.STUDENT_ID)
+            .status !== "FINISHED") gameOver();
 
     if ((NETWORK.TEAMTYPE === "COMP" &&
         NETWORK.USERLIST.some(student => student.status === "FINISHED")) ||
