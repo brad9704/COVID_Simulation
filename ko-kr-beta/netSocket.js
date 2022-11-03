@@ -47,7 +47,8 @@ function updateUserStatus () {
         .text(function(student) {return student.name})
         .attr("src", function(student) {
             return `img/Profile_${student.status}.png`
-        });
+        })
+        .classed("host", function (student) {return student.host;});
     d3.selectAll("div.login.userlist")
         .selectAll("output.name")
         .data(NETWORK.USERLIST)
