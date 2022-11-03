@@ -481,9 +481,7 @@ function node_update(param, node_data) {
             update => update
                 .attr("cx", d => xScale(d.x))
                 .attr("cy", d => yScale(d.y))
-                .attr("class", d => (d.mask) ?
-                    "node " + _.findKey(state,e => e === d.state) + " mask" :
-                    "node " + _.findKey(state,e => e === d.state))
+                .attr("class", d => "node " + _.findKey(state,e => e === d.state))
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state),
             exit => exit.remove()

@@ -39,6 +39,23 @@ socket.on("connect", function() {
     })
 });
 
+function updateUserStatus () {
+    d3.selectAll("div.login.userlist")
+        .selectAll("img.login.userlist")
+        .data(NETWORK.USERLIST)
+        .attr("id", function(student) {return "img" + student.studentID;})
+        .text(function(student) {return student.name})
+        .attr("src", function(student) {
+            return `img/Profile_${student.status}.png`
+        });
+    d3.selectAll("div.login.userlist")
+        .selectAll("output.name")
+        .data(NETWORK.USERLIST)
+        .attr("id", function(student) {return "out" + student.studentID;})
+        .text(function(student) {return student.name})
+        .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+}
+
 socket.on("loginSuccess", function(msg) {
     NETWORK.STUDENT_ID = msg["studentID"];
     NETWORK.STUDENTNAME = msg["studentName"];
@@ -63,20 +80,7 @@ socket.on("loginSuccess", function(msg) {
     $("#loginForm").fadeOut();
     $("div.login.userlist").fadeIn();
 
-    d3.selectAll("div.login.userlist")
-        .selectAll("img.login.userlist")
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "img" + student.studentID;})
-        .text(function(student) {return student.name})
-        .attr("src", function(student) {
-            return `img/Profile_${student.status}.png`
-        });
-    d3.selectAll("div.login.userlist")
-        .selectAll("output.name")
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "out" + student.studentID;})
-        .text(function(student) {return student.name})
-        .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+    updateUserStatus();
 
     hintFound("");
 });
@@ -90,21 +94,7 @@ socket.on("updateUserLogin", function(msg) {
     });
     NETWORK.HOST = NETWORK.USERLIST.find(std => std.studentID === NETWORK.STUDENT_ID)["host"]
 
-    d3.selectAll("div.login.userlist")
-        .selectAll("img.login.userlist")
-        .data(NETWORK.USERLIST, function(student) {return student ? "img" + student.studentID : this.id})
-        .attr("id", function(student) {return "img" + student.studentID;})
-        .text(function(student) {return student.name})
-        .attr("src", function(student) {
-            return `img/Profile_${student.status}.png`
-        })
-        .classed("host", function(student) {return student.host});
-    d3.selectAll("div.login.userlist")
-        .selectAll("output.name", function(student) {return student ? "out" + student.studentID : this.id})
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "out" + student.studentID;})
-        .text(function(student) {return student.name})
-        .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+    updateUserStatus();
 
     d3.select("#button_ready")
         .attr("src", NETWORK.USERLIST.find(student =>
@@ -141,7 +131,8 @@ socket.on("weekOver", function(msg) {
         $("output.student0" + studentIdx + ".studentStatus.death").val(student["STAT"]["death"]);
         $("output.student0" + studentIdx + ".studentStatus.GDP").val(student["STAT"]["GDP"]);
         $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"] !== "" ? parseFloat(student["STAT"]["vaccine"]).toFixed(2) : "");
-    })
+    });
+    updateUserStatus();
 })
 
 socket.on("turnReady", function(msg) {
@@ -149,20 +140,7 @@ socket.on("turnReady", function(msg) {
         student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
     });
 
-    d3.selectAll("div.login.userlist")
-        .selectAll("img.login.userlist")
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "img" + student.studentID;})
-        .text(function(student) {return student.name})
-        .attr("src", function(student) {
-            return `img/Profile_${student.status}.png`
-        });
-    d3.selectAll("div.login.userlist")
-        .selectAll("output.name")
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "out" + student.studentID;})
-        .text(function(student) {return student.name})
-        .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+    updateUserStatus();
 });
 
 socket.on("gameOver", function(msg) {
@@ -170,20 +148,7 @@ socket.on("gameOver", function(msg) {
         student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
     });
 
-    d3.selectAll("div.login.userlist")
-        .selectAll("img.login.userlist")
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "img" + student.studentID;})
-        .text(function(student) {return student.name})
-        .attr("src", function(student) {
-            return `img/Profile_${student.status}.png`
-        });
-    d3.selectAll("div.login.userlist")
-        .selectAll("output.name")
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "out" + student.studentID;})
-        .text(function(student) {return student.name})
-        .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+    updateUserStatus();
 })
 
 window.onbeforeunload = function() {
@@ -239,6 +204,7 @@ function toggleReady(pos) {
             week: Math.floor(chart_data[chart_data.length - 1]["tick"] / 7),
             action: getAction()
         });
+        updateUserStatus();
     } else {
         socket.emit("gameOver");
     }
@@ -262,20 +228,7 @@ socket.on("gameStart", function(msg) {
     NETWORK.USERLIST.forEach(student => {
         student["status"] = msg["students"].find(std => std.studentID === student.studentID)["status"];
     });
-    d3.selectAll("div.login.userlist")
-        .selectAll("img.login.userlist")
-        .data(NETWORK.USERLIST, function(student) {return student ? "img" + student.studentID : this.id})
-        .attr("id", function(student) {return "img" + student.studentID;})
-        .text(function(student) {return student.name})
-        .attr("src", function(student) {
-            return `img/Profile_${student.status}.png`
-        });
-    d3.selectAll("div.login.userlist")
-        .selectAll("output.name", function(student) {return student ? "out" + student.studentID : this.id})
-        .data(NETWORK.USERLIST)
-        .attr("id", function(student) {return "out" + student.studentID;})
-        .text(function(student) {return student.name})
-        .style("display", function(student) {return student.status === "OFFLINE" ? "none" : "inline"});
+    updateUserStatus();
     toggle_weekly_input(true);
     start_simulation();
 });
