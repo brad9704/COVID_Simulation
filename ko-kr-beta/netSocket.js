@@ -246,6 +246,7 @@ socket.on("turnStart", function(msg) {
     received_multiplayer_policy["action01"] = multiplayer_policy_queue.reduce((prev, curr) => prev + curr["value"][0], 0);
     received_multiplayer_policy["action02"] = multiplayer_policy_queue.reduce((prev, curr) => prev + curr["value"][1], 0);
     toggle_weekly_input(true);
+    updateUserStatus();
     resume_simulation();
 });
 
