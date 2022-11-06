@@ -434,7 +434,7 @@ div.sidebar {
 div.sidebar div.Day {
     font-size: 25px;
     position: absolute;
-    top: 40px;
+    top: 28px;
     text-align: center;
     width: 100%;
     color: #2E2886;
@@ -737,7 +737,7 @@ input.weekly.tab.switch[active=true] {
     color: yellow;
 }
 
-input.weekly.tab.switch:hover {
+input.weekly.tab.switch:not(:disabled):hover {
     color: yellow;
     font-size: 120%;
 }
@@ -748,6 +748,10 @@ input.weekly.tab.switch.age {
 }
 input.weekly.tab.switch.area {
     left: 335px;
+}
+input.weekly.tab.switch.area:disabled {
+    opacity: 0.4;
+    filter: grayscale(1);
 }
 
 div.weekly.switch.tabs {
@@ -1424,7 +1428,7 @@ div.weekly.age.policy {
     height: 23px;
     line-height: 23px;
     position: absolute;
-    top: 112px;
+    top: 107px;
     text-align: center;
     vert-align: middle;
     font-size: 90%;
@@ -1511,6 +1515,8 @@ div.weekly.statistics table {
     color: #2E2886;
         text-align: center;
     width: 388px;
+    table-layout: fixed;
+    font-family: "ONEMobileTitle", sans-serif;
 }
 
 div.weekly.statistics td {
@@ -1518,7 +1524,6 @@ div.weekly.statistics td {
     line-height: 21px;
     width: 129px;
     height: 21px;
-    overflow: hidden;
 }
 
 g.actions {
@@ -1590,14 +1595,15 @@ g.actions div.student03 {
 
 div.hint {
     position: absolute;
-    top: 60px;
-    right: 210px;
-    width: 65px;
-    height: 65px;
-    background: url("../img/helpIconDefault.png") no-repeat center;
+    top: 10px;
+    right: 100px;
+    width: 75px;
+    height: 75px;
+    border-radius: 40px;
+    background: url("../img/helpIconDefault.png") no-repeat center, #254488;
 }
 div.hint:hover {
-    background: url("../img/helpIconHover.png") no-repeat center;
+    background: url("../img/helpIconHover.png") no-repeat center, #254488;
 }
 output.numHintFound {
     width: 20px;
@@ -1708,8 +1714,24 @@ div.vaccine_progress {
     right: 0;
     width: 140px;
     height: 60px;
-    font-size: 30px;
+    font-size: 22px;
     text-align: right;
     line-height: 60px;
     padding: 20px 8px;
+    font-family: "ONEMobileTitle", sans-serif;
+}
+
+div.announcement {
+    display: none;
+    width: 1400px;
+    height: 40px;
+    font-size: 30px;
+    font-family: "ONEMobileTitle", sans-serif;
+    border-radius: 5px;
+    background-color: rgba(96,96,96,0.8);
+    position: absolute;
+    left: 260px;
+    text-align: center;
+    line-height: 40px;
+    color: white;
 }

@@ -580,7 +580,7 @@ function chart_update(param, chart_param, chart_data) {
     $(".infectious_now").val(now.I1+now.I2+now.H1+now.H2);
     $(".infectious_total").val(w.param.node_num - now.S - now.E1 - now.E2);
     $(".hospital_now").val(now.H2);
-    $(".hospital_max").val(w.param.hospital_max + received_multiplayer_policy["action01"]);
+    $(".hospital_max").val(Math.max(w.param.hospital_max + received_multiplayer_policy["action01"]),0);
     $(".death_now").val(now.R2-last.R2);
     $(".death_total").val(now.R2);
     $(".GDP_now").val(Math.round(now.GDP).toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}));
@@ -979,12 +979,12 @@ function weekly_report() {
             (data_to.S[9] + data_to.E1[9] + data_to.E2[9] + data_to.I1[9] + data_to.R1[9]) /
             w.param.node_num / 4 /
             (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))), 0) / 200) / 100;
-    $("output.vaccine_progress").val(Math.round(vaccine_research));
+    $("output.vaccine_progress").val(Math.round(vaccine_research * 10) / 10);
     weekOver(
         [$("output.infectious_now").val(), $("output.infectious_total").val()],
         [$("output.hospital_now").val(), $("output.hospital_max").val()],
         [$("output.death_now").val(), $("output.death_total").val()],
-        $("output.GDP_now").val(),
+        $("output.GDP_now_ratio").val(),
         vaccine_research
     );
     /*
@@ -1409,7 +1409,7 @@ function changePolicyMultiplayer (policy, player, direction) {
     let positive = !(
         (NETWORK.TEAMTYPE === "COOP" &&
             multiplayer_policy[policyIdx].name === "ICU_control" &&
-            (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value[targetIdx].num
+            (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value.reduce((prev, curr) => prev + curr.num, 0)
         ) ||
         (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control") ||
             multiplayer_policy[policyIdx].name === "transfer_control") &&
