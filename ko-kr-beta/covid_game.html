@@ -32,9 +32,11 @@
     </div>
     <div class="daily legend">
         <img class="daily" src="img/virus_info_panel.png" alt="">
-        <img class="daily background" src="img/stagePopulation.png" alt="" style="cursor: pointer" onclick="hintFound('SEIHR'); d3.select(this).style('cursor', null);">
+        <img class="daily background" src="img/stagePopulation.png" alt="">
+        <div class="hintIcon" id="hint_SEIHR" onclick="hintFound('SEIHR')"></div>
+        <div class="hintIcon" id="hint_R0" onclick="hintFound('Infection rate')"></div>
         <div class="virus name"><text class="virus name">COVID-19</text></div>
-        <div class="daily duration E2-I1" style="cursor: pointer" onclick="hintFound('Latent_Period'); d3.select(this).style('cursor', null);"><output class="daily legend duration E2-I1">0-0</output></div>
+        <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
         <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
         <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
         <div class="daily rate infectious board"><output class="daily legend rate infectious">0%</output></div>
@@ -50,6 +52,7 @@
     </div>
     <div id="chart_board" class="graph"></div>
     <div id="death_board" class="graph"></div>
+    <div class="hintIcon" id="hint_FTC" onclick="hintFound('Flattening The Curve')"></div>
 </div>
 <div class="control_panel">
     <div class="panel_button">
@@ -136,15 +139,20 @@
                     <div class="weekly age tab content">
                         <div class="weekly age policy_status">
                             <div class="weekly age policy child">
-                                <img class="weekly age on_off policy01" src="img/policy01_off.png" alt="" onclick="toggleAgePolicy(0); hintFound('Social_Distancing');"></div>
+                                <img class="weekly age on_off policy01" src="img/policy01_off.png" alt="" onclick="toggleAgePolicy(0);"></div>
+                                <div class="hintIcon" id="hint_SD" onclick="hintFound('Social Distancing')"></div>
                             <div class="weekly age policy adult">
-                                <img class="weekly age on_off policy02" src="img/policy02_off.png" alt="" onclick="toggleAgePolicy(1); hintFound('Social_Distancing');"></div>
+                                <img class="weekly age on_off policy02" src="img/policy02_off.png" alt="" onclick="toggleAgePolicy(1);"></div>
+                                <div class="hintIcon" id="hint_Curfew" onclick="hintFound('Curfew')"></div>
                             <div class="weekly age policy elder">
-                                <img class="weekly age on_off policy03" src="img/policy03_off.png" alt="" onclick="toggleAgePolicy(2); hintFound('Lockdown');" ></div>
+                                <img class="weekly age on_off policy03" src="img/policy03_off.png" alt="" onclick="toggleAgePolicy(2);"></div>
+                                <div class="hintIcon" id="hint_Lockdown" onclick="hintFound('Lockdown')"></div>
                         </div>
+                        <div class="hintIcon" id="hint_Travel" onclick="hintFound('Travel Control')"></div>
                         <div class="weekly beds">
                             <div class="weekly bed plan"><output class="weekly bed plan">0</output> beds</div>
                             <div class="weekly bed cost">$<output class="weekly bed cost">0</output></div>
+                            <div class="hintIcon" id="hint_ICU" onclick="hintFound('Healthcare Capacity')"></div>
                         </div>
                         <img alt="" src="img/button_increase.png" class="policy bed rescale inc" onclick="bed_change(1);">
                         <img alt="" src="img/button_decrease.png" class="policy bed rescale dec" onclick="bed_change(-1);">

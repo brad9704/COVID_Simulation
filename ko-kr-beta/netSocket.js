@@ -347,6 +347,9 @@ function gameReset() {
 }
 
 function hintFound(hint) {
+    if (keyFacts.find(h => h["topic"] === hint)["status"] === 0) {
+        announcement(`You found a new Key Fact: ${hint}`);
+    }
     socket.emit("hintFound", {type: hint});
 }
 

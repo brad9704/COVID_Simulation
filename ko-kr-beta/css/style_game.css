@@ -1690,6 +1690,9 @@ div.hintBody {
     font-size: 25px;
     text-align: left;
 }
+div.hintBody img {
+    width: 100%;
+}
 
 div.upperLeftSpace {
     position: absolute;
@@ -1734,4 +1737,55 @@ div.announcement {
     text-align: center;
     line-height: 40px;
     color: white;
+}
+
+div.hintIcon {
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    background: url("../img/hintIcon.png") no-repeat center/100%;
+    cursor: pointer;
+}
+div.hintIcon.disabled {
+    filter: grayscale(1);
+    cursor: initial;
+    opacity: 0.5;
+}
+
+#hint_SEIHR {
+    left: 160px;
+    top: 330px;
+}
+
+#hint_FTC {
+    display: none;
+    left: 1672px;
+    top: 647px;
+}
+
+#hint_SD {
+    left: 90px;
+}
+
+#hint_Curfew {
+    left: 245px;
+}
+
+#hint_Lockdown {
+    left: 410px;
+}
+
+#hint_ICU {
+    left: 135px;
+    top: -44px;
+}
+
+#hint_R0 {
+    top: 66px;
+    left: 447px;
+}
+
+#hint_Travel {
+    top: 175px;
+    left: 317px;
 }

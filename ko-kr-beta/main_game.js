@@ -283,6 +283,7 @@ function updateSim(param, node_data, time) {
 }
 
 function show_result(param) {
+    $("#hint_FTC").css("display", "none");
     $("td.result, div.panel_policy_result").css("display:none");
     let last_state = chart_data[chart_data.length - 1];
     let final_budget = budget
@@ -337,8 +338,6 @@ function node_init(param, node_data, loc) {
         .then(data => {
             d3.select("#sim_board").append("div")
                 .attr("id", "sim_title")
-                .attr("onclick", "hintFound('Flattening_the_Curve'); d3.select(this).style('cursor', null);")
-                .style("cursor", "pointer")
                 .node().append(data.documentElement)
         });
     sim_cont.selectAll("g.background_rect")
@@ -657,6 +656,7 @@ function chart_update(param, chart_param, chart_data) {
 }
 
 function start_simulation() {
+    $("#hint_FTC").css("display", "block");
     chart_data = [];
     $("output.weekly_week").val(0);
     $("#turn_day").val(0);
@@ -1485,4 +1485,8 @@ function updateHint() {
                 .classed("read", function(e) {return e["status"] > 1}),
             update => update.classed("found", function(e) {return e["status"] > 0})
                 .classed("read", function(e) {return e["status"] > 1}));
+
+    keyFacts.forEach(e => {
+        d3.select(`#hint_${e["id"]}`).classed("disabled", e["status"] > 0);
+    })
 }
