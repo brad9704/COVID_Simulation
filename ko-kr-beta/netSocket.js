@@ -369,3 +369,7 @@ socket.on("announce", function(msg) {
 function announcement(content) {
     announceQueue.append(content);
 }
+
+socket.on("refresh", function() {
+    location.reload();
+})
