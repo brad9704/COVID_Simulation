@@ -8,6 +8,7 @@ var running_time;
 var simulation;
 var param;
 var budget;
+var createNewInfectious = 0;
 
 onmessage = function(event){
     switch (event.data.type) {
@@ -104,7 +105,7 @@ function collision (node1, node2) {
 Transmission probability per contact
  */
 function TPC (node1) {
-    return param.TPC_base * param.age_infect[node1.age.toString()] * param.weightByPolicy;
+    return param.TPC_base * param.age_infect[node1.age.toString()];
 }
 
 function ticked() {
@@ -118,6 +119,10 @@ function ticked() {
         })
     }, this);
     simulation.nodes().forEach(node => node.dispatch.call("tick", this));
+    if (createNewInfectious > 1 && simulation.nodes().filter(node => node.state === state.S).length > 0) {
+        simulation.nodes().filter(node => node.state === state.S)[0].infected();
+        createNewInfectious = 0;
+    }
     if (Math.ceil(running_time / (param.fps * param.turnUnit)) !== Math.ceil((running_time + 1) / (param.fps * param.turnUnit))) {
         postMessage({type:"PAUSE"});
     }
@@ -201,7 +206,8 @@ function apply_policy(policy) {
     simulation.nodes().forEach(node => {
         node.param.hospital_max = Math.max(policy.hospital_max + policy.multiplayer_policy["action01"], 0);
     });
-    param.weightByPolicy = Math.min(Math.max(0.5, 1 - policy.multiplayer_policy["action02"] * 0.05), 1.5);
+
+    if (policy.createNewInfectious) createNewInfectious++;
 
     let temp = simulation.loc.get_surface(), line_rate = policy.rate;
     if (policy.surface.upper === "1") temp.push({

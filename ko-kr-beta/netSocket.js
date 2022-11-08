@@ -67,6 +67,9 @@ function updateUserStatus() {
     } else {
         $("input.weekly.tab.switch.area").attr("disabled", false);
     }
+    total_vaccine_research = NETWORK.TEAMTYPE === "COMP" ? vaccine_research :
+        Math.round(NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").reduce((prev, curr) => prev + curr["STAT"]["vaccine"], 0) / NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").length * 10) / 10;
+    $("output.vaccine_progress").val(Math.round(total_vaccine_research * 10) / 10);
 }
 
 
@@ -149,21 +152,24 @@ socket.on("chat", function (msg) {
 });
 
 socket.on("weekOver", function (msg) {
+    $("g.actions output").css("display", "none");
     let studentIdx = NETWORK.USERLIST.findIndex(student =>
         student.studentID === msg["studentID"]);
     NETWORK.USERLIST[studentIdx]["STAT"] = msg["result"];
     NETWORK.USERLIST.filter(student => student.studentID !== NETWORK.STUDENT_ID).forEach((student, i) => {
         let studentIdx = i + 1;
         if (student.status !== "PLAYING" && student.status !== "WREADY" && student.status !== "FINISHED") {
-            $("output.student0" + studentIdx).val("");
+            $("output.student0" + studentIdx).val("").css("display", "none");
             return;
         }
+        $("output.student0" + studentIdx).css("display", "inline");
         $("output.student0" + studentIdx + ".studentName").val(student.name);
         $("output.student0" + studentIdx + ".studentStatus.infectious").val(`${student["STAT"]["infected"][0]} / ${student["STAT"]["infected"][1]}`);
         $("output.student0" + studentIdx + ".studentStatus.ICU").val(`${student["STAT"]["ICU"][0]} / ${student["STAT"]["ICU"][1]}`);
         $("output.student0" + studentIdx + ".studentStatus.death").val(`${student["STAT"]["death"][0]} / ${student["STAT"]["death"][1]}`);
         $("output.student0" + studentIdx + ".studentStatus.GDP").val(`${student["STAT"]["GDP"]}%`);
-        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"] !== "" ? `${parseFloat(student["STAT"]["vaccine"]).toFixed(2)}%` : "");
+        $("output.student0" + studentIdx + ".studentStatus.vaccine").val(student["STAT"]["vaccine"] !== "" ? `${parseFloat(NETWORK.TEAMTYPE === "COMP" ? student["STAT"]["vaccine"] : student["STAT"]["vaccine"] / NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").length).toFixed(2)}%` : "");
+
     });
     updateUserStatus();
 })
@@ -204,8 +210,8 @@ function toggleReady(pos) {
                 (prev, curr) => prev + curr.num, 0
             ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) -
             multiplayer_policy[1].value.reduce(
-                (prev, curr) => prev + curr.num, 0
-            ) * 4000;
+                (prev, curr) => Math.max(prev, curr.num), 0
+            ) * 30000;
         d3.selectAll("line.sim_board.svg_line")
             .data([{
                 name: "upper",
@@ -317,11 +323,11 @@ socket.on("turnStart", function (msg) {
     resume_simulation();
 
     let ICU_change = received_multiplayer_policy["action01"] + multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0);
-    let transfer_change = received_multiplayer_policy["action02"];
+    let vaccine_change = received_multiplayer_policy["action02"];
     if (ICU_change !== 0)
         announcement(`Your ICU bed limit is temporarily ${ICU_change > 0 ? "expanded" : "decreased"} by ${Math.abs(ICU_change)} by your teammates!`);
-    if (transfer_change !== 0)
-        announcement(`Overall transfer rate is temporarily ${transfer_change > 0 ? "decreased" : "increased"} by ${Math.abs(transfer_change * 5)}% by your teammates!`);
+    if (vaccine_change !== 0)
+        announcement(`Your ${vaccine_change > 0 ? "team " : ""}vaccine development status was ${vaccine_change < 0 ? "decreased" : "increased"} by ${Math.abs(vaccine_change * 3)}% by your teammates!`);
 
 });
 
@@ -336,9 +342,6 @@ function weekOver(infected, ICU, death, GDP, vaccine) {
 }
 
 function gameOver() {
-    received_multiplayer_policy["action01"] = 0;
-    received_multiplayer_policy["action02"] = 0;
-
     socket.emit("gameOver");
 }
 

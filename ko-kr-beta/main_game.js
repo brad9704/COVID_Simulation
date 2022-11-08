@@ -2,6 +2,7 @@
 // noinspection HttpUrlsUsage
 const REQUEST_ID = "https://chickenberry.ddns.net:8192/FTC";
 var ONLINE = true;
+var createNewInfectious = false;
 
 var run, chart_data, running_time, chart_param;
 var stat = {
@@ -29,7 +30,7 @@ var age_policy_data_fix = [
 ];
 var multiplayer_policy = [
     {policyNo: 1, name: "ICU_control", value: [{target: "student01", num: 0}, {target: "student02", num: 0}, {target: "student03", num: 0}]},
-    {policyNo: 2, name: "transfer_control", value: [{target: "student01", num: 0}, {target: "student02", num: 0}, {target: "student03", num: 0}]}
+    {policyNo: 2, name: "vaccine_control", value: [{target: "student01", num: 0}, {target: "student02", num: 0}, {target: "student03", num: 0}]}
 ];
 
 var received_multiplayer_policy = {"action01": 0, "action02": 0};
@@ -42,7 +43,7 @@ var tick = 1000 / 60;
 var w; 
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
-var vaccine_research;
+var vaccine_research, total_vaccine_research;
 
 function getVirus(virusInfo) {
     d3.select("select.virus.selection").selectAll("option")
@@ -50,7 +51,7 @@ function getVirus(virusInfo) {
         .enter()
         .append("option")
         .attr("value",function(e) {return e.name;})
-        .text(function(e) {if (e.name === "Attack") {return e.name;} else {return "Defense: " + e.name;}});
+        .text(function(e) {return e.name});
     selectVirus(virusInfo.data[0].name, virusInfo);
     $("#popup_init").fadeIn();
 }
@@ -231,16 +232,7 @@ function updateSim(param, node_data, time) {
         chart = 0;
     }
 
-    if ((vaccine_research > 100 || chart_data.length > 365 ||
-        (node_data.filter(e =>
-            e.state === state.S ||
-            e.state === state.R1 ||
-            e.state === state.R2
-            ).length === node_data.length &&
-        node_data.filter(e =>
-            e.state === state.R1 ||
-            e.state === state.R2
-        ).length > 0)) &&
+    if ((total_vaccine_research > 100 || chart_data.length > 365) &&
         NETWORK.USERLIST.find(std => std.studentID === NETWORK.STUDENT_ID)
             .status !== "FINISHED") gameOver();
     let isGameOverCOMP = (NETWORK.TEAMTYPE === "COMP" &&
@@ -664,6 +656,10 @@ function start_simulation() {
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
     $("output.budget_now").val(0);
+    received_multiplayer_policy["action01"] = 0;
+    received_multiplayer_policy["action02"] = 0;
+    while (running_speed > 1) change_speed(-1);
+
     budget = 0;
     vaccine_research = 0;
     age_policy_data_fix = [
@@ -739,8 +735,8 @@ function resume_simulation () {
             (prev, curr) => prev + curr.num, 0
         ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) -
         multiplayer_policy[1].value.reduce(
-            (prev, curr) => prev + curr.num, 0
-        ) * 4000;
+            (prev, curr) => Math.max(prev, curr.num), 0
+        ) * 30000;
     d3.selectAll("line.sim_board.svg_line")
         .data([{name: "upper", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (1 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (1 + line_rate) / 4},
             {name: "lower", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (3 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (3 + line_rate) / 4},
@@ -772,10 +768,6 @@ function resume_simulation () {
         area.data[1].level = age_policy_data_fix[2].active ? 3 : age_policy_data_fix[1].active ? 2 : 0;
         area.data[2].level = age_policy_data_fix[2].active ? 3 : 0;
     });
-    let weight = Math.min(Math.max(0.5, 1 - received_multiplayer_policy["action02"] * 0.05), 1.5);
-    if (weight > 1) $("output.daily.legend.rate.infectious").css("color", "red");
-    else if (weight < 1) $("output.daily.legend.rate.infectious").css("color", "blue");
-    else $("output.daily.legend.rate.infectious").css("color", "white");
     $("output.daily.legend.rate.infectious").text((Math.round(prob_calc(get_params(initParams))[0] * 100) / 100).toFixed(2));
 
     w.postMessage({type: "RESUME", data: {
@@ -784,7 +776,8 @@ function resume_simulation () {
             hospital_max: hospital_max,
             surface: surface,
             budget: budget,
-            multiplayer_policy: received_multiplayer_policy
+            multiplayer_policy: received_multiplayer_policy,
+            createNewInfectious: createNewInfectious
         }});
     w.param.hospital_max = hospital_max;
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
@@ -907,11 +900,11 @@ function getAction() {
     std_list.forEach((e, i) => {
         policy_msg[e.studentID] = {
             "action01": dir * multiplayer_policy[0].value[i].num,
-            "action02": dir * multiplayer_policy[1].value[i].num
+            "action02": dir * multiplayer_policy[1].value[i].num * (NETWORK.TEAMTYPE === "COOP" ? 1 : 0.5)
         };
         policy_msg[NETWORK.STUDENT_ID] = {
             "action01": -1 * dir * multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0),
-            "action02": 0
+            "action02": multiplayer_policy[1].value[i].num
         };
     })
 
@@ -966,10 +959,13 @@ function weekly_report() {
     $("output.weekly_date_from").val(data_from.tick + 1);
     $("output.weekly_date_to").val(data_to.tick + 1);
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
+    createNewInfectious = false;
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) {
         budget += Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit * 4), 0), chart_data.length)
             .reduce((prev, curr) => prev + (curr.GDP / 4 / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
         $("output.budget_now").val(budget);
+        createNewInfectious = true;
+        console.log("Created new infectious");
         if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
@@ -979,7 +975,11 @@ function weekly_report() {
             (data_to.S[9] + data_to.E1[9] + data_to.E2[9] + data_to.I1[9] + data_to.R1[9]) /
             w.param.node_num / 4 /
             (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))), 0) / 200) / 100;
-    $("output.vaccine_progress").val(Math.round(vaccine_research * 10) / 10);
+
+    vaccine_research = Math.max(vaccine_research + received_multiplayer_policy["action02"] * 3, 0);
+    total_vaccine_research = NETWORK.TEAMTYPE === "COMP" ? vaccine_research :
+        Math.round(NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").reduce((prev, curr) => prev + curr["STAT"]["vaccine"], 0) / NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").length * 10) / 10;
+    $("output.vaccine_progress").val(Math.round(total_vaccine_research * 10) / 10);
     weekOver(
         [$("output.infectious_now").val(), $("output.infectious_total").val()],
         [$("output.hospital_now").val(), $("output.hospital_max").val()],
@@ -1195,8 +1195,8 @@ function toggle_week() {
             (prev, curr) => prev + curr.num, 0
         ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) +
         multiplayer_policy[1].value.reduce(
-            (prev, curr) => prev + curr.num, 0
-        ) * 4000;
+            (prev, curr) => Math.max(prev, curr.num), 0
+        ) * 30000;
     $("output.weekly.budget_next").val(new_budget.toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0}));
     if (new_budget > budget) {
         $("div.weekly.area.caution").css("opacity","100%");
@@ -1412,8 +1412,8 @@ function changePolicyMultiplayer (policy, player, direction) {
             (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value.reduce((prev, curr) => prev + curr.num, 0)
         ) ||
         (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control") ||
-            multiplayer_policy[policyIdx].name === "transfer_control") &&
-            multiplayer_policy[policyIdx].value[targetIdx].num >= 10));
+            multiplayer_policy[policyIdx].name === "vaccine_control") &&
+            multiplayer_policy[policyIdx].value[targetIdx].num >= 1));
 
     let negative = multiplayer_policy[policyIdx].value[targetIdx].num > 0;
 
@@ -1424,13 +1424,23 @@ function changePolicyMultiplayer (policy, player, direction) {
         d3.selectAll(`div.weekly.area.actions img.decrease.action0${policy}.${player}`).attr("src", "img/button_disabled_decrease.png");
     }
 
-    if (direction > 0) {
-        if (!positive) return;
-        multiplayer_policy[policyIdx].value[targetIdx].num++;
-    } else if (direction < 0) {
-        if (!negative) return;
-        multiplayer_policy[policyIdx].value[targetIdx].num--;
-    } else return;
+    if (policy === "ICU_control") {
+        if (direction > 0) {
+            if (!positive) return;
+            multiplayer_policy[policyIdx].value[targetIdx].num++;
+        } else if (direction < 0) {
+            if (!negative) return;
+            multiplayer_policy[policyIdx].value[targetIdx].num--;
+        } else return;
+    } else {
+        if (direction > 0) {
+            if (!positive) return;
+            multiplayer_policy[policyIdx].value.forEach(pol => pol.num++);
+        } else if (direction < 0) {
+            if (!negative) return;
+            multiplayer_policy[policyIdx].value.forEach(pol => pol.num--);
+        } else return;
+    }
     getAction();
     toggle_week();
     changePolicyMultiplayer(policy, player, 0);

@@ -230,8 +230,9 @@ div.controls > div.control > img {
 }
 div.panel_footer {
     position: absolute;
-    background-image: url("../img/main_bottom_panel.png");
+    background-image: url("../img/main_bottom_panel.png") ;
     background-repeat: no-repeat;
+    background-size: 100%;
     top: 760px;
     left: 345px;
     width: 1045px;
@@ -246,20 +247,20 @@ div.panel_output {
     text-align: center;
 }
 div.panel_output.infectious {
-    left: 129px;
+    left: 120px;
 }
 div.panel_output.hospital {
-    left: 285px;
+    left: 275px;
 }
 div.panel_output.death {
-    left: 413px;
+    left: 422px;
 }
 div.panel_output.GDP {
-    left: 580px;
+    left: 610px;
     font-size: 23px;
 }
 div.panel_output.budget {
-    left: 775px;
+    left: 795px;
 }
 
 .popup {
@@ -502,6 +503,7 @@ div.daily.legend {
 div.daily.legend img.background {
     position: absolute;
     top: 173px;
+    width: 574px;
 }
 
 div.virus.selection {
@@ -784,6 +786,10 @@ img.weekly.tab.back.age {
     left: 10px;
     width: 550px;
 }
+img.weekly.tab.back.area {
+    left: 115px;
+    width: 480px;
+}
 
 #popup_weekly .popBody {
     font-size: 16px;
@@ -1000,8 +1006,8 @@ img.policy.bed:hover {
 
 div.weekly.area.budget{
     position: absolute;
-    top: 676px;
-    left: 483px;
+    top: 713px;
+    left: 509px;
     width: 109px;
     height: 37px;
     text-align: center;
