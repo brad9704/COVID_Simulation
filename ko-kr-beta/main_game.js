@@ -970,11 +970,11 @@ function weekly_report() {
     }
     toggle_week();
 
-    vaccine_research += Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit), 0), chart_data.length)
+    vaccine_research += 0.1 + Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit), 0), chart_data.length)
         .reduce((prev, curr) => prev + (curr.GDP *
             (curr.S[9] + curr.E1[9] + curr.E2[9] + curr.I1[9] + curr.R1[9]) /
             w.param.node_num / 4 /
-            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))) * (Math.max(0.01, (100 - curr.R2[9]) * (100 - curr.R2[9]) / 10000)), 0) / 200) / 100;
+            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))) * (Math.max(0.1, (100 - curr.R2[9]) * (100 - curr.R2[9]) / 10000)), 0) / 150) / 100;
 
     vaccine_research = Math.max(vaccine_research + received_multiplayer_policy["action02"] * 3, 0);
     total_vaccine_research = NETWORK.TEAMTYPE === "COMP" ? vaccine_research :
