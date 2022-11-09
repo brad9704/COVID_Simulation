@@ -3,6 +3,7 @@
 const REQUEST_ID = "https://chickenberry.ddns.net:8192/FTC";
 var ONLINE = true;
 var createNewInfectious = false;
+var prev_vaccine = 0;
 
 var run, chart_data, running_time, chart_param;
 var stat = {
@@ -655,6 +656,7 @@ function start_simulation() {
     $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
+    $("div.vaccine_diff").css("display", "none");
     $("output.budget_now").val(0);
     received_multiplayer_policy["action01"] = 0;
     received_multiplayer_policy["action02"] = 0;
@@ -663,6 +665,7 @@ function start_simulation() {
     budget = 0;
     vaccine_research = 0;
     total_vaccine_research = 0;
+    prev_vaccine = 0;
     age_policy_data_fix = [
         {policy: 1, active: false}, {policy: 2, active: false}, {policy: 3, active: false}
     ];
@@ -718,6 +721,7 @@ function toggle_run() {
 function resume_simulation () {
     if (run !== null) return -2;
     $(".enable-on-pause").attr("disabled", "disabled");
+    $("div.vaccine_diff").css("display","none");
     $("input.weekly.tab.switch.overall").click();
     let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
         age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
@@ -914,6 +918,7 @@ function getAction() {
 
 function weekly_report() {
     $("td.weekly.warning").attr("data-value", "0");
+    $("div.vaccine_diff").css("display", "block");
     let chart_data_total = [];
     $("output.bed.plan").val(w.param.hospital_max);
 
@@ -969,7 +974,6 @@ function weekly_report() {
         if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
-
     vaccine_research += 0.1 + Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit), 0), chart_data.length)
         .reduce((prev, curr) => prev + (Math.sqrt(curr.GDP) * 350 *
             (curr.S[9] + curr.E1[9] + curr.E2[9] + curr.I1[9] + curr.R1[9]) /
@@ -980,6 +984,7 @@ function weekly_report() {
     total_vaccine_research = NETWORK.TEAMTYPE === "COMP" ? vaccine_research :
         Math.round(NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").reduce((prev, curr) => prev + curr["STAT"]["vaccine"], 0) / NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").length * 10) / 10;
     $("output.vaccine_progress").val(Math.round(total_vaccine_research * 10) / 10);
+    $("output.vaccine_diff").val(`+${Math.round((total_vaccine_research - prev_vaccine) * 10) / 10}%`);
     weekOver(
         [$("output.infectious_now").val(), $("output.infectious_total").val()],
         [$("output.hospital_now").val(), $("output.hospital_max").val()],

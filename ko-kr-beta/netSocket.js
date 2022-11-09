@@ -70,6 +70,7 @@ function updateUserStatus() {
     total_vaccine_research = NETWORK.TEAMTYPE === "COMP" ? vaccine_research :
         Math.round(NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").reduce((prev, curr) => prev + curr["STAT"]["vaccine"], 0) / NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").length * 10) / 10;
     $("output.vaccine_progress").val(Math.round(total_vaccine_research * 10) / 10);
+    $("output.vaccine_diff").val(`+${Math.round((total_vaccine_research - prev_vaccine) * 10) / 10}%`);
 }
 
 
@@ -328,7 +329,7 @@ socket.on("turnStart", function (msg) {
         announcement(`Your ICU bed limit is temporarily ${ICU_change > 0 ? "expanded" : "decreased"} by ${Math.abs(ICU_change)}!`);
     if (vaccine_change !== 0)
         announcement(`Your ${NETWORK.TEAMTYPE === "COOP" ? "team " : ""}vaccine development status was ${vaccine_change < 0 ? "decreased" : "increased"} by ${Math.abs(vaccine_change * 3)}%!`);
-
+    prev_vaccine = total_vaccine_research;
 });
 
 function weekOver(infected, ICU, death, GDP, vaccine) {

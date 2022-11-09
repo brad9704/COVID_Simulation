@@ -1729,7 +1729,19 @@ div.vaccine_progress {
     padding: 20px 8px;
     font-family: "ONEMobileTitle", sans-serif;
 }
-
+div.vaccine_diff {
+    position: absolute;
+    top: 62px;
+    right: 10px;
+    width: 60px;
+    height: 20px;
+    font-size: 16px;
+    text-align: right;
+    line-height: 16px;
+    font-family: "ONEMobileTitle", sans-serif;
+    color: blue;
+    display: none;
+}
 div.announcement {
     display: none;
     width: 1400px;
