@@ -971,7 +971,7 @@ function weekly_report() {
     toggle_week();
 
     vaccine_research += 0.1 + Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit), 0), chart_data.length)
-        .reduce((prev, curr) => prev + (curr.GDP *
+        .reduce((prev, curr) => prev + (Math.sqrt(curr.GDP) * 350 *
             (curr.S[9] + curr.E1[9] + curr.E2[9] + curr.I1[9] + curr.R1[9]) /
             w.param.node_num / 4 /
             (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))) * (Math.max(0.1, (100 - curr.R2[9]) * (100 - curr.R2[9]) / 10000)), 0) / 150) / 100;
