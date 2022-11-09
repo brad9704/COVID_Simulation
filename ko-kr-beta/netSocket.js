@@ -377,3 +377,7 @@ function announcement(content) {
 socket.on("refresh", function() {
     location.reload();
 })
+
+socket.on("redir", function(msg) {
+    window.location.href = msg["link"];
+})
