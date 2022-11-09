@@ -101,6 +101,7 @@
                 update_weekly_output();">
                 <img class="weekly tab03 icon" src="img/icon_3.png" alt="">
                 <input class="weekly tab switch area" type="button" value="MULTIPLAY" onclick="
+                if (NETWORK.USERLIST.find(student => student.studentID === NETWORK.STUDENT_ID).status === 'WREADY') return;
                 $('input.weekly.tab.switch').attr('active','false');
                 $('img.weekly.tab.back').css('display','none');
                 $('img.weekly.tab.back.area').css('display','block');

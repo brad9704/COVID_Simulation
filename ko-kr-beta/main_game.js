@@ -662,6 +662,7 @@ function start_simulation() {
 
     budget = 0;
     vaccine_research = 0;
+    total_vaccine_research = 0;
     age_policy_data_fix = [
         {policy: 1, active: false}, {policy: 2, active: false}, {policy: 3, active: false}
     ];
@@ -965,16 +966,15 @@ function weekly_report() {
             .reduce((prev, curr) => prev + (curr.GDP / 4 / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
         $("output.budget_now").val(budget);
         createNewInfectious = true;
-        console.log("Created new infectious");
         if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
 
     vaccine_research += Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit), 0), chart_data.length)
         .reduce((prev, curr) => prev + (curr.GDP *
-            (data_to.S[9] + data_to.E1[9] + data_to.E2[9] + data_to.I1[9] + data_to.R1[9]) /
+            (curr.S[9] + curr.E1[9] + curr.E2[9] + curr.I1[9] + curr.R1[9]) /
             w.param.node_num / 4 /
-            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))), 0) / 200) / 100;
+            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))) * (Math.max(0.01, (100 - curr.R2[9]) * (100 - curr.R2[9]) / 10000)), 0) / 200) / 100;
 
     vaccine_research = Math.max(vaccine_research + received_multiplayer_policy["action02"] * 3, 0);
     total_vaccine_research = NETWORK.TEAMTYPE === "COMP" ? vaccine_research :
@@ -1411,9 +1411,9 @@ function changePolicyMultiplayer (policy, player, direction) {
             multiplayer_policy[policyIdx].name === "ICU_control" &&
             (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value.reduce((prev, curr) => prev + curr.num, 0)
         ) ||
-        (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control") ||
-            multiplayer_policy[policyIdx].name === "vaccine_control") &&
-            multiplayer_policy[policyIdx].value[targetIdx].num >= 1));
+        (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control" && multiplayer_policy[policyIdx].value[targetIdx].num >= 10) ||
+            (multiplayer_policy[policyIdx].name === "vaccine_control") &&
+            multiplayer_policy[policyIdx].value[targetIdx].num >= 1)));
 
     let negative = multiplayer_policy[policyIdx].value[targetIdx].num > 0;
 
@@ -1424,7 +1424,7 @@ function changePolicyMultiplayer (policy, player, direction) {
         d3.selectAll(`div.weekly.area.actions img.decrease.action0${policy}.${player}`).attr("src", "img/button_disabled_decrease.png");
     }
 
-    if (policy === "ICU_control") {
+    if (multiplayer_policy[policyIdx].name === "ICU_control") {
         if (direction > 0) {
             if (!positive) return;
             multiplayer_policy[policyIdx].value[targetIdx].num++;

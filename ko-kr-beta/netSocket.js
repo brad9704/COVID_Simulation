@@ -322,12 +322,12 @@ socket.on("turnStart", function (msg) {
     updateUserStatus();
     resume_simulation();
 
-    let ICU_change = received_multiplayer_policy["action01"] + multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0);
+    let ICU_change = received_multiplayer_policy["action01"] - multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0);
     let vaccine_change = received_multiplayer_policy["action02"];
     if (ICU_change !== 0)
-        announcement(`Your ICU bed limit is temporarily ${ICU_change > 0 ? "expanded" : "decreased"} by ${Math.abs(ICU_change)} by your teammates!`);
+        announcement(`Your ICU bed limit is temporarily ${ICU_change > 0 ? "expanded" : "decreased"} by ${Math.abs(ICU_change)}!`);
     if (vaccine_change !== 0)
-        announcement(`Your ${vaccine_change > 0 ? "team " : ""}vaccine development status was ${vaccine_change < 0 ? "decreased" : "increased"} by ${Math.abs(vaccine_change * 3)}% by your teammates!`);
+        announcement(`Your ${NETWORK.TEAMTYPE === "COOP" ? "team " : ""}vaccine development status was ${vaccine_change < 0 ? "decreased" : "increased"} by ${Math.abs(vaccine_change * 3)}%!`);
 
 });
 
