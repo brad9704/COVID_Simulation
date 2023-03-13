@@ -559,7 +559,7 @@
     window.onresize = function() {
         let scale = this.innerWidth / 1920;
         let translate = (1 - 1920 / this.innerWidth) * 50;
-        d3.select("body").style("transform","scale(" + scale + ") translate(0%," + translate + "%)");
+        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
     }
 </script>
 </body>
