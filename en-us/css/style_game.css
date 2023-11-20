@@ -1097,7 +1097,8 @@ line.weekly.border.visible {
 #button_resume {
     background-color: rgba(0,0,0,0);
     width: 328px;
-    top: 159px;
+    top: 0;
+    height: 157px;
     position: absolute;
     right: 0;
     cursor: pointer;
