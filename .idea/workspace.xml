@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -20,15 +23,107 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20211029_save_me">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/beta/covid_game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/beta/main_game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/beta/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/beta/worker_game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/covid_game.html" beforeDir="false" afterPath="$PROJECT_DIR$/covid_game.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/css/style_game.css" beforeDir="false" afterPath="$PROJECT_DIR$/css/style_game.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/main_game.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker_game.js" beforeDir="false" afterPath="$PROJECT_DIR$/worker_game.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/covid_game.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/KoPubDotumMedium.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Bold.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Bold.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Bold.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Light.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Light.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Light.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile OTF Bold.otf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile OTF Light.otf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile OTF Regular.otf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile POP OTF.otf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Regular.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Regular.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Regular.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title OTF.otf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONEMobilePOP.eot" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONEMobilePOP.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONEMobilePOP.woff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscr.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscrb.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscre.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscreb.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/style_game.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/default_params.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/favicon.ico" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/InnerPopup.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/InnerPopupConfirm.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/InnerPopupIncome.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/Result.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/START_active.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/START_inactive.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/STOP_active.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/STOP_inactive.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/background.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/bad.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_increase.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_start.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_start_inactive.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_stop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/caution.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/cursor.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_1_hover.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_2_hover.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_3_hover.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_level_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_level_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_level_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/duration.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/good.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/infect_age.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/init_back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/init_stat.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/latent.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/main_bottom_panel.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/main_graph_panel.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/node_info.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/node_info.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/popup_init.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/selectbox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/severe.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/severe_age.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/sidebar.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/stagePopulation.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/stat_arrow.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/stat_setting.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/transfer.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/virus_info_panel.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weeklyPolicy_clickHere.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_back.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_desc_popup.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_desc_popup2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_resume.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_budget_panel.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_social_distancing_policy.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_weekly_chart_cover.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_weekly_occurrence_status_panel.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/감염병 현황.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/그래프.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/메인 - 날짜 및 배속.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/셀렉트박스.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/스탯설명_닫기버튼.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/시뮬레이션_배경.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/initial_setting.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/main_game.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/network.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/simNode_game.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/virus_info.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ko-kr-v2/worker_game.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,63 +150,53 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
-  <component name="JsFlowSettings">
-    <service-enabled>true</service-enabled>
-    <exe-path />
-    <other-services-enabled>true</other-services-enabled>
-    <auto-save>true</auto-save>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="1fFUvo6Xz7vy2ZIp2QWqV9EYUdW" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="list.type.of.created.stylesheet" value="CSS" />
-    <property name="node.js.detected.package.eslint" value="true" />
-    <property name="node.js.path.for.package.eslint" value="project" />
-    <property name="node.js.selected.package.eslint" value="(autodetect)" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
-    <property name="vue.rearranger.settings.migration" value="true" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Disaster lab\Documents\COVID_Simulation" />
       <recent name="C:\Users\Disaster lab\Documents\COVID_Simulation\css" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.covid_game.html (1)">
+  <component name="RunManager" selected="JavaScript Debug.covid_game.html (3)">
     <configuration name="covid_game.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/beta/covid_game.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="covid_game.html (2)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/unstable/en-us/multiplayer/covid_game.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="covid_game.html (3)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/unstable/en-us/singleplayer/covid_game.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="covid_game.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/covid_game.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="d3_w_game.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/d3_w_game.html" useBuiltInWebServerPort="true">
-      <method v="2" />
-    </configuration>
     <configuration name="test.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/COVID_Simulation/test.html" useBuiltInWebServerPort="true">
-      <method v="2" />
-    </configuration>
-    <configuration name="main_game.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/main_game.js" working-dir="$PROJECT_DIR$">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.covid_game.html (3)" />
+        <item itemvalue="JavaScript Debug.covid_game.html (2)" />
         <item itemvalue="JavaScript Debug.covid_game.html (1)" />
         <item itemvalue="JavaScript Debug.covid_game.html" />
         <item itemvalue="JavaScript Debug.test.html" />
-        <item itemvalue="Node.js.main_game.js" />
-        <item itemvalue="JavaScript Debug.d3_w_game.html" />
       </list>
     </recent_temporary>
   </component>
@@ -241,6 +326,7 @@
       <workItem from="1635396245374" duration="8818000" />
       <workItem from="1635464764249" duration="13858000" />
       <workItem from="1635483313640" duration="2719000" />
+      <workItem from="1700453636319" duration="8015000" />
     </task>
     <task id="LOCAL-00011" summary="20210630_jQuery_1">
       <created>1625043714767</created>
@@ -623,7 +709,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="20210729" />
@@ -668,7 +753,7 @@
         <watch expression="t._groups" />
         <watch expression="this.circle._groups" />
       </configuration>
-      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="157">
+      <inline-watch fileUrl="file://$PROJECT_DIR$/main_game.js" line="46">
         <watch expression="tick" language="JavaScript" />
       </inline-watch>
     </watches-manager>

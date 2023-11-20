@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<!--ver.2022.10.31.03-->
+<html lang="en">
+<!--🥕-->
+<link rel="shortcut icon" href="favicon.ico">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID Simulation</title>
+    <link rel="stylesheet" href="css/style_game.css">
+</head>
+<body>
+<img id="background" src="img/background.png" alt="">
+<div class="sidebar">
+    <div class="Day">Week <output class="weekly_week">0</output><br>
+        <text id="day_text">Day</text> <output id="turn_day">0</output></div>
+    <div class="speed">
+        <div id="speed_output_wrapper">
+            <output id="speed_out">X 1</output>
+        </div>
+        <div class="button">
+            <input id="speed_slower" type="button" onclick="change_speed(-1)" value="<">
+            <input id="speed_faster" type="button" onclick="change_speed(1)" value=">">
+        </div>
+    </div>
+</div>
+<div class="upperLeftSpace">
+    <img src="img/vaccine_icon.png" alt="">
+    <div class="vaccine_progress"><output class="vaccine_progress">0</output>%</div>
+    <div class="vaccine_diff"><output class="vaccine_diff"></output></div>
+</div>
+<div class="board" id="board">
+    <div id="sim_board">
+    </div>
+    <div class="daily legend">
+        <img class="daily" src="img/virus_info_panel.png" alt="">
+        <img class="daily background" src="img/stagePopulation.png" alt="">
+        <div class="hintIcon" id="hint_SEIHR" onclick="hintFound('SEIHR')"></div>
+        <div class="hintIcon" id="hint_R0" onclick="hintFound('Infection rate')"></div>
+        <div class="virus name"><text class="virus name">COVID-19</text></div>
+        <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
+        <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
+        <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
+        <div class="daily rate infectious board"><output class="daily legend rate infectious">0%</output></div>
+        <div class="daily rate severity board"><output class="daily legend rate severity">0%</output></div>
+        <div class="daily num S"><output class="daily legend num S">1000</output></div>
+        <div class="daily num E1"><output class="daily legend num E1">0</output></div>
+        <div class="daily num E2"><output class="daily legend num E2">0</output></div>
+        <div class="daily num I1"><output class="daily legend num I1">0</output></div>
+        <div class="daily num I2"><output class="daily legend num I2">0</output></div>
+        <div class="daily num H2"><output class="daily legend num H2">0</output></div>
+        <div class="daily num R1"><output class="daily legend num R1">0</output></div>
+        <div class="daily num R2"><output class="daily legend num R2">0</output></div>
+    </div>
+    <div id="chart_board" class="graph"></div>
+    <div id="death_board" class="graph"></div>
+    <div class="hintIcon" id="hint_FTC" onclick="hintFound('Flattening The Curve')"></div>
+</div>
+<div class="control_panel">
+    <div class="panel_button">
+        <img class="STOP_button active" src="img/메인 - STOP 아이콘.png" alt="" onclick="toggle_run()">
+    </div>
+    <div class="panel_footer">
+        <div class="panel_output infectious"><output class="infectious_new">0</output> (<output class="infectious_now">0</output>/<output class="infectious_total">0</output>)</div>
+        <div class="panel_output hospital"><output class="hospital_now">0</output> / <output class="hospital_max">0</output></div>
+        <div class="panel_output death"><output class="death_now">0</output> (<output class="death_total">0</output>)</div>
+        <div class="panel_output GDP"><output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</div>
+        <div class="panel_output budget">$<output class="budget_now">0</output></div>
+    </div>
+</div>
+<div id="popup_node" class="popup">
+    <div class="popBg">
+        <div class="popBody node">
+        </div>
+    </div>
+</div>
+<div id="popup_weekly" class="popup">
+    <div class="popInnerBox">
+        <div class="popBody">
+            <img class="rescale" src="img/WR_틀_예산 포함.png" alt="">
+            <img class="weekly tab back overall" src="img/주간보고_01_Report_ENG.png" alt="">
+            <img class="weekly tab back age" src="img/주간보고_02_Policy.png" alt="" style="display:none">
+            <img class="weekly tab back area" src="img/WR_03_COOP.png" alt="" style="display:none">
+            <div class="weekly switch tabs">
+                <img class="weekly tab01 icon" src="img/icon_1.png" alt="">
+                <input class="weekly tab switch overall" type="button" value="TRENDS" active="true" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.overall').css('display','block');
+                $('input.weekly.tab.switch.overall').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.overall').css('display','block');
+                d3.selectAll('g.board').classed('enabled',false);">
+                <img class="weekly tab02 icon" src="img/icon_2.png" alt="">
+                <input class="weekly tab switch age" type="button" value="POLICY" onclick="
+                $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.age').css('display','block');
+                $('input.weekly.tab.switch.age').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.age').css('display','block');
+                d3.selectAll('g.board').classed('enabled',true);
+                update_weekly_output();">
+                <img class="weekly tab03 icon" src="img/icon_3.png" alt="">
+                <input class="weekly tab switch area" type="button" value="MULTIPLAY" onclick="
+                if (NETWORK.USERLIST.find(student => student.studentID === NETWORK.STUDENT_ID).status === 'WREADY') return;
+                $('input.weekly.tab.switch').attr('active','false');
+                $('img.weekly.tab.back').css('display','none');
+                $('img.weekly.tab.back.area').css('display','block');
+                $('input.weekly.tab.switch.area').attr('active','true');
+                $('div.weekly.tab').css('display','none');
+                $('div.weekly.tab.area').css('display','block');
+                d3.selectAll('g.board').classed('enabled',false);">
+            </div>
+            <div class="weekly overall tab content">
+                <div class="weekly_status">
+                    <div class="weekly date">Week <output class="weekly_week">1</output>: Day <output class="weekly_date_from">1</output>~<output class="weekly_date_to">7</output></div>
+                    <table>
+                        <tr>
+                            <td><output id="weekly_new_infect">0</output></td>
+                            <td><output id="weekly_death">0</output></td>
+                            <td><output id="weekly_hospitalized">0</output></td>
+                            <td><output class="GDP_now">0</output> (<output class="GDP_now_ratio">0</output>%)</td>
+                        </tr>
+                        <tr>
+                            <td><output id="weekly_change_infect">▲0</output></td>
+                            <td><output id="weekly_change_death">0</output></td>
+                            <td class="weekly warning ICUs" data-value="0"></td>
+                            <td class="weekly warning GDPs" data-value="0"></td>
+                        </tr>
+                    </table>
+                    <div class="weekly infectious">Infectious <output class="weekly infectious" age="90">0</output>, Severe <output class="I2_total">0</output></div>
+                    <div class="weekly death"><output class="weekly death" age="90">0</output> deaths</div>
+                </div> <br>
+                <div class="weekly_chart">
+                    <div class="weekly_board">
+                    </div>
+                </div>
+            </div>
+            <div class="weekly age area tab weekly_policy" style="display:none">
+                <div class="panel_policy">
+                    <div class="weekly age tab content">
+                        <div class="weekly age policy_status">
+                            <div class="weekly age policy child">
+                                <img class="weekly age on_off policy01" src="img/policy01_off.png" alt="" onclick="toggleAgePolicy(0);"></div>
+                                <div class="hintIcon" id="hint_SD" onclick="hintFound('Social Distancing')"></div>
+                            <div class="weekly age policy adult">
+                                <img class="weekly age on_off policy02" src="img/policy02_off.png" alt="" onclick="toggleAgePolicy(1);"></div>
+                                <div class="hintIcon" id="hint_Curfew" onclick="hintFound('Curfew')"></div>
+                            <div class="weekly age policy elder">
+                                <img class="weekly age on_off policy03" src="img/policy03_off.png" alt="" onclick="toggleAgePolicy(2);"></div>
+                                <div class="hintIcon" id="hint_Lockdown" onclick="hintFound('Lockdown')"></div>
+                        </div>
+                        <div class="hintIcon" id="hint_Travel" onclick="hintFound('Travel Control')"></div>
+                        <div class="weekly beds">
+                            <div class="weekly bed plan"><output class="weekly bed plan">0</output> beds</div>
+                            <div class="weekly bed cost">$<output class="weekly bed cost">0</output></div>
+                            <div class="hintIcon" id="hint_ICU" onclick="hintFound('Healthcare Capacity')"></div>
+                        </div>
+                        <img alt="" src="img/button_increase.png" class="policy bed rescale inc" onclick="bed_change(1);">
+                        <img alt="" src="img/button_decrease.png" class="policy bed rescale dec" onclick="bed_change(-1);">
+                        <svg class="weekly area lines">
+                            <line class="weekly border visible" x1="0" y1="125" x2="292" y2="125"/>
+                            <line class="weekly border visible" x1="146" y1="0" x2="146" y2="245"/>
+                            <line class="weekly border invisible left" data-click="0" x1="20" y1="278" x2="410" y2="278" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible right" data-click="0" x1="460" y1="278" x2="850" y2="278" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible upper" data-click="0" x1="433" y1="20" x2="433" y2="258" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                            <line class="weekly border invisible lower" data-click="0" x1="433" y1="298" x2="433" y2="536" onclick="this.dataset.click = (this.dataset.click === '0' ? '1' : '0'); toggle_week();"/>
+                        </svg>
+                        <table class="weekly age occurrence">
+                            <tr>
+                                <td><output class="weekly age occur infect child">0</output></td>
+                                <td><output class="weekly age occur infect adult">0</output></td>
+                                <td><output class="weekly age occur infect elder">0</output></td>
+                            </tr>
+                            <tr>
+                                <td><output class="weekly age occur ICU child">0</output></td>
+                                <td><output class="weekly age occur ICU adult">0</output></td>
+                                <td><output class="weekly age occur ICU elder">0</output></td>
+                            </tr>
+                            <tr>
+                                <td><output class="weekly age occur death child">0</output></td>
+                                <td><output class="weekly age occur death adult">0</output></td>
+                                <td><output class="weekly age occur death elder">0</output></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="weekly area tab content">
+                        <div class="weekly area statistics">
+                            <table>
+                                <tr>
+                                    <td><output class="student01 studentName"></output></td>
+                                    <td><output class="student02 studentName"></output></td>
+                                    <td><output class="student03 studentName"></output></td>
+                                </tr>
+                                <tr>
+                                    <td><output class="student01 studentStatus infectious"></output></td>
+                                    <td><output class="student02 studentStatus infectious"></output></td>
+                                    <td><output class="student03 studentStatus infectious"></output></td>
+                                </tr>
+                                <tr>
+                                    <td><output class="student01 studentStatus ICU"></output></td>
+                                    <td><output class="student02 studentStatus ICU"></output></td>
+                                    <td><output class="student03 studentStatus ICU"></output></td>
+                                </tr>
+                                <tr>
+                                    <td><output class="student01 studentStatus death"></output></td>
+                                    <td><output class="student02 studentStatus death"></output></td>
+                                    <td><output class="student03 studentStatus death"></output></td>
+                                </tr>
+                                <tr>
+                                    <td><output class="student01 studentStatus GDP"></output></td>
+                                    <td><output class="student02 studentStatus GDP"></output></td>
+                                    <td><output class="student03 studentStatus GDP"></output></td>
+                                </tr>
+                                <tr>
+                                    <td><output class="student01 studentStatus vaccine"></output></td>
+                                    <td><output class="student02 studentStatus vaccine"></output></td>
+                                    <td><output class="student03 studentStatus vaccine"></output></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="weekly area actions">
+                            <div class="actions action01">
+                                <g class="actions action01 student01">
+                                    <div class="action01 student01 status">
+                                        <output class="action01 student01 status">0</output>
+                                    </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action01 student01 decrease " onclick="changePolicyMultiplayer(1, 'student01', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action01 student01 increase " onclick="changePolicyMultiplayer(1, 'student01', 1)">
+                                </g>
+                                <g class="actions action01 student02">
+                                    <div class="action01 student02 status">
+                                        <output class="action01 student02 status">0</output>
+                                    </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action01 student02 decrease " onclick="changePolicyMultiplayer(1, 'student02', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action01 student02 increase " onclick="changePolicyMultiplayer(1, 'student02', 1)">
+                                </g>
+                                <g class="actions action01 student03">
+                                    <div class="action01 student03 status">
+                                        <output class="action01 student03 status">0</output>
+                                    </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action01 student03 decrease " onclick="changePolicyMultiplayer(1, 'student03', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action01 student03 increase " onclick="changePolicyMultiplayer(1, 'student03', 1)">
+                                </g>
+                            </div>
+                            <div class="actions action02">
+                                <g class="actions action02 student01">
+                                    <div class="action02 student01 status">
+                                        <output class="action02 student01 status">0</output>
+                                    </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action02 student01 decrease " onclick="changePolicyMultiplayer(2, 'student01', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action02 student01 increase " onclick="changePolicyMultiplayer(2, 'student01', 1)">
+                                </g>
+                                <g class="actions action02 student02" style="display:none">
+                                    <div class="action02 student02 status">
+                                        <output class="action02 student02 status">0</output>
+                                    </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action02 student02 decrease " onclick="changePolicyMultiplayer(2, 'student02', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action02 student02 increase " onclick="changePolicyMultiplayer(2, 'student02', 1)">
+                                </g>
+                                <g class="actions action02 student03" style="display:none">
+                                    <div class="action02 student03 status">
+                                        <output class="action02 student03 status">0</output>
+                                    </div>
+                                    <img src="img/button_disabled_decrease.png" alt="" class="action02 student03 decrease " onclick="changePolicyMultiplayer(2, 'student03', -1)">
+                                    <img src="img/button_disabled_increase.png" alt="" class="action02 student03 increase " onclick="changePolicyMultiplayer(2, 'student03', 1)">
+                                </g>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="weekly area budget"><output class="weekly budget_next">0</output></div>
+            <div id="button_wrapper">
+                <img src="img/weekly_ready_inactive.png" alt="" id="button_turnReady" onclick="toggleReady('week')">
+                <div class="login userlist weekly">
+                    <img src="img/weekly_status.png" alt="" class="rescale">
+                    <div class="userlist_dt student00">
+                        <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student00">
+                        <output class="login student00 name"></output>
+                    </div>
+                    <div class="userlist_dt student01">
+                        <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student01">
+                        <output class="login student01 name"></output>
+                    </div>
+                    <div class="userlist_dt student02">
+                        <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student02">
+                        <output class="login student02 name"></output>
+                    </div>
+                    <div class="userlist_dt student03">
+                        <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student03">
+                        <output class="login student03 name"></output>
+                    </div>
+                </div>
+                <img src="img/weekly_resume.png" alt="" id="button_resume" onclick="turnStart()">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="hint">
+    <output class="numHintFound" style="display: none">1</output>
+</div>
+<div id="popupInnerPopup" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox">
+        <div class="popBody">
+            <img class="innerPopup budget over" style="display:none" src="img/InnerPopupBudgetOver.png" alt="">
+            <img class="innerPopup budget gain" src="img/InnerPopupBudgetReceived.png" alt="">
+            <output class="innerPopup budget gain"></output>
+            <img class="innerPopup resume" src="img/InnerPopup_확인버튼.png" alt="" onclick="$('#popupInnerPopup').fadeOut()">
+        </div>
+    </div>
+</div>
+<div id="popup_result" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox result">
+        <img class="popup_result background" alt="" src="img/Result.png">
+        <div class="popBody">
+            <div class="resultReason"></div>
+            <div class="panel_policy_result">
+                <div class="innerPopup result time"><output id="resultTime">0</output> days</div>
+                <div class="innerPopup result infectious"><output class="infectious_total">0</output></div>
+                <div class="innerPopup result ICU"><output class="I2_total">0</output></div>
+                <div class="innerPopup result deaths"><output class="death_total">0</output></div>
+                <div class="innerPopup result GDP"><output class="GDP_total">0</output>%</div>
+                <div class="innerPopup result budget"><output class="budget_total">0</output></div>
+            </div>
+            <div class="result chart">
+            </div>
+            <input type="button" onclick="request_log()" value="Log" style="display:none">
+            <input id="exit" type="button" value="Exit" onclick="$('#popup_result').fadeOut(); reset_simulation();">
+        </div>
+        <div class="popFoot">
+        </div>
+    </div>
+</div>
+<div id="popup_hint" class="popup">
+    <div class="popBg"></div>
+    <div class="popInnerBox hintBox">
+        <div class="hintTitle"></div>
+        <div class="hintBody"></div>
+        <input type="button" value="Exit" class="closeHint" onclick="">
+    </div>
+</div>
+<div id="popup_init" class="popup">
+    <div class="popBg"></div>
+    <div class="popBody">
+        <div class="controls">
+            <img src="img/init_back.png" alt="">
+            <div class="stat wrapper">
+                <div class="virus selection">
+                    <img src="img/selectbox.png" alt="">
+                    <select class="virus selection" onchange="selectVirus(value, virusData)">
+                    </select>
+                    <span class="icoArrow"><img src="img/cursor.png" alt=""></span>
+                </div>
+                <div class="stat left" style="display:none">
+                    <img src="img/init_stat.png" alt="">
+                    <table class="stat def">
+                        <tr class="stat group stat1">
+                            <td class="stat info stat1" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat1').css('display','block');"
+                                onmouseout="$('div.stat.desc').css('display','none');
+                                $('div.stat.description').css('display','none')"></td>
+                            <td class="stat block stat1"></td>
+                            <td class="stat down stat1"><input class="stat down stat1" type="button" value="◀" onclick="change_stat('stat1',-1);"></td>
+                            <td class="stat value stat1"><output class="stat value stat1">0</output></td>
+                            <td class="stat up stat1"><input class="stat up stat1" type="button" value="▶" onclick="change_stat('stat1',1);"></td>
+                        </tr>
+                        <tr class="stat group stat2">
+                            <td class="stat info stat2" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat2').css('display','block');"
+                                onmouseout="$('div.stat.desc').css('display','none'); $('div.stat.description').css('display','none')"></td>
+                            <td class="stat block stat2"></td>
+                            <td class="stat down stat2"><input class="stat down stat2" type="button" value="◀" onclick="change_stat('stat2',-1);"></td>
+                            <td class="stat value stat2"><output class="stat value stat2">0</output></td>
+                            <td class="stat up stat2"><input class="stat up stat2" type="button" value="▶" onclick="change_stat('stat2',1);"></td>
+                        </tr>
+                        <tr class="stat group stat3">
+                            <td class="stat info stat3" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat3').css('display','block');" onmouseout="$('div.stat.desc').css('display','none'); $('div.stat.description').css('display','none')"></td>
+                            <td class="stat block stat3"></td>
+                            <td class="stat down stat3"><input class="stat down stat3" type="button" value="◀" onclick="change_stat('stat3',-1);"></td>
+                            <td class="stat value stat3"><output class="stat value stat3">0</output></td>
+                            <td class="stat up stat3"><input class="stat up stat3" type="button" value="▶" onclick="change_stat('stat3',1);"></td>
+                        </tr>
+                        <tr class="stat group stat4">
+                            <td class="stat info stat4" onmouseover="
+                            $('div.stat.description').css('display','inline-block');
+                            $('div.stat.desc').css('display','none');
+                            $('div.stat.desc.stat4').css('display','block');" onmouseout="$('div.stat.desc').css('display','none'); $('div.stat.description').css('display','none')"></td>
+                            <td class="stat block stat4"></td>
+                            <td class="stat down stat4"><input class="stat down stat4" type="button" value="◀" onclick="change_stat('stat4',-1);"></td>
+                            <td class="stat value stat4"><output class="stat value stat4">0</output></td>
+                            <td class="stat up stat4"><input class="stat up stat4" type="button" value="▶" onclick="change_stat('stat4',1);"></td>
+                        </tr>
+                    </table>
+                    <text><output class="stat value total">25</output></text>
+                    <div class="stat button clear" onclick="if (role === 'Attack') {
+                        ['stat1','stat2','stat3','stat4'].forEach(e => {
+                            for (let i=0;i<25;i++) {
+                                change_stat(e,-1);
+                            }
+                        });}"></div>
+                </div>
+                <div class="login form">
+                    <img src="img/시작화면%20-%20로그인창@2x.png" alt="" class="rescale" style="position: absolute">
+                    <form id="loginForm" action="" method="POST">
+                        <img src="img/Login.png" alt="" class="rescale login_image">
+                        <input type="text" class="login studentID" placeholder="student ID"/>
+                        <button type="submit"><img src="img/Login_button.png" alt="" class="rescale login_submit"></button>
+                    </form>
+                    <div class="login userlist init" style="display:none">
+                        <div class="userlist_dt student00">
+                            <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student00 rescale">
+                            <output class="login student00 name"></output>
+                        </div>
+                        <div class="userlist_dt student01">
+                            <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student01 rescale">
+                            <output class="login student01 name"></output>
+                        </div>
+                        <div class="userlist_dt student02">
+                            <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student02 rescale">
+                            <output class="login student02 name"></output>
+                        </div>
+                        <div class="userlist_dt student03">
+                            <img src="img/Profile_OFFLINE.png" alt="" class="login userlist student03 rescale">
+                            <output class="login student03 name"></output>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat description">
+                    <div class="stat desc stat1">
+                        <img src="img/latent.png" alt="">
+                    </div>
+                    <div class="stat desc stat2">
+                        <img src="img/duration.png" alt="">
+                    </div>
+                    <div class="stat desc stat3">
+                        <img src="img/transfer.png" alt="">
+                    </div>
+                    <div class="stat desc stat4">
+                        <img src="img/severe.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="control" id="Simulation">
+                <img id="button_ready" src="img/Ready_off.png" alt="" onclick="toggleReady('init')">
+                <img id="button_start" src="img/Start_disabled.png" alt="" onclick="gameStart()">
+            </div>
+            <div class="daily legend">
+                <img class="daily" src="img/virus_info_panel.png" alt="">
+                <img class="daily background" src="img/stagePopulation.png" alt="">
+                <div class="virus name"><input class="virus name" onchange="$('text.virus.name').text(this.value)"></div>
+                <div class="daily duration E2-I1"><output class="daily legend duration E2-I1">0-0</output></div>
+                <div class="daily duration I1-I2"><output class="daily legend duration I1-I2">0-0</output></div>
+                <div class="daily duration I1-R1"><output class="daily legend duration I1-R1">0</output></div>
+                <div class="daily rate infectious init" data-pos="300,280"><output class="daily legend rate infectious">0%</output></div>
+                <div class="daily rate severity init" data-pos="400,280"><output class="daily legend rate severity">0%</output></div>
+                <div class="daily num S"><output class="daily legend num S">1000</output></div>
+                <div class="daily num E1"><output class="daily legend num E1">0</output></div>
+                <div class="daily num E2"><output class="daily legend num E2">0</output></div>
+                <div class="daily num I1"><output class="daily legend num I1">0</output></div>
+                <div class="daily num I2"><output class="daily legend num I2">0</output></div>
+                <div class="daily num H2"><output class="daily legend num H2">0</output></div>
+                <div class="daily num R1"><output class="daily legend num R1">0</output></div>
+                <div class="daily num R2"><output class="daily legend num R2">0</output></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="popupDescPopup" class="popup">
+    <div class="popInnerBox">
+        <img class="descPopup TPC" src="img/infect_age.png" alt="" style="display:none">
+        <img class="descPopup severity" src="img/severe_age.png" alt="" style="display:none">
+        <table>
+            <tr>
+                <td class="descPopup age label">연령</td>
+                <td class="descPopup age var">0-9</td>
+                <td class="descPopup age var">10-19</td>
+                <td class="descPopup age var">20-29</td>
+                <td class="descPopup age var">30-39</td>
+                <td class="descPopup age var">40-49</td>
+                <td class="descPopup age var">50-59</td>
+                <td class="descPopup age var">60-69</td>
+                <td class="descPopup age var">70-79</td>
+                <td class="descPopup age var">80+</td>
+            </tr>
+            <tr>
+                <td class="descPopup dist label">분포</td>
+                <td class="descPopup dist var" data-age="0">0</td>
+                <td class="descPopup dist var" data-age="10">0</td>
+                <td class="descPopup dist var" data-age="20">0</td>
+                <td class="descPopup dist var" data-age="30">0</td>
+                <td class="descPopup dist var" data-age="40">0</td>
+                <td class="descPopup dist var" data-age="50">0</td>
+                <td class="descPopup dist var" data-age="60">0</td>
+                <td class="descPopup dist var" data-age="70">0</td>
+                <td class="descPopup dist var" data-age="80">0</td>
+            </tr>
+            <tr>
+                <td class="descPopup value label">확률</td>
+                <td class="descPopup value var" data-age="0">0</td>
+                <td class="descPopup value var" data-age="10">0</td>
+                <td class="descPopup value var" data-age="20">0</td>
+                <td class="descPopup value var" data-age="30">0</td>
+                <td class="descPopup value var" data-age="40">0</td>
+                <td class="descPopup value var" data-age="50">0</td>
+                <td class="descPopup value var" data-age="60">0</td>
+                <td class="descPopup value var" data-age="70">0</td>
+                <td class="descPopup value var" data-age="80">0</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="announcement"></div>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src="//unpkg.com/d3-force-surface/dist/d3-force-surface.min.js"></script>
+<script src="//unpkg.com/underscore@1.12.0/underscore-min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" crossorigin="anonymous"></script>
+<script src="simNode_game.js"></script>
+<script src="main_game.js"></script>
+<script src="netSocket.js"></script>
+<script type="text/javascript">
+    var initParams, virusData, keyFacts;
+
+    d3.xml("img/node_info.svg").then(data => {
+        d3.select("div.popBody.node").node().append(data.documentElement)
+    });
+    d3.xml("img/sidebar.svg").then(data => {
+        d3.select("div.sidebar").node().append(data.documentElement)
+    });
+
+    window.onload = async function() {
+        let scale = this.innerWidth / 1920;
+        let translate = (1 - 1920 / this.innerWidth) * 50;
+        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
+
+        await Promise.all([
+            fetch("default_params.json").then(e => e.json()),
+            fetch("virus_info.json").then(e => e.json()),
+            fetch("Key_facts.json").then(e => e.json())])
+            .then(response => {
+                initParams = response[0];
+                virusData = response[1];
+                keyFacts = response[2];
+                keyFacts.forEach(e => e.status = 0);
+                getVirus(virusData);
+                $("img").attr("draggable", "false");
+            })
+    }
+    window.onresize = function() {
+        let scale = this.innerWidth / 1920;
+        let translate = (1 - 1920 / this.innerWidth) * 50;
+        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
+    }
+</script>
+</body>
+</html>

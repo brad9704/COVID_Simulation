@@ -1,0 +1,13 @@
+{
+	"data": [
+		{
+			"name": "Omega variant",
+			"stat": {
+				"stat1": 4,
+				"stat2": 9,
+				"stat3": 37,
+				"stat4": 20
+			}
+		}
+	]
+}
