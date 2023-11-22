@@ -359,33 +359,6 @@ function node_init(param, node_data, loc) {
         })
         .on("mouseleave", function(d) {
             if (run !== null) d3.select("#node_" + d.index).attr("r", param.size).classed("hovered", false);
-        })
-        .on("click", function(d) {
-            if (run === null) return;
-            let temp_stat = Object.entries(state).find(e => e[1] === d.state)[0];
-            d3.select("tspan.node.age").text(d.detail_age);
-            d3.select("tspan.node.corr_x").text(Math.round(d.x));
-            d3.select("tspan.node.corr_y").text(Math.round(d.y));
-            d3.select("tspan.node.loc").text(d.loc.name);
-            d3.select("tspan.node.income").text(d.income);
-            d3.select("tspan.node.stage").text(role === "Defense" && (temp_stat === "E1" || temp_stat === "E2") ? "S" : temp_stat);
-            d3.select("tspan.node.mask").text(d.mask ? "착용" : "미착용");
-            d3.select("tspan.node.vaccine").text(d.vaccine ? "1차" : "미접종");
-            $("#popup_node").fadeIn(1);
-            d3.select("div.popBody.node").style("top",(120 + yScale(d.y)) + "px").style("left", (240 + xScale(d.x)) + "px");
-            d3.select("#popup_node > div.popBg").on("click", function() {
-                $("#popup_node").fadeOut(1);
-                d3.select("#node_" + d.index).attr("r", param.size).classed("hovered",false);
-                run = setInterval(() => {
-                    if (receive) {
-                        w.postMessage({type: "REPORT", data: running_speed});
-                        receive = false;
-                        receive_time += running_speed;
-                    }
-                }, tick);
-            })
-            clearInterval(run);
-            run = null;
         });
 
     let line_rate = 0.9;
@@ -437,33 +410,6 @@ function node_update(param, node_data) {
                 })
                 .on("mouseleave", function(d) {
                     if (run !== null) d3.select("#node_" + d.index).attr("r", param.size);
-                })
-                .on("click", function(d) {
-                    if (run === null) return;
-                    let temp_stat = Object.entries(state).find(e => e[1] === d.state)[0];
-                    d3.select("tspan.node.age").text(d.age);
-                    d3.select("tspan.node.corr_x").text(Math.round(d.x));
-                    d3.select("tspan.node.corr_y").text(Math.round(d.y));
-                    d3.select("tspan.node.loc").text(d.loc.name);
-                    d3.select("tspan.node.income").text(d.income);
-                    d3.select("tspan.node.stage").text(role === "Defense" && (temp_stat === "E1" || temp_stat === "E2") ? "S" : temp_stat);
-                    d3.select("tspan.node.mask").text(d.mask);
-                    d3.select("tspan.node.vaccine").text(d.vaccine);
-                    $("#popup_node").fadeIn(1);
-                    d3.select("div.popBody.node").style("top",(120 + yScale(d.y)) + "px").style("left",(240 + xScale(d.x)) + "px");
-                    d3.select("#popup_node > div.popBg").on("click", function() {
-                        $("#popup_node").fadeOut(1);
-                        d3.select("#node_" + d.index).attr("r", param.size);
-                        run = setInterval(() => {
-                            if (receive) {
-                                w.postMessage({type: "REPORT", data: running_speed});
-                                receive = false;
-                                receive_time += running_speed;
-                            }
-                        }, tick);
-                    })
-                    clearInterval(run);
-                    run = null;
                 }),
             update => update
                 .attr("cx", d => xScale(d.x))
@@ -682,7 +628,6 @@ function reset_simulation() {
     $("input.policy.level[data-level=4]").val((0.30).toFixed(2));
     $("select.area_policy.option").val(0);
     toggle_week();
-    gameReset();
     $("#popup_init").fadeIn();
 }
 function pause_simulation() {

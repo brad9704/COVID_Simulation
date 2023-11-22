@@ -109,7 +109,7 @@
                 $('input.weekly.tab.switch.area').attr('active','true');
                 $('div.weekly.tab').css('display','none');
                 $('div.weekly.tab.area').css('display','block');
-                d3.selectAll('g.board').classed('enabled',false);">
+                d3.selectAll('g.board').classed('enabled',false);" disabled>
             </div>
             <div class="weekly overall tab content">
                 <div class="weekly_status">
@@ -292,7 +292,7 @@
                         <output class="login student03 name"></output>
                     </div>
                 </div>-->
-                <img src="img/weekly_resume.png" alt="" id="button_resume" onclick="toggleReady('week'); setTimeout(turnStart, 500);">
+                <img src="img/weekly_resume.png" alt="" id="button_resume" onclick="if (toggleReady('week') > 0) turnStart();">
             </div>
         </div>
     </div>
@@ -447,7 +447,7 @@
                 </div>
             </div>
             <div class="control" id="Simulation">
-                <img id="button_start" src="img/button_start.png" alt="" onclick="login(); setTimeout(function () {toggleReady('init'); setTimeout(gameStart, 500);}, 500);">
+                <img id="button_start" src="img/button_start.png" alt="" onclick="toggleReady('init'); gameStart();">
             </div>
             <div class="daily legend">
                 <img class="daily" src="img/virus_info_panel.png" alt="">
@@ -525,10 +525,6 @@
 <script src="netSocket.js"></script>
 <script type="text/javascript">
     var initParams, virusData, keyFacts;
-
-    d3.xml("img/node_info.svg").then(data => {
-        d3.select("div.popBody.node").node().append(data.documentElement)
-    });
     d3.xml("img/sidebar.svg").then(data => {
         d3.select("div.sidebar").node().append(data.documentElement)
     });

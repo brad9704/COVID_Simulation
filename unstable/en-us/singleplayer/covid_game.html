@@ -525,10 +525,6 @@
 <script src="netSocket.js"></script>
 <script type="text/javascript">
     var initParams, virusData, keyFacts;
-
-    d3.xml("img/node_info.svg").then(data => {
-        d3.select("div.popBody.node").node().append(data.documentElement)
-    });
     d3.xml("img/sidebar.svg").then(data => {
         d3.select("div.sidebar").node().append(data.documentElement)
     });

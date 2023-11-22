@@ -129,6 +129,7 @@ function turnStart() {
 function hintFound(hint) {
     if (keyFacts.find(h => h["topic"] === hint)["status"] === 0) {
         announcement(`You found a new Key Fact: ${hint}`);
+        keyFacts[keyFacts.findIndex(h => h["topic"] === hint)]["status"] += 1;
     }
     updateHint();
 }
