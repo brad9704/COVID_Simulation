@@ -234,8 +234,6 @@ function updateSim(param, node_data, time) {
     }
 
     if ((total_vaccine_research > 100 || chart_data.length > 365)) {
-        $("div.resultReason").text("Every teammate satisfied game objectives!");
-
         while (chart_data.length < 365) {
             let temp_data = {
                 "tick": Math.round(time / param.fps),
