@@ -1,6 +1,5 @@
 /*ver.2022.11.01.01*/
 // noinspection HttpUrlsUsage
-const REQUEST_ID = "https://chickenberry.ddns.net:8192/FTC";
 var ONLINE = true;
 var createNewInfectious = false;
 var prev_vaccine = 0;
