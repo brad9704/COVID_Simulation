@@ -8,6 +8,7 @@ var running_time;
 var simulation;
 var param;
 var budget;
+var createNewInfectious = 0;
 
 onmessage = function(event){
     switch (event.data.type) {
@@ -38,6 +39,7 @@ var startSim = function(event_data) {
     param = event_data;
     param.sim_height = param["sim_size"];
     param.sim_width = param["sim_size"];
+    param.weightByPolicy = 1;
     running_time = 0;
     simulation = null;
 
@@ -117,6 +119,10 @@ function ticked() {
         })
     }, this);
     simulation.nodes().forEach(node => node.dispatch.call("tick", this));
+    if (createNewInfectious > 1 && simulation.nodes().filter(node => node.state === state.S).length > 0) {
+        simulation.nodes().filter(node => node.state === state.S)[0].infected();
+        createNewInfectious = 0;
+    }
     if (Math.ceil(running_time / (param.fps * param.turnUnit)) !== Math.ceil((running_time + 1) / (param.fps * param.turnUnit))) {
         postMessage({type:"PAUSE"});
     }
@@ -197,7 +203,11 @@ function apply_policy(policy) {
                 node.speed(Speed(area.data.find(a => a.age === node.getAgeGroup()).level));
             })
     })
-    simulation.nodes().forEach(node => node.param.hospital_max = policy.hospital_max);
+    simulation.nodes().forEach(node => {
+        node.param.hospital_max = Math.max(policy.hospital_max + policy.multiplayer_policy["action01"], 0);
+    });
+
+    if (policy.createNewInfectious) createNewInfectious++;
 
     let temp = simulation.loc.get_surface(), line_rate = policy.rate;
     if (policy.surface.upper === "1") temp.push({

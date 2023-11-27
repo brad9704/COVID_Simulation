@@ -1,7 +1,9 @@
-/*ver.2022.03.15.01*/
+/*ver.2022.11.01.01*/
 // noinspection HttpUrlsUsage
 const REQUEST_ID = "https://chickenberry.ddns.net:8192/FTC";
 var ONLINE = true;
+var createNewInfectious = false;
+var prev_vaccine = 0;
 
 var run, chart_data, running_time, chart_param;
 var stat = {
@@ -24,10 +26,17 @@ var age_policy_data = [
     {pos: "lower right", x: 0.5, y: 0.5, data: [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}]}
 ];
 
+var age_policy_data_fix = [
+    {policy: 1, active: false}, {policy: 2, active: false}, {policy: 3, active: false}
+];
+var multiplayer_policy = [
+    {policyNo: 1, name: "ICU_control", value: [{target: "student01", num: 0}, {target: "student02", num: 0}, {target: "student03", num: 0}]},
+    {policyNo: 2, name: "vaccine_control", value: [{target: "student01", num: 0}, {target: "student02", num: 0}, {target: "student03", num: 0}]}
+];
 
+var received_multiplayer_policy = {"action01": 0, "action02": 0};
 
 var budget = 0;
-var clicker = 0;
 var turn_end = true;
 var chart = 0;
 var running_speed = 1;
@@ -35,6 +44,7 @@ var tick = 1000 / 60;
 var w; 
 var receive = false, receive_time = 0;
 w = new Worker("worker_game.js");
+var vaccine_research, total_vaccine_research;
 
 function getVirus(virusInfo) {
     d3.select("select.virus.selection").selectAll("option")
@@ -42,7 +52,7 @@ function getVirus(virusInfo) {
         .enter()
         .append("option")
         .attr("value",function(e) {return e.name;})
-        .text(function(e) {if (e.name === "Attack") {return e.name;} else {return "Defense: " + e.name;}});
+        .text(function(e) {return e.name});
     selectVirus(virusInfo.data[0].name, virusInfo);
     $("#popup_init").fadeIn();
 }
@@ -152,6 +162,7 @@ w.onmessage = function(event) {
             break;
         case "PAUSE":
             pause_simulation();
+            toggle_weekly_input(false);
             weekly_report();
             break;
         case "CONSOLE_LOG":
@@ -221,9 +232,21 @@ function updateSim(param, node_data, time) {
         chart_update(param, chart_param, chart_data);
         chart = 0;
     }
-//    if (time % (param.turnUnit * param.fps) === 0) pause_simulation();
-    if (node_data.filter(e => e.state === state.S || e.state === state.R1 || e.state === state.R2).length === node_data.length &&
-        node_data.filter(e => e.state === state.R1 || e.state === state.R2).length > 0) {
+
+    if ((total_vaccine_research > 100 || chart_data.length > 365) &&
+        NETWORK.USERLIST.find(std => std.studentID === NETWORK.STUDENT_ID)
+            .status !== "FINISHED") gameOver();
+    let isGameOverCOMP = (NETWORK.TEAMTYPE === "COMP" &&
+        NETWORK.USERLIST.some(student => student.status === "FINISHED"));
+    let isGameOverCOOP = (NETWORK.TEAMTYPE === "COOP" &&
+        NETWORK.USERLIST.every(student =>
+            student.status !== "PLAYING" &&
+            student.status !== "WREADY"));
+
+    if (isGameOverCOMP || isGameOverCOOP) {
+        if (isGameOverCOMP) $("div.resultReason").text(`${NETWORK.USERLIST.find(student => student.status === "FINISHED").name} satisfied game objectives!`);
+        if (isGameOverCOOP) $("div.resultReason").text("Every teammate satisfied game objectives!");
+
         while (chart_data.length < 365) {
             let temp_data = {
                 "tick": Math.round(time / param.fps),
@@ -253,10 +276,10 @@ function updateSim(param, node_data, time) {
 }
 
 function show_result(param) {
-    d3.select("div.result.chart").selectAll("svg").remove();
+    $("#hint_FTC").css("display", "none");
     $("td.result, div.panel_policy_result").css("display:none");
     let last_state = chart_data[chart_data.length - 1];
-    let final_budget = Math.ceil(parseInt(last_state["tick"]) / 28) * 40000 - budget;
+    let final_budget = budget
     $("#resultTime").text(last_state["tick"]);
     $("output.budget_total").text(final_budget);
 
@@ -376,72 +399,7 @@ function node_init(param, node_data, loc) {
             run = null;
         });
 
-    (function createAreaRect () {
-        let g = d3.select("#sim_container").selectAll("g.board")
-            .data(age_policy_data)
-            .enter().append("g")
-            .attr("class", function(d) {return `board ${d.pos}`})
-            .style("display", "none");
-        g.append("rect")
-            .attr("width", param["canvas_width"] / 2)
-            .attr("height", param["canvas_height"] / 2)
-            .attr("x", function(d) {return (param["canvas_width"] * d.x)})
-            .attr("y", function(d) {return (param["canvas_height"] * d.y)})
-            .attr("class", function(d) {return `board ${d.pos} inactive`})
-            .style("fill", "rgba(0,0,0,0)");
-        g.selectAll("image")
-            .data(e => e.data)
-            .join(
-                enter => {
-                    enter.append("image")
-                        .attr("class", function (d) {return `board_icon count level_${d.age}`})
-                        .attr("href", function(d) {
-                            return d.level > 0 ? `img/distancing_level_${d.level}.png` : "";
-                        })
-                        .attr("width", 38)
-                        .attr("height", 38)
-                        .attr("x", function(d) {
-                            return param["canvas_width"] *
-                                (d3.select(this.parentElement).datum().x +
-                                    (d.age * 0.1)) + 56;
-                        })
-                        .attr("y", function() {
-                            return param["canvas_height"] *
-                                (d3.select(this.parentElement).datum().y + 0.17) - 28;
-                        });
-                    enter.append("image")
-                        .attr("class", function (d) {return `board_icon human age_${d.age}`})
-                        .attr("href", function (d) {
-                            return `img/distancing_age_${d.age}.png`;
-                        })
-                        .attr("width", 75)
-                        .attr("height", 75)
-                        .attr("x", function(d) {
-                            return param["canvas_width"] *
-                                (d3.select(this.parentElement).datum().x +
-                                (d.age * 0.1));
-                        })
-                        .attr("y", function() {
-                            return param["canvas_height"] *
-                                (d3.select(this.parentElement).datum().y + 0.17);
-                        })
-                        .on("mouseover", function(d) {
-                            d3.select(this).attr("href", `img/distancing_age_${d.age}_hover.png`);
-                        })
-                        .on("mouseout", function(d) {
-                            d3.select(this).attr("href", `img/distancing_age_${d.age}.png`);
-                        })
-                        .on("click", function(d, i, p) {
-                            if (d.level < 3) d.level++;
-                            else d.level = 0;
-                            update_people();
-                        });
-                }
-            )
-
-    }) ();
-
-    let line_rate = parseFloat($("input.policy.rate").val());
+    let line_rate = 0.9;
 
     sim_cont.selectAll("line.svg_line")
         .data([{name: "upper", x1: param["canvas_width"] / 2, y1: param["canvas_height"] * (1 - line_rate) / 4, x2: param["canvas_width"] / 2, y2: param["canvas_height"] * (1 + line_rate) / 4},
@@ -521,7 +479,7 @@ function node_update(param, node_data) {
             update => update
                 .attr("cx", d => xScale(d.x))
                 .attr("cy", d => yScale(d.y))
-                .attr("class", d => (d.mask) ? "node " + _.findKey(state,e => e === d.state) + " mask" : "node " + _.findKey(state,e => e === d.state))
+                .attr("class", d => "node " + _.findKey(state,e => e === d.state))
                 .attr("style", d => ((d.flag.includes("dead") || d.flag.includes("hidden")) ? "display:none" : ""))
                 .attr("fill", d => ((d.state === state.E1 || d.state === state.E2) && (role === "Defense")) ? state.S : d.state),
             exit => exit.remove()
@@ -614,13 +572,15 @@ function chart_update(param, chart_param, chart_data) {
     $(".infectious_now").val(now.I1+now.I2+now.H1+now.H2);
     $(".infectious_total").val(w.param.node_num - now.S - now.E1 - now.E2);
     $(".hospital_now").val(now.H2);
-    $(".hospital_max").val(w.param.hospital_max);
+    $(".hospital_max").val(Math.max(w.param.hospital_max + received_multiplayer_policy["action01"]),0);
     $(".death_now").val(now.R2-last.R2);
     $(".death_total").val(now.R2);
     $(".GDP_now").val(Math.round(now.GDP).toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0}));
     $(".GDP_total").val(Math.round(chart_data_total.reduce((prev, curr) => prev + curr.GDP, 0) / (chart_data_total.length * chart_data_total[0].GDP) * 1000) / 10);
     $(".GDP_now_ratio").val(Math.round(now.GDP / chart_data_total[0].GDP * 1000) / 10);
-
+    if (received_multiplayer_policy["action01"] > 0) $(".hospital_max").css("color", "blue");
+    else if (received_multiplayer_policy["action01"] < 0) $(".hospital_max").css("color", "red");
+    else $(".hospital_max").css("color", "black");
     x1.domain([0, d3.max(chart_data_total, function(d) {
         return d["tick"];
     })]);
@@ -688,16 +648,27 @@ function chart_update(param, chart_param, chart_data) {
         });
 }
 
-
 function start_simulation() {
+    $("#hint_FTC").css("display", "block");
     chart_data = [];
     $("output.weekly_week").val(0);
     $("#turn_day").val(0);
     $("div.result.chart").children().remove("svg");
     $(".table_sliders > td > input").val(1);
     $(".table_floats > td > output").val(parseFloat("1.00").toFixed(2));
+    $("div.vaccine_diff").css("display", "none");
     $("output.budget_now").val(0);
+    received_multiplayer_policy["action01"] = 0;
+    received_multiplayer_policy["action02"] = 0;
+    while (running_speed > 1) change_speed(-1);
+
     budget = 0;
+    vaccine_research = 0;
+    total_vaccine_research = 0;
+    prev_vaccine = 0;
+    age_policy_data_fix = [
+        {policy: 1, active: false}, {policy: 2, active: false}, {policy: 3, active: false}
+    ];
     let param = get_params(initParams);
     w.param = param;
     w.postMessage({type: "START", main: param, budget: 0});
@@ -715,7 +686,6 @@ function reset_simulation() {
     chart_data = [];
     w.param = get_params(initParams);
     $("line.weekly.border.invisible").attr("data-click", "0");
-    $("input.policy.rate").val("0.5");
     $("input.policy.bed").val("10");
     $("input.policy.level[data-level=1]").val((1.00).toFixed(2));
     $("input.policy.level[data-level=2]").val((0.90).toFixed(2));
@@ -723,6 +693,7 @@ function reset_simulation() {
     $("input.policy.level[data-level=4]").val((0.30).toFixed(2));
     $("select.area_policy.option").val(0);
     toggle_week();
+    gameReset();
     $("#popup_init").fadeIn();
 }
 function pause_simulation() {
@@ -734,7 +705,6 @@ function pause_simulation() {
 
 function toggle_run() {
     if (run === null) {
-        d3.select("input.panel_button.resume").attr("class", "panel_button pause").attr("value","Pause");
         run = setInterval(() => {
             if (receive) {
                 w.postMessage({type: "REPORT", data: running_speed});
@@ -745,18 +715,18 @@ function toggle_run() {
     } else {
         clearInterval(run);
         run = null;
-        d3.select("input.panel_button.pause").attr("class", "panel_button resume").attr("value","Resume");
     }
 }
 
 function resume_simulation () {
     if (run !== null) return -2;
     $(".enable-on-pause").attr("disabled", "disabled");
+    $("div.vaccine_diff").css("display","none");
     $("input.weekly.tab.switch.overall").click();
     let age_0 = $("input.policy.level[data-age=0]").map(function() {return this.value;}).get(),
         age_20 = $("input.policy.level[data-age=20]").map(function() {return this.value;}).get(),
         age_60 = $("input.policy.level[data-age=60]").map(function() {return this.value;}).get(),
-        line_rate = parseFloat($("input.policy.rate").val()),
+        line_rate = 0.9,
         hospital_max = parseInt($("output.weekly.bed.plan").val()),
         budget_output = $("output.budget_now"),
         surface = {
@@ -765,7 +735,13 @@ function resume_simulation () {
             "left": $("line.weekly.border.invisible.left").attr("data-click"),
             "right": $("line.weekly.border.invisible.right").attr("data-click")
         };
-    let new_budget = budget - 10000 * (hospital_max - w.param.hospital_max);
+    let new_budget = budget - 10000 * (hospital_max - w.param.hospital_max) -
+        multiplayer_policy[0].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) -
+        multiplayer_policy[1].value.reduce(
+            (prev, curr) => Math.max(prev, curr.num), 0
+        ) * 30000;
     d3.selectAll("line.sim_board.svg_line")
         .data([{name: "upper", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (1 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (1 + line_rate) / 4},
             {name: "lower", x1: w.param["canvas_width"] / 2, y1: w.param["canvas_height"] * (3 - line_rate) / 4, x2: w.param["canvas_width"] / 2, y2: w.param["canvas_height"] * (3 + line_rate) / 4},
@@ -791,12 +767,22 @@ function resume_simulation () {
     d3.selectAll("#sim_container g.board").style("display", "none");
     budget = new_budget;
     budget_output.val(new_budget);
+
+    age_policy_data.forEach(area => {
+        area.data[0].level = age_policy_data_fix[2].active ? 3 : age_policy_data_fix[0].active ? 2 : 0;
+        area.data[1].level = age_policy_data_fix[2].active ? 3 : age_policy_data_fix[1].active ? 2 : 0;
+        area.data[2].level = age_policy_data_fix[2].active ? 3 : 0;
+    });
+    $("output.daily.legend.rate.infectious").text((Math.round(prob_calc(get_params(initParams))[0] * 100) / 100).toFixed(2));
+
     w.postMessage({type: "RESUME", data: {
             area: age_policy_data,
             rate: line_rate,
             hospital_max: hospital_max,
             surface: surface,
-            budget: budget
+            budget: budget,
+            multiplayer_policy: received_multiplayer_policy,
+            createNewInfectious: createNewInfectious
         }});
     w.param.hospital_max = hospital_max;
     $("#popup_weekly > .popInnerBox").off("mouseenter").off("mouseleave");
@@ -836,14 +822,12 @@ function save_log() {
 
 function change_speed(direction) {
     let speed_addr = $("#speed_out");
-    clicker += 1;
-    if (clicker > 30) {
-        $("#day_text").text("🥕: ");
-    }
     if (direction > 0) {
         if (running_speed === 8) {
+/*
             toggle_auto("1");
             speed_addr.val("AUTO");
+ */
             return;
         }
         running_speed *= 2;
@@ -908,8 +892,33 @@ function toggle_area(pos_x, pos_y, dir) {
     }
 }
 
+function getAction() {
+    let std_list = NETWORK.USERLIST.filter(student => student.studentID !== NETWORK.STUDENT_ID);
+    multiplayer_policy.forEach(pol => {
+        pol.value.forEach(usr => {
+            $(`output.action0${pol.policyNo}.${usr.target}`).val(usr.num);
+        })
+    });
+
+    let policy_msg = {};
+    let dir = NETWORK.TEAMTYPE === "COOP" ? 1 : -1;
+    std_list.forEach((e, i) => {
+        policy_msg[e.studentID] = {
+            "action01": dir * multiplayer_policy[0].value[i].num,
+            "action02": dir * multiplayer_policy[1].value[i].num * (NETWORK.TEAMTYPE === "COOP" ? 1 : 0.5)
+        };
+        policy_msg[NETWORK.STUDENT_ID] = {
+            "action01": -1 * dir * multiplayer_policy[0].value.reduce((prev, curr) => prev + curr.num, 0),
+            "action02": multiplayer_policy[1].value[i].num
+        };
+    })
+
+    return policy_msg;
+}
+
 function weekly_report() {
     $("td.weekly.warning").attr("data-value", "0");
+    $("div.vaccine_diff").css("display", "block");
     let chart_data_total = [];
     $("output.bed.plan").val(w.param.hospital_max);
 
@@ -953,23 +962,44 @@ function weekly_report() {
         $("#weekly_change_death").val(weekly_change_death).css("color","#2e2886;");
     }
 
-
     $("output.weekly_date_from").val(data_from.tick + 1);
     $("output.weekly_date_to").val(data_to.tick + 1);
     $("output.weekly_week").val(Math.round((data_to.tick + 1) / w.param.turnUnit));
+    createNewInfectious = false;
     if (Math.round((data_to.tick + 1) / w.param.turnUnit) % 4 === 1) {
-        budget += 40000;
+        budget += Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit * 4), 0), chart_data.length)
+            .reduce((prev, curr) => prev + (curr.GDP / 4 / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
         $("output.budget_now").val(budget);
+        createNewInfectious = true;
         if (!auto) triggerInnerPopup("budget.gain");
     }
     toggle_week();
+    vaccine_research += 0.1 + Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit), 0), chart_data.length)
+        .reduce((prev, curr) => prev + (Math.sqrt(curr.GDP) * 350 *
+            (curr.S[9] + curr.E1[9] + curr.E2[9] + curr.I1[9] + curr.R1[9]) /
+            w.param.node_num / 4 /
+            (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit), 0))) * (Math.max(0.1, (100 - curr.R2[9]) * (100 - curr.R2[9]) / 10000)), 0) / 150) / 100;
+
+    vaccine_research = Math.max(vaccine_research + received_multiplayer_policy["action02"] * 3, 0);
+    total_vaccine_research = NETWORK.TEAMTYPE === "COMP" ? vaccine_research :
+        Math.round(NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").reduce((prev, curr) => prev + curr["STAT"]["vaccine"], 0) / NETWORK.USERLIST.filter(student => student.status !== "OFFLINE").length * 10) / 10;
+    $("output.vaccine_progress").val(Math.round(total_vaccine_research * 10) / 10);
+    $("output.vaccine_diff").val(`+${Math.round((total_vaccine_research - prev_vaccine) * 10) / 10}%`);
+    weekOver(
+        [$("output.infectious_now").val(), $("output.infectious_total").val()],
+        [$("output.hospital_now").val(), $("output.hospital_max").val()],
+        [$("output.death_now").val(), $("output.death_total").val()],
+        $("output.GDP_now_ratio").val(),
+        vaccine_research
+    );
+    /*
     if (auto) {
         let res = resume_simulation();
         if (res === 0) return;
     }
-
+    */
     d3.select("#sim_container").selectAll("g.board").style("display", "block");
-    //d3.select("g.board image.board_icon").style("display", "none");
+    //d3.selectAll("g.board image.board_icon").style("display", "none");
 
     new_infect.val( (data_from.S[9] + data_from.E1[9] + data_from.E2[9]) - (data_to.S[9] + data_to.E1[9] + data_to.E2[9]));
     $("#weekly_hospitalized").val(data_to.H2[9]);
@@ -1024,7 +1054,7 @@ function weekly_report() {
 
     let xScale = d3.scaleBand()
         .domain([1,2,3,4,5,6,7,8,9,10,11,12,13,14])
-        .range([-25, board_svg_size.width - 35]).padding(0.7);
+        .range([-25, board_svg_size.width - 45]).padding(0.7);
     let yScale = d3.scaleLinear()
         .domain([0, d3.max(daily_IR, e => e.I1) + 1])
         .range([board_svg_size.height - 50, 10]);
@@ -1038,11 +1068,11 @@ function weekly_report() {
     zAxis.ticks(5);
 
     board_svg = board_svg.append("g")
-        .attr("transform", "translate(40,20)");
+        .attr("transform", "translate(35,10)");
 
     board_svg.append("g")
-        .attr("class", "xAxis")
-        .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")");
+        .attr("transform", "translate(0," + (board_svg_size.height - 50) + ")")
+        .attr("class", "xAxis");
     board_svg.append("g")
         .attr("class", "yAxis")
         .attr("transform", "translate(-5,0)");
@@ -1117,6 +1147,13 @@ function weekly_report() {
         update_weekly_output();
     });
 
+
+    [1,2].forEach(policy => {
+        [1, 2, 3].forEach(studentNo => {
+            changePolicyMultiplayer(policy, `student0${studentNo}`, 0);
+        })
+    })
+
 }
 
 var auto = false;
@@ -1158,7 +1195,13 @@ function toggle_week() {
         surface += parseInt(this.dataset.click);
     });
     bed_update();
-    let new_budget = 10000 * surface * parseFloat($("input.policy.rate").val()) + bed_update();
+    let new_budget = 10000 * surface * 0.9 + bed_update() +
+        multiplayer_policy[0].value.reduce(
+            (prev, curr) => prev + curr.num, 0
+        ) * (NETWORK.TEAMTYPE === "COMP" ? 2000 : 0) +
+        multiplayer_policy[1].value.reduce(
+            (prev, curr) => Math.max(prev, curr.num), 0
+        ) * 30000;
     $("output.weekly.budget_next").val(new_budget.toLocaleString("en-US", {style: "currency", currency: "USD", minimumFractionDigits: 0}));
     if (new_budget > budget) {
         $("div.weekly.area.caution").css("opacity","100%");
@@ -1169,17 +1212,29 @@ function toggle_week() {
     }
 }
 
-function update_people () {
-    age_policy_data.forEach(area => {
-        d3.select(`g.board.${area.pos.replace(" ", ".")}`)
-            .selectAll(`image.board_icon.count`)
-            .each(function (d) {this.setAttribute("href", d.level > 0 ? `img/distancing_level_${d.level}.png` : "")});
-    })
+function toggleAgePolicy(policyNum) {
+    if (age_policy_data_fix[2].active && policyNum !== 2) return;
+
+    age_policy_data_fix[policyNum].active = !(age_policy_data_fix[policyNum].active);
+    if (policyNum === 2) {
+        if (age_policy_data_fix[policyNum].active) {
+            age_policy_data_fix[0].active = false;
+            age_policy_data_fix[1].active = false;
+        }
+    }
     update_weekly_output();
 }
 
 function update_weekly_output () {
     $("output.budget_now").val(budget);
+
+    age_policy_data_fix.forEach(pol => {
+        d3.select("img.weekly.age.on_off.policy0" + pol.policy).attr("src", "img/policy0" + pol.policy + "_" + (pol.active ? "on" : "off") + ".png");
+        if (pol.policy === 3 && pol.active) {
+            d3.select("img.weekly.age.on_off.policy01").attr("src", "img/policy01_disabled.png");
+            d3.select("img.weekly.age.on_off.policy02").attr("src", "img/policy02_disabled.png");
+        }
+    });
 
     let target = $("g.board.enabled.active").length === 0 ?
         [{"age": 1, "level": 0}, {"age": 2, "level": 0}, {"age": 3, "level": 0}] :
@@ -1226,6 +1281,9 @@ function triggerInnerPopup(popupType) {
     $("img.innerPopup").css("display", "none");
     $("img.innerPopup.resume").css("display", "block");
     $("img.innerPopup." + popupType).css("display", "block");
+    let newBudget = Math.floor(chart_data.slice(Math.max(chart_data.length - (w.param.turnUnit * 4), 0), chart_data.length)
+        .reduce((prev, curr) => prev + (curr.GDP / 4 / (chart_data.length - Math.max(chart_data.length - (w.param.turnUnit * 4), 0))), 0));
+    $("output.innerPopup.budget.gain").val("$" + newBudget).css("display", popupType === "budget.gain" ? "block" : "none");
     $("#popupInnerPopup").fadeIn();
 }
 
@@ -1233,10 +1291,6 @@ function updateTotalI2(nodes) {
     $("output.I2_total").each(function() {
         this.value = nodes.filter(node => node.flag.includes("FLAG_SEVERE")).length;
     });
-}
-
-function getSchoolList() {
-
 }
 
 async function sendRequest(action, arg) {
@@ -1254,6 +1308,8 @@ async function sendRequest(action, arg) {
             request.method = "POST";
             request.body = JSON.stringify(arg["body"]);
             url = REQUEST_ID + "/api/score?school=" + arg["school"];
+            break;
+        case "getLevelInfo":
             break;
     }
     const response = await fetch(url, request);
@@ -1341,4 +1397,111 @@ function toggle_active(dom) {
     } else {
         el.classed("active",true).classed("inactive",false);
     }
+}
+
+function changePolicyMultiplayer (policy, player, direction) {
+    let policyIdx = multiplayer_policy.findIndex(p => p.policyNo === policy);
+    let targetIdx = multiplayer_policy[policyIdx].value.findIndex(cnt => cnt.target === player);
+
+    d3.selectAll(`div.weekly.area.actions img.increase.action0${policy}.${player}`).attr("src", `img/button_${NETWORK.TEAMTYPE}_increase.png`);
+    d3.selectAll(`div.weekly.area.actions img.decrease.action0${policy}.${player}`).attr("src", `img/button_${NETWORK.TEAMTYPE}_decrease.png`);
+
+    if ($(`output.${player}`).val() === "") {
+        d3.selectAll("div.weekly.area.actions img.increase").attr("src", "img/button_disabled_increase.png");
+        d3.selectAll("div.weekly.area.actions img.decrease").attr("src", "img/button_disabled_decrease.png");
+        return;
+    }
+    let positive = !(
+        (NETWORK.TEAMTYPE === "COOP" &&
+            multiplayer_policy[policyIdx].name === "ICU_control" &&
+            (w.param.hospital_max - chart_data[chart_data.length - 1].H2[9]) <= multiplayer_policy[policyIdx].value.reduce((prev, curr) => prev + curr.num, 0)
+        ) ||
+        (((NETWORK.TEAMTYPE === "COMP" && multiplayer_policy[policyIdx].name === "ICU_control" && multiplayer_policy[policyIdx].value[targetIdx].num >= 10) ||
+            (multiplayer_policy[policyIdx].name === "vaccine_control") &&
+            multiplayer_policy[policyIdx].value[targetIdx].num >= 1)));
+
+    let negative = multiplayer_policy[policyIdx].value[targetIdx].num > 0;
+
+    if (!positive) {
+        d3.selectAll(`div.weekly.area.actions img.increase.action0${policy}.${player}`).attr("src", "img/button_disabled_increase.png");
+    }
+    else if (!negative) {
+        d3.selectAll(`div.weekly.area.actions img.decrease.action0${policy}.${player}`).attr("src", "img/button_disabled_decrease.png");
+    }
+
+    if (multiplayer_policy[policyIdx].name === "ICU_control") {
+        if (direction > 0) {
+            if (!positive) return;
+            multiplayer_policy[policyIdx].value[targetIdx].num++;
+        } else if (direction < 0) {
+            if (!negative) return;
+            multiplayer_policy[policyIdx].value[targetIdx].num--;
+        } else return;
+    } else {
+        if (direction > 0) {
+            if (!positive) return;
+            multiplayer_policy[policyIdx].value.forEach(pol => pol.num++);
+        } else if (direction < 0) {
+            if (!negative) return;
+            multiplayer_policy[policyIdx].value.forEach(pol => pol.num--);
+        } else return;
+    }
+    getAction();
+    toggle_week();
+    changePolicyMultiplayer(policy, player, 0);
+}
+
+function toggle_weekly_input(bool) {
+    $("div.weekly.age.area.tab.weekly_policy input").attr("disabled", bool);
+    $("input.weekly.tab.switch").attr("disabled", bool);
+    $("div.weekly.age.area.tab.weekly_policy img").attr("disabled", bool);
+}
+
+$("div.hint").on("click", function() {
+    if (NETWORK.STUDENT_ID === null) return;
+    if (run !== null) {
+        toggle_run();
+        $("input.closeHint").on("click", function() {
+            $("#popup_hint").fadeOut();
+            toggle_run();
+            $("input.closeHint").off("click");
+        })
+    } else {
+        $("input.closeHint").on("click", function() {
+            $("#popup_hint").fadeOut();
+            $("input.closeHint").off("click");
+        });
+    }
+    updateHint();
+
+    d3.selectAll("input.topic.found").on("click", function(e) {
+        keyFacts[keyFacts.findIndex(fact => fact["topic"] === e["topic"])]["status"] = 2;
+        d3.select("div.hintBody").node().innerHTML = e["content"];
+        d3.selectAll("input.topic.found").classed("selected", false);
+        d3.select(this).classed("selected", true);
+        updateHint();
+    })
+    $("#popup_hint").fadeIn();
+})
+
+function updateHint() {
+    let addedHintNum = keyFacts.filter(fact => fact.status === 1).length;
+    if (addedHintNum > 0) $("output.numHintFound").val(addedHintNum).css("display", "inline");
+    else $("output.numHintFound").val(addedHintNum).css("display", "none");
+
+    d3.select("div.hintTitle")
+        .selectAll("input.topic")
+        .data(keyFacts, function(e) {return e ? e["topic"] : "topic_" + this.id;})
+        .join(enter => enter.append("input")
+                .attr("type", "button")
+                .attr("class", "topic")
+                .attr("value", function(e) {return e["topic"];})
+                .classed("found", function(e) {return e["status"] > 0})
+                .classed("read", function(e) {return e["status"] > 1}),
+            update => update.classed("found", function(e) {return e["status"] > 0})
+                .classed("read", function(e) {return e["status"] > 1}));
+
+    keyFacts.forEach(e => {
+        d3.select(`#hint_${e["id"]}`).classed("disabled", e["status"] > 0);
+    })
 }

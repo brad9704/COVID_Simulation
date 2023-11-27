@@ -22,108 +22,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20211029_save_me">
+    <list default="true" id="6848ead1-0ecc-472f-b0ad-691f84adac63" name="Default Changelist" comment="20231123">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/covid_game.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/KoPubDotumMedium.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Bold.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Bold.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Bold.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Light.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Light.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Light.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile OTF Bold.otf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile OTF Light.otf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile OTF Regular.otf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile POP OTF.otf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Regular.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Regular.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Regular.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title OTF.otf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONE Mobile Title.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONEMobilePOP.eot" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONEMobilePOP.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/ONEMobilePOP.woff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscr.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscrb.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscre.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/fonts/slkscreb.ttf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/style.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/css/style_game.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/default_params.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/favicon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/InnerPopup.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/InnerPopupConfirm.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/InnerPopupIncome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/Result.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/START_active.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/START_inactive.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/STOP_active.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/STOP_inactive.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/background.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/bad.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_increase.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_start.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_start_inactive.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/button_stop.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/caution.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/cursor.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_1_hover.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_2_hover.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_age_3_hover.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_level_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_level_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/distancing_level_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/duration.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/good.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/infect_age.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/init_back.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/init_stat.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/latent.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/main_bottom_panel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/main_graph_panel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/node_info.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/node_info.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/popup_init.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/selectbox.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/severe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/severe_age.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/sidebar.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/stagePopulation.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/stat_arrow.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/stat_setting.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/transfer.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/virus_info_panel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weeklyPolicy_clickHere.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_back.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_desc_popup.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_desc_popup2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/weekly_report_resume.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_budget_panel.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_social_distancing_policy.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_weekly_chart_cover.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/wr_weekly_occurrence_status_panel.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/감염병 현황.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/그래프.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/메인 - 날짜 및 배속.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/셀렉트박스.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/스탯설명_닫기버튼.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/img/시뮬레이션_배경.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/initial_setting.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/main_game.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/network.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/simNode_game.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/virus_info.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ko-kr-v2/worker_game.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,18 +58,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/KMH/Documents/GitHub/COVID_Simulation/en-us/img&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\KMH\Documents\GitHub\COVID_Simulation\en-us\img" />
       <recent name="C:\Users\Disaster lab\Documents\COVID_Simulation" />
       <recent name="C:\Users\Disaster lab\Documents\COVID_Simulation\css" />
     </key>
@@ -326,70 +228,11 @@
       <workItem from="1635396245374" duration="8818000" />
       <workItem from="1635464764249" duration="13858000" />
       <workItem from="1635483313640" duration="2719000" />
-      <workItem from="1700453636319" duration="8015000" />
-    </task>
-    <task id="LOCAL-00011" summary="20210630_jQuery_1">
-      <created>1625043714767</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1625043714767</updated>
-    </task>
-    <task id="LOCAL-00012" summary="20210716_game">
-      <created>1626426423471</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1626426423471</updated>
-    </task>
-    <task id="LOCAL-00013" summary="20210720_game">
-      <created>1626766318690</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1626766318691</updated>
-    </task>
-    <task id="LOCAL-00014" summary="20210720_game_">
-      <created>1626774337237</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1626774337237</updated>
-    </task>
-    <task id="LOCAL-00015" summary="20210722_game">
-      <created>1626925491961</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1626925491961</updated>
-    </task>
-    <task id="LOCAL-00016" summary="20210722_game_2">
-      <created>1626928672202</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1626928672202</updated>
-    </task>
-    <task id="LOCAL-00017" summary="20210722_game_3">
-      <created>1626929277242</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1626929277242</updated>
-    </task>
-    <task id="LOCAL-00018" summary="20210722_game_4">
-      <created>1626931033601</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1626931033601</updated>
-    </task>
-    <task id="LOCAL-00019" summary="20210722_game_5">
-      <created>1626942124675</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1626942124675</updated>
+      <workItem from="1700453636319" duration="11236000" />
+      <workItem from="1700535343534" duration="13866000" />
+      <workItem from="1700622484035" duration="3888000" />
+      <workItem from="1700638265180" duration="776000" />
+      <workItem from="1700712790250" duration="1371000" />
     </task>
     <task id="LOCAL-00020" summary="20210729">
       <created>1627530237537</created>
@@ -671,7 +514,70 @@
       <option name="project" value="LOCAL" />
       <updated>1635472206309</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="20231120">
+      <created>1700470910350</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1700470910350</updated>
+    </task>
+    <task id="LOCAL-00061" summary="20231120_2">
+      <created>1700471749765</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1700471749766</updated>
+    </task>
+    <task id="LOCAL-00062" summary="20231120_2">
+      <created>1700473250909</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1700473250909</updated>
+    </task>
+    <task id="LOCAL-00063" summary="20231120_2">
+      <created>1700473920775</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1700473920775</updated>
+    </task>
+    <task id="LOCAL-00064" summary="20231121">
+      <created>1700565460683</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1700565460684</updated>
+    </task>
+    <task id="LOCAL-00065" summary="20231122">
+      <created>1700628985088</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1700628985088</updated>
+    </task>
+    <task id="LOCAL-00066" summary="20231122">
+      <created>1700638445159</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1700638445160</updated>
+    </task>
+    <task id="LOCAL-00067" summary="20231123">
+      <created>1700712879958</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1700712879958</updated>
+    </task>
+    <task id="LOCAL-00068" summary="20231123">
+      <created>1700715174469</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1700715174469</updated>
+    </task>
+    <option name="localTasksCounter" value="69" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -711,11 +617,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="20210729" />
-    <MESSAGE value="20210729_update" />
-    <MESSAGE value="20210810" />
-    <MESSAGE value="20210818" />
-    <MESSAGE value="20210818_" />
     <MESSAGE value="20210824" />
     <MESSAGE value="20210825" />
     <MESSAGE value="20210825_" />
@@ -736,7 +637,12 @@
     <MESSAGE value="20211015" />
     <MESSAGE value="20211028" />
     <MESSAGE value="20211029_save_me" />
-    <option name="LAST_COMMIT_MESSAGE" value="20211029_save_me" />
+    <MESSAGE value="20231120" />
+    <MESSAGE value="20231120_2" />
+    <MESSAGE value="20231121" />
+    <MESSAGE value="20231122" />
+    <MESSAGE value="20231123" />
+    <option name="LAST_COMMIT_MESSAGE" value="20231123" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

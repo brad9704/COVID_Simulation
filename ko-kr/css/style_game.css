@@ -44,6 +44,7 @@ body {
     font-size: 75%;
     width: 1920px;
     background-color: black;
+    user-select: none;
 }
 
 .rescale {
@@ -76,16 +77,103 @@ div.controls > div.stat.wrapper > div.stat.left {
     width: 258px;
     height: 243px;
 }
+div.login.form img {
+    position: absolute;
+}
+div.login.form img.login_image {
+    top: 50px;
+    left: 22px;
+}
+div.login.form img.login_submit {
+    position: absolute;
+    top: 170px;
+    left: 44px;
+}
+div.login.form img.login_submit:hover {
+    cursor: pointer;
+    filter: brightness(1.2);
+}
+
+div.login.form div.userlist_dt {
+    position: absolute;
+    text-align: center;
+}
+
+img.userlist.host {
+    box-shadow: 0 0 4px 2px red;
+}
+
+div.login.form div.student00 {
+    top: 65px;
+    left: 20px;
+}
+div.login.form div.student01 {
+    top: 65px;
+    left: 135px;
+}
+div.login.form div.student02 {
+    top: 130px;
+    left: 20px;
+}
+div.login.form div.student03 {
+    top: 130px;
+    left: 135px;
+}
+
+div.userlist_dt output {
+    position: absolute;
+    top: 37px;
+    width: 101px;
+    text-align: center;
+}
+
+div.login.form {
+    position: absolute;
+    top: 307px;
+    right: 70px;
+    width: 258px;
+    height: 243px;
+}
+form#loginForm input {
+    position: absolute;
+    top: 80px;
+    left: 19px;
+    font-size: 22px;
+    font-family: "ONE 모바일고딕 Regular", serif;
+    text-align: center;
+    margin: 10px 5px;
+    padding: 20px 44px;
+}
+form#loginForm input[type=text] {
+    width: 120px;
+}
+div.login.form input:hover {
+    cursor: pointer;
+}
+form#loginForm input[type=submit]:not(:disabled):hover {
+    box-shadow: 0 32px 0 0 rgba(0,0,0,0.25) inset, 0 -32px 0 0 rgba(0,0,0,0.25) inset;
+    transition: all 0.3s;
+}
+
+#button_ready {
+    background: none;
+    position: absolute;
+    right: 174px;
+    top: 549px;
+    width: 153px;
+    height: 99px;
+    cursor: pointer;
+}
 #button_start {
     background: none;
     position: absolute;
     right: 70px;
     top: 549px;
-    width: 258px;
+    width: 103px;
     height: 99px;
     cursor: pointer;
 }
-#button_start:hover {
+#Simulation > img:hover {
     filter: brightness(150%);
 }
 
@@ -142,8 +230,9 @@ div.controls > div.control > img {
 }
 div.panel_footer {
     position: absolute;
-    background-image: url("../img/main_bottom_panel.png");
+    background-image: url("../img/main_bottom_panel.png") ;
     background-repeat: no-repeat;
+    background-size: 100%;
     top: 760px;
     left: 345px;
     width: 1045px;
@@ -158,16 +247,16 @@ div.panel_output {
     text-align: center;
 }
 div.panel_output.infectious {
-    left: 122px;
+    left: 120px;
 }
 div.panel_output.hospital {
-    left: 277px;
+    left: 275px;
 }
 div.panel_output.death {
-    left: 425px;
+    left: 422px;
 }
 div.panel_output.GDP {
-    left: 608px;
+    left: 610px;
     font-size: 23px;
 }
 div.panel_output.budget {
@@ -219,12 +308,16 @@ div.panel_output.budget {
     font-size:16px;
 }
 
+
+
 #popup_result .popInnerBox {
     height: 800px;
+    width: 1080px;
 }
 
 #popup_result div.popBody {
     position: absolute;
+    width: 1080px;
 }
 
 div.panel_policy_result {
@@ -240,6 +333,18 @@ div.panel_policy_result div {
     font-size: 24px;
     align-content: center;
     width: 150px;
+}
+
+div.resultReason {
+    position: absolute;
+    width: 580px;
+    height: 45px;
+    font-size: 25px;
+    line-height: 45px;
+    top: 280px;
+    left: 240px;
+    text-align: center;
+    color: #f30e36;
 }
 
 div.panel_policy_result div.time {
@@ -260,7 +365,6 @@ div.panel_policy_result div.GDP {
 div.panel_policy_result div.budget {
     top: 296px;
 }
-
 svg.result.legend {
     width: 100px;
     height: 85px;
@@ -274,7 +378,7 @@ svg.result.legend {
 }
 
 #popup_result .popBody input {
-    margin: 15px auto;
+    margin: 680px auto 15px;
     max-width: 100%;
     display: block;
     width: 80px;
@@ -283,9 +387,6 @@ svg.result.legend {
     background-color: rgba(0,0,0,0);
     border: 1px solid black;
     border-radius: 5px;
-    position: absolute;
-    left: 500px;
-    top: 700px;
 }
 #popup_result .popBody input:hover {
     color: white;
@@ -334,7 +435,7 @@ div.sidebar {
 div.sidebar div.Day {
     font-size: 25px;
     position: absolute;
-    top: 40px;
+    top: 28px;
     text-align: center;
     width: 100%;
     color: #2E2886;
@@ -368,24 +469,18 @@ div.sidebar div.button input {
 
 div.control_panel div.panel_button {
     position: absolute;
-    top: 754px;
-    left: 1400px;
+    top: 760px;
+    left: 1406px;
+    width: 344px;
+    height: 173px;
     cursor: pointer;
 }
 
-div.panel_button svg.active {
+div.panel_button img.active {
     position: absolute;
-    visibility: hidden;
 }
-div.panel_button:hover svg.active {
-    visibility: visible;
-}
-div.panel_button svg.inactive {
-    position: absolute;
-    visibility: visible;
-}
-div.panel_button:hover svg.inactive{
-    visibility: hidden;
+div.panel_button:hover img.active {
+    filter: brightness(1.2);
 }
 
 #board > div.daily.legend {
@@ -408,6 +503,7 @@ div.daily.legend {
 div.daily.legend img.background {
     position: absolute;
     top: 173px;
+    width: 574px;
 }
 
 div.virus.selection {
@@ -492,7 +588,7 @@ text.virus.name {
 
 div.daily.duration, div.daily.rate, div.daily.num {
     position: absolute;
-    font-size: 18px;
+    font-size: 16px;
     color: white;
     text-align: center;
     width: 50px;
@@ -503,22 +599,22 @@ div.daily > output {
 }
 
 div.daily.legend > div.duration, div.rate {
-    top: 107px;
+    top: 109px;
 }
 div.daily.duration.E2-I1 {
     right: 483px;
 }
 div.daily.duration.I1-I2 {
-     right: 298px;
+     right: 285px;
  }
 div.daily.duration.I1-R1 {
-    right: 389px;
+    right: 374px;
 }
 div.daily.rate.infectious {
-    right: 172px;
+    right: 152px;
 }
 div.daily.rate.severity {
-    right: 60px;
+    right: 30px;
 }
 
 div.daily.num {
@@ -617,9 +713,19 @@ div.graph g.tick text {
     position: absolute;
 }
 
+div.weekly.login.userlist {
+    position: absolute;
+    background-color: white;
+    width: 162px;
+    height: 76px;
+    top: 125px;
+    left: 450px;
+    font-size: 16px;
+}
+
 input.weekly.tab.switch {
     position: absolute;
-    width: 165px;
+    width: 140px;
     height: 53px;
     background-color: rgba(0,0,0,0);
     color: white;
@@ -633,17 +739,21 @@ input.weekly.tab.switch[active=true] {
     color: yellow;
 }
 
-input.weekly.tab.switch:hover {
+input.weekly.tab.switch:not(:disabled):hover {
     color: yellow;
     font-size: 120%;
 }
 
 input.weekly.tab.switch.age {
     text-indent: 40px;
-    left: 180px;
+    left: 160px;
 }
 input.weekly.tab.switch.area {
-    left: 360px;
+    left: 335px;
+}
+input.weekly.tab.switch.area:disabled {
+    opacity: 0.4;
+    filter: grayscale(1);
 }
 
 div.weekly.switch.tabs {
@@ -655,9 +765,30 @@ div.weekly.switch.tabs {
 div.weekly.tab.content img {
     position: absolute;
 }
+img.weekly.icon {
+    position: absolute;
+    top: 5px;
+}
+img.weekly.tab02 {
+    position: absolute;
+    left: 145px;
+    top: 5px;
+}
+img.weekly.tab03 {
+    left: 320px;
+}
 img.weekly.tab.back {
     top: 210px;
-    left: 95px;
+    left: 90px;
+    width: 500px;
+}
+img.weekly.tab.back.age {
+    left: 10px;
+    width: 550px;
+}
+img.weekly.tab.back.area {
+    left: 115px;
+    width: 480px;
 }
 
 #popup_weekly .popBody {
@@ -691,22 +822,22 @@ div.weekly_status div.weekly.date {
     position: absolute;
     color: white;
     top: 8px;
-    left: 105px;
+    left: 165px;
 }
 
 div.weekly_status table {
     color: #2e2886;
     position: absolute;
     text-align: center;
-    width: 425px;
+    width: 403px;
     top: 76px;
-    left: 90px;
+    left: 93px;
     font-size: 80%;
     border-spacing: 0 1px;
 }
 div.weekly_status table tr td {
     width: 36px;
-    height: 40px;
+    height: 33px;
 }
 td.weekly.warning {
     background-repeat: no-repeat;
@@ -762,16 +893,16 @@ div.weekly_board > svg > g > g.yAxis line, g.zAxis line, g.zAxis path {
 div.weekly.infectious {
     color: #2e2886;
     position: absolute;
-    top: 168px;
-    right: 161px;
+    top: 162px;
+    right: 168px;
     width: 260px;
     text-align: center;
 }
 div.weekly.death {
     color: #2e2886;
     position: absolute;
-    top: 168px;
-    right: 8px;
+    top: 162px;
+    right: 26px;
     width: 140px;
     text-align: center;
 }
@@ -861,11 +992,11 @@ input.policy.rate {
 }
 img.policy.bed {
     position: absolute;
-    top: 255px;
-    left: 435px;
+    top: 218px;
+    left: 371px;
 }
 img.policy.bed.dec {
-    top: 305px;
+    top: 263px;
 }
 img.policy.bed:hover {
     transform-origin: -12.5% -12.5%;
@@ -875,13 +1006,14 @@ img.policy.bed:hover {
 
 div.weekly.area.budget{
     position: absolute;
-    top: 397px;
-    left: 272px;
-    width: 90px;
-    height: 45px;
+    top: 713px;
+    left: 509px;
+    width: 109px;
+    height: 37px;
     text-align: center;
-    color: white;
-    font-size: 80%;
+    color: #2E2886;
+    font-size: 120%;
+    line-height: 36px;
 }
 
 div.weekly.area.caution {
@@ -940,25 +1072,89 @@ line.weekly.border.visible {
 
 #button_wrapper {
     position: absolute;
-    top: 645px;
-    width: 100%;
+    top: 770px;
+    left: 315px;
+    width: 328px;
+    height: 157px;
     text-align: center;
     align-content: center;
     font-size: 15px;
+    background-color: rgba(0,0,0,0);
+}
+
+#button_turnReady {
+    border: none;
+    background-color: rgba(0,0,0,0);
+    width: 123px;
+    right: 0;
+    position: absolute;
+    cursor: pointer;
+}
+#button_turnReady:hover {
+    filter: brightness(150%);
 }
 
 #button_resume {
-    border: none;
     background-color: rgba(0,0,0,0);
-    border-radius: 0px;
-    width: 333px;
-    top: 124px;
+    width: 123px;
+    top: 80px;
     position: absolute;
-    left: 285px;
+    right: 0;
     cursor: pointer;
 }
 #button_resume:hover {
     filter: brightness(150%);
+}
+
+div.login.userlist.weekly {
+    left: 0;
+    top: 0;
+    width: 205px;
+}
+div.login.userlist.weekly img {
+    left: 0;
+    top: 0;
+}
+div.login.userlist.weekly div.userlist_dt {
+    position: absolute;
+    text-align: center;
+    align-content: center;
+}
+div.login.userlist.weekly div.student00 {
+    width: 80px;
+    height: 45px;
+    top: 40px;
+    left: 20px;
+}
+div.login.userlist.weekly div.student01 {
+    width: 80px;
+    height: 45px;
+    top: 40px;
+    left: 105px;
+}
+div.login.userlist.weekly div.student02 {
+    width: 80px;
+    height: 45px;
+    top: 90px;
+    left: 20px;
+}
+div.login.userlist.weekly div.student03 {
+    width: 80px;
+    height: 45px;
+    top: 90px;
+    left: 105px;
+}
+
+div.login.userlist.weekly div.userlist_dt img {
+    width: 80px;
+}
+
+div.login.userlist.weekly div.userlist_dt output {
+    width: 80px;
+    left: 0;
+    top: 25px;
+    text-align: center;
+    font-family: "ONEMobileTitle", sans-serif;
 }
 
 .panel_policy input[type=number] {
@@ -1133,12 +1329,21 @@ img.innerPopup {
     left: 0;
 }
 img.innerPopup.resume {
-    top: 277px;
+    top: 297px;
     left: 150px;
 }
 img.innerPopup.resume:hover {
     filter: brightness(150%);
     cursor: pointer;
+}
+
+output.innerPopup.budget.gain {
+    color: #6b00ff;
+    position: absolute;
+    width: 380px;
+    top: 160px;
+    font-size: 33px;
+
 }
 
 #popupDescPopup {
@@ -1229,7 +1434,7 @@ div.weekly.age.policy {
     height: 23px;
     line-height: 23px;
     position: absolute;
-    top: 283px;
+    top: 107px;
     text-align: center;
     vert-align: middle;
     font-size: 90%;
@@ -1237,22 +1442,31 @@ div.weekly.age.policy {
 div.weekly.age.policy label.stage {
     color: #f33e66;
 }
+img.weekly.age.on_off {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: scale(0.5);
+}
+img.weekly.age.on_off:hover {
+    filter: brightness(1.2);
+}
 
 div.weekly.age.policy.child {
-    left: 23px;
+    left: -57px;
 }
 div.weekly.age.policy.adult {
-    left: 170px;
+    left: 91px;
 }
 div.weekly.age.policy.elder {
-    left: 319px;
+    left: 240px;
 }
 table.weekly.age.occurrence {
     position: absolute;
     border-collapse: collapse;
-    top: 365px;
-    left: 59px;
-    width: 406px;
+    top: 342px;
+    left: 47px;
+    width: 389px;
     height: 78px;
 }
 table.weekly.age.occurrence td {
@@ -1271,27 +1485,325 @@ g.board:not(.enabled) image.board_icon {
 
 div.weekly.beds {
     position: absolute;
-    top: 276px;
+    top: 252px;
     left: 76px;
-    width: 336px;
+    width: 275px;
     height: 42px;
     color: white;
     align-content: center;
 }
 div.weekly.bed {
-    width: 134px;
-    height: 44px;
-    line-height: 44px;
+    width: 129px;
     top: 0;
     position: absolute;
     text-align: center;
 }
 div.weekly.bed.cost {
-    left: 210px;
+    left: 181px;
+    width: 101px;
 }
 
 svg > text {
     user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+}
+
+div.weekly.statistics {
+    position: absolute;
+    top: 50px;
+    left: 72px;
+    text-align: center;
+
+}
+
+div.weekly.statistics table {
+    color: #2E2886;
+        text-align: center;
+    width: 388px;
+    table-layout: fixed;
+    font-family: "ONEMobileTitle", sans-serif;
+}
+
+div.weekly.statistics td {
+    font-size: 18px;
+    line-height: 21px;
+    width: 129px;
+    height: 21px;
+}
+
+g.actions {
+    position: absolute;
+    top: 20px;
+}
+g.actions img:hover {
+    cursor: pointer;
+    filter: brightness(1.2);
+}
+
+g.actions.action01 img {
+    top: 240px;
+}
+g.actions.action02 img {
+    top: 335px;
+}
+g.actions img.student01.increase {
+    left: 160px;
+}
+g.actions img.student01.decrease {
+    left: 95px;
+}
+g.actions img.student02.increase {
+    left: 295px;
+}
+g.actions img.student02.decrease {
+    left: 225px;
+}
+g.actions img.student03.increase {
+    left: 430px;
+}
+g.actions img.student03.decrease {
+    left: 360px;
+}
+
+g.actions div {
+    position: absolute;
+    width: 129px;
+    height: 31px;
+    line-height: 31px;
+    font-size: 20px;
+    color: white;
+    text-align: center;
+}
+g.actions div output {
+    text-align: center;
+    width: 129px;
+    height: 31px;
+    line-height: 31px;
+    font-size: 20px;
+}
+g.actions.action01 div {
+    top: 245px;
+}
+g.actions.action02 div {
+    top: 340px;
+}
+
+g.actions div.student01 {
+    left: 70px;
+}
+g.actions div.student02 {
+    left: 204px;
+}
+g.actions div.student03 {
+    left: 338px;
+}
+
+div.hint {
+    position: absolute;
+    top: 10px;
+    right: 100px;
+    width: 75px;
+    height: 75px;
+    border-radius: 40px;
+    background: url("../img/helpIconDefault.png") no-repeat center, #254488;
+}
+div.hint:hover {
+    background: url("../img/helpIconHover.png") no-repeat center, #254488;
+}
+output.numHintFound {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #04aa6d;
+    border-radius: 10px;
+    font-size: 13px;
+    font-family: "ONEMobileTitle", sans-serif;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+div.hintBox {
+    background: url("../img/Key facts.png") no-repeat center;
+}
+
+div.hintTitle {
+    position: absolute;
+    width: 730px;
+    height: 100px;
+    top: 105px;
+    left: 170px;
+    text-align: left;
+}
+
+div.hintBody {
+    position: absolute;
+    width: 730px;
+    height: 400px;
+    top: 250px;
+    left: 170px;
+}
+
+div.hintTitle input.topic {
+    position: relative;
+    height: 30px;
+    font-size: 25px;
+    color: rgba(0,0,0,0);
+    background-color: rgb(150,150,150);
+    margin: 5px 10px;
+    padding: 3px 5px;
+    border-radius: 5px;
+    font-family: "ONEMobilePOPRegular", monospace;
+}
+
+div.hintTitle input.topic.found {
+    color: #2e2886;
+    background-color: yellow;
+}
+div.hintTitle input.topic.found:hover {
+     filter: brightness(1.2);
+ }
+
+div.hintTitle input.topic.found.read {
+    background-color: white;
+}
+div.hintTitle input.topic.found.read.selected {
+    background-color: #98E294;
+}
+
+div.hintBox input.closeHint[type=button] {
+    position: absolute;
+    width: 930px;
+    height: 45px;
+    left: 75px;
+    bottom: 20px;
+    font-size: 20px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 16px;
+    color: white;
+    font-family: "ONEMobilePOPRegular", monospace;
+}
+div.hintBox input.closeHint[type=button]:hover {
+    background: rgba(0,0,0,1);
+}
+
+div.hintBody {
+    color: white;
+    font-size: 25px;
+    text-align: left;
+}
+div.hintBody img {
+    width: 100%;
+}
+
+div.upperLeftSpace {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 140px;
+    height: 60px;
+    font-size: 50px;
+    text-align: right;
+    line-height: 60px;
+    padding: 20px;
+}
+
+div.upperLeftSpace img {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+div.vaccine_progress {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 140px;
+    height: 60px;
+    font-size: 22px;
+    text-align: right;
+    line-height: 60px;
+    padding: 20px 8px;
+    font-family: "ONEMobileTitle", sans-serif;
+}
+div.vaccine_diff {
+    position: absolute;
+    top: 62px;
+    right: 10px;
+    width: 60px;
+    height: 20px;
+    font-size: 16px;
+    text-align: right;
+    line-height: 16px;
+    font-family: "ONEMobileTitle", sans-serif;
+    color: blue;
+    display: none;
+}
+div.announcement {
+    display: none;
+    width: 1400px;
+    height: 40px;
+    font-size: 30px;
+    font-family: "ONEMobileTitle", sans-serif;
+    border-radius: 5px;
+    background-color: rgba(96,96,96,0.8);
+    position: absolute;
+    left: 260px;
+    text-align: center;
+    line-height: 40px;
+    color: white;
+}
+
+div.hintIcon {
+    position: absolute;
+    width: 21px;
+    height: 21px;
+    background: url("../img/hintIcon.png") no-repeat center/100%;
+    cursor: pointer;
+}
+div.hintIcon.disabled {
+    filter: grayscale(1);
+    cursor: initial;
+    opacity: 0.5;
+}
+
+#hint_SEIHR {
+    left: 160px;
+    top: 330px;
+}
+
+#hint_FTC {
+    display: none;
+    left: 1672px;
+    top: 647px;
+}
+
+#hint_SD {
+    left: 90px;
+}
+
+#hint_Curfew {
+    left: 245px;
+}
+
+#hint_Lockdown {
+    left: 410px;
+}
+
+#hint_ICU {
+    left: 135px;
+    top: -44px;
+}
+
+#hint_R0 {
+    top: 66px;
+    left: 447px;
+}
+
+#hint_Travel {
+    top: 175px;
+    left: 317px;
 }
