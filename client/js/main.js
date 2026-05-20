@@ -1294,6 +1294,7 @@ async function sendRequest(action, arg) {
             break;
     }
     const response = await fetch(url, request);
+    if (!response.ok) throw new Error(response.statusText);
     return response.json();
 }
 
