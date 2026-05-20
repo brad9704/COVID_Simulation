@@ -1,0 +1,26 @@
+[
+	{
+		"id": "FTC", "topic": "Flattening The Curve", "content": "<img src='img/FTC.png' alt=''>"
+	},
+	{
+		"id": "SEIHR", "topic": "SEIHR", "content": "<img src='img/SEIHR.png' alt=''>"
+	},
+	{
+		"id": "Curfew", "topic": "Curfew", "content": "<img src='img/Curfew.png' alt=''>"
+	},
+	{
+		"id": "Lockdown", "topic": "Lockdown", "content": "<img src='img/Lockdown.png' alt=''>"
+	},
+	{
+		"id": "SD", "topic": "Social Distancing", "content": "<img src='img/Social distancing.png' alt=''>"
+	},
+	{
+		"id": "R0", "topic": "Infection rate", "content": "<img src='img/R0.png' alt=''>"
+	},
+	{
+		"id": "ICU", "topic": "Healthcare Capacity", "content": "<img src='img/ICU.png' alt=''>"
+	},
+	{
+		"id": "Travel", "topic": "Travel Control", "content": "<img src='img/Travel control.png' alt=''>"
+	}
+]
