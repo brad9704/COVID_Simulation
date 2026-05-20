@@ -91,11 +91,12 @@ var startSim = function(event_data) {
 /*
     Calls when two nodes collide
  */
-function collision (node1, node2) {
+function collision(node1, node2) {
     if (node1.state === state.S && (node2.state === state.E2 || node2.state === state.I1)) {
-        if (Math.random() < TPC(node1)) {
-            node1.infected();
-        }
+        if (Math.random() < TPC(node1)) node1.infected();
+    }
+    if (node2.state === state.S && (node1.state === state.E2 || node1.state === state.I1)) {
+        if (Math.random() < TPC(node2)) node2.infected();
     }
 }
 
