@@ -561,9 +561,12 @@
             })
     }
     window.onresize = function() {
-        let scale = this.innerWidth / 1920;
-        let translate = (1 - 1920 / this.innerWidth) * 50;
-        d3.select("body").style("transform","scale(" + scale + ") translate(" + translate + "%," + translate + "%)");
+        const scaleX = this.innerWidth / 1920;
+        const scaleY = this.innerHeight / 1080; // 기준 세로 높이
+        const scale = Math.min(scaleX, scaleY);
+        d3.select("body")
+            .style("transform", `scale(${scale})`)
+            .style("transform-origin", "top left");
     }
 </script>
 </body>

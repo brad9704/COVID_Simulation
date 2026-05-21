@@ -16,7 +16,6 @@ const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
 const app = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer, {
-    path: "/socket",
     cors: { origin: CORS_ORIGIN, methods: ["GET", "POST"] }
 });
 
@@ -25,7 +24,7 @@ app.use(express.json());
 
 // Serve client static files (optional convenience — works if run from repo root)
 app.use(express.static(path.resolve(__dirname, "../client")));
-
+app.use("/core", express.static(path.resolve(__dirname, "../core")));
 // ---------------------------------------------------------------------------
 // Data helpers
 // ---------------------------------------------------------------------------
@@ -123,7 +122,7 @@ app.get("/api/file", (req, res) => {
     if (!filename) return res.status(400).json({ error: "Missing filename" });
     // Security: only allow files inside DATA_DIR
     const filePath = path.resolve(DATA_DIR, filename);
-    if (!filePath.startsWith(DATA_DIR)) return res.status(403).json({ error: "Forbidden" });
+    if (!filePath.startsWith(DATA_DIR + path.sep)) return res.status(403).json({ error: "Forbidden" });
     if (!fs.existsSync(filePath)) return res.status(404).json({ error: "Not found" });
     res.sendFile(filePath);
 });

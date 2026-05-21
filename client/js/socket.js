@@ -74,23 +74,24 @@ function updateUserStatus() {
 }
 
 
-socketURL = (window.SERVER_URL || "http://localhost:3000") + "/socket";
+socketURL = window.SERVER_URL || "http://localhost:3000";
 socket = io.connect(socketURL);
 
 socket.on("connect", function () {
     socket.emit("connection", {
         data: "User Connected"
     });
-    var form = $("#loginForm");
-    form.on("submit", function (e) {
-        e.preventDefault();
-        let user_id = $("input.login.studentID").val();
-        socket.emit("login", {
-            studentID: user_id
-        });
-    })
 });
 
+var form = $("#loginForm");
+form.on("submit", function (e) {
+    e.preventDefault();
+    let user_id = $("input.login.studentID").val();
+    socket.emit("login", {
+        studentID: user_id
+    });
+})
+socket.on("connect_error", (err) => console.log(err.message, err));
 socket.on("loginSuccess", function (msg) {
     NETWORK.STUDENT_ID = msg["studentID"];
     NETWORK.STUDENTNAME = msg["studentName"];
